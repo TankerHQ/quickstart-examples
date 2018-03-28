@@ -1,0 +1,17 @@
+{
+  "name": "ui-demo-server",
+  "version": "0.0.1",
+  "main": "./server.js",
+  "description": "Example application server for Tanker UI demos",
+  "author": "Tanker Team",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@tanker/user-token": "1.4.0",
+    "babel-polyfill": "^6.26.0",
+    "cors": "^2.8.4",
+    "express": "^4.16.2"
+  }
+}
