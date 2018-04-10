@@ -72,7 +72,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-598" y="37"/>
+            <point key="canvasLocation" x="-562" y="36"/>
         </scene>
         <!--View Controller success-->
         <scene sceneID="qGL-vg-WEh">
@@ -100,7 +100,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fnU-Uq-Clr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1134" y="-858"/>
+            <point key="canvasLocation" x="-1348" y="811"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="uwp-DB-kkh">
@@ -125,7 +125,7 @@
         <!--View Controller log in-->
         <scene sceneID="PAd-6d-byW">
             <objects>
-                <viewController id="NXi-Se-x0t" userLabel="View Controller log in" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="NXi-Se-x0t" userLabel="View Controller log in" customClass="LoginViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Clq-B6-7pc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -153,6 +153,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
+                                            <action selector="triggerLogin:" destination="NXi-Se-x0t" eventType="touchUpInside" id="NQy-fK-Dha"/>
                                             <segue destination="Cgj-G9-lG3" kind="show" id="YE4-1n-EWg"/>
                                         </connections>
                                     </button>
@@ -166,14 +167,19 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="8xT-xx-v62"/>
                     </view>
+                    <connections>
+                        <outlet property="passwordField" destination="bET-JA-lZ9" id="6wT-Wk-Cjt"/>
+                        <outlet property="usernameField" destination="5Wr-OV-o8i" id="Q7e-0F-ggh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nnz-w0-FK3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-1348" y="36"/>
         </scene>
         <!--View Controller sign up-->
         <scene sceneID="mb1-1j-Nxx">
             <objects>
-                <viewController id="aLR-dQ-HNO" userLabel="View Controller sign up" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignUpViewController" id="aLR-dQ-HNO" userLabel="View Controller sign up" customClass="SignUpViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ipk-4L-2W2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -206,6 +212,9 @@
                                         <state key="normal" title="Sign up">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
+                                        <connections>
+                                            <action selector="triggerSignUp:" destination="aLR-dQ-HNO" eventType="touchUpInside" id="VHt-vO-WbC"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                             </stackView>
@@ -219,9 +228,15 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="hDg-Y8-7yO"/>
                     </view>
+                    <connections>
+                        <outlet property="confirmPasswordField" destination="piP-m1-Ppk" id="2Xw-tS-799"/>
+                        <outlet property="passwordField" destination="aRV-fs-bEk" id="P4v-1D-kaf"/>
+                        <outlet property="unameField" destination="cJ3-pO-xtB" id="6eV-9P-vfs"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U4I-wY-CWY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-561" y="811"/>
         </scene>
         <!--View Controller first time-->
         <scene sceneID="dJr-Tx-bey">
@@ -259,6 +274,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a8B-oV-S5x" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="670" y="-67"/>
         </scene>
         <!--View Controller device validation-->
         <scene sceneID="aBI-pd-sIS">
@@ -296,6 +312,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZX8-P3-g0u" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="1394" y="6"/>
         </scene>
     </scenes>
 </document>

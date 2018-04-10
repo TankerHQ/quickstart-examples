@@ -22,7 +22,7 @@ NSString* getWritablePath()
 - (void)initTanker
 {
   TKRTankerOptions* opts = [TKRTankerOptions options];
-  opts.trustchainID = @"p0UJ6CTpNrlPvNfGXTW9jH1CeceYCT8Ywl1pSnnaB8I=";
+  opts.trustchainID = @"oQl8PAuWb3uNO2hjoMU8nSJPG3nMXwy9L+WKLxkQ7z4=";
   opts.writablePath = getWritablePath();
   [self setTanker:[TKRTanker tankerWithOptions:opts]];
   NSLog(@"Tanker initialization sucessful");
