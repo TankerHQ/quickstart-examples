@@ -77,25 +77,42 @@
         <!--View Controller success-->
         <scene sceneID="qGL-vg-WEh">
             <objects>
-                <viewController id="Cgj-G9-lG3" userLabel="View Controller success" sceneMemberID="viewController">
+                <viewController id="Cgj-G9-lG3" userLabel="View Controller success" customClass="GreatSuccessViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dE9-7I-Y26">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Great success!  " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jVq-2f-Uya">
-                                <rect key="frame" x="8" y="323.5" width="359" height="20.5"/>
-                                <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="YV2-8t-Kwl">
+                                <rect key="frame" x="8" y="297.5" width="359" height="72.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Great success!  " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jVq-2f-Uya">
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="20.5"/>
+                                        <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="highlightedColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hkx-fm-L3v">
+                                        <rect key="frame" x="0.0" y="40.5" width="359" height="32"/>
+                                        <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
+                                        <state key="normal" title="Logout">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="triggerLogout:" destination="Cgj-G9-lG3" eventType="touchUpInside" id="eog-Ia-gYo"/>
+                                            <segue destination="BYZ-38-t0r" kind="show" id="moH-ML-Nig"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="jVq-2f-Uya" firstAttribute="centerY" secondItem="dE9-7I-Y26" secondAttribute="centerY" id="8e8-ed-soR"/>
-                            <constraint firstItem="jVq-2f-Uya" firstAttribute="leading" secondItem="DLG-nJ-qsp" secondAttribute="leading" constant="8" id="KAR-7d-dLe"/>
-                            <constraint firstItem="jVq-2f-Uya" firstAttribute="centerX" secondItem="dE9-7I-Y26" secondAttribute="centerX" id="LME-Ra-5Ch"/>
-                            <constraint firstItem="DLG-nJ-qsp" firstAttribute="trailing" secondItem="jVq-2f-Uya" secondAttribute="trailing" constant="8" id="VIK-Oj-yHX"/>
+                            <constraint firstItem="DLG-nJ-qsp" firstAttribute="trailing" secondItem="YV2-8t-Kwl" secondAttribute="trailing" constant="8" id="1VX-6P-Pzd"/>
+                            <constraint firstItem="YV2-8t-Kwl" firstAttribute="centerX" secondItem="dE9-7I-Y26" secondAttribute="centerX" id="MqM-wl-0Xw"/>
+                            <constraint firstItem="YV2-8t-Kwl" firstAttribute="centerY" secondItem="dE9-7I-Y26" secondAttribute="centerY" id="dJY-OV-onf"/>
+                            <constraint firstItem="YV2-8t-Kwl" firstAttribute="leading" secondItem="DLG-nJ-qsp" secondAttribute="leading" constant="8" id="pNE-mA-gKp"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="DLG-nJ-qsp"/>
                     </view>
@@ -328,5 +345,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="xID-jB-W2c"/>
+        <segue reference="moH-ML-Nig"/>
     </inferredMetricsTieBreakers>
 </document>

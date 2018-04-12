@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B62E26B1AFF6FA408497705D /* Pods_tanker_ui_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BDE5C4F4362868917943BA37 /* Pods_tanker_ui_demo.framework */; };
 		EB141891207F66A600A69EDA /* SaveValidationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB141890207F66A600A69EDA /* SaveValidationViewController.m */; };
+		EB141894207F919800A69EDA /* GreatSuccessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB141893207F919800A69EDA /* GreatSuccessViewController.m */; };
 		EB1A5D0C207BB721007A269F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB1A5D0B207BB721007A269F /* LoginViewController.m */; };
 		EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB1A5D0E207BB739007A269F /* SignUpViewController.m */; };
 		EB261727207B8D8C00FCB028 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EB261726207B8D8C00FCB028 /* AppDelegate.m */; };
@@ -36,6 +37,8 @@
 		BDE5C4F4362868917943BA37 /* Pods_tanker_ui_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_tanker_ui_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB14188F207F66A600A69EDA /* SaveValidationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SaveValidationViewController.h; sourceTree = "<group>"; };
 		EB141890207F66A600A69EDA /* SaveValidationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SaveValidationViewController.m; sourceTree = "<group>"; };
+		EB141892207F919800A69EDA /* GreatSuccessViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GreatSuccessViewController.h; sourceTree = "<group>"; };
+		EB141893207F919800A69EDA /* GreatSuccessViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GreatSuccessViewController.m; sourceTree = "<group>"; };
 		EB1A5D0A207BB721007A269F /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		EB1A5D0B207BB721007A269F /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		EB1A5D0D207BB739007A269F /* SignUpViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
@@ -131,6 +134,8 @@
 				EB1A5D0E207BB739007A269F /* SignUpViewController.m */,
 				EB14188F207F66A600A69EDA /* SaveValidationViewController.h */,
 				EB141890207F66A600A69EDA /* SaveValidationViewController.m */,
+				EB141892207F919800A69EDA /* GreatSuccessViewController.h */,
+				EB141893207F919800A69EDA /* GreatSuccessViewController.m */,
 			);
 			path = "tanker-ui-demo";
 			sourceTree = "<group>";
@@ -306,6 +311,7 @@
 			files = (
 				EB141891207F66A600A69EDA /* SaveValidationViewController.m in Sources */,
 				EB9852AE207B9C210008C567 /* Globals.m in Sources */,
+				EB141894207F919800A69EDA /* GreatSuccessViewController.m in Sources */,
 				EB26172A207B8D8C00FCB028 /* ViewController.m in Sources */,
 				EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */,
 				EB261735207B8D8C00FCB028 /* main.m in Sources */,

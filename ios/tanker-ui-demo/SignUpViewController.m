@@ -76,7 +76,7 @@ PMKPromise* fetchUserToken (NSString* userId, NSString* password)
     [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
     .then(^{
       NSLog(@"Tanker is open");
-      [[Globals sharedInstance].tanker generatePassphrase]
+      [[Globals sharedInstance].tanker generateAndRegisterUnlockKey]
       .then(^(NSString* unlockKey) {
         NSLog(@"Please save this unlock key in a safe place: %@", unlockKey);
         SaveValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SaveValidationCode"];
