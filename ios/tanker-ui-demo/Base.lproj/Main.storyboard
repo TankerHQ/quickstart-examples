@@ -77,7 +77,7 @@
         <!--View Controller success-->
         <scene sceneID="qGL-vg-WEh">
             <objects>
-                <viewController id="Cgj-G9-lG3" userLabel="View Controller success" customClass="GreatSuccessViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GreatSuccess" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Cgj-G9-lG3" userLabel="View Controller success" customClass="GreatSuccessViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dE9-7I-Y26">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -173,7 +173,6 @@
                                         </state>
                                         <connections>
                                             <action selector="triggerLogin:" destination="NXi-Se-x0t" eventType="touchUpInside" id="NQy-fK-Dha"/>
-                                            <segue destination="Cgj-G9-lG3" kind="show" id="YE4-1n-EWg"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -261,9 +260,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="9jJ-zN-31T">
-                                <rect key="frame" x="8" y="269.5" width="359" height="128"/>
+                                <rect key="frame" x="8" y="270" width="359" height="128"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save this code preciously:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ihb-f6-3wF">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please save this unlock key in a safe place: " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ihb-f6-3wF">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="20"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <nil key="textColor"/>
@@ -307,44 +306,57 @@
         <!--View Controller device validation-->
         <scene sceneID="aBI-pd-sIS">
             <objects>
-                <viewController id="bMk-zH-ocI" userLabel="View Controller device validation" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DeviceValidation" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bMk-zH-ocI" userLabel="View Controller device validation" customClass="DeviceValidationViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="MQ1-tI-5un">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="mo0-Sl-gsU">
-                                <rect key="frame" x="103" y="303.5" width="169.5" height="60"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mo0-Sl-gsU">
+                                <rect key="frame" x="8" y="272.5" width="359" height="122"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter validation code:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yhz-Lf-GsW">
-                                        <rect key="frame" x="0.0" y="0.0" width="169.5" height="20"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="20"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Validation code" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1BR-wy-fKc">
-                                        <rect key="frame" x="0.0" y="30" width="169.5" height="30"/>
+                                        <rect key="frame" x="0.0" y="40" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W3z-s7-V5y">
+                                        <rect key="frame" x="0.0" y="90" width="359" height="32"/>
+                                        <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
+                                        <state key="normal" title="Continue"/>
+                                        <connections>
+                                            <action selector="pressContinue:" destination="bMk-zH-ocI" eventType="touchUpInside" id="Xbu-Bz-rEU"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="mo0-Sl-gsU" firstAttribute="centerY" secondItem="MQ1-tI-5un" secondAttribute="centerY" id="PaK-x6-fki"/>
+                            <constraint firstItem="Y3M-7Y-JnT" firstAttribute="trailing" secondItem="mo0-Sl-gsU" secondAttribute="trailing" constant="8" id="e9Q-VK-7Ij"/>
                             <constraint firstItem="mo0-Sl-gsU" firstAttribute="centerX" secondItem="MQ1-tI-5un" secondAttribute="centerX" id="ntz-ak-FIa"/>
+                            <constraint firstItem="mo0-Sl-gsU" firstAttribute="leading" secondItem="Y3M-7Y-JnT" secondAttribute="leading" constant="8" id="oub-Lu-gP8"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Y3M-7Y-JnT"/>
                     </view>
+                    <connections>
+                        <outlet property="validationField" destination="1BR-wy-fKc" id="vbk-QM-QFf"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZX8-P3-g0u" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1394" y="6"/>
+            <point key="canvasLocation" x="-2164" y="30"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="xID-jB-W2c"/>
         <segue reference="moH-ML-Nig"/>
     </inferredMetricsTieBreakers>
 </document>

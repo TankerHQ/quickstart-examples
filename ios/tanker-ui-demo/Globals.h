@@ -19,6 +19,8 @@
 
 + (Globals *)sharedInstance;
 
++ (PMKPromise*)fetchUserToken:(NSString*)method userId:(NSString*)userId password:(NSString*)password;
+
 @property(strong, nonatomic, readwrite) TKRTanker* tanker;
 @property(strong, nonatomic, readwrite) NSString* serverAddress;
 

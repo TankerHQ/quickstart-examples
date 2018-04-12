@@ -7,6 +7,9 @@
 //
 
 #import "LoginViewController.h"
+#import "Globals.h"
+#import "DeviceValidationViewController.h"
+@import PromiseKit;
 
 @interface LoginViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
@@ -27,7 +30,35 @@
 }
 
 - (IBAction)triggerLogin:(UIButton *)sender {
-  NSString* url = [NSString stringWithFormat:@"http://10.208.24.94:8080/login/?userId=%@&password=%@", _usernameField, _passwordField];
+  NSString* userId = _usernameField.text;
+  NSString* password = _passwordField.text;
+  
+  [Globals fetchUserToken:@"login" userId:userId password:password].then(^(NSString *userToken){
+    NSError* error = nil;
+    [[Globals sharedInstance].tanker connectValidationHandler:^(NSString* validationCode) {
+      // Go to the validate device screen
+      NSLog(@"In the handler");
+      dispatch_async(dispatch_get_main_queue(), ^{
+      DeviceValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"DeviceValidation"];
+      @try {
+        [self.navigationController pushViewController:controller animated:YES];
+      } @catch(NSException* e) {
+          NSLog(@"--> %@", e);
+      }
+      });
+    } error:&error];
+    
+    [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
+    .then(^{
+      NSLog(@"Tanker is open");
+      DeviceValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"GreatSuccess"];
+      [self.navigationController pushViewController:controller animated:YES];
+    })
+    .catch(^(NSError* error) {
+      NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
+      return error;
+    });
+  });
 }
 
 /*

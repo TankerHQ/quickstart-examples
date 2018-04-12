@@ -40,31 +40,6 @@
  }
  */
 
-PMKPromise* fetchUserToken (NSString* userId, NSString* password)
-{
-  NSString* urlStr = [NSString stringWithFormat:@"%@signup?userId=%@&password=%@", [Globals sharedInstance].serverAddress, userId, password];
-  NSLog(@"%@", urlStr);
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc]
-                                  initWithURL:[NSURL URLWithString:urlStr]];
-  [request setHTTPMethod:@"GET"];
-  [request setValue:@"text" forHTTPHeaderField:@"Content-Type"];
-  
-  NSURLSession *session = [NSURLSession sharedSession];
-  
-  return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
-  [[session dataTaskWithRequest:request
-              completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                if (error)
-                  resolve(error);
-                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                if ((long)[httpResponse statusCode] != 200)
-                {
-                  NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
-                }
-                resolve([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-    }] resume];
-  }];
-}
 
 - (IBAction)signUpButton:(UIButton *)sender {
   NSString* userId = _unameField.text;
@@ -72,7 +47,7 @@ PMKPromise* fetchUserToken (NSString* userId, NSString* password)
   
   // Add your checks of userId and password Here !
   
-  fetchUserToken(userId, password).then(^(NSString *userToken){
+  [Globals fetchUserToken:@"signup" userId:userId password:password].then(^(NSString *userToken){
     [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
     .then(^{
       NSLog(@"Tanker is open");
