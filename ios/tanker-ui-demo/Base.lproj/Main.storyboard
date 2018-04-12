@@ -238,40 +238,54 @@
         <!--View Controller first time-->
         <scene sceneID="dJr-Tx-bey">
             <objects>
-                <viewController id="G5e-YE-aYG" userLabel="View Controller first time" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SaveValidationCode" useStoryboardIdentifierAsRestorationIdentifier="YES" id="G5e-YE-aYG" userLabel="View Controller first time" customClass="SaveValidationViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="IS5-4J-9TW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="9jJ-zN-31T">
-                                <rect key="frame" x="88.5" y="303.5" width="198" height="60"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="9jJ-zN-31T">
+                                <rect key="frame" x="8" y="269.5" width="359" height="128"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save this code preciously:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ihb-f6-3wF">
-                                        <rect key="frame" x="0.0" y="0.0" width="198" height="20"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save this code preciously:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ihb-f6-3wF">
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="20"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Validation code" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7eL-Wl-doi" userLabel="validationCodeField">
-                                        <rect key="frame" x="0.0" y="30" width="198" height="30"/>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Pv7-Sk-Eed">
+                                        <rect key="frame" x="0.0" y="46" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cYc-0p-GvG">
+                                        <rect key="frame" x="0.0" y="96" width="359" height="32"/>
+                                        <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
+                                        <state key="normal" title="Continue"/>
+                                        <connections>
+                                            <segue destination="Cgj-G9-lG3" kind="show" id="xID-jB-W2c"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="9jJ-zN-31T" firstAttribute="centerX" secondItem="IS5-4J-9TW" secondAttribute="centerX" id="B8F-oM-qoq"/>
+                            <constraint firstItem="9jJ-zN-31T" firstAttribute="leading" secondItem="Mhi-Zw-Dnx" secondAttribute="leading" constant="8" id="JK6-ao-2dA"/>
+                            <constraint firstItem="Mhi-Zw-Dnx" firstAttribute="trailing" secondItem="9jJ-zN-31T" secondAttribute="trailing" constant="8" id="Wj5-uq-g4L"/>
                             <constraint firstItem="9jJ-zN-31T" firstAttribute="centerY" secondItem="IS5-4J-9TW" secondAttribute="centerY" id="ffV-KL-TrS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Mhi-Zw-Dnx"/>
                     </view>
+                    <connections>
+                        <outlet property="passphraseField" destination="Pv7-Sk-Eed" id="OJa-Xk-wsE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a8B-oV-S5x" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="670" y="-67"/>
+            <point key="canvasLocation" x="-2164" y="811"/>
         </scene>
         <!--View Controller device validation-->
         <scene sceneID="aBI-pd-sIS">
@@ -312,4 +326,7 @@
             <point key="canvasLocation" x="1394" y="6"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="xID-jB-W2c"/>
+    </inferredMetricsTieBreakers>
 </document>

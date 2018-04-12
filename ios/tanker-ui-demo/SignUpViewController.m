@@ -7,6 +7,7 @@
 //
 
 #import "SignUpViewController.h"
+#import "SaveValidationViewController.h"
 #import "Globals.h"
 @import PromiseKit;
 @import Tanker;
@@ -78,7 +79,9 @@ PMKPromise* fetchUserToken (NSString* userId, NSString* password)
       [[Globals sharedInstance].tanker generatePassphrase]
       .then(^(NSString* unlockKey) {
         NSLog(@"Please save this unlock key in a safe place: %@", unlockKey);
-        // FIXME: save it somewhere
+        SaveValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SaveValidationCode"];
+        controller.passphrase = unlockKey;
+        [self.navigationController pushViewController:controller animated:YES];
       });
     })
     .catch(^(NSError* error) {
