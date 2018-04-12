@@ -41,6 +41,7 @@ NSString* getWritablePath()
   self = [super init];
   if (self) {
     [self initTanker];
+    [self setServerAddress:@"http://10.208.24.87:8080/"];
   }
   return self;
 }

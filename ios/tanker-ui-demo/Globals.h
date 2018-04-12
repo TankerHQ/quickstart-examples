@@ -14,11 +14,13 @@
 @interface Globals : NSObject
 {
   TKRTanker* tanker;
+  NSString* serverAddress;
 }
 
 + (Globals *)sharedInstance;
 
 @property(strong, nonatomic, readwrite) TKRTanker* tanker;
+@property(strong, nonatomic, readwrite) NSString* serverAddress;
 
 @end
 

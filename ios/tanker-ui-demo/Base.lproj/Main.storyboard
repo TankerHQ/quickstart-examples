@@ -24,16 +24,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="9Y2-ho-UNk">
-                                <rect key="frame" x="112" y="278.5" width="151.5" height="110"/>
+                                <rect key="frame" x="8" y="278.5" width="359" height="110"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Tanker!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YyG-Gq-UeS" userLabel="Welcome to tanker">
-                                        <rect key="frame" x="0.0" y="0.0" width="151.5" height="20"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Tanker!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YyG-Gq-UeS" userLabel="Welcome to tanker">
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="20"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="udr-qo-dsw">
-                                        <rect key="frame" x="0.0" y="36" width="151.5" height="32"/>
+                                        <rect key="frame" x="0.0" y="36" width="359" height="32"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <state key="normal" title=" Log in ">
@@ -44,7 +44,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aOQ-iW-shB">
-                                        <rect key="frame" x="0.0" y="78" width="151.5" height="32"/>
+                                        <rect key="frame" x="0.0" y="78" width="359" height="32"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <color key="tintColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -61,10 +61,10 @@
                         <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="9Y2-ho-UNk" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="8" id="A80-Ge-s9d"/>
                             <constraint firstItem="9Y2-ho-UNk" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="SUT-nN-NjJ"/>
-                            <constraint firstItem="9Y2-ho-UNk" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="WAO-5x-0gT"/>
-                            <constraint firstItem="9Y2-ho-UNk" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="ZsJ-o9-e0W"/>
                             <constraint firstItem="9Y2-ho-UNk" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="dCC-Nf-7xN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="9Y2-ho-UNk" secondAttribute="trailing" constant="8" id="nbr-ib-fev"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -82,8 +82,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Great success!  " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jVq-2f-Uya">
-                                <rect key="frame" x="121.5" y="323.5" width="132" height="20.5"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="  Great success!  " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jVq-2f-Uya">
+                                <rect key="frame" x="8" y="323.5" width="359" height="20.5"/>
                                 <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -93,7 +93,9 @@
                         <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="jVq-2f-Uya" firstAttribute="centerY" secondItem="dE9-7I-Y26" secondAttribute="centerY" id="8e8-ed-soR"/>
+                            <constraint firstItem="jVq-2f-Uya" firstAttribute="leading" secondItem="DLG-nJ-qsp" secondAttribute="leading" constant="8" id="KAR-7d-dLe"/>
                             <constraint firstItem="jVq-2f-Uya" firstAttribute="centerX" secondItem="dE9-7I-Y26" secondAttribute="centerX" id="LME-Ra-5Ch"/>
+                            <constraint firstItem="DLG-nJ-qsp" firstAttribute="trailing" secondItem="jVq-2f-Uya" secondAttribute="trailing" constant="8" id="VIK-Oj-yHX"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="DLG-nJ-qsp"/>
                     </view>
@@ -130,23 +132,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="2OL-9f-Oof">
-                                <rect key="frame" x="139" y="284" width="96.5" height="99"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2OL-9f-Oof">
+                                <rect key="frame" x="8" y="279" width="359" height="109"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Wr-OV-o8i" userLabel="unameField">
-                                        <rect key="frame" x="0.0" y="0.0" width="96.5" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bET-JA-lZ9" userLabel="passwordField">
-                                        <rect key="frame" x="0.0" y="34" width="96.5" height="30"/>
+                                        <rect key="frame" x="0.0" y="39" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mLv-ZR-EpE" userLabel="LoginButton">
-                                        <rect key="frame" x="0.0" y="67" width="96.5" height="32"/>
+                                        <rect key="frame" x="0.0" y="77" width="359" height="32"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <state key="normal" title="Login">
@@ -163,7 +165,9 @@
                         <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="2OL-9f-Oof" firstAttribute="centerY" secondItem="Clq-B6-7pc" secondAttribute="centerY" id="FNZ-Si-TxS"/>
+                            <constraint firstItem="2OL-9f-Oof" firstAttribute="leading" secondItem="8xT-xx-v62" secondAttribute="leading" constant="8" id="WR8-rl-SwE"/>
                             <constraint firstItem="2OL-9f-Oof" firstAttribute="centerX" secondItem="Clq-B6-7pc" secondAttribute="centerX" id="pmX-EF-bdl"/>
+                            <constraint firstItem="8xT-xx-v62" firstAttribute="trailing" secondItem="2OL-9f-Oof" secondAttribute="trailing" constant="8" id="wZK-EP-y99"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="8xT-xx-v62"/>
                     </view>
@@ -184,36 +188,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="bxt-Rr-Bcx">
-                                <rect key="frame" x="109" y="271" width="157" height="124"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bxt-Rr-Bcx">
+                                <rect key="frame" x="8" y="279" width="359" height="109"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cJ3-pO-xtB" userLabel="usernameField">
-                                        <rect key="frame" x="0.0" y="0.0" width="157" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aRV-fs-bEk" userLabel="passwordField">
-                                        <rect key="frame" x="0.0" y="31" width="157" height="30"/>
+                                        <rect key="frame" x="0.0" y="39" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="piP-m1-Ppk" userLabel="confirmPasswordField">
-                                        <rect key="frame" x="0.0" y="62" width="157" height="30"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sqb-Ho-9Vx" userLabel="signUpButton">
-                                        <rect key="frame" x="0.0" y="92" width="157" height="32"/>
+                                        <rect key="frame" x="0.0" y="77" width="359" height="32"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="17"/>
                                         <state key="normal" title="Sign up">
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
-                                            <action selector="triggerSignUp:" destination="aLR-dQ-HNO" eventType="touchUpInside" id="VHt-vO-WbC"/>
+                                            <action selector="signUpButton:" destination="aLR-dQ-HNO" eventType="touchUpInside" id="VFw-Uh-GDc"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -222,14 +220,13 @@
                         <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="bxt-Rr-Bcx" firstAttribute="centerX" secondItem="ipk-4L-2W2" secondAttribute="centerX" id="8Ee-tG-Z5J"/>
+                            <constraint firstItem="hDg-Y8-7yO" firstAttribute="trailing" secondItem="bxt-Rr-Bcx" secondAttribute="trailing" constant="8" id="Bvn-vO-PfK"/>
+                            <constraint firstItem="bxt-Rr-Bcx" firstAttribute="leading" secondItem="hDg-Y8-7yO" secondAttribute="leading" constant="8" id="JWu-UQ-EBV"/>
                             <constraint firstItem="bxt-Rr-Bcx" firstAttribute="centerY" secondItem="ipk-4L-2W2" secondAttribute="centerY" id="NcX-WJ-ZiP"/>
-                            <constraint firstItem="bxt-Rr-Bcx" firstAttribute="centerX" secondItem="ipk-4L-2W2" secondAttribute="centerX" id="WuZ-v3-bxO"/>
-                            <constraint firstItem="bxt-Rr-Bcx" firstAttribute="centerY" secondItem="ipk-4L-2W2" secondAttribute="centerY" id="rk6-43-nbF"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="hDg-Y8-7yO"/>
                     </view>
                     <connections>
-                        <outlet property="confirmPasswordField" destination="piP-m1-Ppk" id="2Xw-tS-799"/>
                         <outlet property="passwordField" destination="aRV-fs-bEk" id="P4v-1D-kaf"/>
                         <outlet property="unameField" destination="cJ3-pO-xtB" id="6eV-9P-vfs"/>
                     </connections>

@@ -7,44 +7,85 @@
 //
 
 #import "SignUpViewController.h"
+#import "Globals.h"
+@import PromiseKit;
+@import Tanker;
 
 @interface SignUpViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *unameField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
-@property (weak, nonatomic) IBOutlet UITextField *confirmPasswordField;
 
 @end
 
 @implementation SignUpViewController
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+  [super viewDidLoad];
+  // Do any additional setup after loading the view.
 }
 
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (IBAction)triggerSignUp:(UIButton *)sender {
+  [super didReceiveMemoryWarning];
+  // Dispose of any resources that can be recreated.
 }
 
 /*
-#pragma mark - Navigation
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+PMKPromise* fetchUserToken (NSString* userId, NSString* password)
+{
+  NSString* urlStr = [NSString stringWithFormat:@"%@signup?userId=%@&password=%@", [Globals sharedInstance].serverAddress, userId, password];
+  NSLog(@"%@", urlStr);
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc]
+                                  initWithURL:[NSURL URLWithString:urlStr]];
+  [request setHTTPMethod:@"GET"];
+  [request setValue:@"text" forHTTPHeaderField:@"Content-Type"];
+  
+  NSURLSession *session = [NSURLSession sharedSession];
+  
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
+  [[session dataTaskWithRequest:request
+              completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                if (error)
+                  resolve(error);
+                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                if ((long)[httpResponse statusCode] != 200)
+                {
+                  NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
+                }
+                resolve([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    }] resume];
+  }];
 }
-*/
 
 - (IBAction)signUpButton:(UIButton *)sender {
-  if (_passwordField != _confirmPasswordField) {
-    NSLog(@"Error wrong password confirmation");
-  }
-  NSString* url = [NSString stringWithFormat:@"http://10.208.24.94:8080/signup/?userId=%@&password=%@", _unameField, _passwordField];
+  NSString* userId = _unameField.text;
+  NSString* password = _passwordField.text;
+  
+  // Add your checks of userId and password Here !
+  
+  fetchUserToken(userId, password).then(^(NSString *userToken){
+    [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
+    .then(^{
+      NSLog(@"Tanker is open");
+      [[Globals sharedInstance].tanker generatePassphrase]
+      .then(^(NSString* unlockKey) {
+        NSLog(@"Please save this unlock key in a safe place: %@", unlockKey);
+        // FIXME: save it somewhere
+      });
+    })
+    .catch(^(NSError* error) {
+      NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
+      return error;
+    });
+  });
 }
 
 @end

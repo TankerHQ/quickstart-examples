@@ -14,7 +14,6 @@
 		EB26172A207B8D8C00FCB028 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB261729207B8D8C00FCB028 /* ViewController.m */; };
 		EB26172D207B8D8C00FCB028 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB26172B207B8D8C00FCB028 /* Main.storyboard */; };
 		EB26172F207B8D8C00FCB028 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB26172E207B8D8C00FCB028 /* Assets.xcassets */; };
-		EB261732207B8D8C00FCB028 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EB261730207B8D8C00FCB028 /* LaunchScreen.storyboard */; };
 		EB261735207B8D8C00FCB028 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EB261734207B8D8C00FCB028 /* main.m */; };
 		EB26173F207B8D8C00FCB028 /* tanker_ui_demoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = EB26173E207B8D8C00FCB028 /* tanker_ui_demoUITests.m */; };
 		EB9852AE207B9C210008C567 /* Globals.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9852AD207B9C210008C567 /* Globals.m */; };
@@ -45,7 +44,6 @@
 		EB261729207B8D8C00FCB028 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		EB26172C207B8D8C00FCB028 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EB26172E207B8D8C00FCB028 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		EB261731207B8D8C00FCB028 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EB261733207B8D8C00FCB028 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EB261734207B8D8C00FCB028 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		EB26173A207B8D8C00FCB028 /* tanker-ui-demoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "tanker-ui-demoUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,15 +114,14 @@
 			children = (
 				EB261725207B8D8C00FCB028 /* AppDelegate.h */,
 				EB261726207B8D8C00FCB028 /* AppDelegate.m */,
-				EB261728207B8D8C00FCB028 /* ViewController.h */,
-				EB261729207B8D8C00FCB028 /* ViewController.m */,
 				EB26172B207B8D8C00FCB028 /* Main.storyboard */,
 				EB26172E207B8D8C00FCB028 /* Assets.xcassets */,
-				EB261730207B8D8C00FCB028 /* LaunchScreen.storyboard */,
 				EB261733207B8D8C00FCB028 /* Info.plist */,
 				EB261734207B8D8C00FCB028 /* main.m */,
 				EB9852AC207B9BB70008C567 /* Globals.h */,
 				EB9852AD207B9C210008C567 /* Globals.m */,
+				EB261728207B8D8C00FCB028 /* ViewController.h */,
+				EB261729207B8D8C00FCB028 /* ViewController.m */,
 				EB1A5D0A207BB721007A269F /* LoginViewController.h */,
 				EB1A5D0B207BB721007A269F /* LoginViewController.m */,
 				EB1A5D0D207BB739007A269F /* SignUpViewController.h */,
@@ -227,7 +224,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB261732207B8D8C00FCB028 /* LaunchScreen.storyboard in Resources */,
 				EB26172F207B8D8C00FCB028 /* Assets.xcassets in Resources */,
 				EB26172D207B8D8C00FCB028 /* Main.storyboard in Resources */,
 			);
@@ -337,14 +333,6 @@
 				EB26172C207B8D8C00FCB028 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		EB261730207B8D8C00FCB028 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EB261731207B8D8C00FCB028 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
