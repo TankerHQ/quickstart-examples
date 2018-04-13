@@ -28,7 +28,7 @@ Head to the [server documentation](../server/README.md)
 First, copy the sample config and edit it:
 
 ```bash
-$ cp src/client-config.sample.js src/client-config.js && $(EDITOR) src/client-config.js
+$ cp src/client-config.sample.js src/client-config.js && $EDITOR src/client-config.js
 ```
 Replace the `<Fix me>` values with those of your trustchain.
 
@@ -51,5 +51,4 @@ $ yarn start
 ```
 
 This will build the application and launch a local http server. If everything went well, it will open the application in your default browser. Or you can copy paste the link in your favorite browser.
-
 
