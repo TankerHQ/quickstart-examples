@@ -45,6 +45,7 @@ export default class Session extends EventEmitter {
 
   async login(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
+    this.tanker.once('waitingForValidation', () => this.emit('newDevice'));
     let response;
     try {
       response = await this.api.login();
