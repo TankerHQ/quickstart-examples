@@ -12,17 +12,15 @@
 @import Tanker;
 
 @interface Globals : NSObject
-{
-  TKRTanker* tanker;
-  NSString* serverAddress;
-}
 
 + (Globals *)sharedInstance;
 
 + (PMKPromise*)fetchUserToken:(NSString*)method userId:(NSString*)userId password:(NSString*)password;
++ (PMKPromise*) uploadToServer:(NSData*)encryptedData;
++ (PMKPromise*) dataFromServer;
 
-@property(strong, nonatomic, readwrite) TKRTanker* tanker;
-@property(strong, nonatomic, readwrite) NSString* serverAddress;
+@property TKRTanker* tanker;
+@property NSString* serverAddress;
 
 @end
 

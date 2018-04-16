@@ -9,10 +9,14 @@
 #import "Globals.h"
 @import PromiseKit;
 
-@implementation Globals
+@interface Globals()
 
-@synthesize tanker = _tanker;
-@synthesize serverAddress = _serverAdress;
+@property NSString* userId;
+@property NSString* password;
+
+@end
+
+@implementation Globals
 
 NSString* getWritablePath()
 {
@@ -41,12 +45,13 @@ NSString* getWritablePath()
 
 + (PMKPromise*)fetchUserToken:(NSString*)method userId:(NSString*)userId password:(NSString*)password
 {
+  [Globals sharedInstance]->_userId = userId;
+  [Globals sharedInstance]->_password = password;
+  
   NSString* urlStr = [NSString stringWithFormat:@"%@%@?userId=%@&password=%@", [Globals sharedInstance].serverAddress, method, userId, password];
-  NSLog(@"%@", urlStr);
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc]
-                                  initWithURL:[NSURL URLWithString:urlStr]];
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
   [request setHTTPMethod:@"GET"];
-  [request setValue:@"text" forHTTPHeaderField:@"Content-Type"];
+  [request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
   
   NSURLSession *session = [NSURLSession sharedSession];
   
@@ -62,6 +67,69 @@ NSString* getWritablePath()
                     resolve(error);
                   }
                   resolve([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                }] resume];
+  }];
+}
+
++ (PMKPromise*) dataFromServer
+{
+  NSString* userId = [Globals sharedInstance]->_userId;
+  NSString* password = [Globals sharedInstance]->_password;
+  NSString* urlStr = [NSString stringWithFormat:@"%@%@/%@", [Globals sharedInstance].serverAddress, userId, password];
+  NSLog(@"Request: GET: %@", urlStr);
+
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
+  [request setHTTPMethod:@"GET"];
+  [request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+  NSURLSession *session = [NSURLSession sharedSession];
+  
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
+    [[session dataTaskWithRequest:request
+                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                  if (error)
+                    resolve(error);
+                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                  if ((long)[httpResponse statusCode] != 200)
+                  {
+                    NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
+                    resolve(error);
+                  }
+             
+                  resolve(data);
+      }] resume];
+  }];
+}
+
++ (PMKPromise*) uploadToServer:(NSData*)encryptedData
+{
+  NSString* userId = [Globals sharedInstance]->_userId;
+  NSString* password = [Globals sharedInstance]->_password;
+  NSString* urlStr = [NSString stringWithFormat:@"%@%@/%@", [Globals sharedInstance].serverAddress, userId, password];
+  NSLog(@"Request: PUT: %@", urlStr);
+  
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
+  [request setHTTPMethod:@"PUT"];
+  [request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+  NSString *postLength = [NSString stringWithFormat:@"%lu",[encryptedData length]];
+  [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+  
+  //NSLog(@"Length: %@, data: %@", postLength, [[NSString alloc] initWithData:encryptedData encoding:NSASCIIStringEncoding]);
+  
+  [request setHTTPBody:encryptedData];
+  NSURLSession *session = [NSURLSession sharedSession];
+  
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
+    [[session dataTaskWithRequest:request
+                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                  if (error)
+                    resolve(error);
+                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                  if ((long)[httpResponse statusCode] != 200)
+                  {
+                    NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
+                    resolve(error);
+                  }
+                  resolve(nil);
                 }] resume];
   }];
 }
