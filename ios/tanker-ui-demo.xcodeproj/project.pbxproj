@@ -121,6 +121,7 @@
 		EB261724207B8D8C00FCB028 /* tanker-ui-demo */ = {
 			isa = PBXGroup;
 			children = (
+				EB7C684C20863218000C037B /* Controllers */,
 				EB261725207B8D8C00FCB028 /* AppDelegate.h */,
 				EB261726207B8D8C00FCB028 /* AppDelegate.m */,
 				EB26172B207B8D8C00FCB028 /* Main.storyboard */,
@@ -129,6 +130,22 @@
 				EB261734207B8D8C00FCB028 /* main.m */,
 				EB9852AC207B9BB70008C567 /* Globals.h */,
 				EB9852AD207B9C210008C567 /* Globals.m */,
+			);
+			path = "tanker-ui-demo";
+			sourceTree = "<group>";
+		};
+		EB26173D207B8D8C00FCB028 /* tanker-ui-demoUITests */ = {
+			isa = PBXGroup;
+			children = (
+				EB26173E207B8D8C00FCB028 /* tanker_ui_demoUITests.m */,
+				EB261740207B8D8C00FCB028 /* Info.plist */,
+			);
+			path = "tanker-ui-demoUITests";
+			sourceTree = "<group>";
+		};
+		EB7C684C20863218000C037B /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
 				EB261728207B8D8C00FCB028 /* ViewController.h */,
 				EB261729207B8D8C00FCB028 /* ViewController.m */,
 				EB1A5D0A207BB721007A269F /* LoginViewController.h */,
@@ -142,16 +159,7 @@
 				EB141895207FB36100A69EDA /* DeviceValidationViewController.h */,
 				EB141896207FB36100A69EDA /* DeviceValidationViewController.m */,
 			);
-			path = "tanker-ui-demo";
-			sourceTree = "<group>";
-		};
-		EB26173D207B8D8C00FCB028 /* tanker-ui-demoUITests */ = {
-			isa = PBXGroup;
-			children = (
-				EB26173E207B8D8C00FCB028 /* tanker_ui_demoUITests.m */,
-				EB261740207B8D8C00FCB028 /* Info.plist */,
-			);
-			path = "tanker-ui-demoUITests";
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

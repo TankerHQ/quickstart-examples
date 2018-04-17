@@ -22,6 +22,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+  
+  _usernameField.returnKeyType = UIReturnKeyNext;
+  _usernameField.delegate = self;
+  _passwordField.returnKeyType = UIReturnKeyNext;
+  _passwordField.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -61,14 +66,15 @@
   });
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+  if (textField == self.usernameField) {
+    [self.passwordField becomeFirstResponder];
+  }
+  else if (textField == self.passwordField) {
+    [self.passwordField resignFirstResponder];
+  }
+  return true;
 }
-*/
 
 @end
