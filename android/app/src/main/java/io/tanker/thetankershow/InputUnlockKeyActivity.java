@@ -10,22 +10,22 @@ import android.widget.EditText;
 
 import io.tanker.api.Tanker;
 
-public class InputPassphraseActivity extends AppCompatActivity {
+public class InputUnlockKeyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_input_passphrase);
+        setContentView(R.layout.activity_input_unlock_key);
 
-        Button unlockButton = (Button) findViewById(R.id.input_passphrase_unlock_button);
+        Button unlockButton = (Button) findViewById(R.id.input_unlock_key_unlock_button);
         unlockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText passphraseEdit = findViewById(R.id.input_passphrase_edit);
-                String passphrase = passphraseEdit.getText().toString();
-                if (passphrase.isEmpty()) {
-                    passphraseEdit.setError("Please input your passphrase");
-                    passphraseEdit.requestFocus();
+                EditText unlockKeyEdit = findViewById(R.id.input_unlock_key_edit);
+                String unlockKey = unlockKeyEdit.getText().toString();
+                if (unlockKey.isEmpty()) {
+                    unlockKeyEdit.setError("Please input your unlock key");
+                    unlockKeyEdit.requestFocus();
                     return;
                 }
 
@@ -35,18 +35,18 @@ public class InputPassphraseActivity extends AppCompatActivity {
                     throw new NullPointerException("Empty tanker instance");
                 }
 
-                tanker.validateDevice(passphrase).then((validateFuture) -> {
+                tanker.unlockCurrentDevice(unlockKey).then((validateFuture) -> {
                    if (validateFuture.getError() != null) {
                        runOnUiThread (() -> {
-                           passphraseEdit.setError("Wrong passphrase, please try again");
-                           passphraseEdit.requestFocus();
+                           unlockKeyEdit.setError("Wrong unlock key, please try again");
+                           unlockKeyEdit.requestFocus();
                        });
                        return null;
                    }
 
                     runOnUiThread (() -> {
                         // Redirect to the MainActivity
-                        Intent intent = new Intent(InputPassphraseActivity.this, MainActivity.class);
+                        Intent intent = new Intent(InputUnlockKeyActivity.this, MainActivity.class);
                         startActivity(intent);
                     });
 

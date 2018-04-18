@@ -4,40 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.tanker.thetankershow.InputPassphraseActivity">
+    tools:context="io.tanker.thetankershow.SaveUnlockKeyActivity">
 
     <LinearLayout
-        android:layout_width="368dp"
-        android:layout_height="495dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/input_passphrase_text"
+            android:id="@+id/textView2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="To unlock this new device, please input your passphrase ."
-            android:textSize="18sp" />
+            android:layout_height="32dp"
+            android:text="Please save this unlock key securely:"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="163dp"
+            tools:layout_editor_absoluteY="39dp" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <EditText
-            android:id="@+id/input_passphrase_edit"
+            android:id="@+id/unlock_key_display"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textMultiLine"
+            android:textAlignment="center" />
 
         <Button
-            android:id="@+id/input_passphrase_unlock_button"
+            android:id="@+id/unlock_key_done_button"
             style="?android:textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Unlock"
+            android:text="Done!"
             android:textStyle="bold" />
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

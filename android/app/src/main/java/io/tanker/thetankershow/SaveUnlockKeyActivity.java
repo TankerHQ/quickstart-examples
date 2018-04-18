@@ -9,20 +9,20 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class SavePassphraseActivity extends AppCompatActivity {
+public class SaveUnlockKeyActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_save_passphrase);
+        setContentView(R.layout.activity_save_unlock_key);
 
-        Button doneButton = (Button) findViewById(R.id.passphrase_done_button);
+        Button doneButton = (Button) findViewById(R.id.unlock_key_done_button);
         doneButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 runOnUiThread (() -> {
                     // Redirect to the MainActivity
-                    Intent intent = new Intent(SavePassphraseActivity.this, MainActivity.class);
+                    Intent intent = new Intent(SaveUnlockKeyActivity.this, MainActivity.class);
                     intent.putExtra("EXTRA_USERID", getIntent().getStringExtra("EXTRA_USERID"));
                     intent.putExtra("EXTRA_PASSWORD", getIntent().getStringExtra("EXTRA_PASSWORD"));
                     startActivity(intent);
@@ -30,8 +30,8 @@ public class SavePassphraseActivity extends AppCompatActivity {
             }
         });
 
-        EditText passphraseDisplay = findViewById(R.id.passphrase_display);
-        String s = getIntent().getStringExtra("EXTRA_PASSPHRASE");
-        passphraseDisplay.setText(s);
+        EditText unlockKeyDisplay = findViewById(R.id.unlock_key_display);
+        String s = getIntent().getStringExtra("EXTRA_UNLOCK_KEY");
+        unlockKeyDisplay.setText(s);
     }
 }
