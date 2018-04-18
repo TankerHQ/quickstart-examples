@@ -11,7 +11,7 @@ type Props = {
 };
 
 type State = {
-  passphrase: string,
+  unlockKey: string,
   isLoading: bool,
   error: ?string,
   show: bool,
@@ -21,7 +21,7 @@ class NewDevice extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      passphrase: '',
+      unlockKey: '',
       isLoading: false,
       error: null,
       show: props.show,
@@ -29,14 +29,14 @@ class NewDevice extends React.Component<Props, State> {
   }
 
   handlePassphrase = (e: SyntheticInputEvent) => {
-    this.setState({ passphrase: e.target.value });
+    this.setState({ unlockKey: e.target.value });
   }
 
   onClick = async () => {
     const { session } = this.props;
     this.setState({ isLoading: true });
     try {
-      await session.addCurrentDevice(this.state.passphrase);
+      await session.addCurrentDevice(this.state.unlockKey);
       this.setState({ show: false });
     } catch (e) {
       this.setState({ error: e.message });
@@ -54,14 +54,14 @@ class NewDevice extends React.Component<Props, State> {
   }
 
   getValidationState() {
-    const { passphrase } = this.state;
-    if (passphrase.length === 0) return 'error';
-    if (passphrase.length >= 323) return 'success';
+    const { unlockKey } = this.state;
+    if (unlockKey.length === 0) return 'error';
+    if (unlockKey.length >= 323) return 'success';
     return 'warning';
   }
 
   render() {
-    const { show, error, passphrase, isLoading } = this.state;
+    const { show, error, unlockKey, isLoading } = this.state;
 
     return (
       <Modal show={show}>
@@ -76,7 +76,7 @@ class NewDevice extends React.Component<Props, State> {
               <ControlLabel>Unlock Key</ControlLabel>
               <FormControl
                 componentClass="textarea"
-                value={passphrase}
+                value={unlockKey}
                 onChange={this.handlePassphrase}
                 required
                 autoFocus
