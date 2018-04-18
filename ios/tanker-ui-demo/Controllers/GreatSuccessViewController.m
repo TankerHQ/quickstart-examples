@@ -13,6 +13,8 @@
 @import PromiseKit;
 
 @interface GreatSuccessViewController ()
+@property UIActivityIndicatorView* activityIndicator;
+
 @property (weak, nonatomic) IBOutlet UITextView *SecretNotesField;
 
 @end
@@ -22,6 +24,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+  
+  _activityIndicator = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25, self.view.bounds.size.height / 2 - 25, 50, 50)];
+  [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
+  [_activityIndicator setColor:[UIColor blueColor]];
+  [self.view addSubview:_activityIndicator];
+  [_activityIndicator startAnimating];
  
   [Globals dataFromServer]
   .catch(^(NSError *error){
@@ -39,6 +47,7 @@
     }];
   }).then(^(NSString* clearText) {
     _SecretNotesField.text = clearText;
+    [_activityIndicator stopAnimating];
   }).catch(^(NSError *error){
     NSLog(@"Could not decrypt data: %@", [error localizedDescription]);
     return error;
@@ -60,6 +69,7 @@
 }
 
 - (IBAction)saveNotes:(UIButton *)sender {
+  [_activityIndicator startAnimating];
   TKREncryptionOptions* encryptionOptions = [TKREncryptionOptions defaultOptions];
   [[Globals sharedInstance].tanker encryptDataFromString:_SecretNotesField.text options:encryptionOptions]
   .catch(^(NSError *error){
@@ -69,7 +79,7 @@
     NSString* base64Encoded = [encryptedData base64EncodedStringWithOptions:0];
     return [Globals uploadToServer:[base64Encoded dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
   }).then(^ {
-    // Here display fancy spinner
+    [_activityIndicator stopAnimating];
     NSLog(@"Data sent to server");
   }).catch(^(NSError *error){
     NSLog(@"Could not send data to server: %@", [error localizedDescription]);

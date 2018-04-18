@@ -12,8 +12,10 @@
 @import PromiseKit;
 
 @interface LoginViewController ()
+@property UIActivityIndicatorView* activityIndicator;
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
+@property (weak, nonatomic) IBOutlet UILabel *errorLabel;
 
 @end
 
@@ -27,6 +29,11 @@
   _usernameField.delegate = self;
   _passwordField.returnKeyType = UIReturnKeyNext;
   _passwordField.delegate = self;
+  
+  _activityIndicator = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25, self.view.bounds.size.height / 2 - 25, 50, 50)];
+  [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
+  [_activityIndicator setColor:[UIColor blueColor]];
+  [self.view addSubview:_activityIndicator];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -37,7 +44,7 @@
 - (IBAction)triggerLogin:(UIButton *)sender {
   NSString* userId = _usernameField.text;
   NSString* password = _passwordField.text;
-  
+
   [Globals fetchUserToken:@"login" userId:userId password:password].then(^(NSString *userToken){
     NSError* error = nil;
     [[Globals sharedInstance].tanker connectValidationHandler:^(NSString* validationCode) {
@@ -53,8 +60,11 @@
       });
     } error:&error];
     
+    [_activityIndicator startAnimating];
+    
     [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
     .then(^{
+      [_activityIndicator stopAnimating];
       NSLog(@"Tanker is open");
       DeviceValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"GreatSuccess"];
       [self.navigationController pushViewController:controller animated:YES];

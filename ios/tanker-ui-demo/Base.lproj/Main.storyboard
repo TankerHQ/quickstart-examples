@@ -186,7 +186,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2OL-9f-Oof">
-                                <rect key="frame" x="8" y="262" width="359" height="144"/>
+                                <rect key="frame" x="8" y="245.5" width="359" height="177"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GIH-7X-lLh">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="30"/>
@@ -220,6 +220,12 @@
                                             <action selector="triggerLogin:" destination="NXi-Se-x0t" eventType="touchUpInside" id="NQy-fK-Dha"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJS-8B-at0" userLabel="errorLabel">
+                                        <rect key="frame" x="0.0" y="156.5" width="359" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -233,6 +239,7 @@
                         <viewLayoutGuide key="safeArea" id="8xT-xx-v62"/>
                     </view>
                     <connections>
+                        <outlet property="errorLabel" destination="BJS-8B-at0" id="G52-N5-PrD"/>
                         <outlet property="passwordField" destination="bET-JA-lZ9" id="6wT-Wk-Cjt"/>
                         <outlet property="usernameField" destination="5Wr-OV-o8i" id="Q7e-0F-ggh"/>
                     </connections>
@@ -250,7 +257,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bxt-Rr-Bcx">
-                                <rect key="frame" x="8" y="258" width="359" height="152"/>
+                                <rect key="frame" x="8" y="240.5" width="359" height="187"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8FA-WP-WdB">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="34"/>
@@ -283,6 +290,12 @@
                                             <action selector="signUpButton:" destination="aLR-dQ-HNO" eventType="touchUpInside" id="VFw-Uh-GDc"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zcw-bZ-AqT" userLabel="errorLabel">
+                                        <rect key="frame" x="0.0" y="166.5" width="359" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -296,6 +309,7 @@
                         <viewLayoutGuide key="safeArea" id="hDg-Y8-7yO"/>
                     </view>
                     <connections>
+                        <outlet property="errorLabel" destination="zcw-bZ-AqT" id="cJm-yk-h1k"/>
                         <outlet property="passwordField" destination="aRV-fs-bEk" id="P4v-1D-kaf"/>
                         <outlet property="unameField" destination="cJ3-pO-xtB" id="6eV-9P-vfs"/>
                     </connections>

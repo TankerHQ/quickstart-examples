@@ -13,8 +13,10 @@
 @import Tanker;
 
 @interface SignUpViewController ()
+@property UIActivityIndicatorView* activityIndicator;
 @property (weak, nonatomic) IBOutlet UITextField *unameField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
+@property (weak, nonatomic) IBOutlet UILabel *errorLabel;
 
 @end
 
@@ -28,6 +30,11 @@
   _unameField.delegate = self;
   _passwordField.returnKeyType = UIReturnKeyNext;
   _passwordField.delegate = self;
+  
+  _activityIndicator = [[UIActivityIndicatorView alloc]initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25, self.view.bounds.size.height / 2 - 25, 50, 50)];
+  [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
+  [_activityIndicator setColor:[UIColor blueColor]];
+  [self.view addSubview:_activityIndicator];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,6 +48,8 @@
   
   // Add your checks of userId and password Here !
   
+  [_activityIndicator startAnimating];
+  
   [Globals fetchUserToken:@"signup" userId:userId password:password].then(^(NSString *userToken){
     [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
     .then(^{
@@ -48,6 +57,7 @@
       [[Globals sharedInstance].tanker generateAndRegisterUnlockKey]
       .then(^(NSString* unlockKey) {
         NSLog(@"Please save this unlock key in a safe place: %@", unlockKey);
+        [_activityIndicator stopAnimating];
         SaveValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SaveValidationCode"];
         controller.passphrase = unlockKey;
         [self.navigationController pushViewController:controller animated:YES];
