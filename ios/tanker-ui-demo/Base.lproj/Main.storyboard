@@ -186,7 +186,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2OL-9f-Oof">
-                                <rect key="frame" x="8" y="245.5" width="359" height="177"/>
+                                <rect key="frame" x="8" y="246" width="359" height="176"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GIH-7X-lLh">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="30"/>
@@ -220,9 +220,9 @@
                                             <action selector="triggerLogin:" destination="NXi-Se-x0t" eventType="touchUpInside" id="NQy-fK-Dha"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJS-8B-at0" userLabel="errorLabel">
-                                        <rect key="frame" x="0.0" y="156.5" width="359" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJS-8B-at0" userLabel="errorLabel">
+                                        <rect key="frame" x="0.0" y="158" width="359" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -257,7 +257,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bxt-Rr-Bcx">
-                                <rect key="frame" x="8" y="240.5" width="359" height="187"/>
+                                <rect key="frame" x="8" y="241" width="359" height="186"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8FA-WP-WdB">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="34"/>
@@ -290,9 +290,9 @@
                                             <action selector="signUpButton:" destination="aLR-dQ-HNO" eventType="touchUpInside" id="VFw-Uh-GDc"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zcw-bZ-AqT" userLabel="errorLabel">
-                                        <rect key="frame" x="0.0" y="166.5" width="359" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zcw-bZ-AqT" userLabel="errorLabel">
+                                        <rect key="frame" x="0.0" y="168" width="359" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -379,9 +379,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mo0-Sl-gsU">
-                                <rect key="frame" x="8" y="275" width="359" height="118"/>
+                                <rect key="frame" x="8" y="256.5" width="359" height="156"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter validation code:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yhz-Lf-GsW">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter validation passphrase:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yhz-Lf-GsW">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <nil key="textColor"/>
@@ -402,6 +402,12 @@
                                             <action selector="pressContinue:" destination="bMk-zH-ocI" eventType="touchUpInside" id="Xbu-Bz-rEU"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MB7-90-wSa">
+                                        <rect key="frame" x="0.0" y="138" width="359" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -415,6 +421,7 @@
                         <viewLayoutGuide key="safeArea" id="Y3M-7Y-JnT"/>
                     </view>
                     <connections>
+                        <outlet property="errorLabel" destination="MB7-90-wSa" id="16B-j6-U9V"/>
                         <outlet property="validationField" destination="1BR-wy-fKc" id="vbk-QM-QFf"/>
                     </connections>
                 </viewController>
@@ -424,6 +431,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="pVh-AI-9Bk"/>
+        <segue reference="xvk-CX-cL5"/>
     </inferredMetricsTieBreakers>
 </document>

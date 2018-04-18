@@ -12,6 +12,7 @@
 
 @interface DeviceValidationViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *validationField;
+@property (weak, nonatomic) IBOutlet UILabel *errorLabel;
 
 @end
 
@@ -20,6 +21,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+  _errorLabel.textColor = [UIColor redColor];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -28,10 +30,20 @@
 }
 
 - (IBAction)pressContinue:(UIButton *)sender {
+  _errorLabel.text = @"";
   NSString* unlockKey = _validationField.text;
   [[Globals sharedInstance].tanker unlockCurrentDeviceWithUnlockKey:unlockKey]
   .then(^{
     NSLog(@"Tanker is open");
+  }).catch(^(NSError* error) {
+    if (error.code == 12)
+    {
+      _errorLabel.text = @"Wrong passphrase";
+    }
+    else
+    {
+      _errorLabel.text = @"Could not connect to Tanker";
+    }
   });
 }
 

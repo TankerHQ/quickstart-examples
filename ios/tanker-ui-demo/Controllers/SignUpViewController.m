@@ -35,6 +35,8 @@
   [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
   [_activityIndicator setColor:[UIColor blueColor]];
   [self.view addSubview:_activityIndicator];
+  
+  _errorLabel.textColor = [UIColor redColor];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -43,14 +45,28 @@
 }
 
 - (IBAction)signUpButton:(UIButton *)sender {
+  _errorLabel.text = @"";
   NSString* userId = _unameField.text;
   NSString* password = _passwordField.text;
+  if ([userId length] == 0
+      || [[userId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
+  {
+    _errorLabel.text = @"UserID is empty or filled with blanks";
+    return;
+  }
+  if ([password length] == 0
+      || [[password stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
+  {
+    _errorLabel.text = @"Password is empty or filled with blanks";
+    return;
+  }
   
   // Add your checks of userId and password Here !
   
   [_activityIndicator startAnimating];
   
-  [Globals fetchUserToken:@"signup" userId:userId password:password].then(^(NSString *userToken){
+  [Globals fetchUserToken:@"signup" userId:userId password:password]
+  .then(^(NSString *userToken){
     [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
     .then(^{
       NSLog(@"Tanker is open");
@@ -62,11 +78,25 @@
         controller.passphrase = unlockKey;
         [self.navigationController pushViewController:controller animated:YES];
       });
-    })
-    .catch(^(NSError* error) {
+    }).catch(^(NSError* error) {
+      [_activityIndicator stopAnimating];
       NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
+      _errorLabel.text = @"Could not open Tanker";
       return error;
     });
+  }).catch(^(NSError* error) {
+    [_activityIndicator stopAnimating];
+    switch (error.code) {
+      case 409:
+        _errorLabel.text = @"User already exists";
+        break;
+      case 503:
+        _errorLabel.text = @"Could not contact server";
+        break;
+      default:
+        _errorLabel.text = @"Unknown error";
+        break;
+    }
   });
 }
 

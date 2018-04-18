@@ -64,7 +64,7 @@ NSString* getWritablePath()
                   if ((long)[httpResponse statusCode] != 200)
                   {
                     NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
-                    resolve(error);
+                    resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
                   }
                   resolve([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                 }] resume];
@@ -92,7 +92,7 @@ NSString* getWritablePath()
                   if ((long)[httpResponse statusCode] != 200)
                   {
                     NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
-                    resolve(error);
+                    resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
                   }
              
                   resolve(data);
@@ -127,7 +127,7 @@ NSString* getWritablePath()
                   if ((long)[httpResponse statusCode] != 200)
                   {
                     NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
-                    resolve(error);
+                    resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
                   }
                   resolve(nil);
                 }] resume];

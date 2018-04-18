@@ -34,6 +34,8 @@
   [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
   [_activityIndicator setColor:[UIColor blueColor]];
   [self.view addSubview:_activityIndicator];
+  
+  _errorLabel.textColor = [UIColor redColor];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -42,10 +44,24 @@
 }
 
 - (IBAction)triggerLogin:(UIButton *)sender {
+  _errorLabel.text = @"";
   NSString* userId = _usernameField.text;
   NSString* password = _passwordField.text;
+  if ([userId length] == 0
+      || [[userId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
+  {
+    _errorLabel.text = @"UserID is empty or filled with blanks";
+    return;
+  }
+  if ([password length] == 0
+      || [[password stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
+  {
+    _errorLabel.text = @"Password is empty or filled with blanks";
+    return;
+  }
 
-  [Globals fetchUserToken:@"login" userId:userId password:password].then(^(NSString *userToken){
+  [Globals fetchUserToken:@"login" userId:userId password:password]
+  .then(^(NSString *userToken){
     NSError* error = nil;
     [[Globals sharedInstance].tanker connectValidationHandler:^(NSString* validationCode) {
       // Go to the validate device screen
@@ -71,8 +87,25 @@
     })
     .catch(^(NSError* error) {
       NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
+      _errorLabel.text = @"Could not open Tanker";
       return error;
     });
+  }).catch(^(NSError* error) {
+    [_activityIndicator stopAnimating];
+    switch (error.code) {
+      case 401:
+        _errorLabel.text = @"Invalid password";
+        break;
+      case 404:
+        _errorLabel.text = @"User does not exists";
+        break;
+      case 503:
+        _errorLabel.text = @"Could not contact server";
+        break;
+      default:
+        _errorLabel.text = @"Unknown error";
+        break;
+    }
   });
 }
 
