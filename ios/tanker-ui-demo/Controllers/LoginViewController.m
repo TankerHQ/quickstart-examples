@@ -43,7 +43,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)triggerLogin:(UIButton *)sender {
+- (void) loginAction {
   _errorLabel.text = @"";
   NSString* userId = _usernameField.text;
   NSString* password = _passwordField.text;
@@ -59,7 +59,7 @@
     _errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }
-
+  
   [Globals fetchUserToken:@"login" userId:userId password:password]
   .then(^(NSString *userToken){
     NSError* error = nil;
@@ -67,28 +67,28 @@
       // Go to the validate device screen
       NSLog(@"In the handler");
       dispatch_async(dispatch_get_main_queue(), ^{
-      DeviceValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"DeviceValidation"];
-      @try {
-        [self.navigationController pushViewController:controller animated:YES];
-      } @catch(NSException* e) {
+        DeviceValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"DeviceValidation"];
+        @try {
+          [self.navigationController pushViewController:controller animated:YES];
+        } @catch(NSException* e) {
           NSLog(@"--> %@", e);
-      }
+        }
       });
     } error:&error];
     
     [_activityIndicator startAnimating];
     
     [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
+    .catch(^(NSError* error) {
+      NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
+      _errorLabel.text = @"Could not open Tanker";
+      return error;
+    })
     .then(^{
       [_activityIndicator stopAnimating];
       NSLog(@"Tanker is open");
       DeviceValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"GreatSuccess"];
       [self.navigationController pushViewController:controller animated:YES];
-    })
-    .catch(^(NSError* error) {
-      NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
-      _errorLabel.text = @"Could not open Tanker";
-      return error;
     });
   }).catch(^(NSError* error) {
     [_activityIndicator stopAnimating];
@@ -100,7 +100,7 @@
         _errorLabel.text = @"User does not exists";
         break;
       case 503:
-        _errorLabel.text = @"Could not contact server";
+        _errorLabel.text = @"Server error";
         break;
       default:
         _errorLabel.text = @"Unknown error";
@@ -109,13 +109,17 @@
   });
 }
 
+- (IBAction)triggerLogin:(UIButton *)sender {
+  [self loginAction];
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
   if (textField == self.usernameField) {
     [self.passwordField becomeFirstResponder];
   }
   else if (textField == self.passwordField) {
-    [self.passwordField resignFirstResponder];
+    [self loginAction];
   }
   return true;
 }

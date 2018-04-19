@@ -44,7 +44,7 @@
   // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)signUpButton:(UIButton *)sender {
+-(void) signUpAction {
   _errorLabel.text = @"";
   NSString* userId = _unameField.text;
   NSString* password = _passwordField.text;
@@ -91,7 +91,7 @@
         _errorLabel.text = @"User already exists";
         break;
       case 503:
-        _errorLabel.text = @"Could not contact server";
+        _errorLabel.text = @"Server error";
         break;
       default:
         _errorLabel.text = @"Unknown error";
@@ -100,13 +100,17 @@
   });
 }
 
+- (IBAction)signUpButton:(UIButton *)sender {
+  [self signUpAction];
+}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
   if (textField == self.unameField) {
     [self.passwordField becomeFirstResponder];
   }
   else if (textField == self.passwordField) {
-    [self.passwordField resignFirstResponder];
+    [self signUpAction];
   }
   return true;
 }

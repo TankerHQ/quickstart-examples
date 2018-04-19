@@ -36,7 +36,7 @@
   .then(^{
     NSLog(@"Tanker is open");
   }).catch(^(NSError* error) {
-    if (error.code == 12)
+    if (error.code == TKRErrorInvalidUnlockKey)
     {
       _errorLabel.text = @"Wrong passphrase";
     }

@@ -32,10 +32,7 @@
   [_activityIndicator startAnimating];
  
   [Globals dataFromServer]
-  .catch(^(NSError *error){
-    NSLog(@"Could not load data from server: %@", [error localizedDescription]);
-    return error;
-  }).then(^(NSData* encryptedData) {
+  .then(^(NSData* encryptedData) {
     if ([encryptedData length] != 0)
     {
       NSString* base64EncodedString = [[NSString alloc] initWithData:encryptedData encoding:NSASCIIStringEncoding];
@@ -72,17 +69,14 @@
   [_activityIndicator startAnimating];
   TKREncryptionOptions* encryptionOptions = [TKREncryptionOptions defaultOptions];
   [[Globals sharedInstance].tanker encryptDataFromString:_SecretNotesField.text options:encryptionOptions]
-  .catch(^(NSError *error){
-    NSLog(@"Could not encrypt data: %@", [error localizedDescription]);
-    return error;
-  }).then(^(NSData* encryptedData) {
+  .then(^(NSData* encryptedData) {
     NSString* base64Encoded = [encryptedData base64EncodedStringWithOptions:0];
     return [Globals uploadToServer:[base64Encoded dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
   }).then(^ {
     [_activityIndicator stopAnimating];
     NSLog(@"Data sent to server");
   }).catch(^(NSError *error){
-    NSLog(@"Could not send data to server: %@", [error localizedDescription]);
+    NSLog(@"Could not encrypt and send data to server: %@", [error localizedDescription]);
     return error;
   });
 }

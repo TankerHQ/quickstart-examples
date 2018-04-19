@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ServerAddress</key>
+	<string>http://10.208.24.87:8080/</string>
+	<key>TrustchainId</key>
+	<string>oQl8PAuWb3uNO2hjoMU8nSJPG3nMXwy9L+WKLxkQ7z4=</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

@@ -13,6 +13,7 @@
 
 @property NSString* userId;
 @property NSString* password;
+@property NSString* trustchainId;
 
 @end
 
@@ -28,7 +29,7 @@ NSString* getWritablePath()
 - (void)initTanker
 {
   TKRTankerOptions* opts = [TKRTankerOptions options];
-  opts.trustchainID = @"oQl8PAuWb3uNO2hjoMU8nSJPG3nMXwy9L+WKLxkQ7z4=";
+  opts.trustchainID = _trustchainId;
   opts.writablePath = getWritablePath();
   [self setTanker:[TKRTanker tankerWithOptions:opts]];
   NSLog(@"Tanker initialization sucessful");
@@ -137,8 +138,13 @@ NSString* getWritablePath()
 - (id)init {
   self = [super init];
   if (self) {
+    // Get configuration settings from Info.plist
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
+    NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
+    _trustchainId = [settings valueForKey:@"TrustchainId"];
+    
     [self initTanker];
-    [self setServerAddress:@"http://10.208.24.87:8080/"];
+    [self setServerAddress:[settings valueForKey:@"ServerAddress"]];
   }
   return self;
 }
