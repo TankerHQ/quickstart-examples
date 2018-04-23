@@ -25,8 +25,8 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SavePassphraseActivity" />
-        <activity android:name=".InputPassphraseActivity"></activity>
+        <activity android:name=".SaveUnlockKeyActivity" />
+        <activity android:name=".InputUnlockKeyActivity"></activity>
     </application>
 
 </manifest>

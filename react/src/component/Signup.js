@@ -20,7 +20,7 @@ class Signup extends React.Component<Props> {
       await session.close();
     }
     await session.create(login, password);
-    history.push('/savepass/');
+    history.push('/savekey/');
   }
 
   render() {

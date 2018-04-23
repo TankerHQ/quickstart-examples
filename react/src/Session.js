@@ -63,8 +63,8 @@ export default class Session extends EventEmitter {
     await this.tanker.open(userId, ut);
   }
 
-  async addCurrentDevice(passphrase: string): Promise<void> {
-    return this.tanker.unlockCurrentDevice(passphrase);
+  async addCurrentDevice(unlockKey: string): Promise<void> {
+    return this.tanker.unlockCurrentDevice(unlockKey);
   }
 
   async getUnlockKey(): Promise<string> {

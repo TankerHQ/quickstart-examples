@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router-dom';
 
 import Session from './Session';
 
-import { Edit, Login, SavePass, Signup } from './component';
+import { Edit, Login, SaveUnlockKey, Signup } from './component';
 import Logo from './logo';
 import './App.css';
 
@@ -59,7 +59,7 @@ class App extends React.Component<Props> {
             <Col lg={6} lgOffset={3} md={6} mdOffset={3} sm={6} smOffset={3}>
               <Switch>
                 <Route path="/signup" component={() => <Signup session={session} />}/>
-                <Route path="/savepass" component={() => <SavePass session={session} />}/>
+                <Route path="/savekey" component={() => <SaveUnlockKey session={session} />}/>
                 <Route path="/edit" component={() => <Edit session={session} />}/>
                 <Route path="/(|login)" component={() => <Login session={session} />}/>
               </Switch>

@@ -10,7 +10,7 @@ type Props = {
   history: any,
 };
 
-class SavePass extends React.Component<Props, {pass: string}> {
+class SaveUnlockKey extends React.Component<Props, {pass: string}> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -29,8 +29,8 @@ class SavePass extends React.Component<Props, {pass: string}> {
     const { history } = this.props;
     return (
       <div>
-        <h3>Please save this passphrase</h3>
-        <Alert className="passphrase" bsStyle="success">
+        <h3>Please save this unlock key</h3>
+        <Alert className="unlockKey" bsStyle="success">
           {this.state.pass}
         </Alert>
         <Button onClick={() => history.push('/edit/')}>Done</Button>
@@ -39,4 +39,4 @@ class SavePass extends React.Component<Props, {pass: string}> {
   }
 }
 
-export default withRouter(SavePass);
+export default withRouter(SaveUnlockKey);

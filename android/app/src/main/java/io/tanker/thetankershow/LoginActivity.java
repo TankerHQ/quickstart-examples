@@ -96,8 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mEventConnection = mTanker.connectValidationHandler(validationCode -> {
             runOnUiThread(() -> {
-                // Redirect to the Passphrase save activity
-                Intent intent = new Intent(LoginActivity.this, InputPassphraseActivity.class);
+                Intent intent = new Intent(LoginActivity.this, InputUnlockKeyActivity.class);
                 startActivity(intent);
             });
         });
@@ -307,15 +306,14 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     if (mSignUp) {
-                        mTanker.generatePassphrase().then((passphraseFuture) -> {
-                            if (passphraseFuture.getError() != null) {
+                        mTanker.generateAndRegisterUnlockKey().then((unlockKeyFuture) -> {
+                            if (unlockKeyFuture.getError() != null) {
                                 mError = 1;
                                 return null;
                             }
                             runOnUiThread(() -> {
-                                // Redirect to the Passphrase save activity
-                                Intent intent = new Intent(LoginActivity.this, SavePassphraseActivity.class);
-                                intent.putExtra("EXTRA_PASSPHRASE", passphraseFuture.get());
+                                Intent intent = new Intent(LoginActivity.this, SaveUnlockKeyActivity.class);
+                                intent.putExtra("EXTRA_UNLOCK_KEY", unlockKeyFuture.get());
                                 intent.putExtra("EXTRA_USERID", mEmail);
                                 intent.putExtra("EXTRA_PASSWORD", mPassword);
                                 startActivity(intent);
@@ -388,4 +386,3 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 }
-
