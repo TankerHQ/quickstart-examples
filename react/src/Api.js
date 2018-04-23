@@ -31,6 +31,9 @@ export default class Api {
   }
 
   push(content: string): Promise<Response> {
+    if (typeof content !== 'string') {
+      throw new Error(`api.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`);
+    }
     const uuserId = encodeURIComponent(this.userId);
     const ppassword = encodeURIComponent(this.password);
     return fetch(`${appServerUrl}/${uuserId}/${ppassword}`, { method: 'PUT', body: content });
