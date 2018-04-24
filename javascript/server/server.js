@@ -11,8 +11,10 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const morgan = require('morgan');
 const userToken = require('@tanker/user-token');
+const marked = require('marked'); // markdown parser to display the README
 
 const corsMiddleware = require('./corsMiddleware.js').default;
 const config = require('./config.js');
@@ -73,6 +75,13 @@ const saveUser = (user) => {
 };
 
 // Routes
+
+app.get('/', (req, res) => {
+  const readmePath = path.join(__dirname, 'README.md');
+  var file = fs.readFileSync(readmePath, 'utf8');
+  res.send(marked(file.toString()));
+});
+
 app.get('/signup', (req, res) => {
   const { userId, password } = req.query;
 
