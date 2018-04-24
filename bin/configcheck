@@ -1,0 +1,109 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const pathLib = require('path');
+
+const errors = [];
+
+const addError = (message) => errors.push(message);
+
+const findSingleFile = (dir, pattern) => {
+  const dirFiles = fs.readdirSync(dir);
+  const files = dirFiles.filter(f => f.match(pattern));
+  return files.length === 1 ? files[0] : null;
+};
+
+const readJSONFile = (filePath) => {
+  return JSON.parse(fs.readFileSync(filePath));
+};
+
+const checkFilePresent = (file) => {
+  const { keys, shortPath, samplePath, fullPath } = file;
+
+  if (fs.existsSync(fullPath)) return true;
+
+  addError(`Please create missing file: ${shortPath}
+
+Hint:
+  cp ${samplePath} ${shortPath}
+  vim ${shortPath}
+`);
+  return false;
+};
+
+const checkFileContent = (config) => {
+  const { keys, shortPath, samplePath, fullPath } = config;
+  const content = require(fullPath);
+
+  // Unexpected content
+  Object.keys(content).forEach(key => {
+    if (!keys.includes(key)) {
+      key === 'trustchainPrivateKey' ?
+        addError(`Security issue: unexpected key "${key}" in ${shortPath}. Your ${key} is private and must never be exposed in client applications.`) :
+        addError(`Unexpected key "${key}" in ${shortPath}`);
+    }
+  });
+
+  // Missing content
+  keys.forEach(key => {
+    if (!(key in content)) {
+      addError(`Missing key "${key}" in ${shortPath}`);
+    } else if (content[key] === '<FIX ME>') {
+      addError(`Setup your own value for key "${key}" in ${shortPath}`);
+    }
+  });
+};
+
+// Define configs to generate
+const generatedConfigs = [
+  { shortPath: 'javascript/server/config.js', keys: ['trustchainId', 'trustchainPrivateKey'] }
+];
+
+// add sample and full pathes to configs
+generatedConfigs.forEach(c => {
+  c.fullPath = pathLib.join(__dirname, '..', c.shortPath);
+  c.samplePath = c.shortPath.slice(0, -3) + '.sample.js';
+});
+
+// Try to find a single JSON file (obtained from Tanker's dashboard)
+const mainConfigDir = pathLib.join(__dirname, '..', 'config');
+const mainConfigFile = findSingleFile(mainConfigDir, /\.json$/);
+
+// If use it to generate configs
+if (mainConfigFile) {
+  try {
+    const json = readJSONFile(pathLib.join(mainConfigDir, mainConfigFile));
+
+    if ('trustchainId' in json && 'trustchainPrivateKey' in json) {
+      // Keys ok, use them to create missing files
+      generatedConfigs.forEach(config => {
+        const { keys, shortPath, samplePath, fullPath } = config;
+
+        // Create missing config file
+        if (!fs.existsSync(fullPath)) {
+          const data = (h => { keys.forEach(key => h[key] = json[key]); return h; })({})
+          const content = `module.exports = ${JSON.stringify(data, null, 2)};`;
+          fs.writeFileSync(fullPath, content);
+        }
+      });
+    }
+  } catch (e) { console.log(e) };
+}
+
+// Check content of config files
+generatedConfigs.forEach(config => {
+  if (checkFilePresent(config)) {
+    checkFileContent(config);
+  }
+});
+
+// Print collected errors if any
+const l = errors.length;
+
+if (l > 0) {
+  const errorSummary = `Found ${l} config error${l > 1 ? 's' : ''}`;
+  const errorList = errors.map((e, index) => `${index + 1}. ${e.replace(/\n/gm, '\n   ')}`);
+  const message = `${errorSummary}:\n\n${errorList.join('\n\n')}`;
+  console.log(message);
+  process.exitCode = 1;
+}

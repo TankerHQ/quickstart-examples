@@ -14,7 +14,7 @@ const fs = require('fs');
 const usertoken = require('@tanker/user-token');
 
 const corsMiddleware = require('./corsMiddleware.js').default;
-const config = require('./server-config.js');
+const config = require('./config.js');
 
 // Build express application
 const app = express();
