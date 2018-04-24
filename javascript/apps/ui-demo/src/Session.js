@@ -2,7 +2,7 @@
 import EventEmitter from 'events';
 import Tanker, { toBase64, fromBase64 } from '@tanker/core';
 import Api from './Api';
-import { trustchainId } from './client-config';
+import { trustchainId } from './config';
 
 export default class Session extends EventEmitter {
   api: Api;

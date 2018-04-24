@@ -58,6 +58,7 @@ const checkFileContent = (config) => {
 const generatedConfigs = [
   { shortPath: 'javascript/apps/hello/src/config.js', keys: ['trustchainId'] },
   { shortPath: 'javascript/apps/node/config.js', keys: ['trustchainId'] },
+  { shortPath: 'javascript/apps/ui-demo/src/config.js', keys: ['trustchainId'] },
   { shortPath: 'javascript/server/config.js', keys: ['trustchainId', 'trustchainPrivateKey'] }
 ];
 

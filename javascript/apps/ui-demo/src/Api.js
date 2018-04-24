@@ -1,7 +1,8 @@
 // @flow
 
 import fetch from 'isomorphic-fetch';
-import { appServerUrl } from './client-config';
+
+const appServerUrl = 'http://localhost:8080';
 
 export default class Api {
   _userId: string;
