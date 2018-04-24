@@ -39,8 +39,8 @@ export default class Session extends EventEmitter {
       throw new Error(`User '${userId}' already exists`);
     } else if (response.status !== 200)
       throw new Error('Server error!');
-    const ut = await response.text();
-    return this.tanker.open(userId, ut);
+    const userToken = await response.text();
+    return this.tanker.open(userId, userToken);
   }
 
   async login(userId: string, password: string): Promise<void> {
@@ -59,8 +59,8 @@ export default class Session extends EventEmitter {
     else if (response.status !== 200)
       throw new Error('It Borked!');
 
-    const ut = await response.text();
-    await this.tanker.open(userId, ut);
+    const userToken = await response.text();
+    await this.tanker.open(userId, userToken);
   }
 
   async addCurrentDevice(unlockKey: string): Promise<void> {
