@@ -22,7 +22,7 @@ const app = express();
 const port = 8080;
 app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
-app.options('*', corsMiddleware); // enable preflight CORS requests
+app.options('*', corsMiddleware); // enable pre-flight CORS requests
 app.use(morgan('dev')); // enable request logs
 
 // Pretty logger
@@ -34,7 +34,7 @@ const log = (message, indentLevel = 0) => {
   if (indentLevel === 0) console.log(''); // skip line
 
   if (message instanceof Error) {
-    console.log('[' + date + ']', prefix + 'A server-side error occured'); // eslint-disable-line no-console
+    console.log('[' + date + ']', prefix + 'A server-side error occurred'); // eslint-disable-line no-console
     console.error(message); // eslint-disable-line no-console
   } else {
     console.log('[' + date + ']', prefix + message); // eslint-disable-line no-console
