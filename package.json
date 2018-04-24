@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
+    "javascript/apps/node",
     "javascript/server"
   ],
   "engines": {
@@ -16,6 +17,7 @@
   },
   "scripts": {
     "config:check": "./bin/configcheck",
+    "start:node": "./bin/configcheck && cd javascript/apps/node && node main.js",
     "start:server": "./bin/configcheck && cd javascript/server && node server.js"
   }
 }
