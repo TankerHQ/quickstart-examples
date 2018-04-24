@@ -11,7 +11,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
-const usertoken = require('@tanker/user-token');
+const userToken = require('@tanker/user-token');
 
 const corsMiddleware = require('./corsMiddleware.js').default;
 const config = require('./config.js');
@@ -85,8 +85,8 @@ app.get('/signup', (req, res) => {
   }
 
   log('Generate a new user token', 1);
-  const token = usertoken.generateUserToken(config.trustchainId, config.trustchainPrivateKey, userId);
-  
+  const token = userToken.generateUserToken(config.trustchainId, config.trustchainPrivateKey, userId);
+
   log('Save password and token to storage', 1);
   saveUser({ id: userId, password, token });
 
@@ -138,7 +138,7 @@ app.put('/data', async (req, res) => {
     res.sendStatus(500);
     return;
   }
-  
+
   res.sendStatus(200);
 });
 
