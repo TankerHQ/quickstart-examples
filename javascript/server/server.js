@@ -165,5 +165,8 @@ app.get('/data', async (req, res) => {
 });
 
 // Start application
-log(`Listening on http://localhost:${port}`);
+log('Tanker demo server');
+log(`Listening on http://localhost:${port}`, 1);
+log(`Working with Trustchain: ${config.trustchainId}`, 1);
+
 app.listen(port);
