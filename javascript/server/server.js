@@ -11,6 +11,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
+const morgan = require('morgan');
 const userToken = require('@tanker/user-token');
 
 const corsMiddleware = require('./corsMiddleware.js').default;
@@ -22,6 +23,7 @@ const port = 8080;
 app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
 app.options('*', corsMiddleware); // enable preflight CORS requests
+app.use(morgan('dev')); // enable request logs
 
 // Pretty logger
 const log = (message, indentLevel = 0) => {
