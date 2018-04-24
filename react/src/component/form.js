@@ -67,7 +67,7 @@ export default class Form extends React.Component<Props, State> {
           <FormControl
             type="text"
             value={login}
-            placeholder="brigite@laposte.net"
+            placeholder="brigitte@laposte.net"
             onChange={this.handleLoginChange}
             required
             autoFocus

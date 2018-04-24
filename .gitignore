@@ -9,7 +9,9 @@
 # production
 /build
 
-server/*.txt
+# tmp data
+**/data/*
+!**/data/.gitkeep
 
 # misc
 .DS_Store

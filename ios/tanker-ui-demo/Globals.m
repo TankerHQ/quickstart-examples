@@ -76,7 +76,7 @@ NSString* getWritablePath()
 {
   NSString* userId = [Globals sharedInstance]->_userId;
   NSString* password = [Globals sharedInstance]->_password;
-  NSString* urlStr = [NSString stringWithFormat:@"%@%@/%@", [Globals sharedInstance].serverAddress, userId, password];
+  NSString* urlStr = [NSString stringWithFormat:@"%@%@?userId=%@&password=%@", [Globals sharedInstance].serverAddress, @"data", userId, password];
   NSLog(@"Request: GET: %@", urlStr);
 
   NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
@@ -105,7 +105,7 @@ NSString* getWritablePath()
 {
   NSString* userId = [Globals sharedInstance]->_userId;
   NSString* password = [Globals sharedInstance]->_password;
-  NSString* urlStr = [NSString stringWithFormat:@"%@%@/%@", [Globals sharedInstance].serverAddress, userId, password];
+  NSString* urlStr = [NSString stringWithFormat:@"%@%@?userId=%@&password=%@", [Globals sharedInstance].serverAddress, @"data", userId, password];
   NSLog(@"Request: PUT: %@", urlStr);
   
   NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];

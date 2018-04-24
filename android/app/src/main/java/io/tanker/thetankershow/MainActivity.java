@@ -50,13 +50,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private URL userUrl() throws Throwable {
-
         String address  = ((TheTankerApplication) getApplication()).getServerAddress();
 
         String userId = getIntent().getStringExtra("EXTRA_USERID");
         String password = getIntent().getStringExtra("EXTRA_PASSWORD");
 
-        return new URL(address + userId + "/" + password );
+        return new URL(address + "data?userId=" + userId + "&password=" + password);
     }
 
     private void uploadToServer(byte[] encryptedData) throws Throwable{

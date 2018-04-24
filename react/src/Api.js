@@ -22,27 +22,29 @@ export default class Api {
     this._password = password;
   }
 
+  urlFor(path) {
+    const queryString = `userId=${encodeURIComponent(this.userId)}&password=${encodeURIComponent(this.password)}`;
+    return `${appServerUrl}${path}?${queryString}`;
+  }
+
   signUp(): Promise<Response> {
-    return fetch(`${appServerUrl}/signup?userId=${this.userId}&password=${this.password}`);
+    return fetch(this.urlFor('/signup'));
   }
 
   login(): Promise<Response> {
-    return fetch(`${appServerUrl}/login?userId=${this.userId}&password=${this.password}`);
+    return fetch(this.urlFor('/login'));
   }
 
   push(content: string): Promise<Response> {
     if (typeof content !== 'string') {
       throw new Error(`api.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`);
     }
-    const uuserId = encodeURIComponent(this.userId);
-    const ppassword = encodeURIComponent(this.password);
-    return fetch(`${appServerUrl}/${uuserId}/${ppassword}`, { method: 'PUT', body: content });
+
+    return fetch(this.urlFor('/data'), { method: 'PUT', body: content });
   }
 
   async get(): Promise<string> {
-    const uuserId = encodeURIComponent(this.userId);
-    const ppassword = encodeURIComponent(this.password);
-    const response = await fetch(`${appServerUrl}/${uuserId}/${ppassword}`, { method: 'GET' });
+    const response = await fetch(this.urlFor('/data'));
     return response.text();
   }
 }
