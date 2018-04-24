@@ -1,45 +1,49 @@
-# What it is ?
+# Tanker demo server
 
-This is a a really simple, *totally* *not* *safe* and not meant for production application backend server. It was build as an example, to be simple to read and understand.
+## Description
 
-It features the following functionnality:
-- User signUp
-- User login
-- save data pushed by the user
-- serve the data back to the user
+This is a a really simple, _totally_ _not_ _safe_ and not meant for production application backend server. It was build as an example, to be simple to read and understand.
 
-The server does not encrypt data, only the client does, but stores it regardless. The server use the tanker usertoken library to generate and serve the client its usertoken.
-This usertoken is an authorization token to the client and allow him to open a tanker session when he logs in.
+The following endpoints are implemented:
 
-# How to use it ?
-## Create your trustchain
+* GET /signup user sign up
+* GET /login user login
+* GET /data get the user data
+* PUT /data store the user data
 
-If you don't have one, The easiest way, for now, is to ask to a Tanker Staff to create one for you.
-You have to use the same trustchain configuration between the client and the server.
+The data is encrypted on the client side. The server stores the received data whether it is encrypted or not. The server use the `@tanker/user-token` npm library to generate and serve a userToken for each user.
+This userToken is unique to each users, it is sent to the client application so that it can open a Tanker session with it.
 
-## Configure the server
+## How to use it
+
+### Create your trustchain
+
+Use the [Tanker dashboard](https://dashboard.tanker.io) to create a Trustchain, and store the configuration safely. You must use the same trustchain id for all clients and servers.
+
+### Configure the server
 
 First, copy the sample config and edit it:
 
 ```bash
 $ cp server-config.sample.js server-config.js && $EDITOR server-config.js
 ```
+
 Replace the `<Fix me>` values with those of your trustchain.
 
-## Installation
+### Installation
 
-Now you install the dependencies, you have to do this only once:
+Install the javascript dependencies using `yarn`:
 
 ```bash
 $ yarn
 ```
-It can takes a bit of time dependending of your internet connection speed.
 
-## Start the server
+It can takes a bit of time depending of your internet connection speed.
+
+### Start the server
 
 ```bash
 $ yarn start
 ```
 
 This will launch the server.
-
