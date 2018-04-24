@@ -1,0 +1,38 @@
+pre {
+  border: none;
+}
+
+.hljs {
+  background: transparent;
+}
+
+.log-entry {
+  display: block;
+  margin: 0 0 .5em 0;
+  border-bottom: 1px solid #eee;
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.log-entry--error {
+  color: #d9534f;
+}
+
+.log-entry--hint {
+  color: #337ab7;
+}
+
+.log-entry__title {
+  margin: 0 0 .5em 0;
+}
+
+.log-entry--error .log-entry__title,
+.log-entry--hint .log-entry__title {
+  font-weight: 700;
+}
+
+.log-entry__body {
+  margin: 0 0 .5em 0;
+}
