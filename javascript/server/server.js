@@ -76,12 +76,6 @@ const saveUser = (user) => {
 
 // Routes
 
-app.get('/', (req, res) => {
-  const readmePath = path.join(__dirname, 'README.md');
-  var file = fs.readFileSync(readmePath, 'utf8');
-  res.send(marked(file.toString()));
-});
-
 app.get('/signup', (req, res) => {
   const { userId, password } = req.query;
 
@@ -173,9 +167,53 @@ app.get('/data', async (req, res) => {
   res.send(user.data);
 });
 
+// Home page:
+//  - display useful information about the server
+//  - explain how to start an app
+//  - uses poor's man handmade templating
+app.get('/', (req, res) => {
+  const { app } = req.query;
+
+  log('New home page request');
+  const layoutPath = path.join(__dirname, 'home/layout.html');
+  const layout = fs.readFileSync(layoutPath, 'utf8');
+
+  let html;
+
+  const appReadmePath = {
+    hello: path.join(__dirname, '../apps/hello/README.md'),
+    node: path.join(__dirname, '../apps/node/README.md'),
+    'ui-demo': path.join(__dirname, '../apps/ui-demo/README.md')
+  }[app];
+
+  if (appReadmePath) {
+    const appReadmeContent = fs.readFileSync(appReadmePath, 'utf8');
+    const appReadme = marked(appReadmeContent.toString()).replace('"../../../README.md"', '"/"');
+
+    const backLinkPath = path.join(__dirname, 'home/back_link.html');
+    const backLink = fs.readFileSync(backLinkPath, 'utf8');
+
+    html = layout.replace('{{ content }}', backLink + '\n' + appReadme);
+  } else {
+    const serverReadmePath = path.join(__dirname, 'README.md');
+    const serverReadmeContent = fs.readFileSync(serverReadmePath, 'utf8');
+    const serverReadme = marked(serverReadmeContent.toString());
+
+    const appListPath = path.join(__dirname, 'home/app_list.html');
+    const appList = fs.readFileSync(appListPath, 'utf8');
+
+    html = layout.replace('{{ content }}', serverReadme.replace('</h1>', '</h1>\n' + appList));
+  }
+
+  res.send(html);
+});
+
+// Serve images from the code demo README
+app.use('/pics', express.static(path.join(__dirname, '../apps/hello/pics')));
+
 // Start application
-log('Tanker demo server');
-log(`Listening on http://localhost:${port}`, 1);
-log(`Working with Trustchain: ${config.trustchainId}`, 1);
+log('Tanker mock server:');
+log(`Configured with Trustchain: ${config.trustchainId}`, 1);
+log(`Listening on http://localhost:${port}/`, 1);
 
 app.listen(port);

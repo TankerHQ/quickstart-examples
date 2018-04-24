@@ -1,54 +1,30 @@
-# What is it?
+# UI demo application example
+
+## What is it?
 
 This is a simple web application written in [React](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.github.io/). It has very basic features:
-- Signup
-- Login
-- Save some user input text to the cloud
-- Retrieve this text from the cloud
-- Logout
+- signup
+- login
+- save some user input text to the cloud
+- retrieve this text from the cloud
+- logout
 
 All this features use The Tanker SDK, it implements:
-- Open a session
-- Register a new device, if needs be
+- open a session
+- register a new device, if needs be
 - encrypt text
 - decrypt text
 
-# How to use it ?
-## Create your Trustchain
+## How to use it ?
 
-If you don't have one, The easiest way, for now, is to ask to a Tanker Staff to create one for you.
-You have to use the same trustchain configuration between the client and the server.
+### Run the server
 
-## Configure the application server
+If not done yet, [start the server](../../../README.md) that this application example will need.
 
-Head to the [server documentation](../server/README.md)
+### Run the application
 
-## Configure the client
-
-First, copy the sample config and edit it:
+In a new terminal, run:
 
 ```bash
-$ cp src/client-config.sample.js src/client-config.js && $EDITOR src/client-config.js
+yarn start:ui-demo
 ```
-Replace the `<Fix me>` values with those of your trustchain.
-
-## Installation
-
-Now you can install the dependencies, you have to do this only once:
-
-```bash
-$ yarn
-```
-
-It can takes a bit of time dependending of your internet connection speed.
-
-## Start the application
-
-Once the installation is done, launch the the app.
-
-```bash
-$ yarn start
-```
-
-This will build the application and launch a local http server. If everything went well, it will open the application in your default browser. Or you can copy paste the link in your favorite browser.
-

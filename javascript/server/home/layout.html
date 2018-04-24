@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <meta name="description" content="Tanker demo server" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Tanker" />
+  <meta name="application-name" content="Tanker demo server" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style type="text/css">
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-size: 16px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    #container {
+      position: relative;
+      max-width: 800px;
+      margin: auto;
+      padding: 10px;
+      /*border: 1px solid #ddd;
+      border-radius: 3px;*/
+    }
+
+    header {
+      display: flex;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    table {
+      border-spacing: 0;
+      border-collapse: collapse;
+      border: 1px solid #ddd;
+    }
+
+    td,
+    th {
+      border: 1px solid #ddd;
+      padding: .2em .5em;
+    }
+
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    pre {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      padding: 16px;
+      overflow: auto;
+      font-size: 85%;
+      line-height: 1.45;
+      background-color: #f6f8fa;
+      border-radius: 3px;
+    }
+
+    code:not([class]) {
+      padding: 0.2em 0.4em;
+      margin: 0;
+      font-size: 85%;
+      background-color: rgba(27, 31, 35, 0.05);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div id=container>
+    {{ content }}
+  </div>
+</body>
+</html>

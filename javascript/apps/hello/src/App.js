@@ -123,7 +123,7 @@ class App extends Component {
       <Row>
         <Col lgOffset={1} md={12} lg={10}>
 
-          <PageHeader>Tanker hello</PageHeader>
+          <PageHeader>Tanker demo</PageHeader>
 
           <Row>
             <Col md={6}>
