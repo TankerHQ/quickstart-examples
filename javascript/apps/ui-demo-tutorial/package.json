@@ -1,5 +1,5 @@
 {
-  "name": "@tanker/ui-demo",
+  "name": "@tanker/ui-demo-tutorial",
   "version": "1.6.0",
   "private": true,
   "dependencies": {
@@ -15,7 +15,7 @@
     "react-scripts": "1.1.1"
   },
   "scripts": {
-    "start": "cd ../.. && yarn start:ui",
+    "start": "cd ../.. && yarn start:ui-tutorial",
     "test": "react-scripts test --env=jsdom"
   }
 }

@@ -1,8 +1,8 @@
-# Code application example
+# Code example application
 
 ## Run the server
 
-If not done yet, [start the server](../../../README.md) that this application example will need.
+If not done yet, [start the server](../../../README.md) that this example application will need.
 
 ## Run the application
 
@@ -12,7 +12,9 @@ In a new terminal, run:
 yarn start:code
 ```
 
-You should see something looking like this in your browser:
+The application should open in a new browser tab. If not, go to http://localhost:3000/ manually.
+
+Now you should see something looking like this in your browser:
 
 ![screenshot](./pics/application.png)
 

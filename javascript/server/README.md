@@ -1,4 +1,4 @@
-# Tanker demo server
+# Tanker example server
 
 ## Description
 

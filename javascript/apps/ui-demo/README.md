@@ -1,6 +1,6 @@
-# UI demo application example
+# UI example application
 
-## What is it?
+## Description
 
 This is a simple web application written in [React](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.github.io/). It has very basic features:
 - signup
@@ -15,11 +15,11 @@ All this features use The Tanker SDK, it implements:
 - encrypt text
 - decrypt text
 
-## How to use it ?
+## How to
 
 ### Run the server
 
-If not done yet, [start the server](../../../README.md) that this application example will need.
+Please check that [the server is started](../../../README.md) as this example application will rely on it.
 
 ### Run the application
 
@@ -28,3 +28,5 @@ In a new terminal, run:
 ```bash
 yarn start:ui
 ```
+
+The application should open in a new browser tab. If not, go to http://localhost:3000/ manually.

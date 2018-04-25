@@ -13,13 +13,13 @@ git@github.com:SuperTanker/tanker-ui-demos.git
 
 Install [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install), or upgrade if needed:
 ```bash
-node -v  # >= 7.6  (async/await support)
+node -v  # >= 8    (async/await support)
 yarn -v  # >= 1.0  (workspaces support)
 ```
 
 Install all dependencies:
 ```bash
-cd tanker-ui-demo && yarn
+cd tanker-ui-demos && yarn
 ```
 
 ### Create a Trustchain
@@ -30,44 +30,31 @@ If you don't have a Trustchain yet, use the [Tanker dashboard](https://dashboard
 
 ### Configure
 
-Take the JSON configuration file from the previous step and move it under the `config/` folder.
+Take the JSON configuration file from the previous step and copy it under the `config/` folder.
 
 That's all you need to start the server and applications!
 
-### Start the server example
+### Start the example server
 
-Start the server example in a terminal with:
+Start the example server in a terminal with:
 
 ```bash
 yarn start:server
 ```
 
-The server example provides applications with:
+The example server provides applications with:
 * a mock auth system
 * an endpoint to retrieve user tokens as needed by the Tanker SDK
 * a couple of routes to upload/download user data
 
 Note: in a real world application, you must plug in your secure auth system, and store user tokens alongside your user records in a secure database.
 
-### Run an application example
+### Run example applications
 
 Note: before running any of the example applications, don't forget to always start the server first!
 
-Go to the homepage of the server example in your browser, and follow instructions:
+Go to the homepage of the example server in your browser, and follow instructions:
 
 ```
 http://localhost:8080/
-```
-
-For the record, here is where you can find the sources of all application examples:
-```plain
-.
-├── android           -> Android demo app with realistic UI flows
-├── ios               -> iOS demo app with realistic UI flows
-└── javascript        
-    ├── apps          
-    │   ├── code-demo -> JavaScript demo app with code snippets
-    │   ├── node-demo -> JavaScript demo script in Node.JS
-    │   └── ui-demo   -> JavaScript demo app with realistic UI flows
-    └── server        -> Demo server for all apps (fake auth...)
 ```

@@ -1,8 +1,8 @@
-# Node.js client application example
+# Node.js client example application
 
 ## Run the server
 
-If not done yet, [start the server](../../../README.md) that this application example will need.
+If not done yet, [start the server](../../../README.md) that this example application will need.
 
 ## Run the application
 

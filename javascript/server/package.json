@@ -1,5 +1,5 @@
 {
-  "name": "@tanker/unsafe-demo-server",
+  "name": "@tanker/example-server",
   "version": "1.6.0",
   "main": "./server.js",
   "description": "Example application server for Tanker UI demos",

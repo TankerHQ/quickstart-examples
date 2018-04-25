@@ -11,6 +11,7 @@
     "javascript/apps/code-demo",
     "javascript/apps/node-demo",
     "javascript/apps/ui-demo",
+    "javascript/apps/ui-demo-tutorial",
     "javascript/server"
   ],
   "engines": {
@@ -18,13 +19,19 @@
     "yarn": ">= 1.0"
   },
   "scripts": {
-    "config:check": "./bin/configcheck",
-    "start:server": "./bin/configcheck && cd javascript/server && node server.js",
-    "start:code": "./bin/configcheck && cd javascript/apps/code-demo && react-scripts start",
-    "start:node": "./bin/configcheck && cd javascript/apps/node-demo && node main.js",
-    "start:ui": "./bin/configcheck && cd javascript/apps/ui-demo && react-scripts start",
+    "config:check": "./bin/config-check",
+    "make:tutorial": "./bin/make-tutorial",
+    "start:server": "./bin/config-check && cd javascript/server && node server.js",
+    "start:code": "./bin/config-check && cd javascript/apps/code-demo && react-scripts start",
+    "start:node": "./bin/config-check && cd javascript/apps/node-demo && node main.js",
+    "start:ui": "./bin/config-check && cd javascript/apps/ui-demo && react-scripts start",
+    "start:ui-tutorial": "./bin/config-check && cd javascript/apps/ui-demo-tutorial && react-scripts start",
     "start:code-demo": "yarn start:code",
     "start:node-demo": "yarn start:node",
-    "start:ui-demo": "yarn start:ui"
+    "start:ui-demo": "yarn start:ui",
+    "start:ui-demo-tutorial": "yarn start:ui-tutorial"
+  },
+  "devDependencies": {
+    "fs-extra": "^5.0.0"
   }
 }

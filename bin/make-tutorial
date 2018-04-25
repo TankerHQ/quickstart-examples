@@ -1,0 +1,34 @@
+#!/usr/bin/env node
+
+const fse = require('fs-extra');
+const childProcess = require('child_process');
+const pathLib = require('path');
+
+const appPath = pathLib.join(__dirname, '../javascript/apps/ui-demo');
+const tutorialPath = appPath + '-tutorial';
+
+
+console.log('Cleanup previous tutorial in ./javascript/apps/ui-demo-tutorial');
+
+fse.emptyDirSync(tutorialPath);
+
+
+console.log('Copy ./javascript/apps/ui-demo to ./javascript/apps/ui-demo-tutorial');
+
+const filterFunc = (src, dest) => {
+  if (src.match(/\/node_modules/) || src.match(/\.patch$/)) {
+    return false;
+  }
+
+  return true;
+};
+
+fse.copySync(appPath, tutorialPath, { filter: filterFunc })
+
+
+console.log('Patch ./javascript/apps/ui-demo-tutorial:');
+console.log('  - fix ./README');
+console.log('  - fix ./package.json');
+console.log('  - patch ./src/Session.js');
+
+childProcess.execSync('patch -p1 < javascript/apps/ui-demo/tutorial.patch');

@@ -183,7 +183,8 @@ app.get('/', (req, res) => {
   const appReadmePath = {
     code: path.join(__dirname, '../apps/code-demo/README.md'),
     node: path.join(__dirname, '../apps/node-demo/README.md'),
-    ui: path.join(__dirname, '../apps/ui-demo/README.md')
+    ui: path.join(__dirname, '../apps/ui-demo/README.md'),
+    'ui-tutorial': path.join(__dirname, '../apps/ui-demo-tutorial/README.md'),
   }[app];
 
   if (appReadmePath) {
@@ -197,7 +198,7 @@ app.get('/', (req, res) => {
   } else {
     const serverReadmePath = path.join(__dirname, 'README.md');
     const serverReadmeContent = fs.readFileSync(serverReadmePath, 'utf8');
-    const serverReadme = marked(serverReadmeContent.toString());
+    const serverReadme = marked(serverReadmeContent.toString()).replace('Description</h2>', 'Description of the example server</h1>');
 
     const appListPath = path.join(__dirname, 'home/app_list.html');
     const appList = fs.readFileSync(appListPath, 'utf8');
