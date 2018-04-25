@@ -1,18 +1,18 @@
 {
   "name": "@tanker/ui-demos",
   "version": "1.6.0",
-  "main": "javascript/server/index.js",
+  "main": "server/server.js",
   "description": "Example applications for Tanker.io",
   "repository": "git@github.com:SuperTanker/tanker-ui-demos.git",
   "author": "Tanker Team",
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "javascript/apps/code-demo",
-    "javascript/apps/node-demo",
-    "javascript/apps/ui-demo",
-    "javascript/apps/ui-demo-tutorial",
-    "javascript/server"
+    "client/nodejs/hello-world",
+    "client/web/api-observer",
+    "client/web/notepad",
+    "client/web/tutorial",
+    "server"
   ],
   "engines": {
     "node": ">= 8",
@@ -21,15 +21,11 @@
   "scripts": {
     "config:check": "./bin/config-check",
     "make:tutorial": "./bin/make-tutorial",
-    "start:server": "./bin/config-check && cd javascript/server && node server.js",
-    "start:code": "./bin/config-check && cd javascript/apps/code-demo && react-scripts start",
-    "start:node": "./bin/config-check && cd javascript/apps/node-demo && node main.js",
-    "start:ui": "./bin/config-check && cd javascript/apps/ui-demo && react-scripts start",
-    "start:ui-tutorial": "./bin/config-check && cd javascript/apps/ui-demo-tutorial && react-scripts start",
-    "start:code-demo": "yarn start:code",
-    "start:node-demo": "yarn start:node",
-    "start:ui-demo": "yarn start:ui",
-    "start:ui-demo-tutorial": "yarn start:ui-tutorial"
+    "start:server": "./bin/config-check && cd server && node server.js",
+    "start:nodejs:hello-world": "./bin/config-check && cd client/nodejs/hello-world && node main.js",
+    "start:web:api-observer": "./bin/config-check && cd client/web/api-observer && react-scripts start",
+    "start:web:notepad": "./bin/config-check && cd client/web/notepad && react-scripts start",
+    "start:web:tutorial": "./bin/config-check && cd client/web/tutorial && react-scripts start"
   },
   "devDependencies": {
     "fs-extra": "^5.0.0"

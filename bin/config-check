@@ -56,10 +56,11 @@ const checkFileContent = (config) => {
 
 // Define configs to generate
 const generatedConfigs = [
-  { shortPath: 'javascript/apps/code-demo/src/config.js', keys: ['trustchainId'] },
-  { shortPath: 'javascript/apps/node-demo/config.js', keys: ['trustchainId'] },
-  { shortPath: 'javascript/apps/ui-demo/src/config.js', keys: ['trustchainId'] },
-  { shortPath: 'javascript/server/config.js', keys: ['trustchainId', 'trustchainPrivateKey'] }
+  { shortPath: 'client/nodejs/hello-world/config.js', keys: ['trustchainId'] },
+  { shortPath: 'client/web/api-observer/src/config.js', keys: ['trustchainId'] },
+  { shortPath: 'client/web/notepad/src/config.js', keys: ['trustchainId'] },
+  { shortPath: 'client/web/tutorial/src/config.js', keys: ['trustchainId'] },
+  { shortPath: 'server/config.js', keys: ['trustchainId', 'trustchainPrivateKey'] }
 ];
 
 // add sample and full pathes to configs

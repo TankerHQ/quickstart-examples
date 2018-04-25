@@ -1,0 +1,186 @@
+diff -r -u client/web/notepad/README.md client/web/tutorial/README.md
+--- a/client/web/tutorial/README.md	2018-04-25 17:42:36.000000000 +0200
++++ b/client/web/tutorial/README.md	2018-04-25 18:34:50.000000000 +0200
+@@ -1,20 +1,16 @@
+-# Notepad example application
++# Notepad example application tutorial
+ 
+-## Description
++## Goal of this tutorial
+ 
+-This is a simple web application written in [React](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.github.io/). It has very basic features:
++Using a simple web application written in [React](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.github.io/), you'll try to implement end-to-end user data encryption / decryption using the JavaScript Tanker SDK.
++
++The web application you'll start with has very basic features:
+ - signup
+ - login
+ - save some user input text to the cloud
+ - retrieve this text from the cloud
+ - logout
+ 
+-All this features use The Tanker SDK, it implements:
+-- open a session
+-- register a new device, if needs be
+-- encrypt text
+-- decrypt text
+-
+ ## How to
+ 
+ ### Run the server
+@@ -26,7 +22,15 @@
+ In a new terminal, run:
+ 
+ ```bash
+-yarn start:web:notepad
++yarn start:web:tutorial
+ ```
+ 
+ The application should open in a new browser tab. If not, go to http://localhost:3000/ manually.
++
++## Implementing end-to-end encryption
++
++Your goal is to add the Tanker SDK to the application, and to implement the following steps:
++- open a session
++- register a new device, if needs be
++- encrypt text
++- decrypt text
+diff -r -u client/web/notepad/package.json client/web/tutorial/package.json
+--- a/client/web/tutorial/package.json	2018-04-25 13:41:08.000000000 +0200
++++ b/client/web/tutorial/package.json	2018-04-25 18:34:50.000000000 +0200
+@@ -1,5 +1,5 @@
+ {
+-  "name": "@tanker/notepad",
++  "name": "@tanker/tutorial",
+   "version": "1.6.0",
+   "private": true,
+   "dependencies": {
+@@ -15,7 +15,7 @@
+     "react-scripts": "1.1.1"
+   },
+   "scripts": {
+-    "start": "cd ../.. && yarn start:web:notepad",
++    "start": "cd ../.. && yarn start:web:tutorial",
+     "test": "react-scripts test --env=jsdom"
+   }
+ }
+diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
+--- a/client/web/tutorial/src/Session.js	2018-04-25 11:35:15.000000000 +0200
++++ b/client/web/tutorial/src/Session.js	2018-04-25 18:34:50.000000000 +0200
+@@ -6,6 +6,10 @@
+ 
+ export default class Session extends EventEmitter {
+   api: Api;
++  // [[
++  // FIXME: remove this attribute
++  opened: bool;
++  // ]]
+   tanker: Tanker;
+   +userId: string;
+   +password: string;
+@@ -13,7 +17,11 @@
+   constructor() {
+     super();
+     this.api = new Api();
+-    this.tanker = new Tanker({ trustchainId });
++    // [[
++    // FIXME: create a new tanker object with the trustchainId
++    // this.tanker = ...;
++    // ]]
++    this.opened = false;
+   }
+ 
+   get userId(): string {
+@@ -25,11 +33,17 @@
+   }
+ 
+   isOpen(): bool {
+-    return this.tanker.status === this.tanker.OPEN;
++    // [[
++    // FIXME: Check Tanker status
++    return this.opened;
++    // ]]
+   }
+ 
+   async close(): Promise<void> {
+-    await this.tanker.close();
++    // [[
++    // FIXME: Close Tanker session
++    this.opened = false;
++    // ]]
+   }
+ 
+   async create(userId: string, password: string): Promise<void> {
+@@ -40,12 +54,19 @@
+     } else if (response.status !== 200)
+       throw new Error('Server error!');
+     const userToken = await response.text();
+-    return this.tanker.open(userId, userToken);
++    // [[
++    // FIXME: Open Tanker session with userId and userToken
++    this.opened = true;
++    await true ;
++    // ]]
+   }
+ 
+   async login(userId: string, password: string): Promise<void> {
+     this.api.setUserInfo(userId, password);
+-    this.tanker.once('waitingForValidation', () => this.emit('newDevice'));
++    // [[
++    // FIXME: connect the waitingForValidation event of the Tanker session
++    // to the 'newDevice' event of this class
++    // ]]
+     let response;
+     try {
+       response = await this.api.login();
+@@ -60,27 +81,44 @@
+       throw new Error('It Borked!');
+ 
+     const userToken = await response.text();
+-    await this.tanker.open(userId, userToken);
++    // [[
++    // FIXME: Open Tanker session with userId and userToken
++    this.opened = true;
++    await true;
++    // ]]
+   }
+ 
+   async addCurrentDevice(unlockKey: string): Promise<void> {
+-    return this.tanker.unlockCurrentDevice(unlockKey);
++    // [[
++    // FIXME: use tanker to unlock the current device with the key
++    await true;
++    // ]]
+   }
+ 
+   async getUnlockKey(): Promise<string> {
+-    return this.tanker.generateAndRegisterUnlockKey();
++    // [[
++    // FIXME: use tanker to generate and register a unlock key
++    return 'this is the unlock key';
++    // ]]
+   }
+ 
+   async saveText(content: string): Promise<void> {
+-    const eData = await this.tanker.encrypt(content);
+-    this.api.push(toBase64(eData));
++    // [[
++    // FIXME: use tanker to encrypt the text as binary data, then
++    // encode the data and send it to the server
++    const data = content;
++    // ]]
++    this.api.push(data);
+   }
+ 
+   async loadText(): Promise<string> {
+     const data = await this.api.get();
+     if (!data || data === '')
+       throw new Error('No message stored yet');
+-
+-    return this.tanker.decrypt(fromBase64(data));
++    // [[
++    // FIXME: use fromBase64 to get binary data from the
++    // response of the server and use tanker to decrypt it.
++    return data;
++    // ]]
+   }
+ }

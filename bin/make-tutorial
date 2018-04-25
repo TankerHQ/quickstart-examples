@@ -4,16 +4,16 @@ const fse = require('fs-extra');
 const childProcess = require('child_process');
 const pathLib = require('path');
 
-const appPath = pathLib.join(__dirname, '../javascript/apps/ui-demo');
-const tutorialPath = appPath + '-tutorial';
+const appPath = pathLib.join(__dirname, '../client/web/notepad');
+const tutorialPath = pathLib.join(__dirname, '../client/web/tutorial');
 
 
-console.log('Cleanup previous tutorial in ./javascript/apps/ui-demo-tutorial');
+console.log('Cleanup previous tutorial in ./client/web/tutorial');
 
 fse.emptyDirSync(tutorialPath);
 
 
-console.log('Copy ./javascript/apps/ui-demo to ./javascript/apps/ui-demo-tutorial');
+console.log('Copy ./client/web/notepad to ./client/web/tutorial');
 
 const filterFunc = (src, dest) => {
   if (src.match(/\/node_modules/) || src.match(/\.patch$/)) {
@@ -26,9 +26,9 @@ const filterFunc = (src, dest) => {
 fse.copySync(appPath, tutorialPath, { filter: filterFunc })
 
 
-console.log('Patch ./javascript/apps/ui-demo-tutorial:');
-console.log('  - fix ./README');
-console.log('  - fix ./package.json');
+console.log('Patch ./client/web/tutorial:');
+console.log('  - patch ./README');
+console.log('  - patch ./package.json');
 console.log('  - patch ./src/Session.js');
 
-childProcess.execSync('patch -p1 < javascript/apps/ui-demo/tutorial.patch');
+childProcess.execSync('patch -p1 < client/web/notepad/tutorial.patch');
