@@ -16,7 +16,7 @@
     "react-scripts": "1.1.1"
   },
   "scripts": {
-    "start": "cd ../.. && yarn start:hello",
+    "start": "cd ../.. && yarn start:ui",
     "test": "react-scripts test --env=jsdom"
   }
 }

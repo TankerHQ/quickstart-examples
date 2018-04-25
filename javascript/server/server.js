@@ -181,9 +181,9 @@ app.get('/', (req, res) => {
   let html;
 
   const appReadmePath = {
-    hello: path.join(__dirname, '../apps/hello/README.md'),
-    node: path.join(__dirname, '../apps/node/README.md'),
-    'ui-demo': path.join(__dirname, '../apps/ui-demo/README.md')
+    code: path.join(__dirname, '../apps/code-demo/README.md'),
+    node: path.join(__dirname, '../apps/node-demo/README.md'),
+    ui: path.join(__dirname, '../apps/ui-demo/README.md')
   }[app];
 
   if (appReadmePath) {
@@ -209,7 +209,7 @@ app.get('/', (req, res) => {
 });
 
 // Serve images from the code demo README
-app.use('/pics', express.static(path.join(__dirname, '../apps/hello/pics')));
+app.use('/pics', express.static(path.join(__dirname, '../apps/code-demo/pics')));
 
 // Start application
 log('Tanker mock server:');

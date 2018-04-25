@@ -1,10 +1,10 @@
 {
-  "name": "react-example",
+  "name": "@tanker/code-demo",
   "version": "1.6.0",
   "main": "src/index.js",
   "private": true,
   "scripts": {
-    "start": "cd ../.. && yarn start:hello"
+    "start": "cd ../.. && yarn start:code"
   },
   "dependencies": {
     "@tanker/core": "1.6.0",

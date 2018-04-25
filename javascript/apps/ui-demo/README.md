@@ -26,5 +26,5 @@ If not done yet, [start the server](../../../README.md) that this application ex
 In a new terminal, run:
 
 ```bash
-yarn start:ui-demo
+yarn start:ui
 ```

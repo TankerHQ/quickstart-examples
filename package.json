@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "javascript/apps/hello",
-    "javascript/apps/node",
+    "javascript/apps/code-demo",
+    "javascript/apps/node-demo",
     "javascript/apps/ui-demo",
     "javascript/server"
   ],
@@ -19,9 +19,12 @@
   },
   "scripts": {
     "config:check": "./bin/configcheck",
-    "start:hello": "./bin/configcheck && cd javascript/apps/hello && react-scripts start",
-    "start:node": "./bin/configcheck && cd javascript/apps/node && node main.js",
     "start:server": "./bin/configcheck && cd javascript/server && node server.js",
-    "start:ui-demo": "./bin/configcheck && cd javascript/apps/ui-demo && react-scripts start"
+    "start:code": "./bin/configcheck && cd javascript/apps/code-demo && react-scripts start",
+    "start:node": "./bin/configcheck && cd javascript/apps/node-demo && node main.js",
+    "start:ui": "./bin/configcheck && cd javascript/apps/ui-demo && react-scripts start",
+    "start:code-demo": "yarn start:code",
+    "start:node-demo": "yarn start:node",
+    "start:ui-demo": "yarn start:ui"
   }
 }

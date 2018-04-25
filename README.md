@@ -66,8 +66,8 @@ For the record, here is where you can find the sources of all application exampl
 ├── ios               -> iOS demo app with realistic UI flows
 └── javascript        
     ├── apps          
-    │   ├── hello     -> JavaScript demo app with code snippets
-    │   ├── node      -> JavaScript demo script in Node.JS
+    │   ├── code-demo -> JavaScript demo app with code snippets
+    │   ├── node-demo -> JavaScript demo script in Node.JS
     │   └── ui-demo   -> JavaScript demo app with realistic UI flows
     └── server        -> Demo server for all apps (fake auth...)
 ```

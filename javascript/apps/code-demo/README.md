@@ -1,4 +1,4 @@
-# Hello application example
+# Code application example
 
 ## Run the server
 
@@ -9,7 +9,7 @@ If not done yet, [start the server](../../../README.md) that this application ex
 In a new terminal, run:
 
 ```bash
-yarn start:hello
+yarn start:code
 ```
 
 You should see something looking like this in your browser:
