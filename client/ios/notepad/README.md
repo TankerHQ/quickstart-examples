@@ -1,9 +1,9 @@
-# Tanker ui demo ios
+# Notepad iOS example application
 
 ## Getting started
 
 ```bash
-cd tanker-ui-demos/ios
+cd tanker-ui-demos/client/ios/notepad/
 pod update
 pod install
 open tanker-ui-demo.xcworkspace/
