@@ -1,7 +1,7 @@
 {
   "name": "@tanker/example-server",
   "version": "1.6.0",
-  "main": "./server.js",
+  "main": "./src/server.js",
   "description": "Example server for Tanker example apps",
   "author": "Tanker Team",
   "license": "MIT",

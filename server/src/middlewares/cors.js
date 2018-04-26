@@ -1,3 +1,6 @@
+// You need this middleware if you serve applications on a domain that
+// is different from the server's.
+
 // @flow
 const cors = require('cors');
 
@@ -17,5 +20,6 @@ const corsMiddleware = cors({
 });
 
 module.exports = {
-  default: corsMiddleware
+  default: corsMiddleware,
+  cors: corsMiddleware
 };

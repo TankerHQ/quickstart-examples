@@ -60,7 +60,7 @@ const generatedConfigs = [
   { shortPath: 'client/web/api-observer/src/config.js', keys: ['trustchainId'] },
   { shortPath: 'client/web/notepad/src/config.js', keys: ['trustchainId'] },
   { shortPath: 'client/web/tutorial/src/config.js', keys: ['trustchainId'] },
-  { shortPath: 'server/config.js', keys: ['trustchainId', 'trustchainPrivateKey'] }
+  { shortPath: 'server/src/config.js', keys: ['trustchainId', 'trustchainPrivateKey'] }
 ];
 
 // add sample and full pathes to configs
