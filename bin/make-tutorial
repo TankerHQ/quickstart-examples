@@ -16,7 +16,7 @@ fse.emptyDirSync(tutorialPath);
 console.log('Copy ./client/web/notepad to ./client/web/tutorial');
 
 const filterFunc = (src, dest) => {
-  if (src.match(/\/node_modules/) || src.match(/\.patch$/)) {
+  if (src.match(/\/node_modules/) || src.match(/\/tutorial/)) {
     return false;
   }
 
@@ -27,8 +27,12 @@ fse.copySync(appPath, tutorialPath, { filter: filterFunc })
 
 
 console.log('Patch ./client/web/tutorial:');
-console.log('  - patch ./README');
 console.log('  - patch ./package.json');
 console.log('  - patch ./src/Session.js');
 
-childProcess.execSync('patch -p1 < client/web/notepad/tutorial.patch');
+childProcess.execSync('patch -p1 < client/web/notepad/tutorial/tutorial.patch');
+
+
+console.log('  - patch ./README.md');
+
+fse.copyFileSync(pathLib.join(appPath, 'tutorial/README.md'), pathLib.join(tutorialPath, 'README.md'));
