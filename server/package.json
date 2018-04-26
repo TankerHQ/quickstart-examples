@@ -1,17 +1,19 @@
 {
-  "name": "ui-demo-server",
-  "version": "0.0.1",
-  "main": "./server.js",
-  "description": "Example application server for Tanker UI demos",
+  "name": "@tanker/example-server",
+  "version": "1.6.0",
+  "main": "./src/server.js",
+  "description": "Example server for Tanker example apps",
   "author": "Tanker Team",
   "license": "MIT",
   "scripts": {
-    "start": "node server.js"
+    "start": "cd ../.. && yarn start:server"
   },
   "dependencies": {
     "@tanker/user-token": "1.4.0",
     "babel-polyfill": "^6.26.0",
     "cors": "^2.8.4",
-    "express": "^4.16.2"
+    "express": "^4.16.3",
+    "marked": "^0.3.19",
+    "morgan": "^1.9.0"
   }
 }

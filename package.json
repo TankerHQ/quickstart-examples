@@ -1,0 +1,33 @@
+{
+  "name": "@tanker/ui-demos",
+  "version": "1.6.0",
+  "main": "server/server.js",
+  "description": "Example applications for Tanker.io",
+  "repository": "git@github.com:SuperTanker/tanker-ui-demos.git",
+  "author": "Tanker Team",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "client/nodejs/hello-world",
+    "client/web/api-observer",
+    "client/web/notepad",
+    "client/web/tutorial",
+    "server"
+  ],
+  "engines": {
+    "node": ">= 8",
+    "yarn": ">= 1.0"
+  },
+  "scripts": {
+    "config:check": "./bin/config-check",
+    "make:tutorial": "./bin/make-tutorial",
+    "start:server": "./bin/config-check && cd server/src && node server.js",
+    "start:nodejs:hello-world": "./bin/config-check && cd client/nodejs/hello-world && node main.js",
+    "start:web:api-observer": "./bin/config-check && cd client/web/api-observer && react-scripts start",
+    "start:web:notepad": "./bin/config-check && cd client/web/notepad && react-scripts start",
+    "start:web:tutorial": "./bin/config-check && cd client/web/tutorial && react-scripts start"
+  },
+  "devDependencies": {
+    "fs-extra": "^5.0.0"
+  }
+}

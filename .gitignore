@@ -9,7 +9,13 @@
 # production
 /build
 
-server/*.txt
+# tmp data
+**/data/*
+!**/data/.gitkeep
+
+# Configs
+/config/*.json
+**/config.js
 
 # misc
 .DS_Store
@@ -17,7 +23,6 @@ server/*.txt
 .env.development.local
 .env.test.local
 .env.production.local
-server-config.js
 src/client-config.js
 src/tanker-sdk-*.js
 
