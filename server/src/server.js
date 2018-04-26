@@ -12,6 +12,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
 const userToken = require('@tanker/user-token');
+const sodium = require('libsodium-wrappers-sumo');
 
 const auth = require('./middlewares/auth').default;
 const cors = require('./middlewares/cors').default;
@@ -20,6 +21,7 @@ const config = require('./config');
 const log = require('./log').default;
 const home = require('./home').default;
 const users = require('./users').default;
+
 
 
 // Build express application
@@ -46,6 +48,10 @@ app.use((req, res, next) => {
 // Add signup route (non authenticated)
 app.get('/signup', (req, res) => {
   const { userId, password } = req.query;
+  const hashed_password = sodium.crypto_pwhash_str(password,
+    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+  );
 
   if (users.exists(userId)) {
     log(`User "${userId}" already exists`, 1);
@@ -57,7 +63,7 @@ app.get('/signup', (req, res) => {
   const token = userToken.generateUserToken(config.trustchainId, config.trustchainPrivateKey, userId);
 
   log('Save password and token to storage', 1);
-  users.save({ id: userId, password, token });
+  users.save({ id: userId, hashed_password, token });
 
   log('Serve the token', 1);
   res.set('Content-Type', 'text/plain');
