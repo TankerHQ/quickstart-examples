@@ -19,7 +19,7 @@ const exists = (id) => {
   return fs.existsSync(path);
 };
 
-const find = (id, password) => {
+const find = (id) => {
   const path = dataFilePath(id);
   return JSON.parse(fs.readFileSync(path));
 };
