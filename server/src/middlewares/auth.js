@@ -1,6 +1,7 @@
 // @flow
 const log = require('../log').default;
 const users = require('../users').default;
+const sodium = require('libsodium-wrappers-sumo');
 
 const authMiddleware = (req, res, next) => {
   const { userId, password } = req.query;
@@ -16,7 +17,9 @@ const authMiddleware = (req, res, next) => {
 
   const user = users.find(userId);
 
-  if (password !== user.password) {
+
+  const hash_matches = sodium.crypto_pwhash_str_verify(user.hashed_password, password);
+  if (!hash_matches) {
     log('Authentication error: invalid password', 1);
     res.sendStatus(401);
     return;
