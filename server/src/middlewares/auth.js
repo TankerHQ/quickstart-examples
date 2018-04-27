@@ -9,7 +9,7 @@ const authMiddleware = (req, res, next) => {
   // Check valid auth credentials
   log('Check authentication', 1);
 
-  if (!users.exists(userId)) {
+  if (typeof userId !== 'string' || !users.exists(userId)) {
     log(`Authentication error: user "${userId}" does not exist`, 1);
     res.sendStatus(404);
     return;

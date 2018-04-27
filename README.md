@@ -8,7 +8,7 @@ Example applications using the Tanker SDK in JavaScript, iOS and Android.
 
 Clone this repository:
 ```bash
-git@github.com:SuperTanker/tanker-ui-demos.git
+git clone git@github.com:SuperTanker/tanker-ui-demos.git
 ```
 
 Install [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install), or upgrade if needed:
@@ -22,11 +22,18 @@ Install all dependencies:
 cd tanker-ui-demos && yarn
 ```
 
+If you use the newly released Node.js 10.0+, you might encounter a temporary issue due to npm dependencies requiring Node.js <= 9 that have not been updated yet. To circumvent this non-critical issue, run:
+```bash
+yarn install --ignore-engines
+```
+
 ### Create a Trustchain
 
-In short, your Trustchain is the structure in which most of the cryptographic stuff will be stored when you run the examples.
+In short, your Trustchain is the structure in which the cryptographic operations will be stored when you run the examples.
 
 If you don't have a Trustchain yet, use the [Tanker dashboard](https://dashboard.tanker.io) to create a Trustchain, and store the configuration file safely.
+
+Note: if you need to request access to the Tanker dashboard, please contact us at [contact@tanker.io](mailto:contact@tanker.io).
 
 ### Configure
 
@@ -46,8 +53,6 @@ The example server provides applications with:
 * a mock auth system
 * an endpoint to retrieve user tokens as needed by the Tanker SDK
 * a couple of routes to upload/download user data
-
-Note: in a real world application, you must plug in your secure auth system, and store user tokens alongside your user records in a secure database.
 
 ### Run example applications
 
