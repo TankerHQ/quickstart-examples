@@ -15,7 +15,6 @@
     "react-scripts": "1.1.1"
   },
   "scripts": {
-    "start": "cd ../.. && yarn start:web:notepad",
-    "test": "react-scripts test --env=jsdom"
+    "start": "cd ../.. && yarn start:web:notepad"
   }
 }

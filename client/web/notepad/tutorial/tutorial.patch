@@ -12,16 +12,16 @@ diff -r -u client/web/notepad/package.json client/web/tutorial/package.json
      "react-scripts": "1.1.1"
    },
    "scripts": {
--    "start": "cd ../.. && yarn start:web:notepad",
-+    "start": "cd ../.. && yarn start:web:tutorial",
-     "test": "react-scripts test --env=jsdom"
+-    "start": "cd ../.. && yarn start:web:notepad"
++    "start": "cd ../.. && yarn start:web:tutorial"
    }
  }
+
 diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 --- a/client/web/tutorial/src/Session.js	2018-04-25 11:35:15.000000000 +0200
 +++ b/client/web/tutorial/src/Session.js	2018-04-25 18:34:50.000000000 +0200
 @@ -6,6 +6,10 @@
- 
+
  export default class Session extends EventEmitter {
    api: Api;
 +  // [[
@@ -42,11 +42,11 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    // ]]
 +    this.opened = false;
    }
- 
+
    get userId(): string {
 @@ -25,11 +33,17 @@
    }
- 
+
    isOpen(): bool {
 -    return this.tanker.status === this.tanker.OPEN;
 +    // [[
@@ -54,7 +54,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    return this.opened;
 +    // ]]
    }
- 
+
    async close(): Promise<void> {
 -    await this.tanker.close();
 +    // [[
@@ -62,7 +62,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    this.opened = false;
 +    // ]]
    }
- 
+
    async create(userId: string, password: string): Promise<void> {
 @@ -40,12 +54,19 @@
      } else if (response.status !== 200)
@@ -75,7 +75,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    await true ;
 +    // ]]
    }
- 
+
    async login(userId: string, password: string): Promise<void> {
      this.api.setUserInfo(userId, password);
 -    this.tanker.once('waitingForValidation', () => this.emit('newDevice'));
@@ -88,7 +88,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
        response = await this.api.login();
 @@ -60,27 +81,44 @@
        throw new Error('It Borked!');
- 
+
      const userToken = await response.text();
 -    await this.tanker.open(userId, userToken);
 +    // [[
@@ -97,7 +97,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    await true;
 +    // ]]
    }
- 
+
    async addCurrentDevice(unlockKey: string): Promise<void> {
 -    return this.tanker.unlockCurrentDevice(unlockKey);
 +    // [[
@@ -105,7 +105,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    await true;
 +    // ]]
    }
- 
+
    async getUnlockKey(): Promise<string> {
 -    return this.tanker.generateAndRegisterUnlockKey();
 +    // [[
@@ -113,7 +113,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    return 'this is the unlock key';
 +    // ]]
    }
- 
+
    async saveText(content: string): Promise<void> {
 -    const eData = await this.tanker.encrypt(content);
 -    this.api.push(toBase64(eData));
@@ -124,7 +124,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    // ]]
 +    this.api.push(data);
    }
- 
+
    async loadText(): Promise<string> {
      const data = await this.api.get();
      if (!data || data === '')
