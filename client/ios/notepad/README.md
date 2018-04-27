@@ -3,7 +3,7 @@
 ## Getting started
 
 ```bash
-cd tanker-ui-demos/client/ios/notepad/
+cd client/ios/notepad/
 pod update
 pod install
 open tanker-ui-demo.xcworkspace/
