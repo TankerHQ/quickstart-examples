@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, ControlLabel, FormGroup, FormControl, Grid, InputGroup, PageHeader, Panel, Row } from 'react-bootstrap';
-import Tanker, { toBase64, fromBase64 } from '@tanker/core';
+import Tanker, { toBase64, fromBase64, errors } from '@tanker/core';
 
 import config from './config';
 import { getEntry, LogPanel } from './log';
@@ -114,7 +114,11 @@ class App extends Component {
       this.log('openedSession', userId);
     } catch (e) {
       this.log(e);
-      this.log('serverHint');
+
+      // Could it be that the server is not started yet?
+      if (!(e instanceof errors.TankerError)) {
+        this.log('serverHint');
+      }
     }
   }
 

@@ -8,7 +8,7 @@ Example applications using the Tanker SDK in JavaScript, iOS and Android.
 
 Clone this repository:
 ```bash
-git clone git@github.com:SuperTanker/tanker-ui-demos.git
+git clone https://github.com/SuperTanker/quickstart-examples.git
 ```
 
 Install [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install), or upgrade if needed:
@@ -19,7 +19,7 @@ yarn -v  # >= 1.0  (workspaces support)
 
 Install all dependencies:
 ```bash
-cd tanker-ui-demos && yarn
+cd quickstart-examples && yarn
 ```
 
 If you use the newly released Node.js 10.0+, you might encounter a temporary issue due to npm dependencies requiring Node.js <= 9 that have not been updated yet. To circumvent this non-critical issue, run:
