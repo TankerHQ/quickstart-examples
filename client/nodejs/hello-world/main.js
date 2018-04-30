@@ -9,13 +9,20 @@ const config = {
   ...persistence.config
 };
 
-async function getToken(userId) {
-  // Authenticated request: always pass "Tanker" as password (mock auth)
-  let res = await fetch(`http://localhost:8080/login?userId=${encodeURIComponent(userId)}&password=Tanker`);
+const users = new Set();
 
-  // User not found
-  if (res.status === 404) {
+async function getToken(userId) {
+  let res;
+
+  // User known: log in
+  if (users.has(userId)) {
+    res = await fetch(`http://localhost:8080/login?userId=${encodeURIComponent(userId)}&password=Tanker`);
+
+    // User not known: sign up
+  } else {
+    // Always sign up with "Tanker" as password (mock auth)
     res = await fetch(`http://localhost:8080/signup?userId=${encodeURIComponent(userId)}&password=Tanker`);
+    users.add(userId);
   }
 
   return res.text();
