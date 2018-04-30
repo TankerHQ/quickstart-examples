@@ -22,11 +22,6 @@ Install all dependencies:
 cd quickstart-examples && yarn
 ```
 
-If you use the newly released Node.js 10.0+, you might encounter a temporary issue due to npm dependencies requiring Node.js <= 9 that have not been updated yet. To circumvent this non-critical issue, run:
-```bash
-yarn install --ignore-engines
-```
-
 ### Create a Trustchain
 
 In short, your Trustchain is the structure in which the cryptographic operations will be stored when you run the examples.
