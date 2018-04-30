@@ -2,27 +2,12 @@ const Tanker = require('@tanker/core').default;
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
-// nodeJS: custom setup to persist data with PouchDB (this is not needed when
-//         using the tanker SDK in a browser application)
-const PouchDB = require('pouchdb');
-const PouchDBFind = require('pouchdb-find');
-PouchDB.plugin(PouchDBFind);
+const persistence = require('./persistence');
 
 const config = {
   ...require('./config.js'),
-  PouchDB: function (dbName) {
-    const folder = `./data/${config.trustchainId.replace(/[\/\\]/g, '_')}`;
-
-    // Ensure folder exists to store tokens for this trusthchain
-    if (!fs.existsSync(folder)) {
-      fs.mkdirSync(folder);
-    }
-
-    // PouchDB will store data in the proper folder
-    return new PouchDB(`${folder}/${dbName}`);
-  }
+  ...persistence.config
 };
-// nodeJS: end of custom setup
 
 async function getToken(userId) {
   // Authenticated request: always pass "Tanker" as password (mock auth)
