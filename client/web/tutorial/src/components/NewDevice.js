@@ -45,13 +45,13 @@ class NewDevice extends React.Component<Props, State> {
     return (
       <Panel>
         <Panel.Heading>
-          Device unlocking
+          First connection on a device
         </Panel.Heading>
         <Panel.Body>
           <form action="#" className="form-signin">
             {error && <Alert bsStyle="danger">{error}</Alert>}
             <FormGroup validationState={this.getValidationState()}>
-              <ControlLabel>Unlock Key</ControlLabel>
+              <ControlLabel>Please enter your unlock Key</ControlLabel>
               <FormControl
                 componentClass="textarea"
                 value={unlockKey}
