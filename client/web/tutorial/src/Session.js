@@ -49,10 +49,12 @@ export default class Session extends EventEmitter {
   async create(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
     const response = await this.api.signUp();
-    if (response.status === 409) {
+
+    if (response.status === 409)
       throw new Error(`User '${userId}' already exists`);
-    } else if (response.status !== 200)
+    if (response.status !== 200)
       throw new Error('Server error!');
+
     const userToken = await response.text();
     // [[
     // FIXME: Open Tanker session with userId and userToken
@@ -71,13 +73,15 @@ export default class Session extends EventEmitter {
     try {
       response = await this.api.login();
     } catch (e) {
+      console.error(e);
       throw new Error('Cannot contact server');
     }
+
     if (response.status === 404)
       throw new Error('User never registered');
-    else if (response.status === 401)
+    if (response.status === 401)
       throw new Error('Bad login or password');
-    else if (response.status !== 200)
+    if (response.status !== 200)
       throw new Error('It Borked!');
 
     const userToken = await response.text();
