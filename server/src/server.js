@@ -104,12 +104,18 @@ app.put('/data', async (req, res) => {
 });
 
 app.get('/data', async (req, res) => {
-  log('Retrieve token from storage', 1);
+  log('Retrieve data from storage', 1);
   const user = res.locals.user;
 
-  log('Serve the data', 1);
-  res.set('Content-Type', 'text/plain');
-  res.send(user.data);
+  if (user.data) {
+    log('Serve the data', 1);
+    res.set('Content-Type', 'text/plain');
+    res.send(user.data);
+    return;
+  }
+
+  log('User has no stored data', 1);
+  res.sendStatus(404);
 });
 
 

@@ -81,10 +81,12 @@ export default class Session extends EventEmitter {
   }
 
   async loadText(): Promise<string> {
-    const data = await this.api.get();
-    if (!data || data === '')
-      throw new Error('No message stored yet');
+    const response = await this.api.get();
 
+    if (response.status === 404)
+      return '';
+
+    const data = await response.text();
     return this.tanker.decrypt(fromBase64(data));
   }
 }

@@ -116,9 +116,12 @@ export default class Session extends EventEmitter {
   }
 
   async loadText(): Promise<string> {
-    const data = await this.api.get();
-    if (!data || data === '')
-      throw new Error('No message stored yet');
+    const response = await this.api.get();
+
+    if (response.status === 404)
+      return '';
+
+    const data = await response.text();
     // [[
     // FIXME: use fromBase64 to get binary data from the
     // response of the server and use tanker to decrypt it.
