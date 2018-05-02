@@ -32,13 +32,6 @@ class NewDevice extends React.Component<Props, State> {
     }
   }
 
-  getValidationState() {
-    const { unlockKey } = this.state;
-    if (!unlockKey) return null;
-    if (unlockKey.length >= 323) return 'success';
-    return 'error';
-  }
-
   render() {
     const { error, unlockKey, isLoading } = this.state;
 
@@ -50,7 +43,7 @@ class NewDevice extends React.Component<Props, State> {
         <Panel.Body>
           <form action="#" className="form-signin">
             {error && <Alert bsStyle="danger">{error}</Alert>}
-            <FormGroup validationState={this.getValidationState()}>
+            <FormGroup>
               <ControlLabel>Please enter your unlock Key</ControlLabel>
               <FormControl
                 componentClass="textarea"
