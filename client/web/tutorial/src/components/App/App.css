@@ -8,3 +8,8 @@ body {
   word-break: break-all;
 }
 
+.app .panel {
+  width: 300px;
+  max-width: 100%;
+  margin: 0 auto;
+}
