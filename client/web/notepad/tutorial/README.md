@@ -46,7 +46,7 @@ The application should open in a new browser tab. If not, go to http://localhost
 
 Now that the application is up and running, please follow the steps below:
 
-1. Signup with any e-mail and password you want.
+1. Sign up with any e-mail and password you want.
     Remember your password, because the server does not implement a "Forgot my password" feature.
 
 2. Right after sign up, you are asked to save a mysterious "unlock key". Just skip this step for now, we'll explain this later.
@@ -243,7 +243,7 @@ You've just created a new user and some content associated, except this time you
 
 Now, you'll use your browser **in private browsing mode** to emulate a new device:
 
-1. open a new tab **in private browsing mode** in your browsern
+1. open a new tab **in private browsing mode** in your browser
 2. you should now be redirected to a page where you can enter the unlock key you saved in the previous sequence,
 3. upon entering the unlock key, the new tab in private browsing mode should contain the same content that was saved in the first regular tab,
 4. you can then change the content on the second device (tab in private browsing mode), click save, go back to the first device (regular tab), and load the new content.

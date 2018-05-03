@@ -42,7 +42,6 @@ export default class Api {
   }
 
   async get(): Promise<string> {
-    const response = await fetch(this.urlFor('/data'));
-    return response.text();
+    return fetch(this.urlFor('/data'));
   }
 }
