@@ -111,8 +111,8 @@ export default class Session extends EventEmitter {
     // FIXME: use tanker to encrypt the text as binary data, then
     // encode the data and send it to the server
     const data = content;
-    // ]]
     this.api.push(data);
+    // ]]
   }
 
   async loadText(): Promise<string> {
