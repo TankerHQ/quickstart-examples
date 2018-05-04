@@ -1,0 +1,8 @@
+Custom build of Highlight.js including support for:
+* Bash
+* Diff
+* Java
+* JavaScript
+* Objective-C
+
+See: https://highlightjs.org/download/#download-form

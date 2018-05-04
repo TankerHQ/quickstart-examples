@@ -7,9 +7,9 @@ const fs = require('fs');
 const marked = require('marked'); // markdown parser
 const path = require('path');
 
-const rootPath = path.join(__dirname, '../../..');
-
+// Build an express router
 const homeRouter = express.Router();
+const rootPath = path.join(__dirname, '../../..');
 
 // Home page routing
 homeRouter.get('/', (req, res) => {
@@ -54,6 +54,9 @@ homeRouter.get('/', (req, res) => {
 
 // Serve favicon
 homeRouter.use('/favicon.ico', express.static(path.join(rootPath, 'server/src/home/favicon.ico')));
+
+// Serve highlight.js files
+homeRouter.use('/highlight', express.static(path.join(rootPath, 'server/src/home/highlight')));
 
 // Serve images from the api-observer README
 homeRouter.use('/pics', express.static(path.join(rootPath, 'client/web/api-observer/pics')));

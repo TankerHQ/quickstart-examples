@@ -88,14 +88,14 @@ import { trustchainId } from './config';
 
 Use it to initialize a new Tanker instance:
 
-```javascript
+```diff
 constructor() {
   ...
 - // [[
 - // FIXME: create a new tanker object with the trustchainId
 - // this.tanker = ...;
 - // ]]
-+  this.tanker = new Tanker({ trustchainId });
++ this.tanker = new Tanker({ trustchainId });
   ...
 }
 ```
@@ -110,7 +110,7 @@ In both cases, the server should have sent a user token, and we can call `open()
 
 Note that we use `await` because opening a Tanker session is not instantaneous, and we do not want to block the application while Tanker is opening.
 
-```javascript
+```diff
 async create(userId: string, password: string): Promise<void> {
   // ...
   const userToken = await response.text();
@@ -141,7 +141,7 @@ Note that `open()` will use the user token to:
 
 With this in place we can get rid of the `opened` attribute and fix the `isOpen()` and `close()` methods:
 
-```javascript
+```diff
 constructor() {
   // ...
 - this.opened = false;
@@ -169,14 +169,14 @@ You can check this by refreshing your browser, and log in. You should see the te
 
 To encrypt the data, we use [`tanker.encrypt()`](https://www.tanker.io/docs/latest/guide/encryption#encrypting):
 
-```javascript
+```diff
 async saveText(content: string): Promise<void> {
   // use tanker to encrypt the text as binary data, then
   // encode the data and send it to the server
-  - const data = content;
-  - this.api.push(data);
-  + const encryptedData = await this.tanker.encrypt(content);
-  + this.api.push(toBase64(encryptedData));
+- const data = content;
+- this.api.push(data);
++ const encryptedData = await this.tanker.encrypt(content);
++ this.api.push(toBase64(encryptedData));
 }
 ```
 
@@ -191,7 +191,7 @@ At this point:
 
 To decrypt the data, we use the same steps, but in reverse order using the [`tanker.decrypt()`](https://www.tanker.io/docs/latest/guide/encryption/#decrypting) method:
 
-```javascript
+```diff
 async loadText(): Promise<string> {
   const data = await this.api.get();
   // ...
@@ -211,7 +211,7 @@ That is because we did not take care of device management so far. Let's do that 
 
 First, we connect the `waitingForValidation` event of the Tanker and emit the `newDevice` event when required:
 
-``` javascript
+```diff
 async login(userId: string, password: string): Promise<void> {
   this.api.setUserInfo(userId, password);
 + this.tanker.on('waitingForValidation', () => this.emit('newDevice'));
@@ -225,7 +225,7 @@ That way, when the user needs to perform manual operations about its device, the
 
 Then we implement the `getUnlockKey()` and `addCurrentDevice()` device methods in `./client/web/tutorial/src/Session.js`:
 
-```javascript
+```diff
 async getUnlockKey(): Promise<string> {
 - return 'this is the unlock key';
 + return this.tanker.generateAndRegisterUnlockKey();
