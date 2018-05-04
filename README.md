@@ -53,8 +53,10 @@ The example server provides applications with:
 
 Note: before running any of the example applications, don't forget to always start the server first!
 
-Go to the homepage of the example server in your browser, and follow instructions:
+Go to the homepage of the example server in your browser:
 
 ```
 http://localhost:8080/
 ```
+
+On this page, you will find all the instructions needed to run the example applications and a link to a tutorial.

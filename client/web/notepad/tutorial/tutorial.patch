@@ -122,8 +122,8 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    // FIXME: use tanker to encrypt the text as binary data, then
 +    // encode the data and send it to the server
 +    const data = content;
-+    // ]]
 +    this.api.push(data);
++    // ]]
    }
 
    async loadText(): Promise<string> {

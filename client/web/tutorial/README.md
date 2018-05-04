@@ -81,16 +81,21 @@ We've marked the places we are going to modify with these place holder comments:
 
 ### Handling a Tanker session
 
-In the `./client/web/tutorial/src/Session.js` file, let's use the `trustchainId` found in the config file to initialize a new Tanker instance:
-
+In the `./client/web/tutorial/src/Session.js` file, we've already extracted the `trustchainId` from the config file:
 ```javascript
+import { trustchainId } from './config';
+```
+
+Use it to initialize a new Tanker instance:
+
+```diff
 constructor() {
   ...
 - // [[
 - // FIXME: create a new tanker object with the trustchainId
 - // this.tanker = ...;
 - // ]]
-+  this.tanker = new Tanker({ trustchainId });
++ this.tanker = new Tanker({ trustchainId });
   ...
 }
 ```
@@ -105,10 +110,10 @@ In both cases, the server should have sent a user token, and we can call `open()
 
 Note that we use `await` because opening a Tanker session is not instantaneous, and we do not want to block the application while Tanker is opening.
 
-```javascript
+```diff
 async create(userId: string, password: string): Promise<void> {
   // ...
-  const userToken = await response.text
+  const userToken = await response.text();
 
   // Open Tanker session with userId and userToken
 - this.opened = true;
@@ -118,9 +123,10 @@ async create(userId: string, password: string): Promise<void> {
 
 async login(userId: string, password: string): Promise<void> {
   // ...
+  const userToken = await response.text();
+
 - this.opened = true;
 - await true
-+ const userToken = await response.text();
 + await this.tanker.open(userId, userToken);
 }
 ```
@@ -135,7 +141,7 @@ Note that `open()` will use the user token to:
 
 With this in place we can get rid of the `opened` attribute and fix the `isOpen()` and `close()` methods:
 
-```javascript
+```diff
 constructor() {
   // ...
 - this.opened = false;
@@ -163,26 +169,29 @@ You can check this by refreshing your browser, and log in. You should see the te
 
 To encrypt the data, we use [`tanker.encrypt()`](https://www.tanker.io/docs/latest/guide/encryption#encrypting):
 
-```javascript
+```diff
 async saveText(content: string): Promise<void> {
   // use tanker to encrypt the text as binary data, then
   // encode the data and send it to the server
-  - const data = content;
-  - this.api.push(data);
-  + const encryptedData = await this.tanker.encrypt(content);
-  + this.api.push(toBase64(encryptedData));
+- const data = content;
+- this.api.push(data);
++ const encryptedData = await this.tanker.encrypt(content);
++ this.api.push(toBase64(encryptedData));
 }
 ```
 
 The `encrypt()` method takes a string as parameter and returns some binary data. Our server used to accept the contents of the notes as strings, that's why we use `toBase64()` here.
 
-At this point, return to the application in your browser and save again some content in the input. It should be already encrypted when pushed to the server.
+At this point:
+* go back to the application in your browser,
+* click on save: your data is now already encrypted when pushed to the server,
+* click on load: you'll see some gibberish in the input as you got encrypted data from the server but did not add code to decrypt it yet.
 
 ### Decrypting data
 
 To decrypt the data, we use the same steps, but in reverse order using the [`tanker.decrypt()`](https://www.tanker.io/docs/latest/guide/encryption/#decrypting) method:
 
-```javascript
+```diff
 async loadText(): Promise<string> {
   const data = await this.api.get();
   // ...
@@ -202,7 +211,7 @@ That is because we did not take care of device management so far. Let's do that 
 
 First, we connect the `waitingForValidation` event of the Tanker and emit the `newDevice` event when required:
 
-``` javascript
+```diff
 async login(userId: string, password: string): Promise<void> {
   this.api.setUserInfo(userId, password);
 + this.tanker.on('waitingForValidation', () => this.emit('newDevice'));
@@ -216,10 +225,10 @@ That way, when the user needs to perform manual operations about its device, the
 
 Then we implement the `getUnlockKey()` and `addCurrentDevice()` device methods in `./client/web/tutorial/src/Session.js`:
 
-```javascript
+```diff
 async getUnlockKey(): Promise<string> {
 - return 'this is the unlock key';
-- return this.tanker.generateAndRegisterUnlockKey();
++ return this.tanker.generateAndRegisterUnlockKey();
 }
 
 async addCurrentDevice(unlockKey: string): Promise<void> {
@@ -239,15 +248,16 @@ You can now check that device management is indeed working by following those st
 3. fill the input with some content and click on the save button,
 4. keep your browser tab open.
 
-You've just created a new user and some content associated, except this time you save the user's unlock key.
+You've just created a new user and some content associated, except this time you've saved the user's unlock key.
 
-Now, you'll use your browser **in private browsing mode** to emulate a new device:
+Now, you'll launch **a different browser** to emulate a new device (technically, different browsers don't share Tanker data and behave as separate devices):
 
-1. open a new tab **in private browsing mode** in your browser
+1. open a new tab in a second different browser,
 2. you should now be redirected to a page where you can enter the unlock key you saved in the previous sequence,
-3. upon entering the unlock key, the new tab in private browsing mode should contain the same content that was saved in the first regular tab,
-4. you can then change the content on the second device (tab in private browsing mode), click save, go back to the first device (regular tab), and load the new content.
+3. upon entering the unlock key, the second browser should display the same content that was saved in the first browser,
+4. you can then change the content on the second browser, click save, go back to the first browser, and load the new content.
 
+Note: instead of a second browser, you could also have used the first browser in private browsing mode to emulate a new device. Nevertheless, the browser won't persist Tanker data over private browsing sessions, so you would have to unlock the device every time you restart such a private browsing session.
 
 ## Conclusion
 
