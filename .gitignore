@@ -3,19 +3,17 @@
 # dependencies
 /**/node_modules
 
-# testing
-/coverage
-
-# production
-/build
-
 # tmp data
 **/data/*
 !**/data/.gitkeep
 
-# Configs
-/config/*.json
+# configs
+/config/*
+!/config/.gitkeep
 **/config.js
+
+# tutorial build
+/client/web/tutorial/**/*.orig
 
 # misc
 .DS_Store
@@ -23,8 +21,6 @@
 .env.development.local
 .env.test.local
 .env.production.local
-src/client-config.js
-src/tanker-sdk-*.js
 
 npm-debug.log*
 yarn-debug.log*
