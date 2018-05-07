@@ -14,6 +14,18 @@ if (!fs.existsSync(dataFolder)) {
 // Helpers to read/write user data
 const dataFilePath = userId => `${dataFolder}/${userId.replace(/[\/\\]/g, '_')}.json`;
 
+const addConnection = (from, to) => {
+  const path = dataFilePath(to);
+  const user = JSON.parse(fs.readFileSync(path));
+  if (user.friends === undefined) {
+    user.friends = [];
+  }
+  if (!user.friends.includes(from)) {
+    user.friends.push(from);
+  }
+  save(user)
+}
+
 const exists = (id) => {
   const path = dataFilePath(id);
   return fs.existsSync(path);
@@ -43,6 +55,7 @@ const getAllIds = () => {
 
 module.exports = {
   default: {
+    addConnection,
     dataFilePath,
     getAllIds,
     exists,

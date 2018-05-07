@@ -28,6 +28,7 @@ const app = express();
 const port = 8080;
 app.use(cors); // enable CORS
 app.use(bodyParser.text());
+app.use(bodyParser.json());
 app.options('*', cors); // enable pre-flight CORS requests
 
 // Show helpful error messages. In a production server,
@@ -130,16 +131,26 @@ app.get('/data/:userId', async (req, res) => {
 
 
 app.get('/users', async (req, res) => {
-  try {
-    const knownIds = users.getAllIds();
+  const knownIds = users.getAllIds();
 
-    res.set('Content-Type', 'application/json');
-    res.json(knownIds);
+  res.set('Content-Type', 'application/json');
+  res.json(knownIds);
+});
+
+app.post('/share', (req, res) => {
+  const { from, to } = req.body;
+  to.forEach(recipient => {
+    users.addConnection(from, recipient);
+  })
+  res.sendStatus('201');
+});
+
+app.get('/friends', (req, res) => {
+  let { friends } = res.locals.user;
+  if (friends === undefined) {
+    friends = [];
   }
-  catch(e) {
-    console.error(e);
-    res.sendStatus(500);
-  }
+  res.json(friends);
 });
 
 
