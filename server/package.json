@@ -17,5 +17,8 @@
     "libsodium-wrappers-sumo": "^0.7.3",
     "marked": "^0.3.19",
     "morgan": "^1.9.0"
+  },
+  "devDependencies": {
+    "node-dev": "^3.1.3"
   }
 }

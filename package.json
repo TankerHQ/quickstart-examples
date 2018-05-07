@@ -26,6 +26,7 @@
     "make:tutorial": "./bin/make-tutorial",
     "start": "yarn start:server",
     "start:server": "./bin/config-check && cd server/src && node server.js",
+    "watch:server": "./bin/config-check && cd server/src && node-dev server.js",
     "start:nodejs:hello-world": "./bin/config-check && cd client/nodejs/hello-world && node main.js",
     "start:web:api-observer": "./bin/config-check && cd client/web/api-observer && react-scripts start",
     "start:web:notepad": "./bin/config-check && cd client/web/notepad && react-scripts start",
