@@ -13,6 +13,7 @@ const express = require('express');
 const morgan = require('morgan');
 const userToken = require('@tanker/user-token');
 const sodium = require('libsodium-wrappers-sumo');
+const debugMiddleware = require('debug-error-middleware').express;
 
 const auth = require('./middlewares/auth').default;
 const cors = require('./middlewares/cors').default;
@@ -30,6 +31,10 @@ const port = 8080;
 app.use(cors); // enable CORS
 app.use(bodyParser.text());
 app.options('*', cors); // enable pre-flight CORS requests
+
+// Show helpful error messages. In a production server,
+// remove this as it could leak sensitive information.
+app.use(debugMiddleware());
 
 
 // Add routes for the server's home page (readmes...)
