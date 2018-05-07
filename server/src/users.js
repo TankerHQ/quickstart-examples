@@ -29,9 +29,22 @@ const save = (user) => {
   fs.writeFileSync(path, JSON.stringify(user, null, 2));
 };
 
+const getAllIds = () => {
+  const jsonFiles = fs.readdirSync(dataFolder).filter(f => f.match(/\.json$/));
+  const res = [];
+  jsonFiles.forEach(path => {
+    const fullPath = `${dataFolder}/${path}`;
+    const user = JSON.parse(fs.readFileSync(fullPath))
+    res.push(user.id);
+  });
+
+  return res
+}
+
 module.exports = {
   default: {
     dataFilePath,
+    getAllIds,
     exists,
     find,
     save

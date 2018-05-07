@@ -129,6 +129,20 @@ app.get('/data/:userId', async (req, res) => {
 });
 
 
+app.get('/users', async (req, res) => {
+  try {
+    const knownIds = users.getAllIds();
+
+    res.set('Content-Type', 'application/json');
+    res.json(knownIds);
+  }
+  catch(e) {
+    console.error(e);
+    res.sendStatus(500);
+  }
+});
+
+
 // Start application
 log('Tanker mock server:');
 log(`Configured with Trustchain: ${config.trustchainId}`, 1);
