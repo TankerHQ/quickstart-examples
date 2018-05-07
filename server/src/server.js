@@ -91,12 +91,12 @@ app.get('/login', (req, res) => {
   res.send(user.token);
 });
 
-app.put('/data', async (req, res) => {
+app.put('/data', (req, res) => {
   const user = res.locals.user;
 
   log('Save data on storage', 1);
   try {
-    user.data = await req.body;
+    user.data = req.body;
     users.save(user);
   } catch (e) {
     log(e, 1);
@@ -107,7 +107,7 @@ app.put('/data', async (req, res) => {
   res.sendStatus(200);
 });
 
-app.get('/data/:userId', async (req, res) => {
+app.get('/data/:userId', (req, res) => {
   const { userId } = req.params;
   log('Retrieve data from storage', 1);
 
@@ -130,7 +130,7 @@ app.get('/data/:userId', async (req, res) => {
 });
 
 
-app.get('/users', async (req, res) => {
+app.get('/users', (req, res) => {
   const knownIds = users.getAllIds();
 
   res.set('Content-Type', 'application/json');
