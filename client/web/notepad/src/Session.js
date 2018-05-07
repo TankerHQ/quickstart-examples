@@ -81,7 +81,7 @@ export default class Session extends EventEmitter {
   }
 
   async loadText(): Promise<string> {
-    const response = await this.api.get();
+    const response = await this.api.get(this.userId);
 
     if (response.status === 404)
       return '';

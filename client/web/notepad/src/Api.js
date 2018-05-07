@@ -41,7 +41,7 @@ export default class Api {
     return fetch(this.urlFor('/data'), { method: 'PUT', body: content });
   }
 
-  async get(): Promise<string> {
-    return fetch(this.urlFor('/data'));
+  async get(user): Promise<string> {
+    return fetch(this.urlFor(`/data/${user}`));
   }
 }
