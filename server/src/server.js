@@ -2,8 +2,6 @@
 //
 // This is a demo server, you MUST NOT use it *as is* in production!
 //
-// Nothing in this piece of code is safe nor reliable, nor intented to be.
-//
 // The only purpose of this program is to illustrate how to provide a
 // backend server to the demo applications using the Tanker SDK.
 
