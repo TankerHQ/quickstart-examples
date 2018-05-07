@@ -96,7 +96,7 @@ const mainConfigFiles = fs.readdirSync(mainConfigDir).filter(f => f.match(/\.jso
 
 if (mainConfigFiles.length === 0) {
   addError([
-    'Welcome on the Tanker quickstart examples project.',
+    'Welcome to the Tanker quickstart examples project.',
     '\nTo run the example server and applications, you need to:',
     '  - create a Trustchain on the Tanker dashboard (https://dashboard.tanker.io)',
     '  - download the JSON configuration file of this Trustchain',
