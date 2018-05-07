@@ -35,14 +35,24 @@ class Edit extends React.Component<Props, State> {
     this.setState({ error: null, message: null, text: e.target.value });
   }
 
-  onSave = async () => {
+  onSave = () => {
     const { text } = this.state;
     const { session } = this.props;
-    await session.saveText(text);
+    return session.saveText(text);
   }
 
   onLoad = async () => {
     await this.load();
+  }
+
+  onBackClicked = (event) => {
+    event.preventDefault();
+    this.props.onHome();
+  }
+
+  onShareClicked = async () => {
+    const resourceId = await this.onSave();
+    this.props.onShare(resourceId)
   }
 
   render() {
@@ -60,8 +70,11 @@ class Edit extends React.Component<Props, State> {
             </FormGroup>
             <ButtonGroup>
               <Button bsStyle="primary" onClick={this.onSave}>Save</Button>
+              <Button bsStyle="info" onClick={this.onShareClicked}>Share</Button>
               <Button onClick={this.onLoad}>Load</Button>
             </ButtonGroup>
+            <br /> <br />
+            <a onClick={this.onBackClicked} href="/">&laquo; Back</a>
           </form>
         </Panel.Body>
       </Panel>

@@ -44,4 +44,31 @@ export default class Api {
   async get(user): Promise<string> {
     return fetch(this.urlFor(`/data/${user}`));
   }
+
+  async getFriends() {
+    const headers = { 'Content-Type': 'application/json' };
+    const response = await fetch(this.urlFor('/friends'), { headers });
+    return response.json();
+  }
+
+  async getUsers() {
+    const headers = { 'Content-Type': 'application/json' };
+    const response = await fetch(this.urlFor('/users'), { headers });
+    return response.json();
+  }
+
+  async share(recipients) {
+    const data = {
+      from: this.userId,
+      to: recipients,
+    };
+    const headers = { 'Content-Type': 'application/json' };
+    const response = await fetch(this.urlFor('/share'),
+      {
+        headers,
+        body: JSON.stringify(data),
+        method: 'POST',
+      }
+    );
+  }
 }

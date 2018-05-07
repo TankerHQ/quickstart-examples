@@ -1,6 +1,6 @@
 //@flow
 import EventEmitter from 'events';
-import Tanker, { toBase64, fromBase64 } from '@tanker/core';
+import Tanker, { toBase64, fromBase64, getResourceId } from '@tanker/core';
 import Api from './Api';
 import { trustchainId } from './config';
 
@@ -75,18 +75,38 @@ export default class Session extends EventEmitter {
     return this.tanker.generateAndRegisterUnlockKey();
   }
 
-  async saveText(content: string): Promise<void> {
+  async saveText(content: string) {
     const eData = await this.tanker.encrypt(content);
-    this.api.push(toBase64(eData));
+    await this.api.push(toBase64(eData));
+    return getResourceId(eData);
   }
 
   async loadText(): Promise<string> {
-    const response = await this.api.get(this.userId);
+    return this.loadTextFromUser(this.userId);
+  }
+
+  async loadTextFromUser(userId) {
+    const response = await this.api.get(userId);
 
     if (response.status === 404)
       return '';
 
     const data = await response.text();
-    return this.tanker.decrypt(fromBase64(data));
+    const clear = await this.tanker.decrypt(fromBase64(data));
+    return clear;
   }
+
+  async getFriends(): Promise<Array<string>> {
+    return this.api.getFriends();
+  }
+
+  async getUsers() {
+    return this.api.getUsers();
+  }
+
+  async share(resourceId, recipients) {
+    await this.tanker.share([resourceId], recipients);
+    await this.api.share(recipients);
+  }
+
 }
