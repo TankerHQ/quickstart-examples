@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@tanker/core": "1.6.0",
+    "fetch": "^1.1.0",
     "pouchdb": "^6.4.3",
     "pouchdb-find": "^6.4.3",
     "uuid": "^3.2.1"
