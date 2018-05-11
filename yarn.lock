@@ -6007,6 +6007,38 @@ pouchdb-adapter-idb@^6.3.4:
     pouchdb-promise "6.4.3"
     pouchdb-utils "6.4.3"
 
+pouchdb-adapter-leveldb-core@6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/pouchdb-adapter-leveldb-core/-/pouchdb-adapter-leveldb-core-6.4.3.tgz#0b623fc12e63acbf5606508ba2008e501803076a"
+  dependencies:
+    argsarray "0.0.1"
+    buffer-from "0.1.1"
+    double-ended-queue "2.1.0-0"
+    levelup "2.0.1"
+    pouchdb-adapter-utils "6.4.3"
+    pouchdb-binary-utils "6.4.3"
+    pouchdb-collections "6.4.3"
+    pouchdb-errors "6.4.3"
+    pouchdb-json "6.4.3"
+    pouchdb-md5 "6.4.3"
+    pouchdb-merge "6.4.3"
+    pouchdb-promise "6.4.3"
+    pouchdb-utils "6.4.3"
+    sublevel-pouchdb "6.4.3"
+    through2 "2.0.3"
+
+pouchdb-adapter-leveldb@^6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/pouchdb-adapter-leveldb/-/pouchdb-adapter-leveldb-6.4.3.tgz#0fe0f69b090df849c15b54e09a0e20db13cfa581"
+  dependencies:
+    level "2.1.1"
+    level-write-stream "1.0.0"
+    leveldown "2.1.1"
+    pouchdb-adapter-leveldb-core "6.4.3"
+    pouchdb-merge "6.4.3"
+    pouchdb-utils "6.4.3"
+    through2 "2.0.3"
+
 pouchdb-adapter-utils@6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-adapter-utils/-/pouchdb-adapter-utils-6.4.3.tgz#384bb1bcd37dc7d473016eb450cec53d665bcae4"
@@ -6060,7 +6092,7 @@ pouchdb-collections@6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-collections/-/pouchdb-collections-6.4.3.tgz#2b70ca3143134c361dba6e466518b4f4d8e92ff4"
 
-pouchdb-core@^6.3.4:
+pouchdb-core@^6.3.4, pouchdb-core@^6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-core/-/pouchdb-core-6.4.3.tgz#8a25d60f95b6861191228327e56c04a661389426"
   dependencies:
@@ -6148,31 +6180,6 @@ pouchdb-utils@6.4.3:
     pouchdb-errors "6.4.3"
     pouchdb-promise "6.4.3"
     uuid "3.2.1"
-
-pouchdb@^6.4.3:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/pouchdb/-/pouchdb-6.4.3.tgz#077e812a054ac44e13622a64e0c802325d1d44ad"
-  dependencies:
-    argsarray "0.0.1"
-    buffer-from "0.1.1"
-    clone-buffer "1.0.0"
-    debug "3.1.0"
-    double-ended-queue "2.1.0-0"
-    immediate "3.0.6"
-    inherits "2.0.3"
-    level "2.1.1"
-    level-codec "7.0.1"
-    level-write-stream "1.0.0"
-    leveldown "2.1.1"
-    levelup "2.0.1"
-    lie "3.1.1"
-    ltgt "2.2.0"
-    readable-stream "1.0.33"
-    request "2.83.0"
-    spark-md5 "3.0.0"
-    through2 "2.0.3"
-    uuid "3.2.1"
-    vuvuzela "1.0.3"
 
 prebuild-install@^2.1.0:
   version "2.5.3"
@@ -6822,33 +6829,6 @@ replace-comments-x@^2.0.0:
   dependencies:
     require-coercible-to-string-x "^1.0.0"
     to-string-x "^1.4.2"
-
-request@2.83.0:
-  version "2.83.0"
-  resolved "https://registry.yarnpkg.com/request/-/request-2.83.0.tgz#ca0b65da02ed62935887808e6f510381034e3356"
-  dependencies:
-    aws-sign2 "~0.7.0"
-    aws4 "^1.6.0"
-    caseless "~0.12.0"
-    combined-stream "~1.0.5"
-    extend "~3.0.1"
-    forever-agent "~0.6.1"
-    form-data "~2.3.1"
-    har-validator "~5.0.3"
-    hawk "~6.0.2"
-    http-signature "~1.2.0"
-    is-typedarray "~1.0.0"
-    isstream "~0.1.2"
-    json-stringify-safe "~5.0.1"
-    mime-types "~2.1.17"
-    oauth-sign "~0.8.2"
-    performance-now "^2.1.0"
-    qs "~6.5.1"
-    safe-buffer "^5.1.1"
-    stringstream "~0.0.5"
-    tough-cookie "~2.3.3"
-    tunnel-agent "^0.6.0"
-    uuid "^3.1.0"
 
 request@^2.79.0:
   version "2.85.0"
@@ -7513,6 +7493,15 @@ style-loader@0.19.0:
   dependencies:
     loader-utils "^1.0.2"
     schema-utils "^0.3.0"
+
+sublevel-pouchdb@6.4.3:
+  version "6.4.3"
+  resolved "https://registry.yarnpkg.com/sublevel-pouchdb/-/sublevel-pouchdb-6.4.3.tgz#e4eca52d8ac7ba17ff6c18fcdc51f5ecbbb15597"
+  dependencies:
+    inherits "2.0.3"
+    level-codec "7.0.1"
+    ltgt "2.2.0"
+    readable-stream "1.0.33"
 
 supports-color@^2.0.0:
   version "2.0.0"
