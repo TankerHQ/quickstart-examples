@@ -1,11 +1,12 @@
 const Tanker = require('@tanker/core').default;
+const fetch = require('node-fetch');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
 const persistence = require('./persistence');
 
 const config = {
-  ...require('./config.js'),
+  ...require('./config'),
   ...persistence.config
 };
 
