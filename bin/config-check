@@ -7,8 +7,28 @@ const errors = [];
 
 const addError = (message) => errors.push(message);
 
-const readJSONFile = (filePath) => {
-  return JSON.parse(fs.readFileSync(filePath));
+const objectToModuleSource = (obj) => {
+  const jsonMultiline = JSON.stringify(obj, null, 2);
+  const jsonMultilineUnquotedKeys = jsonMultiline.replace(/"([^"\s-]+)":/g, "$1:");
+  return `module.exports = ${jsonMultilineUnquotedKeys};`;
+};
+
+const createConfigFile = (config, values, override) => {
+  const { keys, fullPath } = config;
+
+  if (override || !fs.existsSync(fullPath)) {
+    const data = {};
+
+    keys.forEach(maybeKey => {
+      const optional = (maybeKey.slice(-1) === '?');
+      const key = optional ? maybeKey.slice(0, -1) : maybeKey;
+      if (!optional || key in values) {
+        data[key] = values[key];
+      }
+    });
+
+    fs.writeFileSync(fullPath, objectToModuleSource(data));
+  }
 };
 
 const checkFilePresent = (file) => {
@@ -30,9 +50,9 @@ const checkFileContent = (config) => {
   const { keys, shortPath, samplePath, fullPath } = config;
   const content = require(fullPath);
 
-  // Unexpected content
+  // Unexpected keys (neither declared as required nor optional)
   Object.keys(content).forEach(key => {
-    if (!keys.includes(key)) {
+    if (!keys.includes(key) && !keys.includes(key + '?')) {
       if (key === 'trustchainPrivateKey') {
         addError([
           `Security issue: unexpected key "${key}" in ${shortPath}.`,
@@ -44,8 +64,8 @@ const checkFileContent = (config) => {
     }
   });
 
-  // Missing content
-  keys.forEach(key => {
+  // Missing non-optional keys
+  keys.filter(key => key.slice(-1) !== '?').forEach(key => {
     if (!(key in content)) {
       addError(`Missing key "${key}" in ${shortPath}`);
     } else if (content[key] === '<FIX ME>') {
@@ -54,12 +74,12 @@ const checkFileContent = (config) => {
   });
 };
 
-// Define configs to generate
+// Define configs to generate (optional keys end with '?')
 const generatedConfigs = [
-  { shortPath: 'client/nodejs/hello-world/config.js', keys: ['trustchainId'] },
-  { shortPath: 'client/web/api-observer/src/config.js', keys: ['trustchainId'] },
-  { shortPath: 'client/web/notepad/src/config.js', keys: ['trustchainId'] },
-  { shortPath: 'client/web/tutorial/src/config.js', keys: ['trustchainId'] },
+  { shortPath: 'client/nodejs/hello-world/config.js', keys: ['trustchainId', 'url?'] },
+  { shortPath: 'client/web/api-observer/src/config.js', keys: ['trustchainId', 'url?'] },
+  { shortPath: 'client/web/notepad/src/config.js', keys: ['trustchainId', 'url?'] },
+  { shortPath: 'client/web/tutorial/src/config.js', keys: ['trustchainId', 'url?'] },
   { shortPath: 'server/src/config.js', keys: ['trustchainId', 'trustchainPrivateKey'] }
 ];
 
@@ -93,18 +113,19 @@ if (mainConfigFiles.length === 0) {
 
 } else {
   const mainConfigFile = mainConfigFiles[0];
-  let json;
-  let jsonError = null;
+  const mainConfigFilePath = pathLib.join(mainConfigDir, mainConfigFile);
+  let formatError = null;
+  let values;
 
   try {
-    json = readJSONFile(pathLib.join(mainConfigDir, mainConfigFile));
+    values = JSON.parse(fs.readFileSync(mainConfigFilePath));
   } catch (e) {
     console.error(e);
     console.log(''); // skip line
-    jsonError = e;
+    formatError = e;
   }
 
-  if (jsonError || !('trustchainId' in json) || !('trustchainPrivateKey' in json)) {
+  if (formatError || !('trustchainId' in values) || !('trustchainPrivateKey' in values)) {
     addError([
       `Malformed Truschain configuration file: config/${mainConfigFile}`,
       'This file should be in JSON format and contain the "trustchainId" and "trustchainPrivateKey" fields.',
@@ -112,16 +133,7 @@ if (mainConfigFiles.length === 0) {
 
   } else {
     // Keys ok, use them to create missing files
-    generatedConfigs.forEach(config => {
-      const { keys, shortPath, samplePath, fullPath } = config;
-
-      // Create missing config file
-      if (!fs.existsSync(fullPath)) {
-        const data = (h => { keys.forEach(key => h[key] = json[key]); return h; })({})
-        const content = `module.exports = ${JSON.stringify(data, null, 2)};`;
-        fs.writeFileSync(fullPath, content);
-      }
-    });
+    generatedConfigs.forEach(config => createConfigFile(config, values, false));
   }
 
   // Check content of config files
