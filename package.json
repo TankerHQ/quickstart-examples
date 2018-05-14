@@ -1,6 +1,6 @@
 {
   "name": "@tanker/ui-demos",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "main": "server/server.js",
   "description": "Example applications for Tanker.io",
   "repository": {

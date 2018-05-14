@@ -1,13 +1,13 @@
 {
   "name": "@tanker/nodejs-hello-world",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "main": "main.js",
   "private": true,
   "scripts": {
     "start": "cd ../.. && yarn start:nodejs:hello-world"
   },
   "dependencies": {
-    "@tanker/core": "1.6.0",
+    "@tanker/core": "1.6.1",
     "fetch": "^1.1.0",
     "pouchdb-adapter-leveldb": "^6.4.3",
     "pouchdb-core": "^6.4.3",
