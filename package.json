@@ -1,6 +1,6 @@
 {
   "name": "@tanker/ui-demos",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "main": "server/server.js",
   "description": "Example applications for Tanker.io",
   "repository": {
@@ -24,6 +24,7 @@
   "scripts": {
     "config:check": "./bin/config-check",
     "make:tutorial": "./bin/make-tutorial",
+    "start": "yarn start:server",
     "start:server": "./bin/config-check && cd server/src && node server.js",
     "start:nodejs:hello-world": "./bin/config-check && cd client/nodejs/hello-world && node main.js",
     "start:web:api-observer": "./bin/config-check && cd client/web/api-observer && react-scripts start",

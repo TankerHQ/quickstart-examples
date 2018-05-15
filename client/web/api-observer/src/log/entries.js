@@ -16,13 +16,10 @@ const tanker = new Tanker({
 
   encryption: (text, shareWith) => ({
     title: 'Encryption',
-    code: shareWith ? `
-const binary = tanker.encrypt(${quoteEllipsis(text)}, {
-  shareWith: ${quote(shareWith)}
-});
-const base64 = toBase64(binary);
-` : `
-const binary = tanker.encrypt(${quoteEllipsis(text)});
+    code: (shareWith ? `const opts = { shareWith: ${quoteEllipsis(shareWith)} };` : '') +
+`
+const clear = ${quoteEllipsis(text, 20)};
+const binary = await tanker.encrypt(clear${shareWith ? ', opts' : ''});
 const base64 = toBase64(binary);
 `
   }),
@@ -36,7 +33,7 @@ const base64 = toBase64(binary);
     title: 'Decryption',
     code: `
 const binary = fromBase64(${quoteEllipsis(base64)});
-const clear = tanker.decrypt(binary);
+const clear = await tanker.decrypt(binary);
 `
   }),
 

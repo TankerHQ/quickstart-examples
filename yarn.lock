@@ -2,21 +2,20 @@
 # yarn lockfile v1
 
 
-"@tanker/core@1.6.0", "@tanker/core@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-1.6.0.tgz#1d3a22d7d3031360536ef7af7f4ab3a8e8428984"
+"@tanker/core@1.6.1", "@tanker/core@^1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-1.6.1.tgz#69ad69498afc0b2529311ee967924192eccc3b2b"
   dependencies:
-    "@tanker/crypto" "1.6.0"
+    "@tanker/crypto" "1.6.1"
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
     babel-runtime "^6.22.0"
-    engine.io-client "git+https://github.com/TankerApp/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
-    isomorphic-fetch "^2.2.1"
-    pouchdb-adapter-idb "^6.3.4"
-    pouchdb-adapter-websql "^6.3.4"
-    pouchdb-core "^6.3.4"
-    pouchdb-find "^6.3.4"
-    socket.io-client "git+https://github.com/TankerApp/socket.io-client.git#4f9f9b2a68922bc30fd7d0350c1258153584910b"
+    engine.io-client "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
+    pouchdb-adapter-idb "^6.4.3"
+    pouchdb-adapter-websql "^6.4.3"
+    pouchdb-core "^6.4.3"
+    pouchdb-find "^6.4.3"
+    socket.io-client "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
     varint "^5.0.0"
 
 "@tanker/crypto@1.4.0":
@@ -25,9 +24,9 @@
   dependencies:
     libsodium-wrappers "^0.5.1"
 
-"@tanker/crypto@1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.6.0.tgz#1e80c01bef13d85b5fc188b95f8cd9c1bc87f204"
+"@tanker/crypto@1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.6.1.tgz#bdc916bffda2e63e2351b8827ad1333f316b8adb"
   dependencies:
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
@@ -2390,9 +2389,9 @@ end-stream@~0.1.0:
   dependencies:
     write-stream "~0.4.3"
 
-"engine.io-client@git+https://github.com/TankerApp/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67":
+"engine.io-client@git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67":
   version "3.1.0"
-  resolved "git+https://github.com/TankerApp/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
+  resolved "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
   dependencies:
     component-emitter "1.2.1"
     component-inherit "0.0.3"
@@ -4102,7 +4101,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
-isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
+isomorphic-fetch@^2.1.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   dependencies:
@@ -5994,7 +5993,7 @@ pouchdb-abstract-mapreduce@6.4.3:
     pouchdb-promise "6.4.3"
     pouchdb-utils "6.4.3"
 
-pouchdb-adapter-idb@^6.3.4:
+pouchdb-adapter-idb@^6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-adapter-idb/-/pouchdb-adapter-idb-6.4.3.tgz#5610ca073aedf75723371de6fd906b7eb5962d0c"
   dependencies:
@@ -6063,7 +6062,7 @@ pouchdb-adapter-websql-core@6.4.3:
     pouchdb-merge "6.4.3"
     pouchdb-utils "6.4.3"
 
-pouchdb-adapter-websql@^6.3.4:
+pouchdb-adapter-websql@^6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-adapter-websql/-/pouchdb-adapter-websql-6.4.3.tgz#117c7609a439b7a3ff5f0b7379c9d96d79f41c51"
   dependencies:
@@ -6092,7 +6091,7 @@ pouchdb-collections@6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-collections/-/pouchdb-collections-6.4.3.tgz#2b70ca3143134c361dba6e466518b4f4d8e92ff4"
 
-pouchdb-core@^6.3.4, pouchdb-core@^6.4.3:
+pouchdb-core@^6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-core/-/pouchdb-core-6.4.3.tgz#8a25d60f95b6861191228327e56c04a661389426"
   dependencies:
@@ -6118,7 +6117,7 @@ pouchdb-errors@6.4.3:
   dependencies:
     inherits "2.0.3"
 
-pouchdb-find@^6.3.4, pouchdb-find@^6.4.3:
+pouchdb-find@^6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-find/-/pouchdb-find-6.4.3.tgz#1d0128306071434a5e397bb14ce69c831356c95e"
   dependencies:
@@ -7218,16 +7217,16 @@ sntp@2.x.x:
   dependencies:
     hoek "4.x.x"
 
-"socket.io-client@git+https://github.com/TankerApp/socket.io-client.git#4f9f9b2a68922bc30fd7d0350c1258153584910b":
+"socket.io-client@git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da":
   version "2.0.3"
-  resolved "git+https://github.com/TankerApp/socket.io-client.git#4f9f9b2a68922bc30fd7d0350c1258153584910b"
+  resolved "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
   dependencies:
     backo2 "1.0.2"
     base64-arraybuffer "0.1.5"
     component-bind "1.0.0"
     component-emitter "1.2.1"
     debug "~2.6.4"
-    engine.io-client "git+https://github.com/TankerApp/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
+    engine.io-client "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
     has-cors "1.1.0"
     indexof "0.0.1"
     object-component "0.0.3"

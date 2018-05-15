@@ -1,13 +1,13 @@
 {
   "name": "@tanker/api-observer",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "main": "src/index.js",
   "private": true,
   "scripts": {
     "start": "cd ../.. && yarn start:web:api-observer"
   },
   "dependencies": {
-    "@tanker/core": "1.6.0",
+    "@tanker/core": "1.6.1",
     "babel-polyfill": "^6.26.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
