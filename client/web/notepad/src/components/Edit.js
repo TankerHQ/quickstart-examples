@@ -1,82 +1,117 @@
 // @flow
 import React from 'react';
-import { Alert, Button, ButtonGroup, FormControl, FormGroup, Panel } from 'react-bootstrap';
+import {
+  Alert,
+  Button,
+  ButtonGroup,
+  FormControl,
+  FormGroup,
+  Panel,
+} from 'react-bootstrap';
 import Session from '../Session';
 
-type Props = { session: Session };
+type Props = {session: Session};
 
 type State = {
   text: string,
   error: ?string,
-  message: ?string,
-}
+  loading: boolean,
+  saving: boolean,
+  modified: boolean,
+};
 
 class Edit extends React.Component<Props, State> {
   state: State = {
     text: '',
     error: null,
-    message: null,
-  }
+    modified: false,
+    saving: false,
+    loading: true,
+  };
 
   async componentWillMount() {
     await this.load();
   }
 
   async load() {
+    this.setState({loading: true});
     try {
       const text = await this.props.session.loadText();
-      this.setState({ text });
+      this.setState({text, loading: false});
     } catch (e) {
-      this.setState({ error: e.message });
+      console.error(e);
+      this.setState({error: e.toString(), loading: false});
     }
   }
 
-  onChange = (e) => {
-    this.setState({ error: null, message: null, text: e.target.value });
-  }
+  onChange = e => {
+    this.setState({
+      text: e.target.value,
+      modified: true,
+    });
+  };
 
-  onSave = () => {
-    const { text } = this.state;
-    const { session } = this.props;
-    return session.saveText(text);
-  }
+  onSave = async () => {
+    const {text} = this.state;
+    const {session} = this.props;
+    this.setState({modified: false, saving: true});
+    try {
+      await session.saveText(text);
+      this.setState({saving: false});
+    } catch (err) {
+      console.error(err);
+      this.setState({error: err.toString(), saving: false});
+    }
+  };
 
-  onLoad = async () => {
-    await this.load();
-  }
-
-  onBackClicked = (event) => {
+  onBackClicked = event => {
     event.preventDefault();
-    this.props.onHome();
-  }
+    this.props.history.goBack();
+  };
 
   onShareClicked = async () => {
-    const resourceId = await this.onSave();
-    this.props.onShare(resourceId)
-  }
+    await this.onSave();
+    this.props.history.push('/share');
+  };
 
   render() {
-    const { error, message } = this.state;
+    const {error, loading} = this.state;
 
     return (
       <Panel>
-        <Panel.Heading>Your Story</Panel.Heading>
+        <Panel.Heading>Your note</Panel.Heading>
         <Panel.Body>
-          <form className="form-signin">
+          <form>
             {error && <Alert bsStyle="danger">{error}</Alert>}
-            {message && <Alert bsStyle="info">{message}</Alert>}
+            {loading && <Alert bsStyle="info">Loading...</Alert>}
             <FormGroup id="edit">
-              <FormControl componentClass="textarea" onChange={this.onChange} value={this.state.text} />
+              <FormControl
+                componentClass="textarea"
+                onChange={this.onChange}
+                value={this.state.text}
+                rows="12"
+              />
             </FormGroup>
-            <ButtonGroup>
-              <Button bsStyle="primary" onClick={this.onSave}>Save</Button>
-              <Button bsStyle="info" onClick={this.onShareClicked}>Share</Button>
-              <Button onClick={this.onLoad}>Load</Button>
+            {this.state.modified ? '*' : null}
+            <ButtonGroup className="pull-right">
+              <Button
+                bsStyle="success"
+                onClick={this.onSave}
+                disabled={this.state.saving}
+              >
+                {this.state.saving ? 'Saving...' : 'Save'}
+              </Button>
+              <Button bsStyle="primary" onClick={this.onShareClicked}>
+                Share
+              </Button>
             </ButtonGroup>
-            <br /> <br />
-            <a onClick={this.onBackClicked} href="/">&laquo; Back</a>
           </form>
         </Panel.Body>
+        <Panel.Footer>
+          <a onClick={this.onBackClicked} href="/">
+            &laquo; Back
+          </a>
+        </Panel.Footer>
       </Panel>
     );
   }

@@ -21,7 +21,9 @@ export default class Api {
   }
 
   urlFor(path) {
-    const queryString = `userId=${encodeURIComponent(this.userId)}&password=${encodeURIComponent(this.password)}`;
+    const queryString = `userId=${encodeURIComponent(
+      this.userId
+    )}&password=${encodeURIComponent(this.password)}`;
     return `${appServerUrl}${path}?${queryString}`;
   }
 
@@ -35,25 +37,29 @@ export default class Api {
 
   push(content: string): Promise<Response> {
     if (typeof content !== 'string') {
-      throw new Error(`api.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`);
+      throw new Error(
+        `api.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`
+      );
     }
 
-    return fetch(this.urlFor('/data'), { method: 'PUT', body: content });
+    return fetch(this.urlFor('/data'), {method: 'PUT', body: content});
   }
 
   async get(user): Promise<string> {
     return fetch(this.urlFor(`/data/${user}`));
   }
 
-  async getFriends() {
-    const headers = { 'Content-Type': 'application/json' };
-    const response = await fetch(this.urlFor('/friends'), { headers });
+  async getMyData() {
+    const headers = {'Content-Type': 'application/json'};
+    const response = await fetch(this.urlFor('/me'), {headers});
+    if (!response.ok) throw new Error('Request failed: ' + response.status);
     return response.json();
   }
 
   async getUsers() {
-    const headers = { 'Content-Type': 'application/json' };
-    const response = await fetch(this.urlFor('/users'), { headers });
+    const headers = {'Content-Type': 'application/json'};
+    const response = await fetch(this.urlFor('/users'), {headers});
+    if (!response.ok) throw new Error('Request failed: ' + response.status);
     return response.json();
   }
 
@@ -62,13 +68,12 @@ export default class Api {
       from: this.userId,
       to: recipients,
     };
-    const headers = { 'Content-Type': 'application/json' };
-    const response = await fetch(this.urlFor('/share'),
-      {
-        headers,
-        body: JSON.stringify(data),
-        method: 'POST',
-      }
-    );
+    const headers = {'Content-Type': 'application/json'};
+    const response = await fetch(this.urlFor('/share'), {
+      headers,
+      body: JSON.stringify(data),
+      method: 'POST',
+    });
+    if (!response.ok) throw new Error('Request failed: ' + response.status);
   }
 }

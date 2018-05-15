@@ -1,19 +1,21 @@
 //@flow
 import EventEmitter from 'events';
-import Tanker, { toBase64, fromBase64, getResourceId } from '@tanker/core';
+import Tanker, {toBase64, fromBase64, getResourceId} from '@tanker/core';
 import Api from './Api';
-import { trustchainId } from './config';
+import {trustchainId} from './config';
 
 export default class Session extends EventEmitter {
   api: Api;
   tanker: Tanker;
   +userId: string;
   +password: string;
+  +resourceId: string;
 
   constructor() {
     super();
     this.api = new Api();
-    this.tanker = new Tanker({ trustchainId });
+    this.tanker = new Tanker({trustchainId});
+    this.resourceId = null;
   }
 
   get userId(): string {
@@ -24,7 +26,7 @@ export default class Session extends EventEmitter {
     return this.api.password;
   }
 
-  isOpen(): bool {
+  isOpen(): boolean {
     return this.tanker.status === this.tanker.OPEN;
   }
 
@@ -38,8 +40,7 @@ export default class Session extends EventEmitter {
 
     if (response.status === 409)
       throw new Error(`User '${userId}' already exists`);
-    if (response.status !== 200)
-      throw new Error('Server error!');
+    if (response.status !== 200) throw new Error('Server error!');
 
     const userToken = await response.text();
     return this.tanker.open(userId, userToken);
@@ -56,12 +57,10 @@ export default class Session extends EventEmitter {
       throw new Error('Cannot contact server');
     }
 
-    if (response.status === 404)
-      throw new Error('User never registered');
-    if (response.status === 401)
-      throw new Error('Bad login or password');
+    if (response.status === 404) throw new Error('User never registered');
+    if (response.status === 401) throw new Error('Bad login or password');
     if (response.status !== 200)
-      throw new Error('It Borked!');
+      throw new Error('Unexpected error status: ' + response.status);
 
     const userToken = await response.text();
     await this.tanker.open(userId, userToken);
@@ -76,9 +75,9 @@ export default class Session extends EventEmitter {
   }
 
   async saveText(content: string) {
-    const eData = await this.tanker.encrypt(content);
+    const recipients = this.getNoteRecipients();
+    const eData = await this.tanker.encrypt(content, {shareWith: recipients});
     await this.api.push(toBase64(eData));
-    return getResourceId(eData);
   }
 
   async loadText(): Promise<string> {
@@ -88,25 +87,39 @@ export default class Session extends EventEmitter {
   async loadTextFromUser(userId) {
     const response = await this.api.get(userId);
 
-    if (response.status === 404)
-      return '';
+    if (response.status === 404) return '';
 
     const data = await response.text();
     const clear = await this.tanker.decrypt(fromBase64(data));
     return clear;
   }
 
-  async getFriends(): Promise<Array<string>> {
-    return this.api.getFriends();
+  async getResourceId() {
+    const response = await this.api.get(this.userId);
+
+    if (response.status === 404) return null;
+
+    const data = await response.text();
+    const resourceId = getResourceId(fromBase64(data));
+    return resourceId;
+  }
+
+  async getaccessibleNotes(): Promise<Array<string>> {
+    return (await this.api.getMyData()).accessibleNotes || [];
+  }
+
+  async getNoteRecipients(): Promise<Array<string>> {
+    return (await this.api.getMyData()).noteRecipients || [];
   }
 
   async getUsers() {
     return this.api.getUsers();
   }
 
-  async share(resourceId, recipients) {
+  async share(recipients) {
+    const resourceId = await this.getResourceId();
+    if (!resourceId) throw new Error('No resource id.');
     await this.tanker.share([resourceId], recipients);
     await this.api.share(recipients);
   }
-
 }

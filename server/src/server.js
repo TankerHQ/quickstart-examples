@@ -137,20 +137,21 @@ app.get('/users', (req, res) => {
   res.json(knownIds);
 });
 
+// Add
 app.post('/share', (req, res) => {
   const { from, to } = req.body;
-  to.forEach(recipient => {
-    users.addConnection(from, recipient);
-  })
+  // ensure only the current user can share their note with others
+  if (from !== res.locals.user.id)
+    return res.sendStatus(401);
+
+  users.share(from, to);
   res.sendStatus('201');
 });
 
-app.get('/friends', (req, res) => {
-  let { friends } = res.locals.user;
-  if (friends === undefined) {
-    friends = [];
-  }
-  res.json(friends);
+app.get('/me', (req, res) => {
+  // res.locals.user is set by the auth middleware
+  const me = res.locals.user;
+  res.json(me);
 });
 
 

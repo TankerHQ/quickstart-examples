@@ -1,41 +1,34 @@
 // @flow
 import React from 'react';
-import { Panel } from 'react-bootstrap';
-import Session from '../Session';
+import {Panel} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 
-
-class FriendsList extends React.Component {
-  onFriendClicked = (event, friend) => {
-    event.preventDefault();
-    this.props.onFriend(friend);
-  }
-
-  row = (friend) => {
-    return <li key={friend}><a onClick={(event) => this.onFriendClicked(event, friend)} href="/">{friend}</a></li>
-  }
-
-  render() {
-    return (
-      <ul>
-        {this.props.friends.map(this.row)}
-      </ul>
-    );
-  }
-}
+import AccessibleNotes from './AccessibleNotes';
 
 class Home extends React.Component {
   state: State = {
-    friends: [],
-  }
+    accessibleNotes: [],
+    loading: true,
+    error: null,
+  };
 
-  onEditClicked = (event) => {
+  onEditClicked = event => {
     event.preventDefault();
     this.props.onEdit();
-  }
+  };
 
   async load() {
-    const friends = await this.props.session.getFriends();
-    this.setState({ friends });
+    this.setState({loading: true});
+    try {
+      const accessibleNotes = await this.props.session.getaccessibleNotes();
+      this.setState({accessibleNotes, error: null, loading: false});
+    } catch (err) {
+      this.setState({
+        accessibleNotes: [],
+        error: err.toString(),
+        loading: false,
+      });
+    }
   }
 
   async componentWillMount() {
@@ -45,16 +38,29 @@ class Home extends React.Component {
   render() {
     return (
       <Panel>
-        <Panel.Heading>Welcome</Panel.Heading>
+        <Panel.Heading>My Note</Panel.Heading>
         <Panel.Body>
-          <h3><a onClick={this.onEditClicked} href="/">My note</a></h3>
-          <hr />
-          <h3>Shared with me</h3>
-          <FriendsList friends={this.state.friends} onFriend={this.props.onFriend} />
+          <p>
+            This is a simple notepad application. You have a single note that
+            you can edit and share.
+          </p>
+          <p>
+            <Link to="/edit">Edit your note</Link>
+          </p>
+        </Panel.Body>
+        <Panel.Heading>Notes shared with me</Panel.Heading>
+        <Panel.Body>
+          <p>The notes bellow have been shared with you.</p>
+          <AccessibleNotes
+            error={this.state.error}
+            loading={this.state.loading}
+            accessibleNotes={this.state.accessibleNotes}
+            onFriend={this.props.onFriend}
+          />
         </Panel.Body>
       </Panel>
-    )
-  };
+    );
+  }
 }
 
 export default Home;
