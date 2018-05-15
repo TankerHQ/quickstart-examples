@@ -1,20 +1,20 @@
 // @flow
 import * as React from 'react';
-import { Button, Panel, Well } from 'react-bootstrap';
+import {Button, Panel, Well} from 'react-bootstrap';
 
 import Session from '../Session';
 
-type Props = { session: Session, onKeySaved: SyntheticEvent => any };
-type State = { isLoading: bool, key?: string };
+type Props = {session: Session, onKeySaved: (SyntheticEvent<>) => any};
+type State = {isLoading: boolean, key: ?string};
 
 class SaveUnlockKey extends React.Component<Props, State> {
-  state = { isLoading: false };
+  state = {isLoading: false, key: null};
 
   componentDidMount = async () => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     const key = await this.props.session.getUnlockKey();
-    this.setState({ isLoading: false, key });
-  }
+    this.setState({isLoading: false, key});
+  };
 
   render = () => (
     <Panel>
@@ -24,7 +24,7 @@ class SaveUnlockKey extends React.Component<Props, State> {
         <Button onClick={this.props.onKeySaved}>Done</Button>
       </Panel.Body>
     </Panel>
-  )
+  );
 }
 
 export default SaveUnlockKey;

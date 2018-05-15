@@ -5,7 +5,7 @@ import { MenuItem, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import Logo from './Logo';
 import './Topbar.css';
 
-const Signout = ({ userId, onSignout }: { onSignout: SyntheticEvent => any }) => (
+const Signout = ({ userId, onSignout }: { userId: string, onSignout: SyntheticEvent<> => any }) => (
   <NavDropdown eventKey={1} title={userId} id="topbar_dropdown">
     <MenuItem onClick={onSignout} eventKey={1}>Sign out</MenuItem>
   </NavDropdown>

@@ -26,15 +26,15 @@ export default class Form extends React.Component<Props, State> {
     serverError: null,
   };
 
-  handleLoginChange = (e: SyntheticInputEvent) => {
+  handleLoginChange = (e: SyntheticInputEvent<>) => {
     this.setState({ login: e.target.value });
   }
 
-  handlePasswordChange = (e: SyntheticInputEvent) => {
+  handlePasswordChange = (e: SyntheticInputEvent<>) => {
     this.setState({ password: e.target.value });
   }
 
-  onClick = async event => {
+  onClick = async (event: SyntheticInputEvent<>) => {
     event.preventDefault();
 
     const { isLoading, login, password } = this.state;

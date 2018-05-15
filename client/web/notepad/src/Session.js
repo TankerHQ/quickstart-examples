@@ -9,13 +9,11 @@ export default class Session extends EventEmitter {
   tanker: Tanker;
   +userId: string;
   +password: string;
-  +resourceId: string;
 
   constructor() {
     super();
     this.api = new Api();
     this.tanker = new Tanker({trustchainId});
-    this.resourceId = null;
   }
 
   get userId(): string {
@@ -84,7 +82,7 @@ export default class Session extends EventEmitter {
     return this.loadTextFromUser(this.userId);
   }
 
-  async loadTextFromUser(userId) {
+  async loadTextFromUser(userId: string) {
     const response = await this.api.get(userId);
 
     if (response.status === 404) return '';
@@ -116,7 +114,7 @@ export default class Session extends EventEmitter {
     return this.api.getUsers();
   }
 
-  async share(recipients) {
+  async share(recipients: string[]) {
     const resourceId = await this.getResourceId();
     if (!resourceId) throw new Error('No resource id.');
     await this.tanker.share([resourceId], recipients);

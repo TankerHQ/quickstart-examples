@@ -3,18 +3,22 @@ import React from 'react';
 import {Panel} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
+import Session from '../Session';
 import AccessibleNotes from './AccessibleNotes';
 
-class Home extends React.Component {
+type Props = {session: Session, history: Object};
+
+type State = {
+  accessibleNotes: string[],
+  error: ?string,
+  loading: boolean,
+};
+
+class Home extends React.Component<Props, State> {
   state: State = {
     accessibleNotes: [],
     loading: true,
     error: null,
-  };
-
-  onEditClicked = event => {
-    event.preventDefault();
-    this.props.onEdit();
   };
 
   async load() {
@@ -55,7 +59,6 @@ class Home extends React.Component {
             error={this.state.error}
             loading={this.state.loading}
             accessibleNotes={this.state.accessibleNotes}
-            onFriend={this.props.onFriend}
           />
         </Panel.Body>
       </Panel>

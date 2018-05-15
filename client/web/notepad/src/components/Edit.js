@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap';
 import Session from '../Session';
 
-type Props = {session: Session};
+type Props = {session: Session, history: Object};
 
 type State = {
   text: string,
@@ -44,9 +44,9 @@ class Edit extends React.Component<Props, State> {
     }
   }
 
-  onChange = e => {
+  onChange = (e: SyntheticEvent<HTMLTextAreaElement>) => {
     this.setState({
-      text: e.target.value,
+      text: e.currentTarget.value,
       modified: true,
     });
   };
@@ -64,8 +64,8 @@ class Edit extends React.Component<Props, State> {
     }
   };
 
-  onBackClicked = event => {
-    event.preventDefault();
+  onBackClicked = (e: SyntheticEvent<>) => {
+    e.preventDefault();
     this.props.history.goBack();
   };
 

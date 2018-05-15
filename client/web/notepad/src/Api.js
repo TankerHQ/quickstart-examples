@@ -20,7 +20,7 @@ export default class Api {
     this._password = password;
   }
 
-  urlFor(path) {
+  urlFor(path: string) {
     const queryString = `userId=${encodeURIComponent(
       this.userId
     )}&password=${encodeURIComponent(this.password)}`;
@@ -45,8 +45,8 @@ export default class Api {
     return fetch(this.urlFor('/data'), {method: 'PUT', body: content});
   }
 
-  async get(user): Promise<string> {
-    return fetch(this.urlFor(`/data/${user}`));
+  async get(userId: string) {
+    return fetch(this.urlFor(`/data/${userId}`));
   }
 
   async getMyData() {
@@ -63,7 +63,7 @@ export default class Api {
     return response.json();
   }
 
-  async share(recipients) {
+  async share(recipients: string[]) {
     const data = {
       from: this.userId,
       to: recipients,
