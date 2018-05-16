@@ -95,7 +95,7 @@ export default class Form extends React.Component<Props, State> {
           {passwordError && <HelpBlock>This field is required</HelpBlock>}
         </FormGroup>
         <ButtonGroup block vertical>
-          <Button type="submit" bsStyle="primary" disabled={isLoading} onClick={this.onClick}>
+          <Button id={`${formId}-submit`} type="submit" bsStyle="primary" disabled={isLoading} onClick={this.onClick}>
             {typeAction}
           </Button>
         </ButtonGroup>

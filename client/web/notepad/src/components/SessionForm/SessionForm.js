@@ -12,20 +12,20 @@ type Props = {
 
 const SessionForm = ({onSignIn, onSignUp}: Props) => (
   <Tab.Container
-    defaultActiveKey={1}
+    defaultActiveKey="sign-in"
     id="session_form_container"
   >
     <Panel>
       <Nav bsStyle="tabs" role="tablist" className="nav-justified">
-        <NavItem eventKey={1}>Sign in</NavItem>
-        <NavItem eventKey={2}>Sign up</NavItem>
+        <NavItem eventKey="sign-in">Sign in</NavItem>
+        <NavItem eventKey="sign-up">Sign up</NavItem>
       </Nav>
       <Panel.Body>
         <Tab.Content animation={false}>
-          <Tab.Pane eventKey={1}>
+          <Tab.Pane eventKey="sign-in">
             <Signin onSubmit={onSignIn} />
           </Tab.Pane>
-          <Tab.Pane eventKey={2}>
+          <Tab.Pane eventKey="sign-up">
             <Signup onSubmit={onSignUp} />
           </Tab.Pane>
         </Tab.Content>
