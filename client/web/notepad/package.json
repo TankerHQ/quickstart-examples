@@ -17,12 +17,17 @@
   "scripts": {
     "start": "cd ../.. && yarn start:web:notepad",
     "flow": "flow",
-    "lint": "eslint src/"
+    "lint":
+      "cd ../../.. && eslint --config=./client/web/notepad/.eslintrc client/web/notepad/src/",
+    "prettier":
+      "cd ../../.. && prettier-eslint --config=./client/web/notepad/.prettierrc --eslint-config-path=./client/web/notepad/.eslintrc 'client/web/notepad/src/**/*.{js,css}' --write"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
     "flow-bin": "^0.72.0",
-    "fs-extra": "^6.0.1"
+    "fs-extra": "^6.0.1",
+    "prettier-eslint-cli": "^4.7.1"
   }
 }

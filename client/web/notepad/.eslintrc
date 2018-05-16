@@ -1,6 +1,13 @@
-{
-  "extends": ["react-app", "eslint:recommended"],
-  "rules": {
-    "no-console": 0
-  }
-}
+// running the eslint from the root directory, see: https://github.com/eslint/eslint/issues/10125
+
+extends:
+  - react-app
+  - airbnb
+  - eslint:recommended
+
+rules:
+  react/jsx-filename-extension: 0
+  // react/prop-types: 0
+  no-restricted-syntax: 0
+  no-console: ["error", { allow: ["warn", "error"] }]
+

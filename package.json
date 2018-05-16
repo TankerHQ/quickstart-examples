@@ -33,6 +33,9 @@
     "start:web:tutorial": "./bin/config-check && cd client/web/tutorial && react-scripts start"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-react-app": "^2.1.0",
     "fs-extra": "^6.0.1"
   }
 }
