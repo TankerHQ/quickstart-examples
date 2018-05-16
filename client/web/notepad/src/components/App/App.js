@@ -45,8 +45,8 @@ class App extends React.Component<Props, State> {
     const {session} = this.props;
     if (session.isOpen()) {
       await session.close();
-      this.setState({status: 'signIn'});
     }
+    this.setState({status: 'signIn'});
   };
 
   onKeySaved = async () => {
