@@ -25,7 +25,7 @@ class App extends React.Component<Props, State> {
       await session.close();
     }
 
-    session.once("newDevice", () => this.setState({ status: "validateDevice" }));
+    session.on("newDevice", () => this.setState({ status: "validateDevice" }));
     await session.login(login, password);
     this.setState({ status: "ready" });
   };
@@ -37,6 +37,7 @@ class App extends React.Component<Props, State> {
       await session.close();
     }
 
+    session.on("newDevice", () => this.setState({ status: "validateDevice" }));
     await session.create(login, password);
     this.setState({ status: "saveKey" });
   };

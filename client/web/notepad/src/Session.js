@@ -34,10 +34,11 @@ export default class Session extends EventEmitter {
 
   async create(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
+    this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
     const response = await this.api.signUp();
 
     if (response.status === 409) throw new Error(`User '${userId}' already exists`);
-    if (response.status !== 200) throw new Error("Server error!");
+    if (!response.ok) throw new Error("Server error!");
 
     const userToken = await response.text();
     return this.tanker.open(userId, userToken);
@@ -45,7 +46,7 @@ export default class Session extends EventEmitter {
 
   async login(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
-    this.tanker.once("waitingForValidation", () => this.emit("newDevice"));
+    this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
     let response;
     try {
       response = await this.api.login();
@@ -56,7 +57,7 @@ export default class Session extends EventEmitter {
 
     if (response.status === 404) throw new Error("User never registered");
     if (response.status === 401) throw new Error("Bad login or password");
-    if (response.status !== 200) throw new Error("Unexpected error status: " + response.status);
+    if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
     const userToken = await response.text();
     await this.tanker.open(userId, userToken);

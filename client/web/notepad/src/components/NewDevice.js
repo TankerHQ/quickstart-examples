@@ -53,7 +53,7 @@ class NewDevice extends React.Component<Props, State> {
               />
               <FormControl.Feedback />
             </FormGroup>
-            <Button bsStyle="primary" disabled={isLoading} onClick={this.onClick}>
+            <Button bsStyle="primary" className="pull-right" disabled={isLoading} onClick={this.onClick}>
               Unlock device
             </Button>
           </form>
