@@ -5,6 +5,7 @@ import { Alert, Button, ButtonGroup, ControlLabel, FormGroup, FormControl, HelpB
 type Props = {
   onSubmit: (login: string, password: string) => Promise<void>,
   typeAction: string,
+  formId: string,
 };
 
 type State = {
@@ -62,13 +63,13 @@ export default class Form extends React.Component<Props, State> {
   }
 
   render() {
-    const { typeAction } = this.props;
+    const { typeAction, formId } = this.props;
     const { login, password, loginError, passwordError, serverError, isLoading } = this.state;
 
     return (
       <form className="form-signin">
         {serverError && <Alert bsStyle="danger">{serverError}</Alert>}
-        <FormGroup controlId={`${typeAction}-userId`} validationState={loginError ? 'error': null}>
+        <FormGroup controlId={`${formId}-user-id`} validationState={loginError ? 'error': null}>
           <ControlLabel>Username</ControlLabel>
           <FormControl
             type="text"
@@ -81,7 +82,7 @@ export default class Form extends React.Component<Props, State> {
           <FormControl.Feedback />
           {loginError && <HelpBlock>This field is required</HelpBlock>}
         </FormGroup>
-        <FormGroup controlId={`${typeAction}-password`} validationState={passwordError ? 'error': null}>
+        <FormGroup controlId={`${formId}-password`} validationState={passwordError ? 'error': null}>
           <ControlLabel>Password</ControlLabel>
           <FormControl
             type="password"
