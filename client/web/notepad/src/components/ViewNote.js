@@ -49,8 +49,8 @@ class ViewNote extends React.Component<Props, State> {
           <Panel.Heading>Note from {friendId}</Panel.Heading>
           <Panel.Body>
             {error && <Alert bsStyle="danger">{error}</Alert>}
-            {isLoading && <Alert bsStyle="info">Loading...</Alert>}
-            <FormControl disabled componentClass="textarea" value={text} rows="12" />
+            {isLoading && <Alert id="view-loading" bsStyle="info">Loading...</Alert>}
+            <p id="view-textarea" style={{ whiteSpace: "pre-line" }}>{text}</p>
           </Panel.Body>
           <Panel.Footer>
             <a onClick={this.onBackClicked} href="/">
