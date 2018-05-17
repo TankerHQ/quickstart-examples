@@ -7,7 +7,7 @@
     "start": "cd ../.. && yarn start:web:api-observer"
   },
   "dependencies": {
-    "@tanker/core": "1.6.1",
+    "@tanker/core": "^1.6.2",
     "babel-polyfill": "^6.26.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
