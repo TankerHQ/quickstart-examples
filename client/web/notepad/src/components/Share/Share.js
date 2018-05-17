@@ -58,7 +58,7 @@ class Share extends React.Component<Props, State> {
 
   onBackClicked = event => {
     event.preventDefault();
-    this.props.history.goBack();
+    this.props.history.push('/edit');
   };
 
   onShareClicked = async () => {
@@ -69,7 +69,7 @@ class Share extends React.Component<Props, State> {
       const recipients = Array.from(selected.values());
       await session.share(recipients);
       this.setState({ isSharing: false });
-      this.props.history.goBack();
+      this.props.history.push('/edit');
     } catch (err) {
       console.error(err);
       this.setState({ error: err.toString(), isSharing: false });

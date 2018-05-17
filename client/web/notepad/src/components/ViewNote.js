@@ -3,13 +3,13 @@ import React from "react";
 
 type Props = {
   history: Object,
-  match: Object
+  match: Object,
 };
 
 type State = {
   text: string,
   error: ?string,
-  isLoading: boolean
+  isLoading: boolean,
 };
 
 class ViewNote extends React.Component<Props, State> {
@@ -23,7 +23,7 @@ class ViewNote extends React.Component<Props, State> {
 
   onBackClicked = event => {
     event.preventDefault();
-    this.props.history.goBack();
+    this.props.history.push("/");
   };
 
   async load() {

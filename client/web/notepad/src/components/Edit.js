@@ -48,7 +48,7 @@ class Edit extends React.Component<Props, State> {
 
   onBackClicked = (e: SyntheticEvent<>) => {
     e.preventDefault();
-    this.props.history.goBack();
+    this.props.history.push('/');
   };
 
   onShareClicked = async () => {
