@@ -32,7 +32,7 @@ const AccessibleNotes = ({ loading, error, friends, history }: Props) => {
     <ListGroup>
       {accessibleNotes.map(friend => (
         <ListGroupItem key={friend} onClick={() => history.push(`/view/${friend}`)}>
-          {friend + " note"}
+          {`From ${friend}`}
         </ListGroupItem>
       ))}
     </ListGroup>
