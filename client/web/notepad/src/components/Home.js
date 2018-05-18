@@ -58,12 +58,14 @@ class Home extends React.Component<Props, State> {
           </p>
         </Panel.Body>
         <Panel.Heading id="shared-with-me-heading">
-          Notes shared with me
-          <ButtonGroup className="pull-right">
-            <Button id="refresh-button" onClick={this.load}>
-              Refresh
-            </Button>
-          </ButtonGroup>
+          <div style={{ display: "flex" }}>
+            <span style={{ alignSelf: "center" }}>Notes shared with me</span>
+            <div style={{ flexGrow: "1", justifyContent: "flex-end", display: "flex" }}>
+              <Button id="refresh-button" onClick={this.load}>
+                Refresh
+              </Button>
+            </div>
+          </div>
         </Panel.Heading>
         <Panel.Body>
           <p>The notes bellow have been shared with you.</p>

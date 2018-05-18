@@ -8,7 +8,7 @@ type Props = { session: Session, onKeySaved: (SyntheticEvent<>) => any };
 type State = { isLoading: boolean, isLoaded: boolean, key: ?string };
 
 class SaveUnlockKey extends React.Component<Props, State> {
-  state = { isLoading: false, key: null };
+  state = { isLoading: false, isLoaded: false, key: null };
 
   componentDidMount = async () => {
     this.setState({ isLoading: true });
@@ -24,7 +24,13 @@ class SaveUnlockKey extends React.Component<Props, State> {
         <Panel.Body className="unlockKey" bsStyle="success">
           {isLoading && <Alert bsStyle="info">Loading...</Alert>}
           <Well id="key-well">{key}</Well>
-          <Button id="key-done-button" onClick={this.props.onKeySaved} disabled={!isLoaded}>
+          <Button
+            bsStyle="primary"
+            id="key-done-button"
+            className="pull-right"
+            onClick={this.props.onKeySaved}
+            disabled={!isLoaded}
+          >
             Done
           </Button>
         </Panel.Body>
