@@ -74,7 +74,7 @@ class Edit extends React.Component<Props, State> {
 
     return (
       <Panel>
-        <Panel.Heading id="your-note-heading">Your note</Panel.Heading>
+        <Panel.Heading id="your-note-heading">My note</Panel.Heading>
         <Panel.Body>
           <form>
             {error && (
@@ -82,18 +82,19 @@ class Edit extends React.Component<Props, State> {
                 {error}
               </Alert>
             )}
-            {isLoading && (
+            {/* {isLoading && (
               <Alert id="edit-loading" bsStyle="info">
                 Loading...
               </Alert>
-            )}
+            )} */}
             <FormGroup id="edit">
               <FormControl
                 id="edit-textarea"
                 componentClass="textarea"
                 onChange={this.onChange}
-                value={this.state.text}
+                value={isLoading ? 'Loading...' : this.state.text}
                 rows="12"
+                disabled={isLoading}
               />
             </FormGroup>
             {this.state.modified ? "*" : null}

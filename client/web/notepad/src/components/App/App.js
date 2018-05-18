@@ -18,6 +18,12 @@ type State = {
 class App extends React.Component<Props, State> {
   state = { status: "signIn" };
 
+
+  componentWillMount() {
+    const { session } = this.props;
+    session.on("newDevice", () => this.setState({ status: "validateDevice" }));
+  }
+
   onSignIn = async (login: string, password: string) => {
     const { session } = this.props;
     if (session.isOpen()) {
@@ -25,7 +31,6 @@ class App extends React.Component<Props, State> {
       await session.close();
     }
 
-    session.on("newDevice", () => this.setState({ status: "validateDevice" }));
     await session.login(login, password);
     this.setState({ status: "ready" });
   };
@@ -37,7 +42,6 @@ class App extends React.Component<Props, State> {
       await session.close();
     }
 
-    session.on("newDevice", () => this.setState({ status: "validateDevice" }));
     await session.create(login, password);
     this.setState({ status: "saveKey" });
   };

@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import { Button, ButtonGroup, Panel } from "react-bootstrap";
+import { Button, Panel } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import Session from "../Session";
@@ -68,7 +68,7 @@ class Home extends React.Component<Props, State> {
           </div>
         </Panel.Heading>
         <Panel.Body>
-          <p>The notes bellow have been shared with you.</p>
+          <p>The notes below have been shared with you.</p>
           <AccessibleNotes
             error={this.state.error}
             isLoading={this.state.isLoading}

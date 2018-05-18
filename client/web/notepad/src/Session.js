@@ -14,6 +14,7 @@ export default class Session extends EventEmitter {
     super();
     this.api = new Api();
     this.tanker = new Tanker({ trustchainId });
+    this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
   }
 
   get userId(): string {
@@ -34,7 +35,6 @@ export default class Session extends EventEmitter {
 
   async create(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
-    this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
     const response = await this.api.signUp();
 
     if (response.status === 409) throw new Error(`User '${userId}' already exists`);
@@ -46,7 +46,6 @@ export default class Session extends EventEmitter {
 
   async login(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
-    this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
     let response;
     try {
       response = await this.api.login();

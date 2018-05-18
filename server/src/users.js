@@ -27,9 +27,8 @@ const share = (from, to) => {
 
 // Record that `to` shared a note with `from`
 const addAccessibleNoteId = (from, to) => {
-  const path = dataFilePath(to);
-  const user = JSON.parse(fs.readFileSync(path));
-  if (user.accessibleNotes === undefined) {
+  const user = find(to);
+  if (!user.accessibleNotes) {
     user.accessibleNotes = [];
   }
   if (!user.accessibleNotes.includes(from)) {
@@ -40,8 +39,7 @@ const addAccessibleNoteId = (from, to) => {
 
 // Record that the note of `from` is shared with `to`
 const addNoteRecipients = (from, to) => {
-  const path = dataFilePath(from);
-  const user = JSON.parse(fs.readFileSync(path));
+  const user = find(from);
   user.noteRecipients = to;
   save(user);
 };
@@ -63,14 +61,11 @@ const save = user => {
 
 const getAllIds = () => {
   const jsonFiles = fs.readdirSync(dataFolder).filter(f => f.match(/\.json$/));
-  const res = [];
-  jsonFiles.forEach(path => {
+  return jsonFiles.map(path => {
     const fullPath = `${dataFolder}/${path}`;
     const user = JSON.parse(fs.readFileSync(fullPath));
-    res.push(user.id);
+    return user.id;
   });
-
-  return res;
 };
 
 module.exports = {

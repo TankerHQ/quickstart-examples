@@ -54,10 +54,10 @@ class NewDevice extends React.Component<Props, State> {
               />
               <FormControl.Feedback />
             </FormGroup>
-            {/* todo: this should be right pulled*/}
             <Button
               id="unlock-button"
-              bsStyle="primary pull-right"
+              bsStyle="primary"
+              className="pull-right"
               disabled={isLoading}
               onClick={this.onClick}
             >
