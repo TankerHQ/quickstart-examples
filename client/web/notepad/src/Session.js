@@ -72,7 +72,7 @@ export default class Session extends EventEmitter {
   }
 
   async saveText(content: string) {
-    const recipients = this.getNoteRecipients();
+    const recipients = await this.getNoteRecipients();
     const eData = await this.tanker.encrypt(content, { shareWith: recipients });
     await this.api.push(toBase64(eData));
   }
