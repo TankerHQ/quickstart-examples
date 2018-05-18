@@ -1,8 +1,8 @@
 //@flow
-import EventEmitter from 'events';
-import Tanker, {toBase64, fromBase64, getResourceId} from '@tanker/core';
-import Api from './Api';
-import {trustchainId} from './config';
+import EventEmitter from "events";
+import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/core";
+import Api from "./Api";
+import { trustchainId } from "./config";
 
 export default class Session extends EventEmitter {
   api: Api;
@@ -13,7 +13,7 @@ export default class Session extends EventEmitter {
   constructor() {
     super();
     this.api = new Api();
-    this.tanker = new Tanker({trustchainId});
+    this.tanker = new Tanker({ trustchainId });
   }
 
   get userId(): string {
@@ -36,9 +36,8 @@ export default class Session extends EventEmitter {
     this.api.setUserInfo(userId, password);
     const response = await this.api.signUp();
 
-    if (response.status === 409)
-      throw new Error(`User '${userId}' already exists`);
-    if (response.status !== 200) throw new Error('Server error!');
+    if (response.status === 409) throw new Error(`User '${userId}' already exists`);
+    if (response.status !== 200) throw new Error("Server error!");
 
     const userToken = await response.text();
     return this.tanker.open(userId, userToken);
@@ -46,19 +45,18 @@ export default class Session extends EventEmitter {
 
   async login(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
-    this.tanker.once('waitingForValidation', () => this.emit('newDevice'));
+    this.tanker.once("waitingForValidation", () => this.emit("newDevice"));
     let response;
     try {
       response = await this.api.login();
     } catch (e) {
       console.error(e);
-      throw new Error('Cannot contact server');
+      throw new Error("Cannot contact server");
     }
 
-    if (response.status === 404) throw new Error('User never registered');
-    if (response.status === 401) throw new Error('Bad login or password');
-    if (response.status !== 200)
-      throw new Error('Unexpected error status: ' + response.status);
+    if (response.status === 404) throw new Error("User never registered");
+    if (response.status === 401) throw new Error("Bad login or password");
+    if (response.status !== 200) throw new Error("Unexpected error status: " + response.status);
 
     const userToken = await response.text();
     await this.tanker.open(userId, userToken);
@@ -74,7 +72,7 @@ export default class Session extends EventEmitter {
 
   async saveText(content: string) {
     const recipients = this.getNoteRecipients();
-    const eData = await this.tanker.encrypt(content, {shareWith: recipients});
+    const eData = await this.tanker.encrypt(content, { shareWith: recipients });
     await this.api.push(toBase64(eData));
   }
 
@@ -85,7 +83,7 @@ export default class Session extends EventEmitter {
   async loadTextFromUser(userId: string) {
     const response = await this.api.get(userId);
 
-    if (response.status === 404) return '';
+    if (response.status === 404) return "";
 
     const data = await response.text();
     const clear = await this.tanker.decrypt(fromBase64(data));
@@ -102,7 +100,7 @@ export default class Session extends EventEmitter {
     return resourceId;
   }
 
-  async getaccessibleNotes(): Promise<Array<string>> {
+  async getAccessibleNotes(): Promise<Array<string>> {
     return (await this.api.getMyData()).accessibleNotes || [];
   }
 
@@ -116,7 +114,7 @@ export default class Session extends EventEmitter {
 
   async share(recipients: string[]) {
     const resourceId = await this.getResourceId();
-    if (!resourceId) throw new Error('No resource id.');
+    if (!resourceId) throw new Error("No resource id.");
     await this.tanker.share([resourceId], recipients);
     await this.api.share(recipients);
   }

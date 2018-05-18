@@ -1,25 +1,21 @@
-import React from 'react';
-import {Switch, Route} from 'react-router';
+import React from "react";
+import { Switch, Route } from "react-router";
 
-import Home from '../Home';
-import ViewNote from '../ViewNote';
-import Share from '../Share';
-import Edit from '../Edit';
+import Home from "../Home";
+import ViewNote from "../ViewNote";
+import Share from "../Share";
+import Edit from "../Edit";
+import Session from "../../Session";
 
-const Content = ({session}) => (
+type Props = {
+  session: Session
+};
+
+const Content = ({ session }: Props) => (
   <Switch>
-    <Route
-      path="/view/:friendId"
-      render={props => <ViewNote session={session} {...props} />}
-    />
-    <Route
-      path="/edit"
-      render={props => <Edit session={session} {...props} />}
-    />
-    <Route
-      path="/share"
-      render={props => <Share session={session} {...props} />}
-    />
+    <Route path="/view/:friendId" render={props => <ViewNote session={session} {...props} />} />
+    <Route path="/edit" render={props => <Edit session={session} {...props} />} />
+    <Route path="/share" render={props => <Share session={session} {...props} />} />
     <Route path="/" render={props => <Home session={session} {...props} />} />
   </Switch>
 );

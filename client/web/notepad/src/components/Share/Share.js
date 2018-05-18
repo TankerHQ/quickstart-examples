@@ -1,67 +1,59 @@
-import {Button, Checkbox, Panel, Alert} from 'react-bootstrap';
-import React from 'react';
-
-class UserList extends React.Component {
-  renderRow = user => {
-    const {onToggle} = this.props;
-    const active = this.props.selected.has(user);
-    return (
-      <Checkbox
-        key={user}
-        onChange={event => {
-          onToggle(user, event.target.checked);
-        }}
-        checked={active}
-      >
-        {user}
-      </Checkbox>
-    );
-  };
-
-  render() {
-    return <div>{this.props.users.map(this.renderRow)}</div>;
-  }
-}
+import React from "react";
+import { Button, Panel, Alert } from "react-bootstrap";
+import UserList from "./UserList";
+import Session from "../../Session";
 
 const withoutMe = (me, elements) => elements.filter(e => e !== me);
 
-class Share extends React.Component {
+type Props = {
+  session: Session,
+  history: Object
+};
+
+type State = {
+  users: string[],
+  selected: Set,
+  error: ?string,
+  isLoading: boolean,
+  isSharing: boolean
+};
+
+class Share extends React.Component<Props, State> {
   state = {
     users: [], //all the users
-    recipients: [], // the current recipients
     selected: new Set(), // the new selection
-    loading: true,
+    isLoading: true,
     error: null,
-    isSharing: false,
+    isSharing: false
   };
 
   componentWillMount = async () => {
-    const {session} = this.props;
+    const { session } = this.props;
     try {
       const [users, recipients] = await Promise.all([
         session.getUsers(),
-        session.getNoteRecipients(),
+        session.getNoteRecipients()
       ]);
       this.setState({
-        loading: false,
+        isLoading: false,
         users: withoutMe(session.userId, users),
         selected: new Set(withoutMe(session.userId, recipients)),
-        error: null,
+        error: null
       });
     } catch (err) {
       console.error(err);
-      this.setState({loading: false, error: err.toString()});
+      this.setState({ isLoading: false, error: err.toString() });
     }
   };
 
   onToggle = (user, checked) => {
-    const {selected} = this.state;
+    const { selected } = this.state;
     if (checked) {
       selected.add(user);
     } else {
       selected.delete(user);
     }
-    this.setState({selected});
+    this.setState({ selected });
   };
 
   onBackClicked = event => {
@@ -70,40 +62,36 @@ class Share extends React.Component {
   };
 
   onShareClicked = async () => {
-    const {session} = this.props;
-    const {selected} = this.state;
-    this.setState({error: null, isSharing: true});
+    const { session } = this.props;
+    const { selected } = this.state;
+    this.setState({ error: null, isSharing: true });
     try {
       const recipients = Array.from(selected.values());
       await session.share(recipients);
-      this.setState({isSharing: false});
+      this.setState({ isSharing: false });
       this.props.history.goBack();
     } catch (err) {
       console.error(err);
-      this.setState({error: err.toString(), isSharing: false});
+      this.setState({ error: err.toString(), isSharing: false });
     }
   };
 
   render() {
-    const {users, selected, error, loading} = this.state;
+    const { users, selected, error, isLoading } = this.state;
     return (
       <Panel>
         <Panel.Heading>Share</Panel.Heading>
         <Panel.Body>
           {error && <Alert bsStyle="danger">{error}</Alert>}
-          {loading && <Alert bsStyle="info">Loading...</Alert>}
-          <UserList
-            users={users}
-            selected={selected}
-            onToggle={this.onToggle}
-          />
+          {isLoading && <Alert bsStyle="info">Loading...</Alert>}
+          <UserList users={users} selected={selected} onToggle={this.onToggle} />
           <Button
             bsStyle="primary"
             className="pull-right"
             onClick={this.onShareClicked}
             active={!this.state.isSharing}
           >
-            {this.state.isSharing ? 'Sharing...' : 'Share'}
+            {this.state.isSharing ? "Sharing..." : "Share"}
           </Button>
         </Panel.Body>
         <Panel.Footer>

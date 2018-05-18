@@ -1,47 +1,40 @@
 // @flow
-import * as React from 'react';
-import {
-  Alert,
-  Button,
-  ControlLabel,
-  FormControl,
-  FormGroup,
-  Panel,
-} from 'react-bootstrap';
+import * as React from "react";
+import { Alert, Button, ControlLabel, FormControl, FormGroup, Panel } from "react-bootstrap";
 
 type Props = {
-  onUnlockDevice: string => Promise<*>,
+  onUnlockDevice: string => Promise<*>
 };
 
 type State = {
   unlockKey: string,
   isLoading: boolean,
-  error: ?string,
+  error: ?string
 };
 
 class NewDevice extends React.Component<Props, State> {
   state = {
-    unlockKey: '',
+    unlockKey: "",
     isLoading: false,
-    error: null,
+    error: null
   };
 
   onChange = (e: SyntheticInputEvent<HTMLTextAreaElement>) => {
-    this.setState({unlockKey: e.currentTarget.value});
+    this.setState({ unlockKey: e.currentTarget.value });
   };
 
   onClick = async () => {
-    const {onUnlockDevice} = this.props;
-    this.setState({isLoading: true});
+    const { onUnlockDevice } = this.props;
+    this.setState({ isLoading: true });
     try {
       await onUnlockDevice(this.state.unlockKey);
     } catch (e) {
-      this.setState({isLoading: false, error: e.message});
+      this.setState({ isLoading: false, error: e.message });
     }
   };
 
   render() {
-    const {error, unlockKey, isLoading} = this.state;
+    const { error, unlockKey, isLoading } = this.state;
 
     return (
       <Panel>
@@ -60,11 +53,7 @@ class NewDevice extends React.Component<Props, State> {
               />
               <FormControl.Feedback />
             </FormGroup>
-            <Button
-              bsStyle="primary"
-              disabled={isLoading}
-              onClick={this.onClick}
-            >
+            <Button bsStyle="primary" disabled={isLoading} onClick={this.onClick}>
               Unlock device
             </Button>
           </form>
