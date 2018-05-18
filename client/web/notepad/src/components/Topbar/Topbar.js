@@ -13,9 +13,7 @@ const Signout = ({
   onSignOut: (SyntheticEvent<>) => any
 }) => (
   <NavDropdown eventKey={1} title={userId} id="topbar_dropdown">
-    <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={1}>
-      Sign out
-    </MenuItem>
+    <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={1}>Sign out</MenuItem>
   </NavDropdown>
 );
 

@@ -9,7 +9,8 @@ type State = {
   text: string,
   error: ?string,
   isLoading: boolean,
-  saving: boolean,
+  isLoaded: boolean,
+  isSaving: boolean,
   modified: boolean
 };
 
@@ -18,8 +19,9 @@ class Edit extends React.Component<Props, State> {
     text: "",
     error: null,
     modified: false,
-    saving: false,
-    isLoading: true
+    isSaving: false,
+    isLoading: true,
+    isLoaded: false,
   };
 
   async componentWillMount() {
@@ -36,13 +38,13 @@ class Edit extends React.Component<Props, State> {
   onSave = async () => {
     const { text } = this.state;
     const { session } = this.props;
-    this.setState({ modified: false, saving: true });
+    this.setState({ modified: false, isSaving: true });
     try {
       await session.saveText(text);
-      this.setState({ saving: false });
+      this.setState({ isSaving: false });
     } catch (err) {
       console.error(err);
-      this.setState({ error: err.toString(), saving: false });
+      this.setState({ error: err.toString(), isSaving: false });
     }
   };
 
@@ -60,25 +62,26 @@ class Edit extends React.Component<Props, State> {
     this.setState({ isLoading: true });
     try {
       const text = await this.props.session.loadText();
-      this.setState({ text, isLoading: false });
+      this.setState({ text, isLoading: false, isLoaded: true });
     } catch (e) {
       console.error(e);
-      this.setState({ error: e.toString(), isLoading: false });
+      this.setState({ error: e.toString(), isLoading: false, isLoaded: true });
     }
   }
 
   render() {
-    const { error, isLoading } = this.state;
+    const { error, isLoading, isLoaded, isSaving } = this.state;
 
     return (
       <Panel>
-        <Panel.Heading>Your note</Panel.Heading>
+        <Panel.Heading id="your-note-heading">Your note</Panel.Heading>
         <Panel.Body>
           <form>
-            {error && <Alert bsStyle="danger">{error}</Alert>}
-            {isLoading && <Alert bsStyle="info">Loading...</Alert>}
+            {error && <Alert id="edit-error" bsStyle="danger">{error}</Alert>}
+            {isLoading && <Alert id="edit-loading" bsStyle="info">Loading...</Alert>}
             <FormGroup id="edit">
               <FormControl
+                id="edit-textarea"
                 componentClass="textarea"
                 onChange={this.onChange}
                 value={this.state.text}
@@ -87,17 +90,17 @@ class Edit extends React.Component<Props, State> {
             </FormGroup>
             {this.state.modified ? "*" : null}
             <ButtonGroup className="pull-right">
-              <Button bsStyle="success" onClick={this.onSave} disabled={this.state.saving}>
-                {this.state.saving ? "Saving..." : "Save"}
+              <Button id="save-button" bsStyle="success" onClick={this.onSave} disabled={isSaving || !isLoaded}>
+                {isSaving ? "Saving..." : "Save"}
               </Button>
-              <Button bsStyle="primary" onClick={this.onShareClicked}>
+              <Button id="go-to-share-button" bsStyle="primary" onClick={this.onShareClicked} disabled={!isLoaded}>
                 Share
               </Button>
             </ButtonGroup>
           </form>
         </Panel.Body>
         <Panel.Footer>
-          <a onClick={this.onBackClicked} href="/">
+          <a id="back-link" onClick={this.onBackClicked} href="/">
             &laquo; Back
           </a>
         </Panel.Footer>

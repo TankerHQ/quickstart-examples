@@ -46,7 +46,7 @@ class ViewNote extends React.Component<Props, State> {
     return (
       <div>
         <Panel>
-          <Panel.Heading>Note from {friendId}</Panel.Heading>
+          <Panel.Heading id="note-from-friend-heading">Note from {friendId}</Panel.Heading>
           <Panel.Body>
             {error && <Alert bsStyle="danger">{error}</Alert>}
             {isLoading && <Alert id="view-loading" bsStyle="info">Loading...</Alert>}

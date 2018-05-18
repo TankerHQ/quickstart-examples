@@ -15,7 +15,8 @@ type State = {
   selected: Set,
   error: ?string,
   isLoading: boolean,
-  isSharing: boolean
+  isLoaded: boolean,
+  isSharing: boolean,
 };
 
 class Share extends React.Component<Props, State> {
@@ -23,8 +24,9 @@ class Share extends React.Component<Props, State> {
     users: [], //all the users
     selected: new Set(), // the new selection
     isLoading: true,
+    isLoaded: false,
+    isSharing: false,
     error: null,
-    isSharing: false
   };
 
   componentWillMount = async () => {
@@ -36,13 +38,14 @@ class Share extends React.Component<Props, State> {
       ]);
       this.setState({
         isLoading: false,
+        isLoaded: true,
         users: withoutMe(session.userId, users),
         selected: new Set(withoutMe(session.userId, recipients)),
         error: null
       });
     } catch (err) {
       console.error(err);
-      this.setState({ isLoading: false, error: err.toString() });
+      this.setState({ isLoading: false, error: err.toString(), isLoaded: true });
     }
   };
 
@@ -77,21 +80,22 @@ class Share extends React.Component<Props, State> {
   };
 
   render() {
-    const { users, selected, error, isLoading } = this.state;
+    const { users, selected, error, isLoading, isLoaded, isSharing } = this.state;
     return (
       <Panel>
-        <Panel.Heading>Share</Panel.Heading>
+        <Panel.Heading id="share-heading">Share</Panel.Heading>
         <Panel.Body>
-          {error && <Alert bsStyle="danger">{error}</Alert>}
-          {isLoading && <Alert bsStyle="info">Loading...</Alert>}
+          {error && <Alert id="share-error" bsStyle="danger">{error}</Alert>}
+          {isLoading && <Alert id="share-loading" bsStyle="info">Loading...</Alert>}
           <UserList users={users} selected={selected} onToggle={this.onToggle} />
           <Button
+            id="share-button"
             bsStyle="primary"
             className="pull-right"
             onClick={this.onShareClicked}
-            active={!this.state.isSharing}
+            disabled={isSharing || !isLoaded}
           >
-            {this.state.isSharing ? "Sharing..." : "Share"}
+            {isSharing ? "Sharing..." : "Share"}
           </Button>
         </Panel.Body>
         <Panel.Footer>
