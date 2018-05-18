@@ -8,7 +8,7 @@ import Edit from "../Edit";
 import Session from "../../Session";
 
 type Props = {
-  session: Session
+  session: Session,
 };
 
 const Content = ({ session }: Props) => (

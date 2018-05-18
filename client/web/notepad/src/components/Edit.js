@@ -11,7 +11,7 @@ type State = {
   isLoading: boolean,
   isLoaded: boolean,
   isSaving: boolean,
-  modified: boolean
+  modified: boolean,
 };
 
 class Edit extends React.Component<Props, State> {
@@ -31,7 +31,7 @@ class Edit extends React.Component<Props, State> {
   onChange = (e: SyntheticEvent<HTMLTextAreaElement>) => {
     this.setState({
       text: e.currentTarget.value,
-      modified: true
+      modified: true,
     });
   };
 
@@ -50,7 +50,7 @@ class Edit extends React.Component<Props, State> {
 
   onBackClicked = (e: SyntheticEvent<>) => {
     e.preventDefault();
-    this.props.history.push('/');
+    this.props.history.push("/");
   };
 
   onShareClicked = async () => {
@@ -77,8 +77,16 @@ class Edit extends React.Component<Props, State> {
         <Panel.Heading id="your-note-heading">Your note</Panel.Heading>
         <Panel.Body>
           <form>
-            {error && <Alert id="edit-error" bsStyle="danger">{error}</Alert>}
-            {isLoading && <Alert id="edit-loading" bsStyle="info">Loading...</Alert>}
+            {error && (
+              <Alert id="edit-error" bsStyle="danger">
+                {error}
+              </Alert>
+            )}
+            {isLoading && (
+              <Alert id="edit-loading" bsStyle="info">
+                Loading...
+              </Alert>
+            )}
             <FormGroup id="edit">
               <FormControl
                 id="edit-textarea"
@@ -90,10 +98,20 @@ class Edit extends React.Component<Props, State> {
             </FormGroup>
             {this.state.modified ? "*" : null}
             <ButtonGroup className="pull-right">
-              <Button id="save-button" bsStyle="success" onClick={this.onSave} disabled={isSaving || !isLoaded}>
+              <Button
+                id="save-button"
+                bsStyle="success"
+                onClick={this.onSave}
+                disabled={isSaving || !isLoaded}
+              >
                 {isSaving ? "Saving..." : "Save"}
               </Button>
-              <Button id="go-to-share-button" bsStyle="primary" onClick={this.onShareClicked} disabled={!isLoaded}>
+              <Button
+                id="go-to-share-button"
+                bsStyle="primary"
+                onClick={this.onShareClicked}
+                disabled={!isLoaded}
+              >
                 Share
               </Button>
             </ButtonGroup>

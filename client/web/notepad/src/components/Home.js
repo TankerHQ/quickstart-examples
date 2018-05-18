@@ -20,14 +20,14 @@ class Home extends React.Component<Props, State> {
     accessibleNotes: [],
     isLoading: true,
     isLoaded: false,
-    error: null
+    error: null,
   };
 
   async componentWillMount() {
     await this.load();
   }
 
-  load = async () =>{
+  load = async () => {
     this.setState({ isLoading: true });
     try {
       const accessibleNotes = await this.props.session.getAccessibleNotes();
@@ -40,7 +40,7 @@ class Home extends React.Component<Props, State> {
         isLoaded: true,
       });
     }
-  }
+  };
 
   render() {
     return (
@@ -60,7 +60,9 @@ class Home extends React.Component<Props, State> {
         <Panel.Heading id="shared-with-me-heading">
           Notes shared with me
           <ButtonGroup className="pull-right">
-            <Button id="refresh-button" onClick={this.load}>Refresh</Button>
+            <Button id="refresh-button" onClick={this.load}>
+              Refresh
+            </Button>
           </ButtonGroup>
         </Panel.Heading>
         <Panel.Body>

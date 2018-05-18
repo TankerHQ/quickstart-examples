@@ -1,4 +1,4 @@
-import { Alert, FormControl, Panel } from "react-bootstrap";
+import { Alert, Panel } from "react-bootstrap";
 import React from "react";
 
 type Props = {
@@ -49,8 +49,14 @@ class ViewNote extends React.Component<Props, State> {
           <Panel.Heading id="note-from-friend-heading">Note from {friendId}</Panel.Heading>
           <Panel.Body>
             {error && <Alert bsStyle="danger">{error}</Alert>}
-            {isLoading && <Alert id="view-loading" bsStyle="info">Loading...</Alert>}
-            <p id="view-textarea" style={{ whiteSpace: "pre-line" }}>{text}</p>
+            {isLoading && (
+              <Alert id="view-loading" bsStyle="info">
+                Loading...
+              </Alert>
+            )}
+            <p id="view-textarea" style={{ whiteSpace: "pre-line" }}>
+              {text}
+            </p>
           </Panel.Body>
           <Panel.Footer>
             <a onClick={this.onBackClicked} href="/">

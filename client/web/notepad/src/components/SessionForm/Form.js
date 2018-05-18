@@ -7,7 +7,7 @@ import {
   ControlLabel,
   FormGroup,
   FormControl,
-  HelpBlock
+  HelpBlock,
 } from "react-bootstrap";
 
 type Props = {
@@ -22,7 +22,7 @@ type State = {
   password: string,
   loginError: boolean,
   passwordError: boolean,
-  serverError: ?string
+  serverError: ?string,
 };
 
 export default class Form extends React.Component<Props, State> {
@@ -32,7 +32,7 @@ export default class Form extends React.Component<Props, State> {
     password: "",
     loginError: false,
     passwordError: false,
-    serverError: null
+    serverError: null,
   };
 
   onClick = async (event: SyntheticInputEvent<>) => {
@@ -55,7 +55,7 @@ export default class Form extends React.Component<Props, State> {
       isLoading: true,
       loginError: false,
       passwordError: false,
-      serverError: null
+      serverError: null,
     });
 
     try {
@@ -110,7 +110,13 @@ export default class Form extends React.Component<Props, State> {
           {passwordError && <HelpBlock>This field is required</HelpBlock>}
         </FormGroup>
         <ButtonGroup block vertical>
-          <Button id={`${formId}-submit`} type="submit" bsStyle="primary" disabled={isLoading} onClick={this.onClick}>
+          <Button
+            id={`${formId}-submit`}
+            type="submit"
+            bsStyle="primary"
+            disabled={isLoading}
+            onClick={this.onClick}
+          >
             {typeAction}
           </Button>
         </ButtonGroup>

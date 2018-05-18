@@ -25,7 +25,9 @@ const AccessibleNotes = ({ isLoading, error, accessibleNotes, history }: Props) 
   }
 
   if (!accessibleNotes || !accessibleNotes.length) {
-    return <span id="accessible-notes-empty-span">none yet! Ask a friend to share a note with you.</span>;
+    return (
+      <span id="accessible-notes-empty-span">none yet! Ask a friend to share a note with you.</span>
+    );
   }
 
   return (

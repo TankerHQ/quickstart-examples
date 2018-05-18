@@ -7,7 +7,7 @@ import Signup from "./Signup";
 
 type Props = {
   onSignIn: (login: string, password: string) => Promise<void>,
-  onSignUp: (login: string, password: string) => Promise<void>
+  onSignUp: (login: string, password: string) => Promise<void>,
 };
 
 const SessionForm = ({ onSignIn, onSignUp }: Props) => (

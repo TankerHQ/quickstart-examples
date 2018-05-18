@@ -3,20 +3,20 @@ import * as React from "react";
 import { Alert, Button, ControlLabel, FormControl, FormGroup, Panel } from "react-bootstrap";
 
 type Props = {
-  onUnlockDevice: string => Promise<*>
+  onUnlockDevice: string => Promise<*>,
 };
 
 type State = {
   unlockKey: string,
   isLoading: boolean,
-  error: ?string
+  error: ?string,
 };
 
 class NewDevice extends React.Component<Props, State> {
   state = {
     unlockKey: "",
     isLoading: false,
-    error: null
+    error: null,
   };
 
   onChange = (e: SyntheticInputEvent<HTMLTextAreaElement>) => {
@@ -55,7 +55,12 @@ class NewDevice extends React.Component<Props, State> {
               <FormControl.Feedback />
             </FormGroup>
             {/* todo: this should be right pulled*/}
-            <Button id="unlock-button" bsStyle="primary pull-right" disabled={isLoading} onClick={this.onClick}>
+            <Button
+              id="unlock-button"
+              bsStyle="primary pull-right"
+              disabled={isLoading}
+              onClick={this.onClick}
+            >
               Unlock device
             </Button>
           </form>

@@ -7,24 +7,26 @@ import "./Topbar.css";
 
 const Signout = ({
   userId,
-  onSignOut
+  onSignOut,
 }: {
   userId: string,
-  onSignOut: (SyntheticEvent<>) => any
+  onSignOut: (SyntheticEvent<>) => any,
 }) => (
   <NavDropdown eventKey={1} title={userId} id="topbar_dropdown">
-    <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={1}>Sign out</MenuItem>
+    <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={1}>
+      Sign out
+    </MenuItem>
   </NavDropdown>
 );
 
 const Topbar = ({
   isOpen,
   userId,
-  onSignOut
+  onSignOut,
 }: {
   isOpen: boolean,
   userId: string,
-  onSignOut: Function
+  onSignOut: Function,
 }) => (
   <Navbar staticTop>
     <Navbar.Header>

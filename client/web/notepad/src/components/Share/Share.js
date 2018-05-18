@@ -7,7 +7,7 @@ const withoutMe = (me, elements) => elements.filter(e => e !== me);
 
 type Props = {
   session: Session,
-  history: Object
+  history: Object,
 };
 
 type State = {
@@ -34,14 +34,14 @@ class Share extends React.Component<Props, State> {
     try {
       const [users, recipients] = await Promise.all([
         session.getUsers(),
-        session.getNoteRecipients()
+        session.getNoteRecipients(),
       ]);
       this.setState({
         isLoading: false,
         isLoaded: true,
         users: withoutMe(session.userId, users),
         selected: new Set(withoutMe(session.userId, recipients)),
-        error: null
+        error: null,
       });
     } catch (err) {
       console.error(err);
@@ -61,7 +61,7 @@ class Share extends React.Component<Props, State> {
 
   onBackClicked = event => {
     event.preventDefault();
-    this.props.history.push('/edit');
+    this.props.history.push("/edit");
   };
 
   onShareClicked = async () => {
@@ -72,7 +72,7 @@ class Share extends React.Component<Props, State> {
       const recipients = Array.from(selected.values());
       await session.share(recipients);
       this.setState({ isSharing: false });
-      this.props.history.push('/edit');
+      this.props.history.push("/edit");
     } catch (err) {
       console.error(err);
       this.setState({ error: err.toString(), isSharing: false });
@@ -85,8 +85,16 @@ class Share extends React.Component<Props, State> {
       <Panel>
         <Panel.Heading id="share-heading">Share</Panel.Heading>
         <Panel.Body>
-          {error && <Alert id="share-error" bsStyle="danger">{error}</Alert>}
-          {isLoading && <Alert id="share-loading" bsStyle="info">Loading...</Alert>}
+          {error && (
+            <Alert id="share-error" bsStyle="danger">
+              {error}
+            </Alert>
+          )}
+          {isLoading && (
+            <Alert id="share-loading" bsStyle="info">
+              Loading...
+            </Alert>
+          )}
           <UserList users={users} selected={selected} onToggle={this.onToggle} />
           <Button
             id="share-button"

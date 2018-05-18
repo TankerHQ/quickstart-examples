@@ -4,7 +4,7 @@ import React from "react";
 type Props = {
   onToggle: (string, boolean) => void,
   selected: Set<string>,
-  users: string[]
+  users: string[],
 };
 
 export default function UserList({ onToggle, selected, users }: Props) {

@@ -20,15 +20,17 @@ class SaveUnlockKey extends React.Component<Props, State> {
     const { isLoading, isLoaded, key } = this.state;
     return (
       <Panel>
-        <Panel.Heading id="save-unlock-key-heading" >Please save this unlock key</Panel.Heading>
+        <Panel.Heading id="save-unlock-key-heading">Please save this unlock key</Panel.Heading>
         <Panel.Body className="unlockKey" bsStyle="success">
           {isLoading && <Alert bsStyle="info">Loading...</Alert>}
           <Well id="key-well">{key}</Well>
-          <Button id="key-done-button" onClick={this.props.onKeySaved} disabled={!isLoaded}>Done</Button>
+          <Button id="key-done-button" onClick={this.props.onKeySaved} disabled={!isLoaded}>
+            Done
+          </Button>
         </Panel.Body>
       </Panel>
     );
-  }
+  };
 }
 
 export default SaveUnlockKey;

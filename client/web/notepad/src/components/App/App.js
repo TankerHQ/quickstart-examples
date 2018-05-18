@@ -12,7 +12,7 @@ import "./App.css";
 
 type Props = { session: Session };
 type State = {
-  status: "signIn" | "saveKey" | "validateDevice" | "ready"
+  status: "signIn" | "saveKey" | "validateDevice" | "ready",
 };
 
 class App extends React.Component<Props, State> {
