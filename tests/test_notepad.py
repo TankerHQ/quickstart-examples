@@ -281,7 +281,7 @@ class Client:
         self.browser.get("/")
 
 
-def test_sign_up_logout_login(browser: Browser) -> None:
+def test_sign_up_then_sign_out_then_sign_in(browser: Browser) -> None:
     fake = Faker()
     email = fake.email()
     password = fake.password()
@@ -295,7 +295,7 @@ def test_sign_up_logout_login(browser: Browser) -> None:
     client.wait_for_home()
 
 
-def test_sign_up_then_login(browser: Browser) -> None:
+def test_sign_up_then_sign_in(browser: Browser) -> None:
     fake = Faker()
     email = fake.email()
     password = fake.password()
@@ -399,4 +399,3 @@ def test_add_device(headless: bool, request: Any) -> None:
     text_area = second_browser.get_element(id="edit-textarea")
     assert text_area.text == fake_text
     second_browser.close()
-
