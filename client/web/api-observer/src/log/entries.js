@@ -2,6 +2,26 @@ const ellipsis = (s, max = 10) => (s.length > max) ? s.substring(0, max) + '...'
 const quoteEllipsis = (s, max = 10) => JSON.stringify(ellipsis(s, max));
 const quote = (s) => JSON.stringify(s);
 
+const getCodeEncryptAndShare = (text, shareWith) => `
+const opts = { shareWith: ${quoteEllipsis(shareWith)} };
+const clear = ${quoteEllipsis(text, 20)};
+const binary = await tanker.encrypt(clear,
+                                    opts);
+const base64 = toBase64(binary);
+
+// Or
+// const clear = ${quoteEllipsis(text, 20)};
+// const binary = await tanker.encrypt(clear);
+// const resourceId = getResourceId(binary);
+// await tanker.share([resourceId], ${quoteEllipsis(shareWith)});
+`;
+
+const getCodeEncryptionOnly = (text) => `
+const clear = ${quoteEllipsis(text, 20)};
+const binary = await tanker.encrypt(clear);
+const base64 = toBase64(binary);
+`;
+
 export default {
   initialize: (trustchainId) => ({
     title: 'Initialize Tanker SDK',
@@ -16,12 +36,7 @@ const tanker = new Tanker({
 
   encryption: (text, shareWith) => ({
     title: 'Encryption',
-    code: (shareWith ? `const opts = { shareWith: ${quoteEllipsis(shareWith)} };` : '') +
-`
-const clear = ${quoteEllipsis(text, 20)};
-const binary = await tanker.encrypt(clear${shareWith ? ', opts' : ''});
-const base64 = toBase64(binary);
-`
+    code: (shareWith ? getCodeEncryptAndShare(text, shareWith) : getCodeEncryptionOnly(text))
   }),
 
   encryptionSuccess: (base64) => ({
