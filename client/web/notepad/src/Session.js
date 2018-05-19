@@ -74,9 +74,9 @@ export default class Session extends EventEmitter {
     return this.tanker.generateAndRegisterUnlockKey();
   }
 
-  async saveText(content: string) {
+  async saveText(text: string) {
     const recipients = await this.getNoteRecipients();
-    const eData = await this.tanker.encrypt(content, { shareWith: recipients });
+    const eData = await this.tanker.encrypt(text, { shareWith: recipients });
     await this.api.push(toBase64(eData));
   }
 
