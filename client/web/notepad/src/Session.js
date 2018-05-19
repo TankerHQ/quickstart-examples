@@ -33,7 +33,7 @@ export default class Session extends EventEmitter {
     await this.tanker.close();
   }
 
-  async create(userId: string, password: string): Promise<void> {
+  async signUp(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
     const response = await this.api.signUp();
 
@@ -44,7 +44,7 @@ export default class Session extends EventEmitter {
     return this.tanker.open(userId, userToken);
   }
 
-  async login(userId: string, password: string): Promise<void> {
+  async signIn(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
     let response;
     try {
