@@ -33,6 +33,10 @@ export default class Session extends EventEmitter {
     await this.tanker.close();
   }
 
+  async openSession(userId: string, userToken: string) {
+    await this.tanker.open(userId, userToken);
+  }
+
   async signUp(userId: string, password: string): Promise<void> {
     this.api.setUserInfo(userId, password);
     const response = await this.api.signUp();
@@ -41,7 +45,7 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Server error!");
 
     const userToken = await response.text();
-    return this.tanker.open(userId, userToken);
+    return this.openSession(userId, userToken);
   }
 
   async signIn(userId: string, password: string): Promise<void> {
@@ -59,7 +63,7 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
     const userToken = await response.text();
-    await this.tanker.open(userId, userToken);
+    await this.openSession(userId, userToken);
   }
 
   async addCurrentDevice(unlockKey: string): Promise<void> {
