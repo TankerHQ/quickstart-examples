@@ -4,16 +4,11 @@
 // @flow
 const cors = require('cors');
 
-const whitelist = [
-  'http://127.0.0.1:3000',
-  'http://localhost:3000',
-  'http://127.0.0.1:3001', // needed if 3000 is already taken, then 3001 is proposed to the user
-  'http://localhost:3001',
-];
+const allowedOrigins = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 
 const corsMiddleware = cors({
   origin: (origin, callback) => {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
+    if (!origin || origin.match(allowedOrigins)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
