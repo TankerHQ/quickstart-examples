@@ -18,7 +18,6 @@ type State = {
 class App extends React.Component<Props, State> {
   state = { status: "signIn" };
 
-
   componentWillMount() {
     const { session } = this.props;
     session.on("newDevice", () => this.setState({ status: "validateDevice" }));

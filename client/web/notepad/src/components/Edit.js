@@ -92,7 +92,7 @@ class Edit extends React.Component<Props, State> {
                 id="edit-textarea"
                 componentClass="textarea"
                 onChange={this.onChange}
-                value={isLoading ? 'Loading...' : this.state.text}
+                value={isLoading ? "Loading..." : this.state.text}
                 rows="12"
                 disabled={isLoading}
               />
