@@ -24,7 +24,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 @@ -6,6 +6,10 @@
 
  export default class Session extends EventEmitter {
-   api: Api;
+   serverApi: Api;
 +  // [[
 +  // FIXME: remove this attribute
 +  opened: bool;
@@ -35,7 +35,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 @@ -13,7 +17,11 @@
    constructor() {
      super();
-     this.api = new Api();
+     this.serverApi = new Api();
 -    this.tanker = new Tanker({ trustchainId });
 +    // [[
 +    // FIXME: create a new tanker object with the trustchainId
@@ -78,7 +78,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
    }
 
    async login(userId: string, password: string): Promise<void> {
-     this.api.setUserInfo(userId, password);
+     this.serverApi.setUserInfo(userId, password);
 -    this.tanker.once('waitingForValidation', () => this.emit('newDevice'));
 +    // [[
 +    // FIXME: connect the waitingForValidation event of the Tanker session
@@ -86,7 +86,7 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 +    // ]]
      let response;
      try {
-       response = await this.api.login();
+       response = await this.serverApi.login();
 @@ -64,20 +85,34 @@
        throw new Error('It Borked!');
 
@@ -117,12 +117,12 @@ diff -r -u client/web/notepad/src/Session.js client/web/tutorial/src/Session.js
 
    async saveText(content: string): Promise<void> {
 -    const eData = await this.tanker.encrypt(content);
--    this.api.push(toBase64(eData));
+-    this.serverApi.push(toBase64(eData));
 +    // [[
 +    // FIXME: use tanker to encrypt the text as binary data, then
 +    // encode the data and send it to the server
 +    const data = content;
-+    this.api.push(data);
++    this.serverApi.push(data);
 +    // ]]
    }
 

@@ -38,7 +38,7 @@ export default class Api {
   push(content: string): Promise<Response> {
     if (typeof content !== "string") {
       throw new Error(
-        `api.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`,
+        `serverApi.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`,
       );
     }
 

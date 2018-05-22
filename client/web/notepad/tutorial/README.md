@@ -185,9 +185,9 @@ async saveText(content: string): Promise<void> {
   // use tanker to encrypt the text as binary data, then
   // encode the data and send it to the server
 - const data = content;
-- this.api.push(data);
+- this.serverApi.push(data);
 + const encryptedData = await this.tanker.encrypt(content);
-+ this.api.push(toBase64(encryptedData));
++ this.serverApi.push(toBase64(encryptedData));
 }
 ```
 
@@ -199,7 +199,7 @@ To decrypt the data, we use the same steps, but in reverse order using the [`tan
 
 ```diff
 async loadText(): Promise<string> {
-  const data = await this.api.get();
+  const data = await this.serverApi.get();
   // ...
   // use fromBase64 to get binary data from the
   // response of the server and use tanker to decrypt it.
@@ -240,7 +240,7 @@ First, when we encrypt the data (when the user clicks on `save`), we can use the
 
 ```diff
 async saveText(): Promise<string> {
-  const data = await this.api.get();
+  const data = await this.serverApi.get();
   // ...
 - const encryptedData = await this.tanker.encrypt(content);
 + const encryptedData = await this.tanker.encrypt(content, { shareWith: recipients });
@@ -251,7 +251,7 @@ Then, we can store the resource ID matching the newly generated key by using the
 
 ```diff
 async saveText(): Promise<string> {
-  const data = await this.api.get();
+  const data = await this.serverApi.get();
   // ...
 + const encryptedData = await this.tanker.encrypt(content, { shareWith: recipients });
 + this.resourceId = getResourceId(encryptedData)
@@ -262,7 +262,7 @@ Finally, in the `share` method, we can call `tanker.share()` with a list contain
 ```diff
   async share(recipients: string[]) {
 +   await this.tanker.share([this.resourceId], recipients);
-    await this.api.share(recipients);
+    await this.serverApi.share(recipients);
   }
 
 ```
@@ -279,7 +279,7 @@ First, we connect the `waitingForValidation` event of the Tanker and emit the `n
 
 ```diff
 async login(userId: string, password: string): Promise<void> {
-  this.api.setUserInfo(userId, password);
+  this.serverApi.setUserInfo(userId, password);
 + this.tanker.on('waitingForValidation', () => this.emit('newDevice'));
   // ...
 }
