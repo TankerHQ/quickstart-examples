@@ -7,7 +7,7 @@ import { trustchainId } from "./config";
 export default class Session extends EventEmitter {
   serverApi: ServerApi;
   tanker: Tanker;
-  resourceId: string;
+  resourceId: ?string;
   +userId: string;
   +password: string;
 
@@ -16,7 +16,7 @@ export default class Session extends EventEmitter {
     this.serverApi = new ServerApi();
     this.tanker = new Tanker({ trustchainId });
     this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
-    this.resourceId = "";
+    this.resourceId = null;
   }
 
   get userId(): string {
