@@ -26,12 +26,16 @@
     "make:tutorial": "./bin/make-tutorial",
     "start": "yarn start:server",
     "start:server": "./bin/config-check && cd server/src && node server.js",
+    "watch:server": "./bin/config-check && cd server/src && node-dev server.js",
     "start:nodejs:hello-world": "./bin/config-check && cd client/nodejs/hello-world && node main.js",
     "start:web:api-observer": "./bin/config-check && cd client/web/api-observer && react-scripts start",
     "start:web:notepad": "./bin/config-check && cd client/web/notepad && react-scripts start",
     "start:web:tutorial": "./bin/config-check && cd client/web/tutorial && react-scripts start"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-react-app": "^2.1.0",
     "fs-extra": "^6.0.1"
   }
 }

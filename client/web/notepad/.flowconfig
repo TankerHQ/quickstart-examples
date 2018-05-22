@@ -1,0 +1,18 @@
+[ignore]
+
+[include]
+../../../node_modules/@tanker/core
+../../../node_modules/react-bootstrap
+../../../node_modules/react-router-dom
+
+
+[libs]
+
+[lints]
+
+[options]
+module.name_mapper='^react-bootstrap' ->'<PROJECT_ROOT>/../../../node_modules/react-bootstrap'
+module.name_mapper='^react-router-dom' ->'<PROJECT_ROOT>/../../../node_modules/react-router-dom'
+module.name_mapper='^@tanker/core' ->'<PROJECT_ROOT>/../../../node_modules/@tanker/core'
+
+[strict]

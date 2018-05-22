@@ -1,69 +1,128 @@
 // @flow
-import React from 'react';
-import { Alert, Button, ButtonGroup, FormControl, FormGroup, Panel } from 'react-bootstrap';
-import Session from '../Session';
+import React from "react";
+import { Alert, Button, ButtonGroup, FormControl, FormGroup, Panel } from "react-bootstrap";
+import Session from "../Session";
 
-type Props = { session: Session };
+type Props = { session: Session, history: Object };
 
 type State = {
   text: string,
   error: ?string,
-  message: ?string,
-}
+  isLoading: boolean,
+  isLoaded: boolean,
+  isSaving: boolean,
+  modified: boolean,
+};
 
 class Edit extends React.Component<Props, State> {
   state: State = {
-    text: '',
+    text: "",
     error: null,
-    message: null,
-  }
+    modified: false,
+    isSaving: false,
+    isLoading: true,
+    isLoaded: false,
+  };
 
   async componentWillMount() {
     await this.load();
   }
 
-  async load() {
-    try {
-      const text = await this.props.session.loadText();
-      this.setState({ text });
-    } catch (e) {
-      this.setState({ error: e.message });
-    }
-  }
-
-  onChange = (e) => {
-    this.setState({ error: null, message: null, text: e.target.value });
-  }
+  onChange = (e: SyntheticEvent<HTMLTextAreaElement>) => {
+    this.setState({
+      text: e.currentTarget.value,
+      modified: true,
+    });
+  };
 
   onSave = async () => {
     const { text } = this.state;
     const { session } = this.props;
-    await session.saveText(text);
-  }
+    this.setState({ modified: false, isSaving: true });
+    try {
+      await session.saveText(text);
+      this.setState({ isSaving: false });
+    } catch (err) {
+      console.error(err);
+      this.setState({ error: err.toString(), isSaving: false });
+    }
+  };
 
-  onLoad = async () => {
-    await this.load();
+  onBackClicked = (e: SyntheticEvent<>) => {
+    e.preventDefault();
+    this.props.history.push("/");
+  };
+
+  onShareClicked = async () => {
+    await this.onSave();
+    this.props.history.push("/share");
+  };
+
+  async load() {
+    this.setState({ isLoading: true });
+    try {
+      const text = await this.props.session.loadText();
+      this.setState({ text, isLoading: false, isLoaded: true });
+    } catch (e) {
+      console.error(e);
+      this.setState({ error: e.toString(), isLoading: false, isLoaded: true });
+    }
   }
 
   render() {
-    const { error, message } = this.state;
+    const { error, isLoading, isLoaded, isSaving } = this.state;
 
     return (
       <Panel>
-        <Panel.Heading>Your Story</Panel.Heading>
+        <Panel.Heading id="your-note-heading">My note</Panel.Heading>
         <Panel.Body>
-          <form className="form-signin">
-            {error && <Alert bsStyle="danger">{error}</Alert>}
-            {message && <Alert bsStyle="info">{message}</Alert>}
+          <form>
+            {error && (
+              <Alert id="edit-error" bsStyle="danger">
+                {error}
+              </Alert>
+            )}
+            {/* {isLoading && (
+              <Alert id="edit-loading" bsStyle="info">
+                Loading...
+              </Alert>
+            )} */}
             <FormGroup id="edit">
-              <FormControl componentClass="textarea" onChange={this.onChange} value={this.state.text} />
+              <FormControl
+                id="edit-textarea"
+                componentClass="textarea"
+                onChange={this.onChange}
+                value={isLoading ? "Loading..." : this.state.text}
+                rows="12"
+                disabled={isLoading}
+              />
             </FormGroup>
-            <ButtonGroup>
-              <Button bsStyle="primary" onClick={this.onSave}>Save</Button>
-              <Button onClick={this.onLoad}>Load</Button>
+            {this.state.modified ? "*" : null}
+            <ButtonGroup className="pull-right">
+              <Button
+                id="save-button"
+                bsStyle="success"
+                onClick={this.onSave}
+                disabled={isSaving || !isLoaded}
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+              <Button
+                id="go-to-share-button"
+                bsStyle="primary"
+                onClick={this.onShareClicked}
+                disabled={!isLoaded}
+              >
+                Share
+              </Button>
             </ButtonGroup>
           </form>
         </Panel.Body>
+        <Panel.Footer>
+          <a id="back-link" onClick={this.onBackClicked} href="/">
+            &laquo; Back
+          </a>
+        </Panel.Footer>
       </Panel>
     );
   }

@@ -1,17 +1,33 @@
 // @flow
-import * as React from 'react';
-import { MenuItem, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import * as React from "react";
+import { MenuItem, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
-import Logo from './Logo';
-import './Topbar.css';
+import Logo from "./Logo";
+import "./Topbar.css";
 
-const Signout = ({ userId, onSignout }: { onSignout: SyntheticEvent => any }) => (
+const Signout = ({
+  userId,
+  onSignOut,
+}: {
+  userId: string,
+  onSignOut: (SyntheticEvent<>) => any,
+}) => (
   <NavDropdown eventKey={1} title={userId} id="topbar_dropdown">
-    <MenuItem onClick={onSignout} eventKey={1}>Sign out</MenuItem>
+    <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={1}>
+      Sign out
+    </MenuItem>
   </NavDropdown>
 );
 
-const Topbar = ({ isOpen, userId, onSignout }: { isOpen: bool, userId: string, onSignout: Function }) => (
+const Topbar = ({
+  isOpen,
+  userId,
+  onSignOut,
+}: {
+  isOpen: boolean,
+  userId: string,
+  onSignOut: Function,
+}) => (
   <Navbar staticTop>
     <Navbar.Header>
       <Navbar.Brand>
@@ -20,9 +36,7 @@ const Topbar = ({ isOpen, userId, onSignout }: { isOpen: bool, userId: string, o
       <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
-      <Nav pullRight>
-        {isOpen && <Signout userId={userId} onSignout={onSignout} />}
-      </Nav>
+      <Nav pullRight>{isOpen && <Signout userId={userId} onSignOut={onSignOut} />}</Nav>
     </Navbar.Collapse>
   </Navbar>
 );

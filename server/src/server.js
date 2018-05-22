@@ -2,8 +2,6 @@
 //
 // This is a demo server, you MUST NOT use it *as is* in production!
 //
-// Nothing in this piece of code is safe nor reliable, nor intented to be.
-//
 // The only purpose of this program is to illustrate how to provide a
 // backend server to the demo applications using the Tanker SDK.
 
@@ -13,6 +11,7 @@ const express = require('express');
 const morgan = require('morgan');
 const userToken = require('@tanker/user-token');
 const sodium = require('libsodium-wrappers-sumo');
+const debugMiddleware = require('debug-error-middleware').express;
 
 const auth = require('./middlewares/auth').default;
 const cors = require('./middlewares/cors').default;
@@ -29,7 +28,12 @@ const app = express();
 const port = 8080;
 app.use(cors); // enable CORS
 app.use(bodyParser.text());
+app.use(bodyParser.json());
 app.options('*', cors); // enable pre-flight CORS requests
+
+// Show helpful error messages. In a production server,
+// remove this as it could leak sensitive information.
+app.use(debugMiddleware());
 
 
 // Add routes for the server's home page (readmes...)
@@ -87,12 +91,12 @@ app.get('/login', (req, res) => {
   res.send(user.token);
 });
 
-app.put('/data', async (req, res) => {
+app.put('/data', (req, res) => {
   const user = res.locals.user;
 
   log('Save data on storage', 1);
   try {
-    user.data = await req.body;
+    user.data = req.body;
     users.save(user);
   } catch (e) {
     log(e, 1);
@@ -103,19 +107,51 @@ app.put('/data', async (req, res) => {
   res.sendStatus(200);
 });
 
-app.get('/data', async (req, res) => {
+app.get('/data/:userId', (req, res) => {
+  const { userId } = req.params;
   log('Retrieve data from storage', 1);
-  const user = res.locals.user;
 
-  if (user.data) {
-    log('Serve the data', 1);
-    res.set('Content-Type', 'text/plain');
-    res.send(user.data);
-    return;
+  if (!users.exists(userId)) {
+    log(`User ${userId} does not exist`);
+    res.sendStatus(404);
+    return
+  }
+  const user = users.find(userId);
+
+  if (!user.data) {
+    log('User has no stored data', 1);
+    res.sendStatus(404);
+    return
   }
 
-  log('User has no stored data', 1);
-  res.sendStatus(404);
+  log('Serve the data', 1);
+  res.set('Content-Type', 'text/plain');
+  res.send(user.data);
+});
+
+
+app.get('/users', (req, res) => {
+  const knownIds = users.getAllIds();
+
+  res.set('Content-Type', 'application/json');
+  res.json(knownIds);
+});
+
+// Add
+app.post('/share', (req, res) => {
+  const { from, to } = req.body;
+  // ensure only the current user can share their note with others
+  if (from !== res.locals.user.id)
+    return res.sendStatus(401);
+
+  users.share(from, to);
+  res.sendStatus('201');
+});
+
+app.get('/me', (req, res) => {
+  // res.locals.user is set by the auth middleware
+  const me = res.locals.user;
+  res.json(me);
 });
 
 
