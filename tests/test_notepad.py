@@ -369,7 +369,7 @@ def test_share_note(headless: bool, request: Any) -> None:
     assert from_bob_text == bs_text
 
 
-@pytest.mark.xfail(True, reason="device addition is racy")
+@pytest.mark.xfail(True, reason="Needs access to Tanker's internals in order to be reliable")
 def test_add_device(headless: bool, request: Any) -> None:
     fake = Faker()
     email = fake.email()
@@ -384,7 +384,9 @@ def test_add_device(headless: bool, request: Any) -> None:
     unlock_key = first_client.unlock_key
     assert unlock_key
     first_client.create_note(fake_text)
-    # Wait for the second device to exist ...
+    # We should wait here for the second device to exist
+    # otherwise the first device may not have time to
+    # share access with the second one
     first_browser.close()
 
     second_browser = Browser(headless=headless)
