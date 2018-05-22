@@ -5,7 +5,7 @@ import ServerApi from "./ServerApi";
 import { trustchainId } from "./config";
 
 export default class Session extends EventEmitter {
-  serverApi: Api;
+  serverApi: ServerApi;
   tanker: Tanker;
   resourceId: string;
   +userId: string;

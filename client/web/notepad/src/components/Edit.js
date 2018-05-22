@@ -11,7 +11,6 @@ type State = {
   isLoading: boolean,
   isLoaded: boolean,
   isDeleting: boolean,
-  isDeleted: boolean,
   isSaving: boolean,
   modified: boolean,
 };
