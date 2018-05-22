@@ -7,6 +7,7 @@ import { trustchainId } from "./config";
 export default class Session extends EventEmitter {
   api: Api;
   tanker: Tanker;
+  resourceId: string;
   +userId: string;
   +password: string;
 
@@ -15,6 +16,7 @@ export default class Session extends EventEmitter {
     this.api = new Api();
     this.tanker = new Tanker({ trustchainId });
     this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
+    this.resourceId = "";
   }
 
   get userId(): string {
@@ -77,6 +79,7 @@ export default class Session extends EventEmitter {
   async saveText(text: string) {
     const recipients = await this.getNoteRecipients();
     const eData = await this.tanker.encrypt(text, { shareWith: recipients });
+    this.resourceId = getResourceId(eData);
     await this.api.push(toBase64(eData));
   }
 
@@ -94,16 +97,6 @@ export default class Session extends EventEmitter {
     return clear;
   }
 
-  async getResourceId() {
-    const response = await this.api.get(this.userId);
-
-    if (response.status === 404) return null;
-
-    const data = await response.text();
-    const resourceId = getResourceId(fromBase64(data));
-    return resourceId;
-  }
-
   async getAccessibleNotes(): Promise<Array<string>> {
     return (await this.api.getMyData()).accessibleNotes || [];
   }
@@ -117,9 +110,8 @@ export default class Session extends EventEmitter {
   }
 
   async share(recipients: string[]) {
-    const resourceId = await this.getResourceId();
-    if (!resourceId) throw new Error("No resource id.");
-    await this.tanker.share([resourceId], recipients);
+    if (!this.resourceId) throw new Error("No resource id.");
+    await this.tanker.share([this.resourceId], recipients);
     await this.api.share(recipients);
   }
 }
