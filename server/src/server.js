@@ -107,6 +107,14 @@ app.put('/data', (req, res) => {
   res.sendStatus(200);
 });
 
+app.delete('/data', (req, res) => {
+  const user = res.locals.user;
+
+  log('Clear user data', 1);
+  users.clearData(user);
+  res.sendStatus(200);
+});
+
 app.get('/data/:userId', (req, res) => {
   const { userId } = req.params;
   log('Retrieve data from storage', 1);
@@ -128,6 +136,7 @@ app.get('/data/:userId', (req, res) => {
   res.set('Content-Type', 'text/plain');
   res.send(user.data);
 });
+
 
 
 app.get('/users', (req, res) => {

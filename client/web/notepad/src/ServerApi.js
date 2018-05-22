@@ -35,6 +35,10 @@ export default class Api {
     return fetch(this.urlFor("/login"));
   }
 
+  delete(): Promise<Response> {
+    return fetch(this.urlFor("/data"), { method: "DELETE" });
+  }
+
   push(content: string): Promise<Response> {
     if (typeof content !== "string") {
       throw new Error(

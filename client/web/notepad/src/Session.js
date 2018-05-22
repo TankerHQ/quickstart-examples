@@ -114,4 +114,8 @@ export default class Session extends EventEmitter {
     await this.tanker.share([this.resourceId], recipients);
     await this.serverApi.share(recipients);
   }
+
+  async delete() {
+    return this.serverApi.delete();
+  }
 }
