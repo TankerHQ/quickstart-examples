@@ -10,6 +10,7 @@ type State = {
   error: ?string,
   isLoading: boolean,
   isLoaded: boolean,
+  isDeleting: boolean,
   isSaving: boolean,
   modified: boolean,
 };
@@ -22,6 +23,7 @@ class Edit extends React.Component<Props, State> {
     isSaving: false,
     isLoading: true,
     isLoaded: false,
+    isDeleting: false,
   };
 
   async componentWillMount() {
@@ -53,6 +55,21 @@ class Edit extends React.Component<Props, State> {
     this.props.history.push("/");
   };
 
+  onDeleteClicked = async (e: SyntheticEvent<>) => {
+    this.setState({ isDeleting: true });
+    const { session } = this.props;
+
+    e.preventDefault();
+    try {
+      await session.delete();
+      this.setState({ isDeleting: false, text: '' });
+    } catch (err) {
+      console.error(err);
+      this.setState({ error: err.toString(), isDeleting: false });
+    }
+
+  }
+
   onShareClicked = async () => {
     await this.onSave();
     this.props.history.push("/share");
@@ -70,7 +87,7 @@ class Edit extends React.Component<Props, State> {
   }
 
   render() {
-    const { error, isLoading, isLoaded, isSaving } = this.state;
+    const { error, isLoading, isLoaded, isSaving, isDeleting } = this.state;
 
     return (
       <Panel>
@@ -99,6 +116,12 @@ class Edit extends React.Component<Props, State> {
             </FormGroup>
             {this.state.modified ? "*" : null}
             <ButtonGroup className="pull-right">
+              <Button
+                id="delete-button"
+                bsStyle="danger"
+                onClick={this.onDeleteClicked}
+              >{isDeleting ? "Deleting ..." : "Delete"}
+              </Button>
               <Button
                 id="save-button"
                 bsStyle="success"

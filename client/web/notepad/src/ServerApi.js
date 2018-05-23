@@ -35,10 +35,14 @@ export default class Api {
     return fetch(this.urlFor("/login"));
   }
 
+  delete(): Promise<Response> {
+    return fetch(this.urlFor("/data"), { method: "DELETE" });
+  }
+
   push(content: string): Promise<Response> {
     if (typeof content !== "string") {
       throw new Error(
-        `api.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`,
+        `serverApi.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`,
       );
     }
 

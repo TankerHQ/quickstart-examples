@@ -30,7 +30,7 @@ class App extends React.Component<Props, State> {
       await session.close();
     }
 
-    await session.login(login, password);
+    await session.signIn(login, password);
     this.setState({ status: "ready" });
   };
 
@@ -41,7 +41,7 @@ class App extends React.Component<Props, State> {
       await session.close();
     }
 
-    await session.create(login, password);
+    await session.signUp(login, password);
     this.setState({ status: "saveKey" });
   };
 

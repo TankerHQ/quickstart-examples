@@ -1,28 +1,30 @@
 //@flow
 import EventEmitter from "events";
 import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/core";
-import Api from "./Api";
+import ServerApi from "./ServerApi";
 import { trustchainId } from "./config";
 
 export default class Session extends EventEmitter {
-  api: Api;
+  serverApi: ServerApi;
   tanker: Tanker;
+  resourceId: ?string;
   +userId: string;
   +password: string;
 
   constructor() {
     super();
-    this.api = new Api();
+    this.serverApi = new ServerApi();
     this.tanker = new Tanker({ trustchainId });
     this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
+    this.resourceId = null;
   }
 
   get userId(): string {
-    return this.api.userId;
+    return this.serverApi.userId;
   }
 
   get password(): string {
-    return this.api.password;
+    return this.serverApi.password;
   }
 
   isOpen(): boolean {
@@ -33,22 +35,26 @@ export default class Session extends EventEmitter {
     await this.tanker.close();
   }
 
-  async create(userId: string, password: string): Promise<void> {
-    this.api.setUserInfo(userId, password);
-    const response = await this.api.signUp();
+  async openSession(userId: string, userToken: string) {
+    await this.tanker.open(userId, userToken);
+  }
+
+  async signUp(userId: string, password: string): Promise<void> {
+    this.serverApi.setUserInfo(userId, password);
+    const response = await this.serverApi.signUp();
 
     if (response.status === 409) throw new Error(`User '${userId}' already exists`);
     if (!response.ok) throw new Error("Server error!");
 
     const userToken = await response.text();
-    return this.tanker.open(userId, userToken);
+    return this.openSession(userId, userToken);
   }
 
-  async login(userId: string, password: string): Promise<void> {
-    this.api.setUserInfo(userId, password);
+  async signIn(userId: string, password: string): Promise<void> {
+    this.serverApi.setUserInfo(userId, password);
     let response;
     try {
-      response = await this.api.login();
+      response = await this.serverApi.login();
     } catch (e) {
       console.error(e);
       throw new Error("Cannot contact server");
@@ -59,7 +65,7 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
     const userToken = await response.text();
-    await this.tanker.open(userId, userToken);
+    await this.openSession(userId, userToken);
   }
 
   async addCurrentDevice(unlockKey: string): Promise<void> {
@@ -70,10 +76,11 @@ export default class Session extends EventEmitter {
     return this.tanker.generateAndRegisterUnlockKey();
   }
 
-  async saveText(content: string) {
+  async saveText(text: string) {
     const recipients = await this.getNoteRecipients();
-    const eData = await this.tanker.encrypt(content, { shareWith: recipients });
-    await this.api.push(toBase64(eData));
+    const eData = await this.tanker.encrypt(text, { shareWith: recipients });
+    this.resourceId = getResourceId(eData);
+    await this.serverApi.push(toBase64(eData));
   }
 
   async loadText(): Promise<string> {
@@ -81,7 +88,7 @@ export default class Session extends EventEmitter {
   }
 
   async loadTextFromUser(userId: string) {
-    const response = await this.api.get(userId);
+    const response = await this.serverApi.get(userId);
 
     if (response.status === 404) return "";
 
@@ -90,32 +97,25 @@ export default class Session extends EventEmitter {
     return clear;
   }
 
-  async getResourceId() {
-    const response = await this.api.get(this.userId);
-
-    if (response.status === 404) return null;
-
-    const data = await response.text();
-    const resourceId = getResourceId(fromBase64(data));
-    return resourceId;
-  }
-
   async getAccessibleNotes(): Promise<Array<string>> {
-    return (await this.api.getMyData()).accessibleNotes || [];
+    return (await this.serverApi.getMyData()).accessibleNotes || [];
   }
 
   async getNoteRecipients(): Promise<Array<string>> {
-    return (await this.api.getMyData()).noteRecipients || [];
+    return (await this.serverApi.getMyData()).noteRecipients || [];
   }
 
   async getUsers() {
-    return this.api.getUsers();
+    return this.serverApi.getUsers();
   }
 
   async share(recipients: string[]) {
-    const resourceId = await this.getResourceId();
-    if (!resourceId) throw new Error("No resource id.");
-    await this.tanker.share([resourceId], recipients);
-    await this.api.share(recipients);
+    if (!this.resourceId) throw new Error("No resource id.");
+    await this.tanker.share([this.resourceId], recipients);
+    await this.serverApi.share(recipients);
+  }
+
+  async delete() {
+    return this.serverApi.delete();
   }
 }

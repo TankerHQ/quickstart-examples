@@ -54,6 +54,12 @@ const find = id => {
   return JSON.parse(fs.readFileSync(path));
 };
 
+const clearData = user => {
+  const path = dataFilePath(user.id);
+  user.data = undefined;
+  fs.writeFileSync(path, JSON.stringify(user, null, 2));
+}
+
 const save = user => {
   const path = dataFilePath(user.id);
   fs.writeFileSync(path, JSON.stringify(user, null, 2));
@@ -70,6 +76,7 @@ const getAllIds = () => {
 
 module.exports = {
   default: {
+    clearData,
     share,
     dataFilePath,
     getAllIds,
