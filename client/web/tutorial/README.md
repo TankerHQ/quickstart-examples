@@ -56,7 +56,7 @@ Now that the application is up and running, please follow the steps below:
 
 5. A list of users pops up. Select `bob` and click on `share`.
 
-6. Go back to the first tab, click on the `Refresh` button next to the `Shared with me` panel in the home page.
+6. Go back to the second tab, click on the `Refresh` button next to the `Shared with me` panel in the home page.
 
 7. You should see a `From alice` entry in the list. Click on it.
 
@@ -167,15 +167,15 @@ You can check this by refreshing your browser, and log in. You should see the te
 To encrypt the data, we use [`tanker.encrypt()`](https://www.tanker.io/docs/latest/guide/encryption#encrypting):
 
 ```diff
-async saveText(content: string): Promise<void> {
+async saveText(text: string): Promise<void> {
   const recipients = await this.getNoteRecipients();
 
   // use tanker to encrypt the text as binary data, then
   // encode the data and send it to the server
-- const data = content;
-- this.serverApi.push(data);
-+ const encryptedData = await this.tanker.encrypt(content);
-+ this.serverApi.push(toBase64(encryptedData));
+- await this.serverApi.push(text);
++ const encryptedData = await this.tanker.encrypt(text);
++ const encryptedText = toBase64(encryptedData);
++ this.serverApi.push(encryptedText);
 }
 ```
 
@@ -186,13 +186,21 @@ The `encrypt()` method takes a string as parameter and returns some binary data.
 To decrypt the data, we use the same steps, but in reverse order using the [`tanker.decrypt()`](https://www.tanker.io/docs/latest/guide/encryption/#decrypting) method:
 
 ```diff
-async loadText(): Promise<string> {
-  const data = await this.serverApi.get();
+async loadTextFromUser() Promise<string> {
+  const response = await this.serverApi.get(userId);
+
+  if (response.status === 404) return "";
+
+  - const data = await response.text();
+  - return data;
+
   // ...
   // use fromBase64 to get binary data from the
   // response of the server and use tanker to decrypt it.
-- return data;
-+ return this.tanker.decrypt(fromBase64(data));
+  + const encryptedText = await response.text();
+  + const encryptedData = fromBase64(encryptedText);
+  + return this.tanker.decrypt(encryptedData);
+}
 ```
 
 ### Checking it works
@@ -217,7 +225,7 @@ What we need to do is exchange keys from Alice to Bob.
 
 Note that each time we call `tanker.encrypt()` a new key is generated. This is done for security reasons.
 
-So each time the note changes, we must ask the Tanker SDK to share access to the resource.
+We call each version of a note a *resource*. Each time the note changes, we must get its resource id and ask the Tanker SDK to share access to it.
 
 They are two places we need to do this:
 
@@ -245,10 +253,15 @@ async saveText(): Promise<string> {
 + this.resourceId = getResourceId(encryptedData)
 ```
 
-Finally, in the `share` method, we can call `tanker.share()` with a list containing the current `resourceId` and the list of recipients:
+Next, in the `share` method, we must:
+
+* Remove the line `this.resourceId = this.userId` since notes no longer are identified by their creator,
+* And call `tanker.share()` with a list containing the current `resourceId` and the list of recipients.
 
 ```diff
   async share(recipients: string[]) {
+-   this.resourceId = this.userId;
+    if (!this.resourceId) throw new Error("No resource id.");
 +   await this.tanker.share([this.resourceId], recipients);
     await this.serverApi.share(recipients);
   }
@@ -263,13 +276,16 @@ At this point, if you try to log in the same user in an other browser in private
 
 That is because we did not take care of device management so far. Let's do that now.
 
-First, we connect the `waitingForValidation` event of the Tanker and emit the `newDevice` event when required:
+First, we connect the `waitingForValidation` event of the Tanker and emit the `newDevice` event when required.
+
+We can do this in the Session constructor, right after creating the `tanker` object:
 
 ```diff
-async login(userId: string, password: string): Promise<void> {
-  this.serverApi.setUserInfo(userId, password);
-+ this.tanker.on('waitingForValidation', () => this.emit('newDevice'));
-  // ...
+
+constructor() {
+    // ...
+    this.tanker = new Tanker({ trustchainId });
++   this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
 }
 ```
 
