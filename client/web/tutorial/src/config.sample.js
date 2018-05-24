@@ -1,3 +1,3 @@
 module.exports = {
-  trustchainId: "<FIX ME>"
+  trustchainId: "<FIX ME>",
 };

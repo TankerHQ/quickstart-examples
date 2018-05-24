@@ -1,131 +1,117 @@
 //@flow
-import EventEmitter from 'events';
-import Tanker, { toBase64, fromBase64 } from '@tanker/core';
-import Api from './Api';
-import { trustchainId } from './config';
+import EventEmitter from "events";
+import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/core";
+import ServerApi from "./ServerApi";
+import { trustchainId } from "./config";
 
 export default class Session extends EventEmitter {
-  api: Api;
-  // [[
-  // FIXME: remove this attribute
-  opened: bool;
-  // ]]
+  serverApi: ServerApi;
   tanker: Tanker;
+  resourceId: ?string;
+  opened: bool;
   +userId: string;
   +password: string;
 
   constructor() {
     super();
-    this.api = new Api();
-    // [[
-    // FIXME: create a new tanker object with the trustchainId
-    // this.tanker = ...;
-    // ]]
+    this.serverApi = new ServerApi();
     this.opened = false;
+    this.resourceId = null;
   }
 
   get userId(): string {
-    return this.api.userId;
+    return this.serverApi.userId;
   }
 
   get password(): string {
-    return this.api.password;
+    return this.serverApi.password;
   }
 
-  isOpen(): bool {
-    // [[
-    // FIXME: Check Tanker status
+  isOpen(): boolean {
     return this.opened;
-    // ]]
   }
 
   async close(): Promise<void> {
-    // [[
-    // FIXME: Close Tanker session
     this.opened = false;
-    // ]]
   }
 
-  async create(userId: string, password: string): Promise<void> {
-    this.api.setUserInfo(userId, password);
-    const response = await this.api.signUp();
+  async openSession(userId: string, userToken: string) {
+    this.opened = true;
+  }
 
-    if (response.status === 409)
-      throw new Error(`User '${userId}' already exists`);
-    if (response.status !== 200)
-      throw new Error('Server error!');
+  async signUp(userId: string, password: string): Promise<void> {
+    this.serverApi.setUserInfo(userId, password);
+    const response = await this.serverApi.signUp();
+
+    if (response.status === 409) throw new Error(`User '${userId}' already exists`);
+    if (!response.ok) throw new Error("Server error!");
 
     const userToken = await response.text();
-    // [[
-    // FIXME: Open Tanker session with userId and userToken
-    this.opened = true;
-    await true ;
-    // ]]
+    return this.openSession(userId, userToken);
   }
 
-  async login(userId: string, password: string): Promise<void> {
-    this.api.setUserInfo(userId, password);
-    // [[
-    // FIXME: connect the waitingForValidation event of the Tanker session
-    // to the 'newDevice' event of this class
-    // ]]
+  async signIn(userId: string, password: string): Promise<void> {
+    this.serverApi.setUserInfo(userId, password);
     let response;
     try {
-      response = await this.api.login();
+      response = await this.serverApi.login();
     } catch (e) {
       console.error(e);
-      throw new Error('Cannot contact server');
+      throw new Error("Cannot contact server");
     }
 
-    if (response.status === 404)
-      throw new Error('User never registered');
-    if (response.status === 401)
-      throw new Error('Bad login or password');
-    if (response.status !== 200)
-      throw new Error('It Borked!');
+    if (response.status === 404) throw new Error("User never registered");
+    if (response.status === 401) throw new Error("Bad login or password");
+    if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
     const userToken = await response.text();
-    // [[
-    // FIXME: Open Tanker session with userId and userToken
-    this.opened = true;
-    await true;
-    // ]]
+    await this.openSession(userId, userToken);
   }
 
   async addCurrentDevice(unlockKey: string): Promise<void> {
-    // [[
-    // FIXME: use tanker to unlock the current device with the key
-    await true;
-    // ]]
+
   }
 
   async getUnlockKey(): Promise<string> {
-    // [[
-    // FIXME: use tanker to generate and register a unlock key
-    return 'this is the unlock key';
-    // ]]
   }
 
-  async saveText(content: string): Promise<void> {
-    // [[
-    // FIXME: use tanker to encrypt the text as binary data, then
-    // encode the data and send it to the server
-    const data = content;
-    this.api.push(data);
-    // ]]
+  async saveText(text: string) {
+    const recipients = await this.getNoteRecipients();
+    await this.serverApi.push(text);
   }
 
   async loadText(): Promise<string> {
-    const response = await this.api.get();
+    return this.loadTextFromUser(this.userId);
+  }
 
-    if (response.status === 404)
-      return '';
+  async loadTextFromUser(userId: string) {
+    const response = await this.serverApi.get(userId);
+
+    if (response.status === 404) return "";
 
     const data = await response.text();
-    // [[
-    // FIXME: use fromBase64 to get binary data from the
-    // response of the server and use tanker to decrypt it.
     return data;
-    // ]]
+  }
+
+  async getAccessibleNotes(): Promise<Array<string>> {
+    return (await this.serverApi.getMyData()).accessibleNotes || [];
+  }
+
+  async getNoteRecipients(): Promise<Array<string>> {
+    return (await this.serverApi.getMyData()).noteRecipients || [];
+  }
+
+  async getUsers() {
+    return this.serverApi.getUsers();
+  }
+
+  async share(recipients: string[]) {
+    this.resourceId = this.userId;
+    if (!this.resourceId) throw new Error("No resource id.");
+    await this.serverApi.share(recipients);
+  }
+
+  async delete() {
+    return this.serverApi.delete();
   }
 }
