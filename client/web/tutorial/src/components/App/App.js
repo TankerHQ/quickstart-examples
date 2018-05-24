@@ -1,77 +1,83 @@
 // @flow
-import React from 'react';
+import React from "react";
 
-import Session from '../../Session';
-import Edit from '../Edit';
-import SaveUnlockKey from '../SaveUnlockKey';
-import NewDevice from '../NewDevice';
-import SessionForm from '../SessionForm';
-import Topbar from '../Topbar';
+import Session from "../../Session";
+import SaveUnlockKey from "../SaveUnlockKey";
+import NewDevice from "../NewDevice";
+import SessionForm from "../SessionForm";
+import Topbar from "../Topbar";
+import Notepad from "./Notepad";
 
-import './App.css';
+import "./App.css";
 
 type Props = { session: Session };
-type State = { panel: 'sessionForm' | 'saveKey' | 'validateDevice' | 'edit' };
+type State = {
+  status: "signIn" | "saveKey" | "validateDevice" | "ready",
+};
 
 class App extends React.Component<Props, State> {
-  state = { panel: 'sessionForm' }
+  state = { status: "signIn" };
 
-  onSignin = async (login: string, password: string) => {
+  componentWillMount() {
     const { session } = this.props;
-    if (session.isOpen()) {
-      console.log(`Closing previous session opened by ${session.userId}`);
-      return session.close();
-    }
-
-    session.once('newDevice', () => this.setState({ panel: 'validateDevice' }));
-    await session.login(login, password);
-    this.setState({ panel: 'edit' });
+    session.on("newDevice", () => this.setState({ status: "validateDevice" }));
   }
 
-  onSignup = async (login: string, password: string) => {
+  onSignIn = async (login: string, password: string) => {
     const { session } = this.props;
     if (session.isOpen()) {
-      console.log(`Closing previous session opened by ${session.userId}`);
+      console.warn(`Closing previous session opened by ${session.userId}`);
       await session.close();
     }
 
-    await session.create(login, password);
-    this.setState({ panel: 'saveKey' });
-  }
+    await session.signIn(login, password);
+    this.setState({ status: "ready" });
+  };
 
-  onSignout = async () => {
+  onSignUp = async (login: string, password: string) => {
+    const { session } = this.props;
+    if (session.isOpen()) {
+      console.warn(`Closing previous session opened by ${session.userId}`);
+      await session.close();
+    }
+
+    await session.signUp(login, password);
+    this.setState({ status: "saveKey" });
+  };
+
+  onSignOut = async () => {
     const { session } = this.props;
     if (session.isOpen()) {
       await session.close();
-      this.setState({ panel: 'sessionForm' });
     }
-  }
+    this.setState({ status: "signIn" });
+  };
 
   onKeySaved = async () => {
-    this.setState({ panel: 'edit' });
-  }
+    this.setState({ status: "ready" });
+  };
 
   onUnlockDevice = async (unlockKey: string) => {
     await this.props.session.addCurrentDevice(unlockKey);
-    this.setState({ panel: 'edit' });
-  }
+    this.setState({ status: "ready" });
+  };
 
   render = () => {
     const { session } = this.props;
-    const { panel } = this.state;
+    const { status } = this.state;
 
     return (
       <div className="app">
-        <Topbar isOpen={session.isOpen()} userId={session.userId} onSignout={this.onSignout} />
+        <Topbar isOpen={session.isOpen()} userId={session.userId} onSignOut={this.onSignOut} />
         <div className="container">
-          {panel === 'sessionForm' && <SessionForm onSignin={this.onSignin} onSignup={this.onSignup} />}
-          {panel === 'saveKey' && <SaveUnlockKey session={session} onKeySaved={this.onKeySaved} />}
-          {panel === 'validateDevice' && <NewDevice onUnlockDevice={this.onUnlockDevice} />}
-          {panel === 'edit' && <Edit session={session} />}
+          {status === "signIn" && <SessionForm onSignIn={this.onSignIn} onSignUp={this.onSignUp} />}
+          {status === "saveKey" && <SaveUnlockKey session={session} onKeySaved={this.onKeySaved} />}
+          {status === "validateDevice" && <NewDevice onUnlockDevice={this.onUnlockDevice} />}
+          {status === "ready" && <Notepad session={session} />}
         </div>
       </div>
     );
-  }
+  };
 }
 
 export default App;

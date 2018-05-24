@@ -2,18 +2,26 @@
 
 ## Description
 
-This is a simple web application written in [React](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.github.io/). It has very basic features:
+This is a simple web application written in [React](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.github.io/).
+
+It allows each user to have exactly one note they can edit and share.
+
+Here is the list of features implemented:
+
 - signup
 - login
-- save some user input text to the cloud
-- retrieve this text from the cloud
+- send the note to a server to be saved
+- retrieve the note from the server
+- select a list of users to share the note with
+- list and view all notes shared with the user
 - logout
 
-All this features use The Tanker SDK, it implements:
+All this features use the Tanker SDK, it implements:
 - open a session
 - register a new device, if needs be
 - encrypt text
 - decrypt text
+- share resources
 
 ## How to
 
