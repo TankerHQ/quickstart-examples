@@ -4,9 +4,9 @@
 
 This is a simple web application written in [React](https://reactjs.org/) and [Bootstrap](https://react-bootstrap.github.io/).
 
-It allow each user to have exactly one note they can edit and share.
+It allows each user to have exactly one note they can edit and share.
 
-Here are the list of features implemented:
+Here is the list of features implemented:
 
 - signup
 - login
@@ -16,7 +16,7 @@ Here are the list of features implemented:
 - list and view all notes shared with the user
 - logout
 
-All this features use The Tanker SDK, it implements:
+All this features use the Tanker SDK, it implements:
 - open a session
 - register a new device, if needs be
 - encrypt text

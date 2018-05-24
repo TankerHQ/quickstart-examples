@@ -54,18 +54,18 @@ Now that the application is up and running, please follow the steps below:
 
 4. Go back to the first tab, edit a new note (say `my message for Bob`) and click on the `share` button.
 
-5. A list of users pops up. Select `bob` and click on `share`
+5. A list of users pops up. Select `bob` and click on `share`.
 
 6. Go back to the first tab, click on the `Refresh` button next to the `Shared with me` panel in the home page.
 
 7. You should see a `From alice` entry in the list. Click on it.
 
-8. You should the text `my message from Bob` appear.
+8. The text `my message from Bob` should be displayed.
 
 OK, so far we have demonstrated how users can edit and share notes.
 
 
-If you have a look in the `server/data/` directory. You will see a directory named after the TrustChain ID with a couple of json file in it.
+If you have a look at the `server/data/` directory, you will see a directory named after the TrustChain ID with a couple of json files in it.
 
 This represents the data the notepad server knows about.
 
@@ -160,7 +160,7 @@ The `close()` method will be called when the user logs out. It's important to cl
 
 At this point, nothing has changed in the application, we just made sure we could open and close a Tanker section correctly.
 
-You can check this by refreshing your browser, and log in. You should see the text you wrote in the previous step, and the in the console log, the "Tanker session is ready" you've just added.
+You can check this by refreshing your browser, and log in. You should see the text you wrote in the previous step, and in the console log, the "Tanker session is ready" you've just added.
 
 ### Encrypting data
 
@@ -202,7 +202,7 @@ Now the data on the server can no longer be used by the clients. So go ahead, an
 
 You can then try to log in, and check that:
 
-* you can  still edit a save a note
+* you can  still edit and save a note
 * the `data` field in the `json` is now encrypted
 
 ### Sharing
@@ -211,20 +211,20 @@ There is a problem, though. The "share" functionality no longer works.
 
 If you try to repeat the steps we took to share notes between Alice and Bob, you will get an error message when Bob tries to read Alice's note.
 
-Indeed, the keys used to encrypt and decrypt notes never left the local storage of you browser.
+Indeed, the keys used to encrypt and decrypt notes never left the local storage of Alice's browser.
 
 What we need to do is exchange keys from Alice to Bob.
 
 Note that each time we call `tanker.encrypt()` a new key is generated. This is done for security reasons.
 
-So each time the note changes, we must ask the Tanker SDK to share access of the resource.
+So each time the note changes, we must ask the Tanker SDK to share access to the resource.
 
 They are two places we need to do this:
 
 * In the `Session.saveText()` method, called when the user clicks on `save` on the "Edit your note" panel
 * In the `Session.share()` method, called when when the users clicks on `share` in the "Share" panel.
 
-First, when we encrypt the data (when the user clicks on `save`), we can use the `shareWith` option of `tanker.encrypt`:
+First, when we encrypt the data (when the user clicks on `save`), we can use the `shareWith` option of `tanker.encrypt()`:
 
 ```diff
 async saveText(): Promise<string> {
@@ -291,7 +291,7 @@ async addCurrentDevice(unlockKey: string): Promise<void> {
 }
 ```
 
-Thus, when the user needs the unlock a new device, the web application will end up calling `tanker.unlockCurrentDevice()`.
+Thus, when the user needs to unlock a new device, the web application will end up calling `tanker.unlockCurrentDevice()`.
 
 You can now check that device management is indeed working by following those steps:
 
@@ -315,10 +315,8 @@ Note 1: instead of a second browser, you could also have used the first browser 
 Note 2: Of course, in a more realistic application, users should not have to copy/paste a unlock key themselves. Tanker staff is working on implementing two different ways to implement the feature properly:
 
 * First way is to use a "passphrase" (a set of 6 to 10 words) that the user can either safely note somewhere, or store in a dedicated device for instance.
-* Or, store the encrypted unlock key on the Tanker servers. The user will then have to use some form of 2-Factor authentication to retrieve its unlock key.
+* Or, store the encrypted unlock key on the Tanker servers. The user will then have to use some form of 2-Factor authentication to retrieve their unlock key.
 
 ## Conclusion
 
-Congrats! You now have an example of a web application using end-to-end encryption, which implements secure sharing of resource.
-
-You even have the guarantee of no data loss (providing that users do not loose their unlock key)!
+Congrats! You now have an example of a web application using end-to-end encryption, which implements secure sharing of notes.
