@@ -21,7 +21,7 @@ All this features use the Tanker SDK, it implements:
 - register a new device, if needs be
 - encrypt text
 - decrypt text
-- share resources
+- share access to encrypted text
 
 ## How to
 
