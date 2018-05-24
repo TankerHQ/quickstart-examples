@@ -87,14 +87,6 @@ As explained above, the server already contains the required modifications.
 
 Since the tanker SDK implements end-to-end encryption, most cryptographic operations will happen client-side, so in this tutorial we will only have to change code in the `./client/web/tutorial/src/Session.js` file.
 
-We've marked the places we are going to modify with these place holder comments:
-
-```javascript
-// [[
-// FIXME
-     <- code to change lies here
-// ]]
-```
 
 ### Handling a Tanker session
 
@@ -107,11 +99,7 @@ Use it to initialize a new Tanker instance:
 
 ```diff
 constructor() {
-  ...
-- // [[
-- // FIXME: create a new tanker object with the trustchainId
-- // this.tanker = ...;
-- // ]]
+  this.opened = false;
 + this.tanker = new Tanker({ trustchainId });
   ...
 }
