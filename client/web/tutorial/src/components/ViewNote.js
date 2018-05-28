@@ -1,18 +1,7 @@
 import { Alert, Panel } from "react-bootstrap";
 import React from "react";
 
-type Props = {
-  history: Object,
-  match: Object,
-};
-
-type State = {
-  text: string,
-  error: ?string,
-  isLoading: boolean,
-};
-
-class ViewNote extends React.Component<Props, State> {
+class ViewNote extends React.Component {
   state = { text: "", error: null, isLoading: true };
 
   componentWillMount() {

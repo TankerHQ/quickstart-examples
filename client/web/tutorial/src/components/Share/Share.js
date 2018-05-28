@@ -1,25 +1,10 @@
 import React from "react";
 import { Button, Panel, Alert } from "react-bootstrap";
 import UserList from "./UserList";
-import Session from "../../Session";
 
 const withoutMe = (me, elements) => elements.filter(e => e !== me);
 
-type Props = {
-  session: Session,
-  history: Object,
-};
-
-type State = {
-  users: string[],
-  selected: Set,
-  error: ?string,
-  isLoading: boolean,
-  isLoaded: boolean,
-  isSharing: boolean,
-};
-
-class Share extends React.Component<Props, State> {
+class Share extends React.Component {
   state = {
     users: [], //all the users
     selected: new Set(), // the new selection

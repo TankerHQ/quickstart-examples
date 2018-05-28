@@ -1,4 +1,3 @@
-// @flow
 import * as React from "react";
 import {
   Alert,
@@ -10,22 +9,7 @@ import {
   HelpBlock,
 } from "react-bootstrap";
 
-type Props = {
-  onSubmit: (login: string, password: string) => Promise<void>,
-  typeAction: string,
-  formId: string,
-};
-
-type State = {
-  isLoading: boolean,
-  login: string,
-  password: string,
-  loginError: boolean,
-  passwordError: boolean,
-  serverError: ?string,
-};
-
-export default class Form extends React.Component<Props, State> {
+export default class Form extends React.Component {
   state = {
     isLoading: false,
     login: "",
@@ -35,7 +19,7 @@ export default class Form extends React.Component<Props, State> {
     serverError: null,
   };
 
-  onClick = async (event: SyntheticInputEvent<>) => {
+  onClick = async event => {
     event.preventDefault();
 
     const { isLoading, login, password } = this.state;
@@ -66,11 +50,11 @@ export default class Form extends React.Component<Props, State> {
     }
   };
 
-  handleLoginChange = (e: SyntheticInputEvent<>) => {
+  handleLoginChange = e => {
     this.setState({ login: e.target.value });
   };
 
-  handlePasswordChange = (e: SyntheticInputEvent<>) => {
+  handlePasswordChange = e => {
     this.setState({ password: e.target.value });
   };
 

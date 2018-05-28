@@ -5,13 +5,8 @@ import Home from "../Home";
 import ViewNote from "../ViewNote";
 import Share from "../Share";
 import Edit from "../Edit";
-import Session from "../../Session";
 
-type Props = {
-  session: Session,
-};
-
-const Content = ({ session }: Props) => (
+const Content = ({ session }) => (
   <Switch>
     <Route path="/view/:friendId" render={props => <ViewNote session={session} {...props} />} />
     <Route path="/edit" render={props => <Edit session={session} {...props} />} />

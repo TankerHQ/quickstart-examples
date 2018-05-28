@@ -1,16 +1,10 @@
-// @flow
 import * as React from "react";
 import { Panel, Tab, Nav, NavItem } from "react-bootstrap";
 
 import Signin from "./Signin";
 import Signup from "./Signup";
 
-type Props = {
-  onSignIn: (login: string, password: string) => Promise<void>,
-  onSignUp: (login: string, password: string) => Promise<void>,
-};
-
-const SessionForm = ({ onSignIn, onSignUp }: Props) => (
+const SessionForm = ({ onSignIn, onSignUp }) => (
   <Tab.Container defaultActiveKey="sign-in" id="session_form_container">
     <Panel>
       <Nav bsStyle="tabs" role="tablist" className="nav-justified">

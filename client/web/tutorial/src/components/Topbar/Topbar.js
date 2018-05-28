@@ -1,17 +1,10 @@
-// @flow
 import * as React from "react";
 import { MenuItem, Nav, Navbar, NavDropdown } from "react-bootstrap";
 
 import Logo from "./Logo";
 import "./Topbar.css";
 
-const Signout = ({
-  userId,
-  onSignOut,
-}: {
-  userId: string,
-  onSignOut: (SyntheticEvent<>) => any,
-}) => (
+const Signout = ({ userId, onSignOut }) => (
   <NavDropdown eventKey={1} title={userId} id="topbar_dropdown">
     <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={1}>
       Sign out
@@ -19,15 +12,7 @@ const Signout = ({
   </NavDropdown>
 );
 
-const Topbar = ({
-  isOpen,
-  userId,
-  onSignOut,
-}: {
-  isOpen: boolean,
-  userId: string,
-  onSignOut: Function,
-}) => (
+const Topbar = ({ isOpen, userId, onSignOut }) => (
   <Navbar staticTop>
     <Navbar.Header>
       <Navbar.Brand>

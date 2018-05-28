@@ -1,13 +1,7 @@
-// @flow
 import * as React from "react";
 import { Button, Panel, Well, Alert } from "react-bootstrap";
 
-import Session from "../Session";
-
-type Props = { session: Session, onKeySaved: (SyntheticEvent<>) => any };
-type State = { isLoading: boolean, isLoaded: boolean, key: ?string };
-
-class SaveUnlockKey extends React.Component<Props, State> {
+class SaveUnlockKey extends React.Component {
   state = { isLoading: false, isLoaded: false, key: null };
 
   componentDidMount = async () => {

@@ -1,16 +1,9 @@
-//@flow
 import EventEmitter from "events";
 import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/core";
 import ServerApi from "./ServerApi";
 import { trustchainId } from "./config";
 
 export default class Session extends EventEmitter {
-  serverApi: ServerApi;
-  tanker: Tanker;
-  resourceId: ?string;
-  +userId: string;
-  +password: string;
-
   constructor() {
     super();
     this.serverApi = new ServerApi();
@@ -19,27 +12,27 @@ export default class Session extends EventEmitter {
     this.resourceId = null;
   }
 
-  get userId(): string {
+  get userId() {
     return this.serverApi.userId;
   }
 
-  get password(): string {
+  get password() {
     return this.serverApi.password;
   }
 
-  isOpen(): boolean {
+  isOpen() {
     return this.tanker.status === this.tanker.OPEN;
   }
 
-  async close(): Promise<void> {
+  async close() {
     await this.tanker.close();
   }
 
-  async openSession(userId: string, userToken: string) {
+  async openSession(userId, userToken) {
     await this.tanker.open(userId, userToken);
   }
 
-  async signUp(userId: string, password: string): Promise<void> {
+  async signUp(userId, password) {
     this.serverApi.setUserInfo(userId, password);
     const response = await this.serverApi.signUp();
 
@@ -50,7 +43,7 @@ export default class Session extends EventEmitter {
     return this.openSession(userId, userToken);
   }
 
-  async signIn(userId: string, password: string): Promise<void> {
+  async signIn(userId, password) {
     this.serverApi.setUserInfo(userId, password);
     let response;
     try {
@@ -68,15 +61,15 @@ export default class Session extends EventEmitter {
     await this.openSession(userId, userToken);
   }
 
-  async getUnlockKey(): Promise<string> {
+  async getUnlockKey() {
     return this.tanker.generateAndRegisterUnlockKey();
   }
 
-  async addCurrentDevice(unlockKey: string): Promise<void> {
+  async addCurrentDevice(unlockKey) {
     return this.tanker.unlockCurrentDevice(unlockKey);
   }
 
-  async saveText(text: string) {
+  async saveText(text) {
     const recipients = await this.getNoteRecipients();
     const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
     const encryptedText = toBase64(encryptedData);
@@ -84,11 +77,11 @@ export default class Session extends EventEmitter {
     await this.serverApi.push(encryptedText);
   }
 
-  async loadText(): Promise<string> {
+  async loadText() {
     return this.loadTextFromUser(this.userId);
   }
 
-  async loadTextFromUser(userId: string) {
+  async loadTextFromUser(userId) {
     const response = await this.serverApi.get(userId);
 
     if (response.status === 404) return "";
@@ -99,11 +92,11 @@ export default class Session extends EventEmitter {
     return clear;
   }
 
-  async getAccessibleNotes(): Promise<Array<string>> {
+  async getAccessibleNotes() {
     return (await this.serverApi.getMyData()).accessibleNotes || [];
   }
 
-  async getNoteRecipients(): Promise<Array<string>> {
+  async getNoteRecipients() {
     return (await this.serverApi.getMyData()).noteRecipients || [];
   }
 
@@ -111,7 +104,7 @@ export default class Session extends EventEmitter {
     return this.serverApi.getUsers();
   }
 
-  async share(recipients: string[]) {
+  async share(recipients) {
     if (!this.resourceId) throw new Error("No resource id.");
     await this.tanker.share([this.resourceId], recipients);
     await this.serverApi.share(recipients);

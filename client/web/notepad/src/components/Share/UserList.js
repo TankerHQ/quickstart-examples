@@ -1,13 +1,7 @@
 import { Checkbox } from "react-bootstrap";
 import React from "react";
 
-type Props = {
-  onToggle: (string, boolean) => void,
-  selected: Set<string>,
-  users: string[],
-};
-
-export default function UserList({ onToggle, selected, users }: Props) {
+export default function UserList({ onToggle, selected, users }) {
   const renderRow = user => {
     const active = selected.has(user);
     return (

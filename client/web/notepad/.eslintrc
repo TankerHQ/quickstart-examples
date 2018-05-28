@@ -7,7 +7,10 @@ extends:
 
 rules:
   react/jsx-filename-extension: 0
-  // react/prop-types: 0
+  // The best way to declare react prop types is to use something like flow
+  // In order for the code of Notepad to be beginner-friendly, we chose to
+  // not use flow at all.
+  // Thus we need to de-activate prop-types checks by eslint.
+  react/prop-types: 0
   no-restricted-syntax: 0
   no-console: ["error", { allow: ["warn", "error"] }]
-
