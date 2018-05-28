@@ -123,7 +123,7 @@ Note that we use `await` because opening a Tanker session is not instantaneous, 
 async openSession(userId: string, userToken: string) {
 - this.opened = true;
 + await this.tanker.open(userId, userToken);
-+ console.log("Tanker session is now ready");
++ console.log('Tanker session is now ready');
 }
 ```
 
@@ -286,7 +286,7 @@ We can do this in the Session constructor, right after creating the `tanker` obj
 constructor() {
   // ...
   this.tanker = new Tanker({ trustchainId });
-+ this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
++ this.tanker.on('waitingForValidation', () => this.emit('newDevice'));
   // ...
 }
 ```
@@ -300,11 +300,12 @@ Then we implement the `getUnlockKey()` and `addCurrentDevice()` device methods i
 ```diff
 async getUnlockKey(): Promise<string> {
 - return 'This will be replaced by a real key [...]. Click on Done for now.';
-+ return this.tanker.generateAndRegisterUnlockKey();
+  const key = await this.tanker.generateAndRegisterUnlockKey();
+  return key;
 }
 
 async addCurrentDevice(unlockKey: string): Promise<void> {
-+ return this.tanker.unlockCurrentDevice(unlockKey);
++ await this.tanker.unlockCurrentDevice(unlockKey);
 }
 ```
 
