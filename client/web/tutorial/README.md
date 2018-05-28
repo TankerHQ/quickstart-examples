@@ -173,7 +173,7 @@ async saveText(text: string) {
 - await this.serverApi.push(text);
 + const encryptedData = await this.tanker.encrypt(text);
 + const encryptedText = toBase64(encryptedData);
-+ this.serverApi.push(encryptedText);
++ await this.serverApi.push(encryptedText);
 }
 ```
 
@@ -196,7 +196,8 @@ async loadTextFromUser(userId: string) {
   // of the server and use tanker to decrypt it.
 + const encryptedText = await response.text();
 + const encryptedData = fromBase64(encryptedText);
-+ return this.tanker.decrypt(encryptedData);
++ const clear = await this.tanker.decrypt(encryptedData);
++ return clear;
 }
 ```
 

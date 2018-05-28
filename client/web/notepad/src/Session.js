@@ -81,7 +81,7 @@ export default class Session extends EventEmitter {
     const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
     const encryptedText = toBase64(encryptedData);
     this.resourceId = getResourceId(encryptedData);
-    await this.serverApi.push(toBase64(encryptedText));
+    await this.serverApi.push(encryptedText);
   }
 
   async loadText(): Promise<string> {
@@ -95,7 +95,8 @@ export default class Session extends EventEmitter {
 
     const encryptedText = await response.text();
     const encryptedData = fromBase64(encryptedText);
-    return this.tanker.decrypt(encryptedData);
+    const clear = await this.tanker.decrypt(encryptedData);
+    return clear;
   }
 
   async getAccessibleNotes(): Promise<Array<string>> {
