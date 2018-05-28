@@ -2,7 +2,9 @@
 
 In this tutorial we will demonstrate how to use the Tanker SDK inside an existing React JavaScript application.
 
-Knowledge about UI frameworks such as react is not required. However, the functions and methods  of the Tanker API are asynchronous, so to take out the most of this tutorial you should know about [async functions](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Instructions/async_function).
+We will start from a working application with no encryption whatsoever, and progressively add end-to-end encryption, thus gaining full user privacy and strong protection against data leaks.
+
+Knowledge about UI frameworks such as React is not required. However, the functions and methods of the Tanker API are asynchronous, so to take out the most of this tutorial you should know about [async functions](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Instructions/async_function).
 
 
 ## Environment set up
@@ -46,7 +48,7 @@ The application should open in a new browser tab. If not, go to http://localhost
 
 Now that the application is up and running, please follow the steps below:
 
-1. Sign up with the user name `alice` and the password `p4ssw0rd`. (Actually, you can use any user name and password, but if you choose to use other authentication values, please note that the server does not implement a "Forgot my password" feature ...)
+1. Sign up with the user name `alice` and the password `p4ssw0rd`. (Actually, you can use any user name and password, but if you choose to use other authentication values, please note that the server does not implement a "Forgot my password" feature...)
 
 2. Type some text in the notepad's input and save it.
 
@@ -90,7 +92,7 @@ Since the tanker SDK implements end-to-end encryption, most cryptographic operat
 
 ### Handling a Tanker session
 
-In the `./client/web/tutorial/src/Session.js` file, we've already extracted the `trustchainId` from the config file:
+In the `./client/web/tutorial/src/Session.js` file, the `trustchainId` has already been extracted from the config file for you:
 ```javascript
 import { trustchainId } from './config';
 ```
@@ -99,9 +101,11 @@ Use it to initialize a new Tanker instance:
 
 ```diff
 constructor() {
-  this.opened = false;
+  super();
+  this.serverApi = new ServerApi();
 + this.tanker = new Tanker({ trustchainId });
-  ...
+  this.opened = false;
+  // ...
 }
 ```
 
@@ -116,16 +120,11 @@ In both cases, the server should have sent a user token, and we can call `open()
 Note that we use `await` because opening a Tanker session is not instantaneous, and we do not want to block the application while Tanker is opening.
 
 ```diff
-async openSession(userId: string, password: string): Promise<void> {
-  // ...
-  const userToken = await response.text();
-
-  // Open Tanker session with userId and userToken
+async openSession(userId: string, userToken: string) {
 - this.opened = true;
 + await this.tanker.open(userId, userToken);
 + console.log("Tanker session is now ready");
 }
-
 ```
 
 <!--FIXME: explain TrustChain concept here -->
@@ -134,7 +133,7 @@ Note that `open()` will use the user token to:
 
 * register the user in the TrustChain if necessary,
 * register the device in the TrustChain if necessary,
-* fetch access keys to all the resource.
+* fetch access keys to all the resources.
 
 With this in place we can get rid of the `opened` attribute and fix the `isOpen()` and `close()` methods:
 
@@ -145,7 +144,6 @@ constructor() {
 }
 
 isOpen(): bool {
-  // Check Tanker status
 - return this.opened;
 + return this.tanker.status === this.tanker.OPEN;
 }
@@ -167,7 +165,7 @@ You can check this by refreshing your browser, and log in. You should see the te
 To encrypt the data, we use [`tanker.encrypt()`](https://www.tanker.io/docs/latest/guide/encryption#encrypting):
 
 ```diff
-async saveText(text: string): Promise<void> {
+async saveText(text: string) {
   const recipients = await this.getNoteRecipients();
 
   // use tanker to encrypt the text as binary data, then
@@ -186,20 +184,19 @@ The `encrypt()` method takes a string as parameter and returns some binary data.
 To decrypt the data, we use the same steps, but in reverse order using the [`tanker.decrypt()`](https://www.tanker.io/docs/latest/guide/encryption/#decrypting) method:
 
 ```diff
-async loadTextFromUser() Promise<string> {
+async loadTextFromUser(userId: string) {
   const response = await this.serverApi.get(userId);
 
   if (response.status === 404) return "";
 
-  - const data = await response.text();
-  - return data;
+- const data = await response.text();
+- return data;
 
-  // ...
-  // use fromBase64 to get binary data from the
-  // response of the server and use tanker to decrypt it.
-  + const encryptedText = await response.text();
-  + const encryptedData = fromBase64(encryptedText);
-  + return this.tanker.decrypt(encryptedData);
+  // use fromBase64 to get binary data from the response
+  // of the server and use tanker to decrypt it.
++ const encryptedText = await response.text();
++ const encryptedData = fromBase64(encryptedText);
++ return this.tanker.decrypt(encryptedData);
 }
 ```
 
@@ -210,8 +207,8 @@ Now the data on the server can no longer be used by the clients. So go ahead, an
 
 You can then try to log in, and check that:
 
-* you can  still edit and save a note
-* the `data` field in the `json` is now encrypted
+* you can still edit and save a note,
+* the `data` field in the `json` is now encrypted.
 
 ### Sharing
 
@@ -225,7 +222,7 @@ What we need to do is exchange keys from Alice to Bob.
 
 Note that each time we call `tanker.encrypt()` a new key is generated. This is done for security reasons.
 
-We call each version of a note a *resource*. Each time the note changes, we must get its resource id and ask the Tanker SDK to share access to it.
+We call each version of a note a *resource*. Each time the note changes, we must get its resource ID and ask the Tanker SDK to share access to it.
 
 They are two places we need to do this:
 
@@ -235,22 +232,27 @@ They are two places we need to do this:
 First, when we encrypt the data (when the user clicks on `save`), we can use the `shareWith` option of `tanker.encrypt()`:
 
 ```diff
-async saveText(): Promise<string> {
-  const data = await this.serverApi.get();
-  // ...
-- const encryptedData = await this.tanker.encrypt(content);
+async saveText(text: string) {
+  const recipients = await this.getNoteRecipients();
+
+  // use tanker to encrypt the text as binary data, then
+  // encode the data and send it to the server
+- const encryptedData = await this.tanker.encrypt(text);
 + const encryptedData = await this.tanker.encrypt(content, { shareWith: recipients });
+  const encryptedText = toBase64(encryptedData);
+  this.serverApi.push(encryptedText);
 }
 ```
 
-Then, we can store the resource ID matching the newly generated key by using the `getResourceId` helper method:
+Then, we can store the resource ID matching the newly generated key by using the `getResourceId()` helper method:
 
 ```diff
-async saveText(): Promise<string> {
-  const data = await this.serverApi.get();
-  // ...
-+ const encryptedData = await this.tanker.encrypt(content, { shareWith: recipients });
-+ this.resourceId = getResourceId(encryptedData)
+async saveText(text: string) {
+  const recipients = await this.getNoteRecipients();
+  const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
+  const encryptedText = toBase64(encryptedData);
++ this.resourceId = getResourceId(encryptedData);
+  await this.serverApi.push(toBase64(encryptedText));
 ```
 
 Next, in the `share` method, we must:
@@ -265,7 +267,6 @@ Next, in the `share` method, we must:
 +   await this.tanker.share([this.resourceId], recipients);
     await this.serverApi.share(recipients);
   }
-
 ```
 
 You can now re-try sharing notes between Alice and Bob, the "share" functionality should be working again.
@@ -281,11 +282,11 @@ First, we connect the `waitingForValidation` event of the Tanker and emit the `n
 We can do this in the Session constructor, right after creating the `tanker` object:
 
 ```diff
-
 constructor() {
-    // ...
-    this.tanker = new Tanker({ trustchainId });
-+   this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
+  // ...
+  this.tanker = new Tanker({ trustchainId });
++ this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
+  // ...
 }
 ```
 
@@ -297,12 +298,11 @@ Then we implement the `getUnlockKey()` and `addCurrentDevice()` device methods i
 
 ```diff
 async getUnlockKey(): Promise<string> {
-- return 'this is the unlock key';
+- return 'This will be replaced by a real key [...]. Click on Done for now.';
 + return this.tanker.generateAndRegisterUnlockKey();
 }
 
 async addCurrentDevice(unlockKey: string): Promise<void> {
-- await true;
 + return this.tanker.unlockCurrentDevice(unlockKey);
 }
 ```
@@ -328,7 +328,7 @@ Now, you'll launch **a different browser** to emulate a new device (technically,
 Note 1: instead of a second browser, you could also have used the first browser in private browsing mode to emulate a new device. Nevertheless, the browser won't persist Tanker data over private browsing sessions, so you would have to unlock the device every time you restart such a private browsing session.
 
 
-Note 2: Of course, in a more realistic application, users should not have to copy/paste a unlock key themselves. Tanker staff is working on implementing two different ways to implement the feature properly:
+Note 2: of course, in a more realistic application, users should not have to copy/paste an unlock key themselves. Tanker staff is working on implementing two different ways to implement the feature properly:
 
 * First way is to use a "passphrase" (a set of 6 to 10 words) that the user can either safely note somewhere, or store in a dedicated device for instance.
 * Or, store the encrypted unlock key on the Tanker servers. The user will then have to use some form of 2-Factor authentication to retrieve their unlock key.

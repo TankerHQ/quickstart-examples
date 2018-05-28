@@ -145,12 +145,16 @@ if (mainConfigFiles.length === 0) {
 }
 
 // Print collected errors if any
+let message = `Checked formatting of ${generatedConfigs.length} config files:`;
+
 const l = errors.length;
 
 if (l > 0) {
-  const errorSummary = `Found ${l} config error${l > 1 ? 's' : ''}`;
   const errorList = errors.map((e, index) => `${index + 1}. ${e.replace(/\n/gm, '\n   ')}`);
-  const message = `${errorSummary}:\n\n${errorList.join('\n\n')}\n`;
+  message += ` found ${l} problem${l > 1 ? 's' : ''}!\n\n`;
+  message += `${errorList.join('\n\n')}\n`;
   console.log(message);
   process.exitCode = 1;
+} else {
+  console.log(`${message} no problem found!`);
 }

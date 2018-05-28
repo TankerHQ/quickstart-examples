@@ -68,11 +68,11 @@ export default class Session extends EventEmitter {
     await this.openSession(userId, userToken);
   }
 
-  async addCurrentDevice(unlockKey: string): Promise<void> {
-
+  async getUnlockKey(): Promise<string> {
+    return 'This will be replaced by a real key later in the tutorial. Click on Done for now.';
   }
 
-  async getUnlockKey(): Promise<string> {
+  async addCurrentDevice(unlockKey: string): Promise<void> {
   }
 
   async saveText(text: string) {

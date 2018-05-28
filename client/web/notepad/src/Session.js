@@ -68,19 +68,20 @@ export default class Session extends EventEmitter {
     await this.openSession(userId, userToken);
   }
 
-  async addCurrentDevice(unlockKey: string): Promise<void> {
-    return this.tanker.unlockCurrentDevice(unlockKey);
-  }
-
   async getUnlockKey(): Promise<string> {
     return this.tanker.generateAndRegisterUnlockKey();
   }
 
+  async addCurrentDevice(unlockKey: string): Promise<void> {
+    return this.tanker.unlockCurrentDevice(unlockKey);
+  }
+
   async saveText(text: string) {
     const recipients = await this.getNoteRecipients();
-    const eData = await this.tanker.encrypt(text, { shareWith: recipients });
-    this.resourceId = getResourceId(eData);
-    await this.serverApi.push(toBase64(eData));
+    const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
+    const encryptedText = toBase64(encryptedData);
+    this.resourceId = getResourceId(encryptedData);
+    await this.serverApi.push(toBase64(encryptedText));
   }
 
   async loadText(): Promise<string> {
@@ -92,9 +93,9 @@ export default class Session extends EventEmitter {
 
     if (response.status === 404) return "";
 
-    const data = await response.text();
-    const clear = await this.tanker.decrypt(fromBase64(data));
-    return clear;
+    const encryptedText = await response.text();
+    const encryptedData = fromBase64(encryptedText);
+    return this.tanker.decrypt(encryptedData);
   }
 
   async getAccessibleNotes(): Promise<Array<string>> {
