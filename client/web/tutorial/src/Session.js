@@ -4,7 +4,7 @@ import ServerApi from "./ServerApi";
 import { trustchainId } from "./config";
 
 export default class Session extends EventEmitter {
-  opened: bool;
+
   constructor() {
     super();
     this.serverApi = new ServerApi();

@@ -5,6 +5,12 @@ import { Link } from "react-router-dom";
 import AccessibleNotes from "./AccessibleNotes";
 
 class Home extends React.Component {
+  state = {
+    accessibleNotes: [],
+    isLoading: true,
+    isLoaded: false,
+    error: null,
+  };
   async componentWillMount() {
     await this.load();
   }
