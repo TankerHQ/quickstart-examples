@@ -1,28 +1,10 @@
-// @flow
 import React from "react";
 import { Button, Panel } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import Session from "../Session";
 import AccessibleNotes from "./AccessibleNotes";
 
-type Props = { session: Session };
-
-type State = {
-  accessibleNotes: string[],
-  error: ?string,
-  isLoading: boolean,
-  isLoaded: boolean,
-};
-
-class Home extends React.Component<Props, State> {
-  state: State = {
-    accessibleNotes: [],
-    isLoading: true,
-    isLoaded: false,
-    error: null,
-  };
-
+class Home extends React.Component {
   async componentWillMount() {
     await this.load();
   }

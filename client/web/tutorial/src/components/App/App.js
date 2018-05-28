@@ -1,7 +1,5 @@
-// @flow
 import React from "react";
 
-import Session from "../../Session";
 import SaveUnlockKey from "../SaveUnlockKey";
 import NewDevice from "../NewDevice";
 import SessionForm from "../SessionForm";
@@ -10,12 +8,7 @@ import Notepad from "./Notepad";
 
 import "./App.css";
 
-type Props = { session: Session };
-type State = {
-  status: "signIn" | "saveKey" | "validateDevice" | "ready",
-};
-
-class App extends React.Component<Props, State> {
+class App extends React.Component {
   state = { status: "signIn" };
 
   componentWillMount() {
@@ -23,7 +16,7 @@ class App extends React.Component<Props, State> {
     session.on("newDevice", () => this.setState({ status: "validateDevice" }));
   }
 
-  onSignIn = async (login: string, password: string) => {
+  onSignIn = async (login, password) => {
     const { session } = this.props;
     if (session.isOpen()) {
       console.warn(`Closing previous session opened by ${session.userId}`);
@@ -34,7 +27,7 @@ class App extends React.Component<Props, State> {
     this.setState({ status: "ready" });
   };
 
-  onSignUp = async (login: string, password: string) => {
+  onSignUp = async (login, password) => {
     const { session } = this.props;
     if (session.isOpen()) {
       console.warn(`Closing previous session opened by ${session.userId}`);
@@ -57,7 +50,7 @@ class App extends React.Component<Props, State> {
     this.setState({ status: "ready" });
   };
 
-  onUnlockDevice = async (unlockKey: string) => {
+  onUnlockDevice = async unlockKey => {
     await this.props.session.addCurrentDevice(unlockKey);
     this.setState({ status: "ready" });
   };

@@ -1,45 +1,39 @@
-// @flow
 const appServerUrl = "http://localhost:8080";
 
 export default class Api {
-  _userId: string;
-  _password: string;
-  +userId: string;
-  +password: string;
-
-  get userId(): string {
+  get userId() {
     return this._userId;
   }
 
-  get password(): string {
+  get password() {
     return this._password;
   }
 
-  setUserInfo(userId: string, password: string): void {
+  setUserInfo(userId, password) {
     this._userId = userId;
     this._password = password;
   }
 
-  urlFor(path: string) {
+  urlFor(path) {
     const queryString = `userId=${encodeURIComponent(this.userId)}&password=${encodeURIComponent(
       this.password,
     )}`;
     return `${appServerUrl}${path}?${queryString}`;
   }
 
-  signUp(): Promise<Response> {
+  signUp() {
     return fetch(this.urlFor("/signup"));
   }
 
-  login(): Promise<Response> {
+  login() {
     return fetch(this.urlFor("/login"));
   }
 
-  delete(): Promise<Response> {
+  delete() {
     return fetch(this.urlFor("/data"), { method: "DELETE" });
   }
 
-  push(content: string): Promise<Response> {
+  push(content) {
     if (typeof content !== "string") {
       throw new Error(
         `serverApi.push: expecting content as string, got: ${content}. Did you forget to call toBase64?`,
@@ -49,7 +43,7 @@ export default class Api {
     return fetch(this.urlFor("/data"), { method: "PUT", body: content });
   }
 
-  async get(userId: string) {
+  async get(userId) {
     return fetch(this.urlFor(`/data/${userId}`));
   }
 
@@ -67,7 +61,7 @@ export default class Api {
     return response.json();
   }
 
-  async share(recipients: string[]) {
+  async share(recipients) {
     const data = {
       from: this.userId,
       to: recipients,

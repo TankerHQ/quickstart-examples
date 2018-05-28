@@ -1,16 +1,8 @@
-// @flow
 import React from "react";
 import { ListGroup, ListGroupItem, Alert } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 
-type Props = {
-  isLoading: boolean,
-  error: string,
-  accessibleNotes: string[],
-  history: Object,
-};
-
-const AccessibleNotes = ({ isLoading, error, accessibleNotes, history }: Props) => {
+const AccessibleNotes = ({ isLoading, error, accessibleNotes, history }) => {
   if (isLoading) {
     return <Alert bsStyle="info">Loading...</Alert>;
   }

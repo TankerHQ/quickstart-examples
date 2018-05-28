@@ -1,36 +1,12 @@
-// @flow
 import React from "react";
 import { Alert, Button, ButtonGroup, FormControl, FormGroup, Panel } from "react-bootstrap";
-import Session from "../Session";
 
-type Props = { session: Session, history: Object };
-
-type State = {
-  text: string,
-  error: ?string,
-  isLoading: boolean,
-  isLoaded: boolean,
-  isDeleting: boolean,
-  isSaving: boolean,
-  modified: boolean,
-};
-
-class Edit extends React.Component<Props, State> {
-  state: State = {
-    text: "",
-    error: null,
-    modified: false,
-    isSaving: false,
-    isLoading: true,
-    isLoaded: false,
-    isDeleting: false,
-  };
-
+class Edit extends React.Component {
   async componentWillMount() {
     await this.load();
   }
 
-  onChange = (e: SyntheticEvent<HTMLTextAreaElement>) => {
+  onChange = e => {
     this.setState({
       text: e.currentTarget.value,
       modified: true,
@@ -50,25 +26,24 @@ class Edit extends React.Component<Props, State> {
     }
   };
 
-  onBackClicked = (e: SyntheticEvent<>) => {
+  onBackClicked = e => {
     e.preventDefault();
     this.props.history.push("/");
   };
 
-  onDeleteClicked = async (e: SyntheticEvent<>) => {
+  onDeleteClicked = async e => {
     this.setState({ isDeleting: true });
     const { session } = this.props;
 
     e.preventDefault();
     try {
       await session.delete();
-      this.setState({ isDeleting: false, text: '' });
+      this.setState({ isDeleting: false, text: "" });
     } catch (err) {
       console.error(err);
       this.setState({ error: err.toString(), isDeleting: false });
     }
-
-  }
+  };
 
   onShareClicked = async () => {
     await this.onSave();
@@ -116,11 +91,8 @@ class Edit extends React.Component<Props, State> {
             </FormGroup>
             {this.state.modified ? "*" : null}
             <ButtonGroup className="pull-right">
-              <Button
-                id="delete-button"
-                bsStyle="danger"
-                onClick={this.onDeleteClicked}
-              >{isDeleting ? "Deleting ..." : "Delete"}
+              <Button id="delete-button" bsStyle="danger" onClick={this.onDeleteClicked}>
+                {isDeleting ? "Deleting ..." : "Delete"}
               </Button>
               <Button
                 id="save-button"

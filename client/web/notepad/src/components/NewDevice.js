@@ -1,25 +1,14 @@
-// @flow
 import * as React from "react";
 import { Alert, Button, ControlLabel, FormControl, FormGroup, Panel } from "react-bootstrap";
 
-type Props = {
-  onUnlockDevice: string => Promise<*>,
-};
-
-type State = {
-  unlockKey: string,
-  isLoading: boolean,
-  error: ?string,
-};
-
-class NewDevice extends React.Component<Props, State> {
+class NewDevice extends React.Component {
   state = {
     unlockKey: "",
     isLoading: false,
     error: null,
   };
 
-  onChange = (e: SyntheticInputEvent<HTMLTextAreaElement>) => {
+  onChange = e => {
     this.setState({ unlockKey: e.currentTarget.value });
   };
 
