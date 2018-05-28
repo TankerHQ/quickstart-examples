@@ -2,6 +2,18 @@ import React from "react";
 import { Alert, Button, ButtonGroup, FormControl, FormGroup, Panel } from "react-bootstrap";
 
 class Edit extends React.Component {
+  state = {
+    text: "",
+    error: null,
+    modified: false,
+    isSaving: false,
+    isLoading: true,
+    isLoaded: false,
+    isDeleting: false,
+  };
+
+
+
   async componentWillMount() {
     await this.load();
   }
