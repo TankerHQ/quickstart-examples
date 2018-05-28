@@ -22,14 +22,14 @@
     "yarn": ">= 1.0"
   },
   "scripts": {
-    "config:check": "./bin/config-check",
+    "config:check": "node ./bin/config-check",
     "start": "yarn start:server",
-    "start:server": "./bin/config-check && cd server/src && node server.js",
-    "watch:server": "./bin/config-check && cd server/src && node-dev server.js",
-    "start:nodejs:hello-world": "./bin/config-check && cd client/nodejs/hello-world && node main.js",
-    "start:web:api-observer": "./bin/config-check && cd client/web/api-observer && react-scripts start",
-    "start:web:notepad": "./bin/config-check && cd client/web/notepad && react-scripts start",
-    "start:web:tutorial": "./bin/config-check && cd client/web/tutorial && react-scripts start"
+    "start:server": "node ./bin/config-check && cd server/src && node server.js",
+    "watch:server": "node ./bin/config-check && cd server/src && node-dev server.js",
+    "start:nodejs:hello-world": "node ./bin/config-check && cd client/nodejs/hello-world && node main.js",
+    "start:web:api-observer": "node ./bin/config-check && cd client/web/api-observer && react-scripts start",
+    "start:web:notepad": "node ./bin/config-check && cd client/web/notepad && react-scripts start",
+    "start:web:tutorial": "node ./bin/config-check && cd client/web/tutorial && react-scripts start"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
