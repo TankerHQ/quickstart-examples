@@ -17,7 +17,9 @@ node -v  # >= 8    (async/await support)
 yarn -v  # >= 1.0  (workspaces support)
 ```
 
-Install all dependencies:
+We recommend using `yarn` rather than `npm`, as it will manage the dependencies of all the applications for you from the root of the repository.
+
+Install all dependencies at once:
 ```bash
 cd quickstart-examples && yarn
 ```
@@ -33,6 +35,16 @@ Note: if you need to request access to the Tanker dashboard, please contact us a
 ### Configure
 
 Take the JSON configuration file from the previous step and copy it under the `config/` folder.
+
+Note that the JSON configuration file can have any name ending with the `.json` extension and must have the following format:
+
+```javascript
+// e.g. config/my-trustchain.json
+{
+    "trustchainId": "...",
+    "trustchainPrivateKey": "..."
+}
+```
 
 That's all you need to start the server and applications!
 
