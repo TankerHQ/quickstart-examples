@@ -56,7 +56,7 @@ homeRouter.get('/', (req, res) => {
 homeRouter.use('/favicon.ico', express.static(path.join(rootPath, 'server/src/home/favicon.ico')));
 
 // Serve highlight.js files
-homeRouter.use('/highlight', express.static(path.join(rootPath, 'server/src/home/highlight')));
+homeRouter.use('/highlight', express.static(path.join(rootPath, 'server/public/highlight')));
 
 // Serve images from the api-observer README
 homeRouter.use('/pics', express.static(path.join(rootPath, 'client/web/api-observer/pics')));
