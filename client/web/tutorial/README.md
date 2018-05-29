@@ -239,7 +239,7 @@ async saveText(text: string) {
   // use tanker to encrypt the text as binary data, then
   // encode the data and send it to the server
 - const encryptedData = await this.tanker.encrypt(text);
-+ const encryptedData = await this.tanker.encrypt(content, { shareWith: recipients });
++ const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
   const encryptedText = toBase64(encryptedData);
   this.serverApi.push(encryptedText);
 }
@@ -300,8 +300,8 @@ Then we implement the `getUnlockKey()` and `addCurrentDevice()` device methods i
 ```diff
 async getUnlockKey(): Promise<string> {
 - return 'This will be replaced by a real key [...]. Click on Done for now.';
-  const key = await this.tanker.generateAndRegisterUnlockKey();
-  return key;
++ const key = await this.tanker.generateAndRegisterUnlockKey();
++ return key;
 }
 
 async addCurrentDevice(unlockKey: string): Promise<void> {

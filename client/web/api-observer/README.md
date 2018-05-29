@@ -48,7 +48,7 @@ The Decryption input should be filled with gibberish:
 
 ![screenshot](./pics/encrypted_data.png)
 
-* You can click on "Decrypt" and "Encrypt" has often as you like. Note that the encrypted text will change every time.
+* You can click on "Decrypt" and "Encrypt" has often as you like. You will note that the same clear text gets encrypted differently every time. This behavior is an expected property of the cryptographic algorithms used by the Tanker SDK.
 * Save the encrypted data where you want. It is encrypted and only you can decrypt it.
 
 ### Share data

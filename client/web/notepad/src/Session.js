@@ -77,10 +77,6 @@ export default class Session extends EventEmitter {
     await this.serverApi.push(encryptedText);
   }
 
-  async loadText() {
-    return this.loadTextFromUser(this.userId);
-  }
-
   async loadTextFromUser(userId) {
     const response = await this.serverApi.get(userId);
 
