@@ -1,8 +1,11 @@
 const fs = require('fs');
+const config = require('./config');
 
 class Storage {
   constructor(dataFolder) {
-    this.dataFolder = dataFolder;
+    const escapedTrustchainId = config.trustchainId.replace(/[/\\]/g, '_');
+    this.dataFolder = `${dataFolder}/${escapedTrustchainId}`;
+    fs.mkdirSync(this.dataFolder);
   }
 
   save(user) {

@@ -6,7 +6,6 @@
 // backend server to the demo applications using the Tanker SDK.
 
 // @flow
-const assert = require('assert').strict;
 const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
@@ -24,16 +23,14 @@ const home = require('./home').default;
 const Storage = require('./storage').default;
 
 
-let storage;
-
 // Setup server
 const setup = (config) => {
   const { dataPath } = config;
-  assert(dataPath);
   if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath);
   }
-  storage = new Storage(dataPath);
+  app.storage = new Storage(dataPath);
+  return app;
 }
 
 
@@ -66,12 +63,16 @@ app.use((req, res, next) => {
 // Add signup route (non authenticated)
 app.get('/signup', (req, res) => {
   const { userId, password } = req.query;
+  if (password === undefined) {
+    res.status(400).send('missing password');
+    return;
+  }
   const hashed_password = sodium.crypto_pwhash_str(password,
     sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
     sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
   );
 
-  if (storage.exists(userId)) {
+  if (app.storage.exists(userId)) {
     log(`User "${userId}" already exists`, 1);
     res.sendStatus(409);
     return;
@@ -81,18 +82,19 @@ app.get('/signup', (req, res) => {
   const token = userToken.generateUserToken(config.trustchainId, config.trustchainPrivateKey, userId);
 
   log('Save password and token to storage', 1);
-  storage.save({ id: userId, hashed_password, token });
+  app.storage.save({ id: userId, hashed_password, token });
 
   log('Serve the token', 1);
   res.set('Content-Type', 'text/plain');
-  res.send(token);
+  res.status(201).send(token);
 });
 
 
 // Add authentication middleware for all routes below
 //   - check valid "userId" and "password" query params
 //   - set res.locals.user for the request handlers
-app.use(auth(storage));
+const authFunc = auth(app);
+app.use(authFunc);
 
 
 // Add authenticated routes
@@ -107,25 +109,26 @@ app.get('/login', (req, res) => {
 
 app.put('/data', (req, res) => {
   const user = res.locals.user;
+  console.log('put /data, req.body:', req.body);
 
   log('Save data on storage', 1);
   try {
     user.data = req.body;
-    storage.save(user);
+    app.storage.save(user);
   } catch (e) {
     log(e, 1);
     res.sendStatus(500);
     return;
   }
 
-  res.sendStatus(200);
+  res.sendStatus(201);
 });
 
 app.delete('/data', (req, res) => {
   const user = res.locals.user;
 
   log('Clear user data', 1);
-  storage.clearData(user);
+  app.storage.clearData(user.id);
   res.sendStatus(200);
 });
 
@@ -133,12 +136,12 @@ app.get('/data/:userId', (req, res) => {
   const { userId } = req.params;
   log('Retrieve data from storage', 1);
 
-  if (!storage.exists(userId)) {
+  if (!app.storage.exists(userId)) {
     log(`User ${userId} does not exist`);
     res.sendStatus(404);
     return
   }
-  const user = storage.get(userId);
+  const user = app.storage.get(userId);
 
   if (!user.data) {
     log('User has no stored data', 1);
@@ -154,7 +157,7 @@ app.get('/data/:userId', (req, res) => {
 
 
 app.get('/users', (req, res) => {
-  const knownIds = storage.getAllIds();
+  const knownIds = app.storage.getAllIds();
 
   res.set('Content-Type', 'application/json');
   res.json(knownIds);
@@ -167,7 +170,7 @@ app.post('/share', (req, res) => {
   if (from !== res.locals.user.id)
     return res.sendStatus(401);
 
-  storage.share(from, to);
+  app.storage.share(from, to);
   res.sendStatus('201');
 });
 
@@ -178,7 +181,7 @@ app.get('/me', (req, res) => {
 });
 
 const listen = (port) => {
-  app.listen(port);
+  return app.listen(port);
 }
 
 module.exports = {

@@ -27,7 +27,7 @@ const authMiddleware = (storage, req, res, next) => {
   next();
 };
 
-const auth = (storage) => { return (req, res, next) => authMiddleware(storage, req, res, next) };
+const auth = (app) => { return (req, res, next) => authMiddleware(app.storage, req, res, next) };
 
 
 module.exports = {
