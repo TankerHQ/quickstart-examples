@@ -2,7 +2,6 @@ import React from "react";
 import { Alert, Button, ButtonGroup, FormControl, FormGroup, Panel } from "react-bootstrap";
 
 class Edit extends React.Component {
-
   state = {
     text: "",
     error: null,
@@ -62,9 +61,11 @@ class Edit extends React.Component {
   };
 
   async load() {
+    const { session } = this.props;
+    const { userId } = session;
     this.setState({ isLoading: true });
     try {
-      const text = await this.props.session.loadText();
+      const text = await session.loadTextFromUser(userId);
       this.setState({ text, isLoading: false, isLoaded: true });
     } catch (e) {
       console.error(e);
