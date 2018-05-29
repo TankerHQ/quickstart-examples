@@ -1,0 +1,7 @@
+extends:
+  - airbnb
+  - eslint:recommended
+
+rules:
+  no-restricted-syntax: 0
+  no-console: 0
