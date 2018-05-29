@@ -30,7 +30,7 @@ describe('Strorage', () => {
       ]
     };
     storage.save(user);
-    backFromDb = storage.get('user_42');
+    const backFromDb = storage.get('user_42');
     expect(backFromDb).to.deep.equal(user);
   });
 
@@ -72,7 +72,7 @@ describe('Strorage', () => {
 
     storage.clearData('user_42');
 
-    fromDb = storage.get('user_42');
+    const fromDb = storage.get('user_42');
     expect(fromDb.data).to.be.undefined;
   });
 
