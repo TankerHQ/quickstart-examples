@@ -258,7 +258,7 @@ async saveText(text: string) {
 
 Next, in the `share` method, we must:
 
-* Remove the line `this.resourceId = this.userId` since notes no longer are identified by their creator,
+* **Remove the line** `this.resourceId = this.userId` since notes no longer are identified by their creator,
 * And call `tanker.share()` with a list containing the current `resourceId` and the list of recipients.
 
 ```diff
