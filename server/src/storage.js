@@ -5,7 +5,9 @@ class Storage {
   constructor(dataFolder) {
     const escapedTrustchainId = config.trustchainId.replace(/[/\\]/g, '_');
     this.dataFolder = `${dataFolder}/${escapedTrustchainId}`;
-    fs.mkdirSync(this.dataFolder);
+    if (!fs.existsSync(this.dataFolder)) {
+      fs.mkdirSync(this.dataFolder);
+    }
   }
 
   save(user) {
