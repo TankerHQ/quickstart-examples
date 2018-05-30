@@ -1,3 +1,4 @@
+const fs = require('fs');
 const chai = require('chai');
 const fetch = require('node-fetch');
 const tmp = require('tmp');
@@ -217,6 +218,25 @@ describe('server', () => {
 
       const res = await response.json()
       expect(res).to.have.members([bobId, aliceId]);
+    });
+
+    it('does not crash if a json file is corrupted', async () => {
+      signUpBob();
+      signUpAlice();
+
+      const alicePath = app.storage.dataFilePath(aliceId);
+      fs.writeFileSync(alicePath, 'this is {not} valid json[]');
+
+      const query = { userId: bobId, password: bobPassword };
+      const response = await doRequest(testServer,
+        { verb: 'get', path: '/users', query }
+      );
+      expect(response.status).to.eq(500);
+      const details = await response.json();
+      console.log(details);
+      expect(details.error).to.contain(`${aliceId}.json`);
+
+
     });
   });
 });

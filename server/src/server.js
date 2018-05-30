@@ -180,6 +180,15 @@ app.get('/me', (req, res) => {
   res.json(me);
 });
 
+// Return nice 500 message when an exception is thrown
+const errorHandler = (err, req, res, next) => {    // eslint-disable-line  no-unused-vars
+  res.status(500);
+  res.json({ error: err.message });
+  // Note: we don't call next() because we don't want the request to continue
+}
+app.use(errorHandler);
+
+
 const listen = (port) => {
   return app.listen(port);
 }

@@ -64,8 +64,12 @@ class Storage {
   }
 
   parseJson(path) {
-    const data = fs.readFileSync(path);
-    return JSON.parse(data);
+    try {
+        const data = fs.readFileSync(path);
+      return JSON.parse(data);
+    } catch(e) {
+      throw Error(`Could not parse ${path}: ${e}`);
+    }
   }
 
   getAllIds() {
