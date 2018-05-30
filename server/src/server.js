@@ -6,8 +6,10 @@
 // backend server to the demo applications using the Tanker SDK.
 
 // @flow
+const assert = require('assert').strict;
 const bodyParser = require('body-parser');
 const express = require('express');
+const fs = require('fs');
 const morgan = require('morgan');
 const userToken = require('@tanker/user-token');
 const sodium = require('libsodium-wrappers-sumo');
@@ -19,13 +21,25 @@ const cors = require('./middlewares/cors').default;
 const config = require('./config');
 const log = require('./log').default;
 const home = require('./home').default;
-const users = require('./users').default;
+const Storage = require('./storage').default;
+
+
+let storage;
+
+// Setup server
+const setup = (config) => {
+  const { dataPath } = config;
+  assert(dataPath);
+  if (!fs.existsSync(dataPath)) {
+    fs.mkdirSync(dataPath);
+  }
+  storage = new Storage(dataPath);
+}
 
 
 
 // Build express application
 const app = express();
-const port = 8080;
 app.use(cors); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
@@ -57,7 +71,7 @@ app.get('/signup', (req, res) => {
     sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
   );
 
-  if (users.exists(userId)) {
+  if (storage.exists(userId)) {
     log(`User "${userId}" already exists`, 1);
     res.sendStatus(409);
     return;
@@ -67,7 +81,7 @@ app.get('/signup', (req, res) => {
   const token = userToken.generateUserToken(config.trustchainId, config.trustchainPrivateKey, userId);
 
   log('Save password and token to storage', 1);
-  users.save({ id: userId, hashed_password, token });
+  storage.save({ id: userId, hashed_password, token });
 
   log('Serve the token', 1);
   res.set('Content-Type', 'text/plain');
@@ -78,7 +92,7 @@ app.get('/signup', (req, res) => {
 // Add authentication middleware for all routes below
 //   - check valid "userId" and "password" query params
 //   - set res.locals.user for the request handlers
-app.use(auth);
+app.use(auth(storage));
 
 
 // Add authenticated routes
@@ -97,7 +111,7 @@ app.put('/data', (req, res) => {
   log('Save data on storage', 1);
   try {
     user.data = req.body;
-    users.save(user);
+    storage.save(user);
   } catch (e) {
     log(e, 1);
     res.sendStatus(500);
@@ -111,7 +125,7 @@ app.delete('/data', (req, res) => {
   const user = res.locals.user;
 
   log('Clear user data', 1);
-  users.clearData(user);
+  storage.clearData(user);
   res.sendStatus(200);
 });
 
@@ -119,12 +133,12 @@ app.get('/data/:userId', (req, res) => {
   const { userId } = req.params;
   log('Retrieve data from storage', 1);
 
-  if (!users.exists(userId)) {
+  if (!storage.exists(userId)) {
     log(`User ${userId} does not exist`);
     res.sendStatus(404);
     return
   }
-  const user = users.find(userId);
+  const user = storage.get(userId);
 
   if (!user.data) {
     log('User has no stored data', 1);
@@ -140,7 +154,7 @@ app.get('/data/:userId', (req, res) => {
 
 
 app.get('/users', (req, res) => {
-  const knownIds = users.getAllIds();
+  const knownIds = storage.getAllIds();
 
   res.set('Content-Type', 'application/json');
   res.json(knownIds);
@@ -153,7 +167,7 @@ app.post('/share', (req, res) => {
   if (from !== res.locals.user.id)
     return res.sendStatus(401);
 
-  users.share(from, to);
+  storage.share(from, to);
   res.sendStatus('201');
 });
 
@@ -163,10 +177,11 @@ app.get('/me', (req, res) => {
   res.json(me);
 });
 
+const listen = (port) => {
+  app.listen(port);
+}
 
-// Start application
-log('Tanker mock server:');
-log(`Configured with Trustchain: ${config.trustchainId}`, 1);
-log(`Listening on http://localhost:${port}/`, 1);
-
-app.listen(port);
+module.exports = {
+  listen,
+  setup
+}
