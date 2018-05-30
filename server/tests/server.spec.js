@@ -166,6 +166,10 @@ describe('server', () => {
       await assertRequest(testServer,
         { verb: 'delete', path: `/data`, query },
         { status: 200 });
+
+      await assertRequest(testServer,
+        { verb: 'get', path: `/data/${bobId}`, query },
+        { status: 404 });
     });
 
 
@@ -198,6 +202,21 @@ describe('server', () => {
       expect(actual.noteRecipients).to.have.members(['alice']);
 
     });
+  });
 
+
+  describe('/users', () => {
+    it('returns the list of all user ids', async () => {
+      signUpBob();
+      signUpAlice();
+
+      const query = { userId: bobId, password: bobPassword };
+      const response = await doRequest(testServer,
+        { verb: 'get', path: '/users', query }
+      );
+
+      const res = await response.json()
+      expect(res).to.have.members([bobId, aliceId]);
+    });
   });
 });
