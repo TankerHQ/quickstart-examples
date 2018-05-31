@@ -78,17 +78,29 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@tanker/core@^1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-1.6.2.tgz#a8bf0c7be2fc89c703260e4e0b750af0531a22da"
+"@tanker/client-browser@^1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.6.3.tgz#6f3ff9c82c7312998c0be96e7708e89fde56937e"
   dependencies:
-    "@tanker/crypto" "1.6.2"
+    "@tanker/crypto" "1.6.3"
+    array.chunk "^1.1.0"
+    async-mutex "^0.1.2"
+    babel-runtime "^6.22.0"
+    dexie "^2.0.4"
+    engine.io-client "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
+    socket.io-client "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
+    varint "^5.0.0"
+
+"@tanker/client-node@^1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.6.3.tgz#0ebf305b425da5bf92c33fc061675454aa921ae2"
+  dependencies:
+    "@tanker/crypto" "1.6.3"
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
     babel-runtime "^6.22.0"
     engine.io-client "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
-    pouchdb-adapter-idb "^6.4.3"
-    pouchdb-adapter-websql "^6.4.3"
+    pouchdb-adapter-leveldb "^6.4.3"
     pouchdb-core "^6.4.3"
     pouchdb-find "^6.4.3"
     socket.io-client "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
@@ -100,9 +112,9 @@
   dependencies:
     libsodium-wrappers "^0.5.1"
 
-"@tanker/crypto@1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.6.2.tgz#a5a8191bbf48e8110224a7a6a922bcca372aa6b7"
+"@tanker/crypto@1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.6.3.tgz#68ea6bbc0c844b2eed1f79b6fd7e3975639480d9"
   dependencies:
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
@@ -2409,6 +2421,10 @@ detect-port-alt@1.1.6:
   dependencies:
     address "^1.0.1"
     debug "^2.6.0"
+
+dexie@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-2.0.4.tgz#6027a5e05879424e8f9979d8c14e7420f27e3a11"
 
 diff@3.5.0, diff@^3.2.0:
   version "3.5.0"
@@ -6553,19 +6569,6 @@ pouchdb-abstract-mapreduce@6.4.3:
     pouchdb-promise "6.4.3"
     pouchdb-utils "6.4.3"
 
-pouchdb-adapter-idb@^6.4.3:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/pouchdb-adapter-idb/-/pouchdb-adapter-idb-6.4.3.tgz#5610ca073aedf75723371de6fd906b7eb5962d0c"
-  dependencies:
-    pouchdb-adapter-utils "6.4.3"
-    pouchdb-binary-utils "6.4.3"
-    pouchdb-collections "6.4.3"
-    pouchdb-errors "6.4.3"
-    pouchdb-json "6.4.3"
-    pouchdb-merge "6.4.3"
-    pouchdb-promise "6.4.3"
-    pouchdb-utils "6.4.3"
-
 pouchdb-adapter-leveldb-core@6.4.3:
   version "6.4.3"
   resolved "https://registry.yarnpkg.com/pouchdb-adapter-leveldb-core/-/pouchdb-adapter-leveldb-core-6.4.3.tgz#0b623fc12e63acbf5606508ba2008e501803076a"
@@ -6608,25 +6611,6 @@ pouchdb-adapter-utils@6.4.3:
     pouchdb-md5 "6.4.3"
     pouchdb-merge "6.4.3"
     pouchdb-promise "6.4.3"
-    pouchdb-utils "6.4.3"
-
-pouchdb-adapter-websql-core@6.4.3:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/pouchdb-adapter-websql-core/-/pouchdb-adapter-websql-core-6.4.3.tgz#8f992a46ca8a6870440d0c8699cfaa7ac1c382c4"
-  dependencies:
-    pouchdb-adapter-utils "6.4.3"
-    pouchdb-binary-utils "6.4.3"
-    pouchdb-collections "6.4.3"
-    pouchdb-errors "6.4.3"
-    pouchdb-json "6.4.3"
-    pouchdb-merge "6.4.3"
-    pouchdb-utils "6.4.3"
-
-pouchdb-adapter-websql@^6.4.3:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/pouchdb-adapter-websql/-/pouchdb-adapter-websql-6.4.3.tgz#117c7609a439b7a3ff5f0b7379c9d96d79f41c51"
-  dependencies:
-    pouchdb-adapter-websql-core "6.4.3"
     pouchdb-utils "6.4.3"
 
 pouchdb-binary-utils@6.4.3:

@@ -26,7 +26,7 @@ export default {
   initialize: (trustchainId) => ({
     title: 'Initialize Tanker SDK',
     code: `
-import Tanker from "@tanker/core";
+import Tanker from "@tanker/client-browser";
 
 const tanker = new Tanker({
   trustchainId: ${quoteEllipsis(trustchainId, 20)}

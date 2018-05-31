@@ -1,7 +1,7 @@
 [ignore]
 
 [include]
-../../../node_modules/@tanker/core
+../../../node_modules/@tanker/client-browser
 ../../../node_modules/react-bootstrap
 ../../../node_modules/react-router-dom
 
@@ -13,6 +13,6 @@
 [options]
 module.name_mapper='^react-bootstrap' ->'<PROJECT_ROOT>/../../../node_modules/react-bootstrap'
 module.name_mapper='^react-router-dom' ->'<PROJECT_ROOT>/../../../node_modules/react-router-dom'
-module.name_mapper='^@tanker/core' ->'<PROJECT_ROOT>/../../../node_modules/@tanker/core'
+module.name_mapper='^@tanker/client-browser' ->'<PROJECT_ROOT>/../../../node_modules/@tanker/client-browser'
 
 [strict]

@@ -1,14 +1,18 @@
-const Tanker = require('@tanker/core').default;
+const Tanker = require('@tanker/client-node').default;
 const fetch = require('node-fetch');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
-const persistence = require('./persistence');
+const tankerConfig = require('./config');
 
-const config = {
-  ...require('./config'),
-  ...persistence.config
-};
+// Folder to store tanker client data
+const dbPath = `${__dirname}/data/${tankerConfig.trustchainId.replace(/[\/\\]/g, '_')}/`;
+
+if (!fs.existsSync(dbPath)) {
+  fs.mkdirSync(dbPath);
+}
+
+tankerConfig.dataStore = { dbPath };
 
 const users = new Set();
 
@@ -44,7 +48,7 @@ async function main () {
   const bobId = 'bob-' + uuid();
 
   // Init tanker
-  const tanker = new Tanker(config);
+  const tanker = new Tanker(tankerConfig);
 
   tanker.on('waitingForValidation', () => console.log('This user is already created, please use another userId'));
   tanker.on('sessionClosed', () => console.log('Bye!'));
