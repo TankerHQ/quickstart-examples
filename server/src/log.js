@@ -16,7 +16,4 @@ const log = (message, indentLevel = 0) => {
   }
 };
 
-module.exports = {
-  default: log,
-  log
-};
+module.exports = log;

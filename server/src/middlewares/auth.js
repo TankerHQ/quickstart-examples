@@ -1,5 +1,5 @@
 // @flow
-const log = require('../log').default;
+const log = require('../log');
 const sodium = require('libsodium-wrappers-sumo');
 
 const authMiddleware = (storage, req, res, next) => {
@@ -30,6 +30,4 @@ const authMiddleware = (storage, req, res, next) => {
 const auth = (app) => { return (req, res, next) => authMiddleware(app.storage, req, res, next) };
 
 
-module.exports = {
-  default: auth,
-}
+module.exports = auth;

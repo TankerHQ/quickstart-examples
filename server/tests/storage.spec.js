@@ -1,7 +1,7 @@
 const { expect  } = require('chai');
 const tmp = require('tmp');
 
-const Storage = require('../src/storage').default;
+const Storage = require('../src/storage');
 
 describe('Strorage', () => {
   let tempPath;

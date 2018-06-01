@@ -14,13 +14,13 @@ const userToken = require('@tanker/user-token');
 const sodium = require('libsodium-wrappers-sumo');
 const debugMiddleware = require('debug-error-middleware').express;
 
-const auth = require('./middlewares/auth').default;
-const cors = require('./middlewares/cors').default;
+const authMiddleware = require('./middlewares/auth');
+const corsMiddleware = require('./middlewares/cors');
 
 const config = require('./config');
-const log = require('./log').default;
-const home = require('./home').default;
-const Storage = require('./storage').default;
+const log = require('./log');
+const home = require('./home');
+const Storage = require('./storage');
 
 
 // Setup server
@@ -37,10 +37,10 @@ const setup = (config) => {
 
 // Build express application
 const app = express();
-app.use(cors); // enable CORS
+app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
-app.options('*', cors); // enable pre-flight CORS requests
+app.options('*', corsMiddleware); // enable pre-flight CORS requests
 
 // Show helpful error messages. In a production server,
 // remove this as it could leak sensitive information.
@@ -93,7 +93,7 @@ app.get('/signup', (req, res) => {
 // Add authentication middleware for all routes below
 //   - check valid "userId" and "password" query params
 //   - set res.locals.user for the request handlers
-const authFunc = auth(app);
+const authFunc = authMiddleware(app);
 app.use(authFunc);
 
 

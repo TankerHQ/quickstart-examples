@@ -4,7 +4,7 @@ const path = require('path');
 
 const config = require('./config');
 const server = require('./server');
-const log = require('./log').default;
+const log = require('./log');
 
 const dataPath = path.resolve(__dirname , '../data').normalize();
 

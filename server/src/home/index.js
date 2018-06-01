@@ -61,7 +61,4 @@ homeRouter.use('/highlight', express.static(path.join(rootPath, 'server/public/h
 // Serve images from the api-observer README
 homeRouter.use('/pics', express.static(path.join(rootPath, 'client/web/api-observer/pics')));
 
-module.exports = {
-  default: homeRouter,
-  home: homeRouter
-};
+module.exports = homeRouter;
