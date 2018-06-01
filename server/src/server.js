@@ -109,7 +109,6 @@ app.get('/login', (req, res) => {
 
 app.put('/data', (req, res) => {
   const user = res.locals.user;
-  console.log('put /data, req.body:', req.body);
 
   log('Save data on storage', 1);
   try {
