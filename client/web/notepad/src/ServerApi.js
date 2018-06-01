@@ -92,6 +92,6 @@ export default class Api {
     };
     const headers = { "Content-Type": "application/json" };
     const body = JSON.stringify(data);
-    await this.doRequest("/share", { headers, body, method: "POST", });
+    await this.doRequest("/share", { headers, body, method: "POST" });
   }
 }

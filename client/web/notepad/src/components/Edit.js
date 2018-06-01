@@ -12,8 +12,6 @@ class Edit extends React.Component {
     isDeleting: false,
   };
 
-
-
   async componentWillMount() {
     await this.load();
   }
