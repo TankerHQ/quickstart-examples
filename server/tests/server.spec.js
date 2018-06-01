@@ -18,7 +18,7 @@ const doRequest = async (testServer, request) => {
   if (body !== undefined) {
     fetchOpts.body = body;
   }
-  const response = await fetch( url, fetchOpts);
+  const response = await fetch(url, fetchOpts);
   return response;
 }
 
@@ -91,7 +91,7 @@ describe('server', () => {
     it('returns 400 if password is missing', async () => {
       const invalidQuery = { userId: 'bob' };
       await assertRequest(testServer,
-        { verb: 'get', path: '/signup', query: invalidQuery  },
+        { verb: 'get', path: '/signup', query: invalidQuery },
         { status: 400 });
     });
 
@@ -105,7 +105,6 @@ describe('server', () => {
         { status: 400 });
 
     });
-
   });
 
   describe('/login', () => {
@@ -125,7 +124,6 @@ describe('server', () => {
         { verb: 'get', path: '/login', query },
         { status: 401 });
     });
-
   });
 
   describe('/data', () => {
@@ -138,7 +136,7 @@ describe('server', () => {
       let body = bobNote;
       await assertRequest(testServer,
         { verb: 'put', path: `/data`, query , body },
-        { status: 201 });
+        { status: 200 });
 
       const response = await doRequest(testServer, { verb: 'get', path: `/data/${bobId}`, query });
       const actualNote = await response.text();
@@ -150,12 +148,12 @@ describe('server', () => {
       signUpBob();
       createBobNote('old note');
 
-      const newNote= 'new note';
+      const newNote = 'new note';
       const query = { userId: bobId, password: bobPassword };
       let body = newNote;
       await assertRequest(testServer,
         { verb: 'put', path: `/data`, query , body },
-        { status: 201 });
+        { status: 200 });
       const response = await doRequest(testServer, { verb: 'get', path: `/data/${bobId}`, query });
       const actualNote = await response.text();
       expect(actualNote).to.eq(newNote);
@@ -172,12 +170,10 @@ describe('server', () => {
         { verb: 'get', path: `/data/${bobId}`, query },
         { status: 404 });
     });
-
-
   });
 
   describe('/share', () => {
-    it('record recipients and accessibleNotes', async () => {
+    it('records recipients and accessible notes', async () => {
       signUpBob();
       signUpAlice();
       createBobNote('For Alice');
@@ -204,7 +200,6 @@ describe('server', () => {
 
     });
   });
-
 
   describe('/users', () => {
     it('returns the list of all user ids', async () => {
@@ -235,8 +230,6 @@ describe('server', () => {
       const details = await response.json();
       console.log(details);
       expect(details.error).to.contain(`${aliceId}.json`);
-
-
     });
   });
 });

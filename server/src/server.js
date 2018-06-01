@@ -120,7 +120,7 @@ app.put('/data', (req, res) => {
     return;
   }
 
-  res.sendStatus(201);
+  res.sendStatus(200);
 });
 
 app.delete('/data', (req, res) => {
@@ -162,7 +162,7 @@ app.get('/users', (req, res) => {
   res.json(knownIds);
 });
 
-// Add
+// Register a new share
 app.post('/share', (req, res) => {
   const { from, to } = req.body;
   // ensure only the current user can share their note with others

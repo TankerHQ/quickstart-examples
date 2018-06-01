@@ -35,7 +35,7 @@ export default class Api {
   }
 
   async onFailedRequest(response) {
-    const text = await response.text;
+    const text = await response.text();
     throw new Error(`Request failed: (${response.status}): ${text}`);
   }
 
