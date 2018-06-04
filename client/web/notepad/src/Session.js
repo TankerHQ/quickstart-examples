@@ -1,13 +1,13 @@
 import EventEmitter from "events";
 import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/core";
 import ServerApi from "./ServerApi";
-import { trustchainId } from "./config";
+import { trustchainId, url } from "./config";
 
 export default class Session extends EventEmitter {
   constructor() {
     super();
     this.serverApi = new ServerApi();
-    this.tanker = new Tanker({ trustchainId });
+    this.tanker = new Tanker({ trustchainId, url });
     this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
     this.resourceId = null;
   }
