@@ -8,28 +8,38 @@
 // @flow
 const bodyParser = require('body-parser');
 const express = require('express');
+const fs = require('fs');
 const morgan = require('morgan');
 const userToken = require('@tanker/user-token');
 const sodium = require('libsodium-wrappers-sumo');
 const debugMiddleware = require('debug-error-middleware').express;
 
-const auth = require('./middlewares/auth').default;
-const cors = require('./middlewares/cors').default;
+const authMiddleware = require('./middlewares/auth');
+const corsMiddleware = require('./middlewares/cors');
 
 const config = require('./config');
-const log = require('./log').default;
-const home = require('./home').default;
-const users = require('./users').default;
-
-
+const log = require('./log');
+const home = require('./home');
+const Storage = require('./storage');
 
 // Build express application
 const app = express();
-const port = 8080;
-app.use(cors); // enable CORS
+
+// Setup server
+const setup = (serverConfig) => {
+  const { dataPath } = serverConfig;
+  if (!fs.existsSync(dataPath)) {
+    fs.mkdirSync(dataPath);
+  }
+  app.storage = new Storage(dataPath);
+  return app;
+};
+
+
+app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
-app.options('*', cors); // enable pre-flight CORS requests
+app.options('*', corsMiddleware); // enable pre-flight CORS requests
 
 // Show helpful error messages. In a production server,
 // remove this as it could leak sensitive information.
@@ -44,7 +54,8 @@ app.use(home);
 app.use(morgan('dev'));
 app.use((req, res, next) => {
   const { userId } = req.query;
-  log(`New ${req.path} request` + (userId ? ` from ${userId}:` : ':'));
+  const maybeFrom = userId ? ` from ${userId}:` : ':';
+  log(`New ${req.path} request${maybeFrom}`);
   next();
 });
 
@@ -52,39 +63,49 @@ app.use((req, res, next) => {
 // Add signup route (non authenticated)
 app.get('/signup', (req, res) => {
   const { userId, password } = req.query;
-  const hashed_password = sodium.crypto_pwhash_str(password,
+  if (password === undefined) {
+    res.status(400).send('missing password');
+    return;
+  }
+  const hashedPassword = sodium.crypto_pwhash_str(
+    password,
     sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
     sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
   );
 
-  if (users.exists(userId)) {
+  if (app.storage.exists(userId)) {
     log(`User "${userId}" already exists`, 1);
     res.sendStatus(409);
     return;
   }
 
   log('Generate a new user token', 1);
-  const token = userToken.generateUserToken(config.trustchainId, config.trustchainPrivateKey, userId);
+  const token = userToken.generateUserToken(
+    config.trustchainId,
+    config.trustchainPrivateKey,
+    userId,
+  );
 
   log('Save password and token to storage', 1);
-  users.save({ id: userId, hashed_password, token });
+  app.storage.save({ id: userId, hashed_password: hashedPassword, token });
 
   log('Serve the token', 1);
   res.set('Content-Type', 'text/plain');
-  res.send(token);
+  res.status(201).send(token);
 });
 
 
 // Add authentication middleware for all routes below
 //   - check valid "userId" and "password" query params
 //   - set res.locals.user for the request handlers
-app.use(auth);
+const authFunc = authMiddleware(app);
+app.use(authFunc);
 
 
 // Add authenticated routes
 app.get('/login', (req, res) => {
   log('Retrieve token from storage', 1);
-  const user = res.locals.user;
+  const { user } = res.locals;
 
   log('Serve the token', 1);
   res.set('Content-Type', 'text/plain');
@@ -92,12 +113,12 @@ app.get('/login', (req, res) => {
 });
 
 app.put('/data', (req, res) => {
-  const user = res.locals.user;
+  const { user } = res.locals;
 
   log('Save data on storage', 1);
   try {
     user.data = req.body;
-    users.save(user);
+    app.storage.save(user);
   } catch (e) {
     log(e, 1);
     res.sendStatus(500);
@@ -108,10 +129,10 @@ app.put('/data', (req, res) => {
 });
 
 app.delete('/data', (req, res) => {
-  const user = res.locals.user;
+  const { user } = res.locals;
 
   log('Clear user data', 1);
-  users.clearData(user);
+  app.storage.clearData(user.id);
   res.sendStatus(200);
 });
 
@@ -119,17 +140,17 @@ app.get('/data/:userId', (req, res) => {
   const { userId } = req.params;
   log('Retrieve data from storage', 1);
 
-  if (!users.exists(userId)) {
+  if (!app.storage.exists(userId)) {
     log(`User ${userId} does not exist`);
     res.sendStatus(404);
-    return
+    return;
   }
-  const user = users.find(userId);
+  const user = app.storage.get(userId);
 
   if (!user.data) {
     log('User has no stored data', 1);
     res.sendStatus(404);
-    return
+    return;
   }
 
   log('Serve the data', 1);
@@ -138,22 +159,23 @@ app.get('/data/:userId', (req, res) => {
 });
 
 
-
 app.get('/users', (req, res) => {
-  const knownIds = users.getAllIds();
+  const knownIds = app.storage.getAllIds();
 
   res.set('Content-Type', 'application/json');
   res.json(knownIds);
 });
 
-// Add
+// Register a new share
 app.post('/share', (req, res) => {
   const { from, to } = req.body;
   // ensure only the current user can share their note with others
-  if (from !== res.locals.user.id)
-    return res.sendStatus(401);
+  if (from !== res.locals.user.id) {
+    res.sendStatus(401);
+    return;
+  }
 
-  users.share(from, to);
+  app.storage.share(from, to);
   res.sendStatus('201');
 });
 
@@ -163,10 +185,18 @@ app.get('/me', (req, res) => {
   res.json(me);
 });
 
+// Return nice 500 message when an exception is thrown
+const errorHandler = (err, req, res, next) => { // eslint-disable-line  no-unused-vars
+  res.status(500);
+  res.json({ error: err.message });
+  // Note: we don't call next() because we don't want the request to continue
+};
+app.use(errorHandler);
 
-// Start application
-log('Tanker mock server:');
-log(`Configured with Trustchain: ${config.trustchainId}`, 1);
-log(`Listening on http://localhost:${port}/`, 1);
 
-app.listen(port);
+const listen = port => app.listen(port);
+
+module.exports = {
+  listen,
+  setup,
+};

@@ -16,7 +16,4 @@ const corsMiddleware = cors({
   },
 });
 
-module.exports = {
-  default: corsMiddleware,
-  cors: corsMiddleware,
-};
+module.exports = corsMiddleware;

@@ -24,8 +24,8 @@
   "scripts": {
     "config:check": "node ./bin/config-check",
     "start": "yarn start:server",
-    "start:server": "node ./bin/config-check && cd server/src && node server.js",
-    "watch:server": "node ./bin/config-check && cd server/src && node-dev server.js",
+    "start:server": "node ./bin/config-check && cd server/src && node main.js",
+    "watch:server": "node ./bin/config-check && cd server/src && node-dev main.js",
     "start:nodejs:hello-world": "node ./bin/config-check && cd client/nodejs/hello-world && node main.js",
     "start:web:api-observer": "node ./bin/config-check && cd client/web/api-observer && react-scripts start",
     "start:web:notepad": "node ./bin/config-check && cd client/web/notepad && react-scripts start",

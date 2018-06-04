@@ -18,6 +18,8 @@ The following endpoints are implemented:
 | GET    | /login  | user login |
 | GET    | /data   | get the user data |
 | PUT    | /data   | store the user data |
+| DELETE | /data   | clear the user data |
+
 
 The data is encrypted on the client side. The server stores the received data whether it is encrypted or not.
 

@@ -1,0 +1,14 @@
+extends:
+  - eslint:recommended
+  - airbnb
+
+env:
+  mocha: true
+
+rules:
+  no-restricted-syntax: 0
+  no-console: 0
+
+plugins:
+    - mocha-no-only
+    - chai-friendly
