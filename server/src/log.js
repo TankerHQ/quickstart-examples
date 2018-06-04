@@ -21,10 +21,10 @@ const log = (message, indentLevel = 0) => {
   }
 
   if (message instanceof Error) {
-    console.log(`[${date}] ${prefix}: A server-side error occurred:`);
+    console.log(`[${date}] ${prefix}A server-side error occurred:`);
     console.error(message); // eslint-disable-line no-console
   } else {
-    console.log(`[${date}] ${prefix}: ${message}`);
+    console.log(`[${date}] ${prefix}${message}`);
   }
 };
 
