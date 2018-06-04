@@ -11,3 +11,4 @@ rules:
 
 plugins:
     - mocha-no-only
+    - chai-friendly
