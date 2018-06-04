@@ -6,7 +6,7 @@ const config = require('./config');
 const server = require('./server');
 const log = require('./log');
 
-const dataPath = path.resolve(__dirname , '../data').normalize();
+const dataPath = path.resolve(__dirname, '../data').normalize();
 
 server.setup({ dataPath });
 

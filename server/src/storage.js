@@ -1,5 +1,7 @@
 const fs = require('fs');
+const pathlib = require('path');
 const config = require('./config');
+
 
 class Storage {
   constructor(dataFolder) {
@@ -25,7 +27,7 @@ class Storage {
     return fs.existsSync(path);
   }
 
-  clearData(userId)  {
+  clearData(userId) {
     const path = this.dataFilePath(userId);
     const user = this.get(userId);
     user.data = undefined;
@@ -34,7 +36,7 @@ class Storage {
 
   // Record a share from `author` to a list of recpients
   share(author, recipients) {
-    recipients.forEach(recipient => {
+    recipients.forEach((recipient) => {
       this.addAccessibleNoteId(author, recipient);
     });
     this.addNoteRecipients(author, recipients);
@@ -59,6 +61,15 @@ class Storage {
     this.save(user);
   }
 
+  getAllIds() {
+    const jsonFiles = fs.readdirSync(this.dataFolder).filter(f => f.match(/\.json$/));
+    return jsonFiles.map((path) => {
+      const fullPath = `${this.dataFolder}/${path}`;
+      const user = this.parseJson(fullPath);
+      return user.id;
+    });
+  }
+
   dataFilePath(userId) {
     return `${this.dataFolder}/${userId.replace(/[/\\]/g, '_')}.json`;
   }
@@ -67,20 +78,11 @@ class Storage {
     try {
       const data = fs.readFileSync(path);
       return JSON.parse(data);
-    } catch(e) {
-      throw Error(`Could not parse ${path}: ${e}`);
+    } catch (e) {
+      const relPath = pathlib.relative(this.dataFolder, path);
+      throw Error(`Could not parse ${relPath}: ${e}`);
     }
   }
-
-  getAllIds() {
-    const jsonFiles = fs.readdirSync(this.dataFolder).filter(f => f.match(/\.json$/));
-    return jsonFiles.map(path => {
-    const fullPath = `${this.dataFolder}/${path}`;
-      const user = this.parseJson(fullPath);
-      return user.id;
-    });
-  }
-
 }
 
 module.exports = Storage;

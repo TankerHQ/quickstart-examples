@@ -8,7 +8,7 @@
   "scripts": {
     "start": "cd ../.. && yarn start:server",
     "test": "mocha --recursive tests",
-    "lint": "eslint src/**.js tests/**.js"
+    "lint": "eslint --no-ignore src/**.js tests/**.js"
   },
   "dependencies": {
     "@tanker/user-token": "1.4.0",

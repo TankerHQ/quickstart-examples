@@ -1,6 +1,6 @@
 extends:
-  - airbnb
   - eslint:recommended
+  - airbnb
 
 env:
   mocha: true

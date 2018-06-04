@@ -1,4 +1,4 @@
-const { expect  } = require('chai');
+const { expect } = require('chai');
 const tmp = require('tmp');
 
 const Storage = require('../src/storage');
@@ -23,11 +23,11 @@ describe('Strorage', () => {
       token: 'secret_token',
       data: 'my note',
       noteRecipients: [
-        'user_1'
+        'user_1',
       ],
       accessibleNotes: [
         'user_2', 'user_3',
-      ]
+      ],
     };
     storage.save(user);
     const backFromDb = storage.get('user_42');
@@ -75,5 +75,4 @@ describe('Strorage', () => {
     const fromDb = storage.get('user_42');
     expect(fromDb.data).to.be.undefined;
   });
-
 });

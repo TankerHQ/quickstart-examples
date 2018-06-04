@@ -6,28 +6,30 @@ const querystring = require('querystring');
 
 const server = require('../src/server');
 
-const expect = chai.expect;
+const { expect } = chai;
 
 const doRequest = async (testServer, request) => {
   const address = testServer.address();
-  const port = address.port;
-  const { verb, path, query, body, headers } = request;
-  let queryString = querystring.stringify(query);
-  let url = `http://localhost:${port}${path}?${queryString}`;
+  const { port } = address;
+  const {
+    verb, path, query, body, headers,
+  } = request;
+  const queryString = querystring.stringify(query);
+  const url = `http://localhost:${port}${path}?${queryString}`;
   const fetchOpts = { headers, method: verb };
   if (body !== undefined) {
     fetchOpts.body = body;
   }
   const response = await fetch(url, fetchOpts);
   return response;
-}
+};
 
 const assertRequest = async (testServer, request, expectedResponse) => {
   const actual = await doRequest(testServer, request);
   const expectedStatus = expectedResponse.status;
   expect(actual.status).to.eq(expectedStatus);
   return actual;
-}
+};
 
 
 describe('server', () => {
@@ -46,18 +48,18 @@ describe('server', () => {
   const signUpBob = () => {
     const user = { id: bobId, hashed_password: bobPasswordHash };
     app.storage.save(user);
-  }
+  };
 
   const signUpAlice = () => {
     const user = { id: aliceId, hashed_password: alicePasswordHash };
     app.storage.save(user);
-  }
+  };
 
   const createBobNote = async (contents) => {
     const user = { id: bobId, hashed_password: bobPasswordHash };
     user.data = contents;
     app.storage.save(user);
-  }
+  };
 
 
   beforeEach(() => {
@@ -76,34 +78,37 @@ describe('server', () => {
   });
 
   describe('/signup', () => {
-
-    specify('signin up a new user', async() => {
+    specify('signin up a new user', async () => {
       const userId = 'user_42';
       const password = 'p4ssw0rd';
       const query = { userId, password };
 
-      await assertRequest(testServer,
-        { verb: 'get', path: '/signup', query } ,
-        { status: 201 });
-
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/signup', query },
+        { status: 201 },
+      );
     });
 
     it('returns 400 if password is missing', async () => {
       const invalidQuery = { userId: 'bob' };
-      await assertRequest(testServer,
+      await assertRequest(
+        testServer,
         { verb: 'get', path: '/signup', query: invalidQuery },
-        { status: 400 });
+        { status: 400 },
+      );
     });
 
-    it('refuses to sign up existing users', async() => {
+    it('refuses to sign up existing users', async () => {
       const existingUser = { id: 'existing' };
       app.storage.save(existingUser);
 
       const query = { userId: 'existing' };
-      await assertRequest(testServer,
+      await assertRequest(
+        testServer,
         { verb: 'get', path: '/signup', query },
-        { status: 400 });
-
+        { status: 400 },
+      );
     });
   });
 
@@ -111,18 +116,22 @@ describe('server', () => {
     specify('signed up users can log in', async () => {
       signUpBob();
       const query = { userId: bobId, password: bobPassword };
-      await assertRequest(testServer,
-        { verb: 'get', path: '/login', query } ,
-        { status: 200 });
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/login', query },
+        { status: 200 },
+      );
     });
 
     it('refuses to log in with incorrect password', async () => {
       signUpBob();
       const incorrectPassword = 'letmein';
       const query = { userId: bobId, password: incorrectPassword };
-      await assertRequest(testServer,
+      await assertRequest(
+        testServer,
         { verb: 'get', path: '/login', query },
-        { status: 401 });
+        { status: 401 },
+      );
     });
   });
 
@@ -133,15 +142,18 @@ describe('server', () => {
       const bobNote = 'the note of bob';
 
       const query = { userId: bobId, password: bobPassword };
-      let body = bobNote;
-      await assertRequest(testServer,
-        { verb: 'put', path: `/data`, query , body },
-        { status: 200 });
+      const body = bobNote;
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/data', query, body,
+        },
+        { status: 200 },
+      );
 
       const response = await doRequest(testServer, { verb: 'get', path: `/data/${bobId}`, query });
       const actualNote = await response.text();
       expect(actualNote).to.eq(bobNote);
-
     });
 
     specify('update', async () => {
@@ -150,25 +162,33 @@ describe('server', () => {
 
       const newNote = 'new note';
       const query = { userId: bobId, password: bobPassword };
-      let body = newNote;
-      await assertRequest(testServer,
-        { verb: 'put', path: `/data`, query , body },
-        { status: 200 });
+      const body = newNote;
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/data', query, body,
+        },
+        { status: 200 },
+      );
       const response = await doRequest(testServer, { verb: 'get', path: `/data/${bobId}`, query });
       const actualNote = await response.text();
       expect(actualNote).to.eq(newNote);
     });
 
-    specify('delete', async() => {
+    specify('delete', async () => {
       signUpBob();
       const query = { userId: bobId, password: bobPassword };
-      await assertRequest(testServer,
-        { verb: 'delete', path: `/data`, query },
-        { status: 200 });
+      await assertRequest(
+        testServer,
+        { verb: 'delete', path: '/data', query },
+        { status: 200 },
+      );
 
-      await assertRequest(testServer,
+      await assertRequest(
+        testServer,
         { verb: 'get', path: `/data/${bobId}`, query },
-        { status: 404 });
+        { status: 404 },
+      );
     });
   });
 
@@ -180,11 +200,15 @@ describe('server', () => {
 
       // Post a share request
       let query = { userId: bobId, password: bobPassword };
-      const headers = { "Content-Type": "application/json" };
-      const body = JSON.stringify({ from: bobId,  to: [aliceId] });
-      await assertRequest(testServer,
-        { verb: 'post', path: `/share`, query, body, headers },
-        { status: 201 });
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ from: bobId, to: [aliceId] });
+      await assertRequest(
+        testServer,
+        {
+          verb: 'post', path: '/share', query, body, headers,
+        },
+        { status: 201 },
+      );
 
       // Alice should have Bob in her accessibleNotes
       query = { userId: aliceId, password: alicePassword };
@@ -197,7 +221,6 @@ describe('server', () => {
       response = await doRequest(testServer, { verb: 'get', path: '/me', query });
       actual = await response.json();
       expect(actual.noteRecipients).to.have.members(['alice']);
-
     });
   });
 
@@ -207,11 +230,11 @@ describe('server', () => {
       signUpAlice();
 
       const query = { userId: bobId, password: bobPassword };
-      const response = await doRequest(testServer,
-        { verb: 'get', path: '/users', query }
+      const response = await doRequest(
+        testServer,
+        { verb: 'get', path: '/users', query },
       );
-
-      const res = await response.json()
+      const res = await response.json();
       expect(res).to.have.members([bobId, aliceId]);
     });
 
@@ -223,12 +246,12 @@ describe('server', () => {
       fs.writeFileSync(alicePath, 'this is {not} valid json[]');
 
       const query = { userId: bobId, password: bobPassword };
-      const response = await doRequest(testServer,
-        { verb: 'get', path: '/users', query }
+      const response = await doRequest(
+        testServer,
+        { verb: 'get', path: '/users', query },
       );
       expect(response.status).to.eq(500);
       const details = await response.json();
-      console.log(details);
       expect(details.error).to.contain(`${aliceId}.json`);
     });
   });
