@@ -72,3 +72,9 @@ http://localhost:8080/
 ```
 
 On this page, you will find all the instructions needed to run the example applications and a link to a tutorial.
+
+## Note about tests and the .ci submodule.
+
+You will find a number of tests in this repository, feel free to study and/or run them to learn more about the Tanker SDK.
+
+The `.ci` submodule is used internally at Tanker to run these tests. Since those tests run on Tanker own build farm, it is not shared publicly on GitHub.

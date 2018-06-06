@@ -7,6 +7,9 @@ export default class Session extends EventEmitter {
   constructor() {
     super();
     this.serverApi = new ServerApi();
+    // Note: the url parameter is used internally by Tanker staff
+    // in order to point to a different Tanker server.
+    // You should leave this undefined.
     this.tanker = new Tanker({ trustchainId, url });
     this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
     this.resourceId = null;
