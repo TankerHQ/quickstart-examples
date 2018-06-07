@@ -10,7 +10,8 @@ const addError = (message) => errors.push(message);
 const objectToModuleSource = (obj) => {
   const jsonMultiline = JSON.stringify(obj, null, 2);
   const jsonMultilineUnquotedKeys = jsonMultiline.replace(/"([^"\s-]+)":/g, "$1:");
-  return `module.exports = ${jsonMultilineUnquotedKeys};`;
+  const header = `/* eslint-disable */`
+  return `${header}\nmodule.exports = ${jsonMultilineUnquotedKeys};`;
 };
 
 const createConfigFile = (config, values, override) => {
