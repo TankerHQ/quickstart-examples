@@ -8,8 +8,12 @@ export default class Session extends EventEmitter {
   constructor() {
     super();
     this.serverApi = new ServerApi();
+    // FIXME: get rid of this.opened
     this.opened = false;
     this.resourceId = null;
+
+    // FIXME: construct this.tanker
+    // FIXME: handle waitingForValidation event
   }
 
   get userId() {
@@ -21,14 +25,17 @@ export default class Session extends EventEmitter {
   }
 
   isOpen() {
+    // FIXME: check if tanker session is opened
     return this.opened;
   }
 
   async close() {
+    // FIXME: close tanker session
     this.opened = false;
   }
 
   async openSession(userId, userToken) {
+    // FIXME: open tanker session
     this.opened = true;
   }
 
@@ -62,15 +69,20 @@ export default class Session extends EventEmitter {
   }
 
   async getUnlockKey() {
+    // FIXME: generate and return unlock key
     return 'This will be replaced by a real key later in the tutorial. Click on Done for now.';
   }
 
 
   async addCurrentDevice(unlockKey) {
+    // FIXME: validate current device using the unlock key
   }
 
   async saveText(text) {
     const recipients = await this.getNoteRecipients();
+    // FIXME: encrypt text
+    // FIXME: update this.resourceId
+    // FIXME: push encrypted text, base64-endoced
     await this.serverApi.push(text);
   }
 
@@ -80,6 +92,8 @@ export default class Session extends EventEmitter {
     if (response.status === 404) return "";
 
     const data = await response.text();
+    // FIXME: decrypt data
+    // FIXME: return text from base64-encoded data
     return data;
   }
 
@@ -96,8 +110,10 @@ export default class Session extends EventEmitter {
   }
 
   async share(recipients) {
+    // FIXME: remove this line
     this.resourceId = this.userId;
     if (!this.resourceId) throw new Error("No resource id.");
+    // FIXME: share [this.resourceId] with the recipients
     await this.serverApi.share(recipients);
   }
 
