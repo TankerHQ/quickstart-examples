@@ -2,10 +2,11 @@
 
 In this tutorial we will demonstrate how to use the Tanker SDK inside an existing React JavaScript application.
 
-We will start from a working application with no encryption whatsoever, and progressively add end-to-end encryption, thus gaining full user privacy and strong protection against data leaks.
+Your mission, if you accept it, is to follow the instructions below in order to implement end-to-end encryption.
 
 Knowledge about UI frameworks such as React is not required. However, the functions and methods of the Tanker API are asynchronous, so to take out the most of this tutorial you should know about [async functions](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Instructions/async_function).
 
+You are going to actually write some code there, so before you start please familiarize yourself the [api documentation](https://tanker.io/docs/latest/api/tanker/?language=javascript).
 
 ## Environment set up
 
@@ -32,7 +33,7 @@ Here is the user experience flow:
 2. He logs in
 3. He is redirected to an edit form where he can type text, and save the contents by sending them to a remote server.
 
-The server handles signing up of the users by hashing their passwords, and can also store the user notes. The server is also able to send [user tokens](https://www.tanker.io/docs/latest/guide/server/#user_token) to authenticated users.
+The server handles signing up of the users by hashing their passwords, and can also store the user notes. The server is also able to send [user tokens](https://www.tanker.io/docs/latest/guide/server/?language=javascript#user_token) to authenticated users.
 
 ### Run
 
@@ -89,15 +90,22 @@ As explained above, the server already contains the required modifications.
 
 Since the tanker SDK implements end-to-end encryption, most cryptographic operations will happen client-side, so in this tutorial we will only have to change code in the `./client/web/tutorial/src/Session.js` file.
 
+In order to help you we left some `FIXME` comments throughout the file.
+
 
 ### Handling a Tanker session
+
+The goal here is to [open and close a tanker session](https://tanker.io/docs/latest/guide/open/?language=javascript).
 
 In the `./client/web/tutorial/src/Session.js` file, the `trustchainId` has already been extracted from the config file for you:
 ```javascript
 import { trustchainId } from './config';
 ```
 
-Use it to initialize a new Tanker instance:
+*Use it to initialize a new Tanker instance in the constructor.*
+
+<details>
+<summary>See the patch</summary>
 
 ```diff
 constructor() {
@@ -108,16 +116,19 @@ constructor() {
   // ...
 }
 ```
+</details>
 
 Note that `this.opened` is just a placeholder attribute that materializes where Tanker session opening and closing will occur.
 
-Let's handle the creation of a Tanker session, with the help of the [`tanker.open()`](https://www.tanker.io/docs/latest/guide/open/#opening_the_session_client-side) method.
+Now we need to handle the creation of a Tanker session, with the help of the [`tanker.open()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#open) method.
 
-We need to handle two cases here. Either the user just created an account, or he just logged in.
+There are two cases here. Either the user just created an account, or he just logged in.
 
 In both cases, the server should have sent a user token, and we can call `open()` right away.
 
-Note that we use `await` because opening a Tanker session is not instantaneous, and we do not want to block the application while Tanker is opening.
+*Call `this.tanker.open()` in `Session.openSession()`*.
+<details>
+<summary>See the patch</summary>
 
 ```diff
 async openSession(userId: string, userToken: string) {
@@ -126,6 +137,8 @@ async openSession(userId: string, userToken: string) {
 + console.log('Tanker session is now ready');
 }
 ```
+Note that we use `await` because opening a Tanker session is not instantaneous, and we do not want to block the application while Tanker is opening.
+</details>
 
 <!--FIXME: explain TrustChain concept here -->
 
@@ -135,7 +148,10 @@ Note that `open()` will use the user token to:
 * register the device in the TrustChain if necessary,
 * fetch access keys to all the resources.
 
-With this in place we can get rid of the `opened` attribute and fix the `isOpen()` and `close()` methods:
+Then you should *get rid of the `opened` attribute* and *fix the `Session.isOpen()` and `Session.close()` methods* using [`tanker.isOpen()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#isopen) and [`tanker.close()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#close).
+
+<details>
+<summary>See the patch</summary>
 
 ```diff
 constructor() {
@@ -153,16 +169,28 @@ async close(): Promise<void> {
 + await this.tanker.close();
 }
 ```
+</details>
 
 The `close()` method will be called when the user logs out. It's important to close the Tanker session too at this moment to make sure the encrypted data is safe at rest.
+
+
+
 
 At this point, nothing has changed in the application, we just made sure we could open and close a Tanker section correctly.
 
 You can check this by refreshing your browser, and log in. You should see the text you wrote in the previous step, and in the console log, the "Tanker session is ready" you've just added.
 
+Now that we know how to open a Tanker session, it's time to [encrypt, decrypt and share](https://www.tanker.io/docs/latest/guide/encryption/?language=javascript) the notes!
+
 ### Encrypting data
 
-To encrypt the data, we use [`tanker.encrypt()`](https://www.tanker.io/docs/latest/guide/encryption#encrypting):
+To encrypt data, *use [`tanker.encrypt()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#encrypt) in `Session.saveText()`*.
+
+Don't forget to use [`toBase64()`](https://tanker.io/docs/latest/api/utilities/?language=javascript#base64_to_buffer) to convert the binary encrypted data into text before sending it to the server.
+
+
+<details>
+<summary>See the patch</summary>
 
 ```diff
 async saveText(text: string) {
@@ -176,12 +204,17 @@ async saveText(text: string) {
 + await this.serverApi.push(encryptedText);
 }
 ```
-
-The `encrypt()` method takes a string as parameter and returns some binary data. Our server used to accept the contents of the notes as strings, that's why we use `toBase64()` here.
+</details>
 
 ### Decrypting data
 
-To decrypt the data, we use the same steps, but in reverse order using the [`tanker.decrypt()`](https://www.tanker.io/docs/latest/guide/encryption/#decrypting) method:
+To decrypt data, *use [`tanker.decrypt()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#decrypt) in `Session.loadTextFromUser()`*.
+
+Don't forget to use [`fromBase64()`](https://tanker.io/docs/latest/api/utilities/?language=javascript#base64_to_buffer) to convert the encrypted text received from the server into binary.
+
+
+<details>
+<summary>See the patch</summary>
 
 ```diff
 async loadTextFromUser(userId: string) {
@@ -200,6 +233,7 @@ async loadTextFromUser(userId: string) {
 + return clear;
 }
 ```
+</details>
 
 ### Checking it works
 
@@ -230,22 +264,15 @@ They are two places we need to do this:
 * In the `Session.saveText()` method, called when the user clicks on `save` on the "Edit your note" panel
 * In the `Session.share()` method, called when when the users clicks on `share` in the "Share" panel.
 
-First, when we encrypt the data (when the user clicks on `save`), we can use the `shareWith` option of `tanker.encrypt()`:
+Please read the [section about sharing in the documentation](https://tanker.io/docs/latest/guide/encryption/?language=javascript#sharing) first.
 
-```diff
-async saveText(text: string) {
-  const recipients = await this.getNoteRecipients();
+Then, *use the `shareWith` option of `tanker.encrypt()` in `Session.saveText()`*.
 
-  // use tanker to encrypt the text as binary data, then
-  // encode the data and send it to the server
-- const encryptedData = await this.tanker.encrypt(text);
-+ const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
-  const encryptedText = toBase64(encryptedData);
-  this.serverApi.push(encryptedText);
-}
-```
+Also make sure to *get the resource ID matching the newly generated key by using the [`getResourceId()`](https://tanker.io/docs/latest/api/utilities/?language=javascript#getresourceid) helper function and update the `Session.resourceId` class member*
 
-Then, we can store the resource ID matching the newly generated key by using the `getResourceId()` helper method:
+
+<details>
+<summary>See the patch</summary>
 
 ```diff
 async saveText(text: string) {
@@ -255,11 +282,15 @@ async saveText(text: string) {
 + this.resourceId = getResourceId(encryptedData);
   await this.serverApi.push(toBase64(encryptedText));
 ```
+</details>
 
-Next, in the `share` method, we must:
+Next, in the `share` method:
 
-* **Remove the line** `this.resourceId = this.userId` since notes no longer are identified by their creator,
-* And call `tanker.share()` with a list containing the current `resourceId` and the list of recipients.
+* *Remove the line `this.resourceId = this.userId` since notes no longer are identified by their creator*.
+* *Call [`tanker.share()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#share) with a list containing the current `resourceId` and the list of recipients*.
+
+<details>
+<summary>See the patch</summary>
 
 ```diff
   async share(recipients: string[]) {
@@ -269,6 +300,7 @@ Next, in the `share` method, we must:
     await this.serverApi.share(recipients);
   }
 ```
+</details>
 
 You can now re-try sharing notes between Alice and Bob, the "share" functionality should be working again.
 
@@ -276,11 +308,14 @@ You can now re-try sharing notes between Alice and Bob, the "share" functionalit
 
 At this point, if you try to log in the same user in an other browser in private mode, or in any other device, you get an error message about a missing event handler.
 
-That is because we did not take care of device management so far. Let's do that now.
+That is because we did not take care of device management so far.
 
-First, we connect the `waitingForValidation` event of the Tanker and emit the `newDevice` event when required.
+You should now go read the [section about device management](https://tanker.io/docs/latest/guide/device-management/?language=javascript).
 
-We can do this in the Session constructor, right after creating the `tanker` object:
+Then *make sure to emit the `newDevice` event (using `this.emit()`), when the  `waitingForValidation` event of the Tanker is received*.
+
+<details>
+<summary>See the patch</summary>
 
 ```diff
 constructor() {
@@ -290,12 +325,16 @@ constructor() {
   // ...
 }
 ```
+</details>
 
 That way, when the user needs to perform manual operations about its device, the UI will be notified.
 
 (The `newDevice` event is handled in the other React components of the application).
 
-Then we implement the `getUnlockKey()` and `addCurrentDevice()` device methods in `./client/web/tutorial/src/Session.js`:
+Then *fill the code inside `Session.getUnlockKey()` and `Session.addCurrentDevice()` methods using [`tanker.generateAndRegisterUnlockKey()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#generateandregisterunlockkey) and [`tanker.unlockCurrentDevice()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#unlockcurrentdevice) respectively*.
+
+<details>
+<summary>See the patch</summary>
 
 ```diff
 async getUnlockKey(): Promise<string> {
@@ -308,6 +347,7 @@ async addCurrentDevice(unlockKey: string): Promise<void> {
 + await this.tanker.unlockCurrentDevice(unlockKey);
 }
 ```
+</details>
 
 Thus, when the user needs to unlock a new device, the web application will end up calling `tanker.unlockCurrentDevice()`.
 
