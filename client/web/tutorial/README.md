@@ -105,7 +105,7 @@ import { trustchainId } from './config';
 *Use it to initialize a new Tanker instance in the constructor.*
 
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
 constructor() {
@@ -117,6 +117,7 @@ constructor() {
 }
 ```
 </details>
+<br />
 
 Note that `this.opened` is just a placeholder attribute that materializes where Tanker session opening and closing will occur.
 
@@ -128,7 +129,7 @@ In both cases, the server should have sent a user token, and we can call `open()
 
 *Call `this.tanker.open()` in `Session.openSession()`*.
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
 async openSession(userId: string, userToken: string) {
@@ -139,8 +140,7 @@ async openSession(userId: string, userToken: string) {
 ```
 Note that we use `await` because opening a Tanker session is not instantaneous, and we do not want to block the application while Tanker is opening.
 </details>
-
-<!--FIXME: explain TrustChain concept here -->
+<br />
 
 Note that `open()` will use the user token to:
 
@@ -151,7 +151,7 @@ Note that `open()` will use the user token to:
 Then you should *get rid of the `opened` attribute* and *fix the `Session.isOpen()` and `Session.close()` methods* using [`tanker.isOpen()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#isopen) and [`tanker.close()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#close).
 
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
 constructor() {
@@ -170,6 +170,7 @@ async close(): Promise<void> {
 }
 ```
 </details>
+<br />
 
 The `close()` method will be called when the user logs out. It's important to close the Tanker session too at this moment to make sure the encrypted data is safe at rest.
 
@@ -190,7 +191,7 @@ Don't forget to use [`toBase64()`](https://tanker.io/docs/latest/api/utilities/?
 
 
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
 async saveText(text: string) {
@@ -205,6 +206,7 @@ async saveText(text: string) {
 }
 ```
 </details>
+<br />
 
 ### Decrypting data
 
@@ -214,7 +216,7 @@ Don't forget to use [`fromBase64()`](https://tanker.io/docs/latest/api/utilities
 
 
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
 async loadTextFromUser(userId: string) {
@@ -234,6 +236,7 @@ async loadTextFromUser(userId: string) {
 }
 ```
 </details>
+<br />
 
 ### Checking it works
 
@@ -272,7 +275,7 @@ Also make sure to *get the resource ID matching the newly generated key by using
 
 
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
 async saveText(text: string) {
@@ -283,6 +286,7 @@ async saveText(text: string) {
   await this.serverApi.push(toBase64(encryptedText));
 ```
 </details>
+<br />
 
 Next, in the `share` method:
 
@@ -290,7 +294,7 @@ Next, in the `share` method:
 * *Call [`tanker.share()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#share) with a list containing the current `resourceId` and the list of recipients*.
 
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
   async share(recipients: string[]) {
@@ -301,6 +305,7 @@ Next, in the `share` method:
   }
 ```
 </details>
+<br />
 
 You can now re-try sharing notes between Alice and Bob, the "share" functionality should be working again.
 
@@ -315,7 +320,7 @@ You should now go read the [section about device management](https://tanker.io/d
 Then *make sure to emit the `newDevice` event (using `this.emit()`), when the  `waitingForValidation` event of the Tanker is received*.
 
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
 constructor() {
@@ -326,6 +331,7 @@ constructor() {
 }
 ```
 </details>
+<br />
 
 That way, when the user needs to perform manual operations about its device, the UI will be notified.
 
@@ -334,7 +340,7 @@ That way, when the user needs to perform manual operations about its device, the
 Then *fill the code inside `Session.getUnlockKey()` and `Session.addCurrentDevice()` methods using [`tanker.generateAndRegisterUnlockKey()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#generateandregisterunlockkey) and [`tanker.unlockCurrentDevice()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#unlockcurrentdevice) respectively*.
 
 <details>
-<summary>See the patch</summary>
+<summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
 async getUnlockKey(): Promise<string> {
@@ -348,6 +354,7 @@ async addCurrentDevice(unlockKey: string): Promise<void> {
 }
 ```
 </details>
+<br />
 
 Thus, when the user needs to unlock a new device, the web application will end up calling `tanker.unlockCurrentDevice()`.
 
