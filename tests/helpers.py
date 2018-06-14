@@ -1,8 +1,7 @@
 import urllib.parse
-from typing import Iterator, List, Optional
+from typing import List, Optional
 from typing_extensions import Protocol
 
-import pytest
 import selenium.webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
@@ -28,6 +27,8 @@ class SeleniumElement(Protocol):
 
     def send_keys(self, text: str) -> None: ...
 
+    def clear(self) -> None: ...
+
     @property
     def text(self) -> str: ...
 
@@ -39,6 +40,8 @@ class SeleniumElement(Protocol):
     def find_element_by_id(self, id: str) -> 'SeleniumElement': ...
 
     def get_attribute(self, name: str) -> str: ...
+
+    def get_property(self, name: str) -> str: ...
 
 
 class TextToChange():
