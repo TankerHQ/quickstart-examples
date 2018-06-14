@@ -177,11 +177,11 @@ class App extends Component {
                     </InputGroup>
                   </FormGroup>
                   <hr />
-                  <FormGroup controlId="clearText">
+                  <FormGroup>
                     <ControlLabel>Encryption</ControlLabel>
                     <InputGroup>
                       <FormControl
-                        name="clearText"
+                        id="clearText"
                         placeholder="Clear message to encrypt"
                         value={this.state.clearText}
                         onChange={this.onClearTextChange}
@@ -204,6 +204,7 @@ class App extends Component {
                     <InputGroup style={{ marginTop: '.5em' }}>
                       <InputGroup.Addon>Share with:</InputGroup.Addon>
                       <FormControl
+                        id="shareWith"
                         name="shareWith"
                         value={this.state.shareWith}
                         onChange={this.onShareChange}
