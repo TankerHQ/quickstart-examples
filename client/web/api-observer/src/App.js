@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, ControlLabel, FormGroup, FormControl, Grid, InputGroup, PageHeader, Panel, Row } from 'react-bootstrap';
-import Tanker, { toBase64, fromBase64, errors } from '@tanker/core';
+import Tanker, { toBase64, fromBase64, errors } from '@tanker/client-browser';
 
 import config from './config';
 import { getEntry, LogPanel } from './log';

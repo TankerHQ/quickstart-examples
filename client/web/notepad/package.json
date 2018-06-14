@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "private": true,
   "dependencies": {
-    "@tanker/core": "^1.6.2",
+    "@tanker/client-browser": "^1.6.3",
     "@tanker/user-token": "^1.4.0",
     "babel-polyfill": "^6.26.0",
     "react": "^16.2.0",

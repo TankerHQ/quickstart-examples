@@ -7,11 +7,8 @@
     "start": "cd ../.. && yarn start:nodejs:hello-world"
   },
   "dependencies": {
-    "@tanker/core": "^1.6.2",
+    "@tanker/client-node": "^1.6.3",
     "fetch": "^1.1.0",
-    "pouchdb-adapter-leveldb": "^6.4.3",
-    "pouchdb-core": "^6.4.3",
-    "pouchdb-find": "^6.4.3",
     "uuid": "^3.2.1"
   }
 }
