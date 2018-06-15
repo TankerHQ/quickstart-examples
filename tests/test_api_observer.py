@@ -12,7 +12,7 @@ class Page:
         self.browser = browser
 
     def open(self, user_id: str) -> None:
-        user_id_input = self.browser.get_element(xpath='//input[@name="userId"]')
+        user_id_input = self.browser.wait_for_element_presence(id="userId")
         user_id_input.clear()
         user_id_input.send_keys(user_id)
         open_button = self.browser.get_element(xpath='//button[.="Open"]')
