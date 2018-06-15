@@ -7,7 +7,7 @@ const LogPanel = ({ entries }) => (
   <Panel>
     <Panel.Heading>
       <Panel.Title componentClass="h5">
-        Application log <Badge>{entries.length}</Badge>
+        Application log <Badge id="log-badge">{entries.length}</Badge>
       </Panel.Title>
     </Panel.Heading>
     <Panel.Body>

@@ -134,11 +134,11 @@ class App extends Component {
               <Panel bsStyle="primary">
                 <Panel.Heading><Panel.Title componentClass="h5">Application</Panel.Title></Panel.Heading>
                 <Panel.Body>
-                  <FormGroup controlId="userId">
+                  <FormGroup>
                     <ControlLabel>Session</ControlLabel>
                     <InputGroup>
                       <FormControl
-                        name="userId"
+                        id="userId"
                         placeholder={"User ID, e.g. \"alice-id\""}
                         type="text"
                         value={this.state.userId}
@@ -177,11 +177,11 @@ class App extends Component {
                     </InputGroup>
                   </FormGroup>
                   <hr />
-                  <FormGroup controlId="clearText">
+                  <FormGroup>
                     <ControlLabel>Encryption</ControlLabel>
                     <InputGroup>
                       <FormControl
-                        name="clearText"
+                        id="clearText"
                         placeholder="Clear message to encrypt"
                         value={this.state.clearText}
                         onChange={this.onClearTextChange}
@@ -204,6 +204,7 @@ class App extends Component {
                     <InputGroup style={{ marginTop: '.5em' }}>
                       <InputGroup.Addon>Share with:</InputGroup.Addon>
                       <FormControl
+                        id="shareWith"
                         name="shareWith"
                         value={this.state.shareWith}
                         onChange={this.onShareChange}
@@ -212,11 +213,11 @@ class App extends Component {
                     </InputGroup>
                   </FormGroup>
                   <hr />
-                  <FormGroup controlId="encryptedText">
+                  <FormGroup>
                     <ControlLabel>Decryption</ControlLabel>
                     <InputGroup>
                       <FormControl
-                        name="encryptedText"
+                        id="encryptedText"
                         placeholder="Encrypted message to decrypt"
                         value={this.state.encryptedText}
                         onChange={this.onEncryptedTextChange}
