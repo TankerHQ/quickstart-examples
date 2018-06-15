@@ -33,7 +33,7 @@ class Page:
             share_with_text_input.send_keys(share_with)
         encrypt_button = self.browser.get_element(xpath='//button[.="Encrypt"]')
         encrypt_button.click()
-        self.wait_for_next_log("Encryption succes")
+        self.wait_for_next_log("Encryption success")
         encrypted_text_input = self.browser.get_element(id="encryptedText")
         return encrypted_text_input.get_property("value")
 
@@ -43,7 +43,7 @@ class Page:
         encrypted_text_input.send_keys(encrypted_text)
         decrypt_button = self.browser.get_element(xpath='//button[.="Decrypt"]')
         decrypt_button.click()
-        self.wait_for_next_log("Decryption succes")
+        self.wait_for_next_log("Decryption success")
         clear_text_input = self.browser.get_element(id="clearText")
         return clear_text_input.get_property("value")
 
