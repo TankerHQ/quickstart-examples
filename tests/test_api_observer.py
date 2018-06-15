@@ -22,7 +22,7 @@ class Page:
     def close(self) -> None:
         close_button = self.browser.get_element(xpath='//button[.="Close"]')
         close_button.click()
-        self.wait_for_next_log("Closed")    # closing
+        self.wait_for_next_log("Closed")
 
     def encrypt(self, message: str, share_with: Optional[str] = None) -> str:
         clear_text_input = self.browser.get_element(id="clearText")
