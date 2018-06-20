@@ -5,7 +5,7 @@
 	<key>ServerAddress</key>
 	<string>http://10.208.24.87:8080/</string>
 	<key>TrustchainId</key>
-	<string>oQl8PAuWb3uNO2hjoMU8nSJPG3nMXwy9L+WKLxkQ7z4=</string>
+	<string>8a40D0BRa+qdgZmN6WgpO4rFmirVHFXo+0KYsjgwViU=</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
