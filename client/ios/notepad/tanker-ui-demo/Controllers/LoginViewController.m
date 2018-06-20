@@ -97,7 +97,7 @@
         _errorLabel.text = @"Invalid password";
         break;
       case 404:
-        _errorLabel.text = @"User does not exists";
+        _errorLabel.text = @"User does not exist";
         break;
       case 503:
         _errorLabel.text = @"Server error";
