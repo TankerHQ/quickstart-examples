@@ -3,7 +3,7 @@ const quoteEllipsis = (s, max = 10) => JSON.stringify(ellipsis(s, max));
 const quote = (s) => JSON.stringify(s);
 
 const getCodeEncryptAndShare = (text, shareWith) => `
-const opts = { shareWith: ${quoteEllipsis(shareWith)} };
+const opts = { shareWith: [${quoteEllipsis(shareWith)}] };
 const clear = ${quoteEllipsis(text, 20)};
 const binary = await tanker.encrypt(clear,
                                     opts);
@@ -13,7 +13,7 @@ const base64 = toBase64(binary);
 // const clear = ${quoteEllipsis(text, 20)};
 // const binary = await tanker.encrypt(clear);
 // const resourceId = getResourceId(binary);
-// await tanker.share([resourceId], ${quoteEllipsis(shareWith)});
+// await tanker.share([resourceId], [${quoteEllipsis(shareWith)}]);
 `;
 
 const getCodeEncryptionOnly = (text) => `
