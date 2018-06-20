@@ -62,9 +62,10 @@ NSString* getWritablePath()
                   if (error)
                     resolve(error);
                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                  if ((long)[httpResponse statusCode] != 200)
+                  long statusCode = (long)[httpResponse statusCode];
+                  if(statusCode != 200 && statusCode != 201)
                   {
-                    NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
+                    NSLog(@"Invalid status code: %ld", (long)[httpResponse statusCode]);
                     resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
                   }
                   resolve([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
