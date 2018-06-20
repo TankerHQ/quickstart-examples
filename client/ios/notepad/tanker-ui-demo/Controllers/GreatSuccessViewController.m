@@ -39,7 +39,7 @@
       NSData* b64DecodedData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
       return [[Globals sharedInstance].tanker decryptStringFromData:b64DecodedData];
     }
-    return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
+    return [PMKPromise<NSString*> promiseWithResolver:^(PMKResolver resolve){
       resolve(@"");
     }];
   }).then(^(NSString* clearText) {
