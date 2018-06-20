@@ -31,7 +31,8 @@
 
 - (IBAction)pressContinue:(UIButton *)sender {
   _errorLabel.text = @"";
-  NSString* unlockKey = _validationField.text;
+  NSString* keyValue = _validationField.text;
+  TKRUnlockKey* unlockKey = [TKRUnlockKey unlockKeyFromValue:keyValue];
   [[Globals sharedInstance].tanker unlockCurrentDeviceWithUnlockKey:unlockKey]
   .then(^{
     NSLog(@"Tanker is open");

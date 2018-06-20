@@ -71,11 +71,11 @@
     .then(^{
       NSLog(@"Tanker is open");
       [[Globals sharedInstance].tanker generateAndRegisterUnlockKey]
-      .then(^(NSString* unlockKey) {
+      .then(^(TKRUnlockKey* unlockKey) {
         NSLog(@"Please save this unlock key in a safe place: %@", unlockKey);
         [_activityIndicator stopAnimating];
         SaveValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SaveValidationCode"];
-        controller.passphrase = unlockKey;
+        controller.passphrase = [unlockKey value];
         [self.navigationController pushViewController:controller animated:YES];
       });
     }).catch(^(NSError* error) {
