@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>ServerAddress</key>
-	<string>http://10.208.24.87:8080/</string>
+	<string>http://127.0.0.1:8080/</string>
 	<key>TrustchainId</key>
 	<string>8a40D0BRa+qdgZmN6WgpO4rFmirVHFXo+0KYsjgwViU=</string>
 	<key>CFBundleDevelopmentRegion</key>
