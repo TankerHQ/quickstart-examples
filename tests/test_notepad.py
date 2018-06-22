@@ -227,7 +227,6 @@ def test_add_device(headless: bool, request: Any) -> None:
     second_client.wait_for_session_form()
     second_client.sign_in()
     second_client.wait_for_new_device()
-    import ipdb; ipdb.set_trace()
     second_client.unlock_device(password)
     second_client.wait_for_home()
     second_client.go_to_edit()
