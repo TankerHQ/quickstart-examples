@@ -46,7 +46,8 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Server error!");
 
     const userToken = await response.text();
-    return this.openSession(userId, userToken);
+    await this.openSession(userId, userToken);
+    await this.tanker.setupUnlock({ password });
   }
 
   async signIn(userId, password) {
@@ -69,12 +70,8 @@ export default class Session extends EventEmitter {
     await this.openSession(userId, userToken);
   }
 
-  async getUnlockKey() {
-    return this.tanker.generateAndRegisterUnlockKey();
-  }
-
-  async addCurrentDevice(unlockKey) {
-    return this.tanker.unlockCurrentDevice(unlockKey);
+  async unlockCurrentDevice(password) {
+    await this.tanker.unlockCurrentDevice({ password });
   }
 
   async saveText(text) {
