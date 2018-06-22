@@ -39,7 +39,7 @@ class Client:
         sign_in_button.click()
 
     def unlock_device(self, password: str) -> None:
-        text_area = self.browser.get_element(id="password-textarea")
+        text_area = self.browser.get_element(id="password-input")
         text_area.send_keys(password)
         unlock_button = self.browser.get_element(id="unlock-button")
         unlock_button.click()
@@ -227,6 +227,7 @@ def test_add_device(headless: bool, request: Any) -> None:
     second_client.wait_for_session_form()
     second_client.sign_in()
     second_client.wait_for_new_device()
+    import ipdb; ipdb.set_trace()
     second_client.unlock_device(password)
     second_client.wait_for_home()
     second_client.go_to_edit()

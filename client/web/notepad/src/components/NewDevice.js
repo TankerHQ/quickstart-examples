@@ -34,8 +34,8 @@ class NewDevice extends React.Component {
             <FormGroup>
               <ControlLabel>Please enter your password</ControlLabel>
               <FormControl
-                id="password-textarea"
-                componentClass="textarea"
+                id="password-input"
+                type="password"
                 value={password}
                 onChange={this.onChange}
                 required
