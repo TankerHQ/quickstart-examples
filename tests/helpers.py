@@ -7,6 +7,9 @@ from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+DEFAULT_TIMEOUT = 30
+
+
 # Easier to maintain here rather than in a stub file
 class SeleniumDriver(Protocol):
     def get(self, url: str) -> None: ...
@@ -91,7 +94,7 @@ class Browser:
         res: List[SeleniumElement] = func(value)
         return res
 
-    def wait_for_element_presence(self, *, id: str, timeout: int = 10) -> SeleniumElement:
+    def wait_for_element_presence(self, *, id: str, timeout: int = DEFAULT_TIMEOUT) -> SeleniumElement:
         driver_wait = WebDriverWait(self.driver, timeout)
 
         def element_is_present(driver: SeleniumDriver) -> bool:
@@ -102,7 +105,7 @@ class Browser:
         driver_wait.until(element_is_present)
         return self.get_element(id=id)
 
-    def wait_for_any_element(self, *, ids: List[str], timeout: int = 10) -> None:
+    def wait_for_any_element(self, *, ids: List[str], timeout: int = DEFAULT_TIMEOUT) -> None:
         driver_wait = WebDriverWait(self.driver, timeout)
 
         def elements_are_present(driver: SeleniumDriver) -> bool:
@@ -112,7 +115,7 @@ class Browser:
 
         driver_wait.until(elements_are_present)
 
-    def wait_for_element_absence(self, *, id: str, timeout: int = 10) -> SeleniumElement:
+    def wait_for_element_absence(self, *, id: str, timeout: int = DEFAULT_TIMEOUT) -> SeleniumElement:
         element = self.find_element(id=id)
         assert element
         driver_wait = WebDriverWait(self.driver, timeout)
@@ -130,7 +133,7 @@ class Browser:
         element = self.find_element(id=button_id)
         assert element
         assert element.tag_name == "button"
-        driver_wait = WebDriverWait(self.driver, timeout=10)
+        driver_wait = WebDriverWait(self.driver, timeout=DEFAULT_TIMEOUT)
 
         def button_is_enabled(driver: SeleniumDriver) -> bool:
             element = driver.find_element_by_id(button_id)
@@ -140,7 +143,7 @@ class Browser:
         driver_wait.until(button_is_enabled)
         return element
 
-    def wait_for_text_change(self, *, id: str, timeout: int = 10) -> SeleniumElement:
+    def wait_for_text_change(self, *, id: str, timeout: int = DEFAULT_TIMEOUT) -> SeleniumElement:
         driver_wait = WebDriverWait(self.driver, timeout)
         res: SeleniumElement = driver_wait.until(TextToChange(self, id=id))
         return res
