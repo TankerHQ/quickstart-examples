@@ -75,8 +75,14 @@
         NSLog(@"Please save this unlock key in a safe place: %@", unlockKey);
         [_activityIndicator stopAnimating];
         SaveValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"SaveValidationCode"];
-        controller.passphrase = [unlockKey value];
+        controller.passphrase = unlockKey.value;
         [self.navigationController pushViewController:controller animated:YES];
+      })
+      .catch(^(NSError* error) {
+        NSString* message = @"Could not register unlock key";
+        NSLog(@"%@: %@", message, [error localizedDescription]);
+        _errorLabel.text = message;
+        return error;
       });
     }).catch(^(NSError* error) {
       [_activityIndicator stopAnimating];

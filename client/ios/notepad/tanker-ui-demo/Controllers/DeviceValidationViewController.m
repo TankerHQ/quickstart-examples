@@ -35,7 +35,7 @@
   TKRUnlockKey* unlockKey = [TKRUnlockKey unlockKeyFromValue:keyValue];
   [[Globals sharedInstance].tanker unlockCurrentDeviceWithUnlockKey:unlockKey]
   .then(^{
-    NSLog(@"Tanker is open");
+    NSLog(@"New device unlocked");
   }).catch(^(NSError* error) {
     if (error.code == TKRErrorInvalidUnlockKey)
     {
