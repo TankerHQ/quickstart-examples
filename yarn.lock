@@ -112,6 +112,13 @@
   dependencies:
     libsodium-wrappers "^0.5.1"
 
+"@tanker/crypto@1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.6.2.tgz#a5a8191bbf48e8110224a7a6a922bcca372aa6b7"
+  dependencies:
+    babel-runtime "^6.22.0"
+    libsodium-wrappers "^0.5.1"
+
 "@tanker/crypto@1.7.0-beta5":
   version "1.7.0-beta5"
   resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.7.0-beta5.tgz#d0cbe1c21d8c2001b3b6ba8e8039658cfb8ee0be"
@@ -119,7 +126,13 @@
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
 
-"@tanker/user-token@1.4.0", "@tanker/user-token@^1.4.0":
+"@tanker/user-token@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@tanker/user-token/-/user-token-1.4.1.tgz#2fee8d4f36ee8eb0b70e50c411eaf494d4ee300e"
+  dependencies:
+    "@tanker/crypto" "1.6.2"
+
+"@tanker/user-token@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@tanker/user-token/-/user-token-1.4.0.tgz#de0be533dfee108918f74efd1fc33f78868e9a4b"
   dependencies:
