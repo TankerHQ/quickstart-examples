@@ -31,6 +31,7 @@ import java.net.URL;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerConnection;
 import io.tanker.api.TankerOptions;
+import io.tanker.bindings.TankerLib;
 
 /**
  * A login screen that offers login via email/password.
@@ -284,7 +285,7 @@ public class LoginActivity extends AppCompatActivity {
             connection.connect();
 
             mError = connection.getResponseCode();
-            if(mError != 200)
+            if(mError < 200 && mError > 202)
                 throw new IOException("");
 
             BufferedReader in = new BufferedReader(
@@ -313,7 +314,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             runOnUiThread(() -> {
                                 Intent intent = new Intent(LoginActivity.this, SaveUnlockKeyActivity.class);
-                                intent.putExtra("EXTRA_UNLOCK_KEY", unlockKeyFuture.get());
+                                intent.putExtra("EXTRA_UNLOCK_KEY", unlockKeyFuture.get().string());
                                 intent.putExtra("EXTRA_USERID", mEmail);
                                 intent.putExtra("EXTRA_PASSWORD", mPassword);
                                 startActivity(intent);
@@ -354,6 +355,8 @@ public class LoginActivity extends AppCompatActivity {
 
             switch(mError) {
                 case 200:
+                case 201:
+                case 202:
                     return;
                 case 409:
                     mEmailView.setError("User already exists");
