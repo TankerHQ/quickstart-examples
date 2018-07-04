@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import io.tanker.api.Tanker;
+import io.tanker.api.UnlockKey;
 
 public class InputUnlockKeyActivity extends AppCompatActivity {
 
@@ -35,7 +36,7 @@ public class InputUnlockKeyActivity extends AppCompatActivity {
                     throw new NullPointerException("Empty tanker instance");
                 }
 
-                tanker.unlockCurrentDevice(unlockKey).then((validateFuture) -> {
+                tanker.unlockCurrentDevice(new UnlockKey(unlockKey)).then((validateFuture) -> {
                    if (validateFuture.getError() != null) {
                        runOnUiThread (() -> {
                            unlockKeyEdit.setError("Wrong unlock key, please try again");
