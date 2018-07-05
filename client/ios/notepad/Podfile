@@ -3,5 +3,5 @@ source 'https://github.com/SuperTanker/PodSpecs.git'
 
 target 'tanker-ui-demo' do
   use_frameworks!
-  pod 'Tanker', '1.7.0-alpha3'
+  pod 'Tanker', '1.7.0-beta7'
 end
