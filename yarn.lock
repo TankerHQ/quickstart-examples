@@ -1876,6 +1876,10 @@ colors@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
 
+colors@~0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-0.6.2.tgz#2423fe6678ac0c5dae8852e5d0e5be08c997abcc"
+
 colors@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
@@ -7627,6 +7631,12 @@ schema-utils@^0.3.0:
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
+
+select-shell@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/select-shell/-/select-shell-1.1.2.tgz#b9bf5fe5850f1a53b190606aa1b0a48b39079c44"
+  dependencies:
+    colors "~0.6.2"
 
 selfsigned@^1.9.1:
   version "1.10.3"

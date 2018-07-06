@@ -19,7 +19,8 @@
     "express": "^4.16.3",
     "libsodium-wrappers-sumo": "^0.7.3",
     "marked": "^0.3.19",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "select-shell": "^1.1.2"
   },
   "devDependencies": {
     "chai": "^4.1.0",

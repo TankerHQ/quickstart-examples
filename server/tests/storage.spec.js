@@ -3,13 +3,13 @@ const tmp = require('tmp');
 
 const Storage = require('../src/storage');
 
-describe('Strorage', () => {
+describe('Storage', () => {
   let tempPath;
   let storage;
 
   beforeEach(() => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
-    storage = new Storage(tempPath.name);
+    storage = new Storage(tempPath.name, 'trustchainId');
   });
 
   afterEach(() => {
