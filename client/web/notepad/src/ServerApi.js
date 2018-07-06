@@ -73,16 +73,13 @@ export default class Api {
   }
 
   async getMyData() {
-    const headers = { "Content-Type": "application/json" };
-    const response = await this.doRequest("/me", { headers });
+    const response = await this.doRequest("/me");
     return response.json();
   }
 
   async getUsers() {
-    const headers = { "Content-Type": "application/json" };
-    const response = await this.doRequest("/users", { headers });
-    const res = await response.json();
-    return res;
+    const response = await this.doRequest("/users");
+    return response.json();
   }
 
   async share(recipients) {
