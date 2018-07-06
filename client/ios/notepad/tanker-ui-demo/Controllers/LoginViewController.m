@@ -8,7 +8,7 @@
 
 #import "LoginViewController.h"
 #import "Globals.h"
-#import "DeviceValidationViewController.h"
+#import "GreatSuccessViewController.h"
 @import PromiseKit;
 
 @interface LoginViewController ()
@@ -43,73 +43,48 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void) loginAction {
+- (void) loginAction
+{
   _errorLabel.text = @"";
   NSString* userId = _usernameField.text;
   NSString* password = _passwordField.text;
-  if ([userId length] == 0
-      || [[userId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
+  if ([userId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
   {
     _errorLabel.text = @"UserID is empty or filled with blanks";
     return;
   }
-  if ([password length] == 0
-      || [[password stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0)
+  if ([password stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
   {
     _errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }
   
+  [_activityIndicator startAnimating];
   [Globals fetchUserToken:@"login" userId:userId password:password]
   .then(^(NSString *userToken){
-    NSError* error = nil;
-    [[Globals sharedInstance].tanker connectValidationHandler:^(NSString* validationCode) {
-      // Go to the validate device screen
+    [[Globals sharedInstance].tanker connectUnlockHandler:^{
       NSLog(@"In the handler");
-      dispatch_async(dispatch_get_main_queue(), ^{
-        DeviceValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"DeviceValidation"];
-        @try {
-          [self.navigationController pushViewController:controller animated:YES];
-        } @catch(NSException* e) {
-          NSLog(@"--> %@", e);
-        }
-      });
-    } error:&error];
+      [[Globals sharedInstance].tanker unlockCurrentDeviceWithPassword:password];
+    }];
     
-    [_activityIndicator startAnimating];
-    
-    [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken]
-    .catch(^(NSError* error) {
-      NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
-      _errorLabel.text = @"Could not open Tanker";
-      return error;
-    })
-    .then(^{
-      [_activityIndicator stopAnimating];
-      NSLog(@"Tanker is open");
-      DeviceValidationViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"GreatSuccess"];
-      [self.navigationController pushViewController:controller animated:YES];
-    });
-  }).catch(^(NSError* error) {
+    [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken];
+  })
+  .then(^{
     [_activityIndicator stopAnimating];
-    switch (error.code) {
-      case 401:
-        _errorLabel.text = @"Invalid password";
-        break;
-      case 404:
-        _errorLabel.text = @"User does not exist";
-        break;
-      case 503:
-        _errorLabel.text = @"Server error";
-        break;
-      default:
-        _errorLabel.text = @"Unknown error";
-        break;
-    }
+    NSLog(@"Tanker is open");
+    GreatSuccessViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"GreatSuccessViewController"];
+    [self.navigationController pushViewController:controller animated:YES];
+  })
+  .catch(^(NSError* error) {
+    // TODO check error domain to show app errors
+    [_activityIndicator stopAnimating];
+    NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
+    _errorLabel.text = @"Could not open Tanker";
   });
 }
 
-- (IBAction)triggerLogin:(UIButton *)sender {
+- (IBAction)triggerLogin:(UIButton *)sender
+{
   [self loginAction];
 }
 

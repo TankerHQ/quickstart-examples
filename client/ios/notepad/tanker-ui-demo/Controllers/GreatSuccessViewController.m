@@ -31,25 +31,30 @@
   [self.view addSubview:_activityIndicator];
   [_activityIndicator startAnimating];
  
-  [Globals dataFromServer]
-  .then(^(NSData* encryptedData) {
-    if ([encryptedData length] != 0)
+  [Globals dataFromServer].
+  then(^(NSData* encryptedData) {
+    // needed?
+    if (encryptedData.length != 0)
     {
       NSString* base64EncodedString = [[NSString alloc] initWithData:encryptedData encoding:NSASCIIStringEncoding];
       NSData* b64DecodedData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
-      return [[Globals sharedInstance].tanker decryptStringFromData:b64DecodedData];
+      return [[Globals sharedInstance].tanker decryptStringFromData:b64DecodedData]
+      .catch(^(NSError *error){
+        [_activityIndicator stopAnimating];
+        NSLog(@"Could not decrypt data: %@", [error localizedDescription]);
+        return error;
+      });
     }
-    return [PMKPromise<NSString*> promiseWithResolver:^(PMKResolver resolve){
-      resolve(@"");
-    }];
+    return [PMKPromise promiseWithValue:@""];
   }).then(^(NSString* clearText) {
     _SecretNotesField.text = clearText;
     [_activityIndicator stopAnimating];
-  }).catch(^(NSError *error){
-    NSLog(@"Could not decrypt data: %@", [error localizedDescription]);
-    return error;
+  }).catch(^(NSError* error){
+    [_activityIndicator stopAnimating];
+    // TODO constant
+    if ([error.domain isEqualToString:@"io.tanker-ui-demo"] && error.code == 404)
+      _SecretNotesField.text = @"";
   });
-  
 }
 
 - (void)didReceiveMemoryWarning {
@@ -67,8 +72,7 @@
 
 - (IBAction)saveNotes:(UIButton *)sender {
   [_activityIndicator startAnimating];
-  TKREncryptionOptions* encryptionOptions = [TKREncryptionOptions defaultOptions];
-  [[Globals sharedInstance].tanker encryptDataFromString:_SecretNotesField.text options:encryptionOptions]
+  [[Globals sharedInstance].tanker encryptDataFromString:_SecretNotesField.text]
   .then(^(NSData* encryptedData) {
     NSString* base64Encoded = [encryptedData base64EncodedStringWithOptions:0];
     return [Globals uploadToServer:[base64Encoded dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
@@ -76,8 +80,8 @@
     [_activityIndicator stopAnimating];
     NSLog(@"Data sent to server");
   }).catch(^(NSError *error){
+    [_activityIndicator stopAnimating];
     NSLog(@"Could not encrypt and send data to server: %@", [error localizedDescription]);
-    return error;
   });
 }
 

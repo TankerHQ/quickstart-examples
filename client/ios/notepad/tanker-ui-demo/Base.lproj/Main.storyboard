@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hWE-Yk-UHV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hWE-Yk-UHV">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -72,7 +72,7 @@
         <!--View Controller success-->
         <scene sceneID="qGL-vg-WEh">
             <objects>
-                <viewController storyboardIdentifier="GreatSuccess" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Cgj-G9-lG3" userLabel="View Controller success" customClass="GreatSuccessViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GreatSuccessViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Cgj-G9-lG3" userLabel="View Controller success" customClass="GreatSuccessViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dE9-7I-Y26">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -318,119 +318,9 @@
             </objects>
             <point key="canvasLocation" x="-561" y="811"/>
         </scene>
-        <!--View Controller first time-->
-        <scene sceneID="dJr-Tx-bey">
-            <objects>
-                <viewController storyboardIdentifier="SaveValidationCode" useStoryboardIdentifierAsRestorationIdentifier="YES" id="G5e-YE-aYG" userLabel="View Controller first time" customClass="SaveValidationViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="IS5-4J-9TW">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="9jJ-zN-31T">
-                                <rect key="frame" x="8" y="271.5" width="359" height="124"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please save this unlock key in a safe place: " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ihb-f6-3wF">
-                                        <rect key="frame" x="0.0" y="0.0" width="359" height="18"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Pv7-Sk-Eed">
-                                        <rect key="frame" x="0.0" y="44" width="359" height="30"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cYc-0p-GvG">
-                                        <rect key="frame" x="0.0" y="94" width="359" height="30"/>
-                                        <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <state key="normal" title="Continue"/>
-                                        <connections>
-                                            <segue destination="Cgj-G9-lG3" kind="show" id="xID-jB-W2c"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                            </stackView>
-                        </subviews>
-                        <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="9jJ-zN-31T" firstAttribute="centerX" secondItem="IS5-4J-9TW" secondAttribute="centerX" id="B8F-oM-qoq"/>
-                            <constraint firstItem="9jJ-zN-31T" firstAttribute="leading" secondItem="Mhi-Zw-Dnx" secondAttribute="leading" constant="8" id="JK6-ao-2dA"/>
-                            <constraint firstItem="Mhi-Zw-Dnx" firstAttribute="trailing" secondItem="9jJ-zN-31T" secondAttribute="trailing" constant="8" id="Wj5-uq-g4L"/>
-                            <constraint firstItem="9jJ-zN-31T" firstAttribute="centerY" secondItem="IS5-4J-9TW" secondAttribute="centerY" id="ffV-KL-TrS"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="Mhi-Zw-Dnx"/>
-                    </view>
-                    <connections>
-                        <outlet property="passphraseField" destination="Pv7-Sk-Eed" id="OJa-Xk-wsE"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="a8B-oV-S5x" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2164" y="811"/>
-        </scene>
-        <!--View Controller device validation-->
-        <scene sceneID="aBI-pd-sIS">
-            <objects>
-                <viewController storyboardIdentifier="DeviceValidation" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bMk-zH-ocI" userLabel="View Controller device validation" customClass="DeviceValidationViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="MQ1-tI-5un">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mo0-Sl-gsU">
-                                <rect key="frame" x="8" y="256.5" width="359" height="156"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter validation passphrase:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yhz-Lf-GsW">
-                                        <rect key="frame" x="0.0" y="0.0" width="359" height="18"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Validation code" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1BR-wy-fKc">
-                                        <rect key="frame" x="0.0" y="38" width="359" height="30"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W3z-s7-V5y">
-                                        <rect key="frame" x="0.0" y="88" width="359" height="30"/>
-                                        <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <state key="normal" title="Continue"/>
-                                        <connections>
-                                            <action selector="pressContinue:" destination="bMk-zH-ocI" eventType="touchUpInside" id="Xbu-Bz-rEU"/>
-                                        </connections>
-                                    </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MB7-90-wSa">
-                                        <rect key="frame" x="0.0" y="138" width="359" height="18"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                            </stackView>
-                        </subviews>
-                        <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstItem="mo0-Sl-gsU" firstAttribute="centerY" secondItem="MQ1-tI-5un" secondAttribute="centerY" id="PaK-x6-fki"/>
-                            <constraint firstItem="Y3M-7Y-JnT" firstAttribute="trailing" secondItem="mo0-Sl-gsU" secondAttribute="trailing" constant="8" id="e9Q-VK-7Ij"/>
-                            <constraint firstItem="mo0-Sl-gsU" firstAttribute="centerX" secondItem="MQ1-tI-5un" secondAttribute="centerX" id="ntz-ak-FIa"/>
-                            <constraint firstItem="mo0-Sl-gsU" firstAttribute="leading" secondItem="Y3M-7Y-JnT" secondAttribute="leading" constant="8" id="oub-Lu-gP8"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="Y3M-7Y-JnT"/>
-                    </view>
-                    <connections>
-                        <outlet property="errorLabel" destination="MB7-90-wSa" id="16B-j6-U9V"/>
-                        <outlet property="validationField" destination="1BR-wy-fKc" id="vbk-QM-QFf"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ZX8-P3-g0u" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2164" y="30"/>
-        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="EL0-2x-QBp"/>
         <segue reference="xvk-CX-cL5"/>
     </inferredMetricsTieBreakers>
 </document>

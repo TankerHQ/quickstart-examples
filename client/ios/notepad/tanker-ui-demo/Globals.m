@@ -61,6 +61,8 @@ NSString* getWritablePath()
                 completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                   if (error)
                     resolve(error);
+                  else
+                  {
                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                   long statusCode = (long)[httpResponse statusCode];
                   if(statusCode != 200 && statusCode != 201)
@@ -68,7 +70,9 @@ NSString* getWritablePath()
                     NSLog(@"Invalid status code: %ld", (long)[httpResponse statusCode]);
                     resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
                   }
-                  resolve([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                  else
+                    resolve([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                  }
                 }] resume];
   }];
 }
@@ -90,14 +94,17 @@ NSString* getWritablePath()
                 completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                   if (error)
                     resolve(error);
+                  else
+                  {
                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                   if ((long)[httpResponse statusCode] != 200)
                   {
                     NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
                     resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
                   }
-             
+                    else
                   resolve(data);
+                  }
       }] resume];
   }];
 }
