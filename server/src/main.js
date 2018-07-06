@@ -1,14 +1,16 @@
-const port = 8080;
-
+const cli = require('commander');
 const path = require('path');
 
 const { getConfig } = require('./config');
 const server = require('./server');
 const log = require('./log');
 
+const port = 8080;
 const dataPath = path.resolve(__dirname, '../data').normalize();
 
-getConfig().then((config) => {
+cli.option('-c, --config <c>', 'A Tanker JSON config file').parse(process.argv);
+
+getConfig(cli.config).then((config) => {
   if (!config) return;
 
   server.setup({ ...config, dataPath });

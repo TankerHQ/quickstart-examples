@@ -13,6 +13,11 @@ const readConfigFile = (fileName) => {
   return readJSONFile(filePath);
 };
 
+const expandPath = (filePath) => {
+  if (filePath[0] === '/') return filePath;
+  return pathLib.join(__dirname, '..', '..', filePath);
+};
+
 const printMissingConfigMessage = () => {
   console.log([
     'Welcome to the Tanker quickstart examples project.',
@@ -44,7 +49,11 @@ const selectConfig = (configFileNames) => {
   });
 };
 
-const getConfig = async () => {
+const getConfig = async (path) => {
+  if (path) {
+    return readJSONFile(expandPath(path));
+  }
+
   const configFileNames = listConfigFileNames();
 
   switch (configFileNames.length) {
