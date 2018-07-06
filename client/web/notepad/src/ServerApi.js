@@ -40,11 +40,11 @@ export default class Api {
   }
 
   signUp() {
-    return this.doRequest("/signup");
+    return this.doRequestUnchecked("/signup");
   }
 
   login() {
-    return this.doRequest("/login");
+    return this.doRequestUnchecked("/login");
   }
 
   delete() {
