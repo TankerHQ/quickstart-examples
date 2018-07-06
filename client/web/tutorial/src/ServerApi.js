@@ -42,6 +42,11 @@ export default class Api {
     throw new Error(`Request failed: (${response.status}): ${text}`);
   }
 
+  async tankerConfig() {
+    const res = await this.doRequest("/config");
+    return res.json();
+  }
+
   signUp() {
     return this.doRequestUnchecked("/signup");
   }
