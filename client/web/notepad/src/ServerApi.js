@@ -15,10 +15,13 @@ export default class Api {
   }
 
   urlFor(path) {
-    const queryString = `userId=${encodeURIComponent(this.userId)}&password=${encodeURIComponent(
-      this.password,
-    )}`;
-    return `${appServerUrl}${path}?${queryString}`;
+    let queryString = '';
+    if (this.userId) {
+      const escapedUserId = encodeURIComponent(this.userId);
+      const escapedPassword = encodeURIComponent(this.password);
+      queryString = `?userId=${escapedUserId}&password=${escapedPassword}`;
+    }
+    return `${appServerUrl}${path}${queryString}`;
   }
 
   async doRequest(path, fetchOpts) {
