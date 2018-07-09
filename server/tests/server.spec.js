@@ -112,6 +112,26 @@ describe('server', () => {
     });
   });
 
+  describe('/password', () => {
+    specify('can change password', async () => {
+      const newPassword = 'n3wp4ss';
+      signUpBob();
+      const query = { userId: bobId, password: bobPassword, newPassword };
+      await assertRequest(
+        testServer,
+        { verb: 'put', path: '/password', query },
+        { status: 200 },
+      );
+
+      const newQuery = { userId: bobId, password: newPassword };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/login', query: newQuery },
+        { status: 200 },
+      );
+    });
+  });
+
   describe('/login', () => {
     specify('signed up users can log in', async () => {
       signUpBob();

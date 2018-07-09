@@ -112,6 +112,24 @@ app.get('/login', (req, res) => {
   res.send(user.token);
 });
 
+app.put('/password', (req, res) => {
+  log('Change password', 1);
+  const { user } = res.locals;
+  const { newPassword } = req.query;
+  if (!newPassword) {
+    log('newPassword not set', 1);
+    res.sendStatus(400);
+    return;
+  }
+  user.hashed_password = sodium.crypto_pwhash_str(
+    newPassword,
+    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+  );
+  app.storage.save(user);
+  res.sendStatus(200);
+});
+
 app.put('/data', (req, res) => {
   const { user } = res.locals;
 
