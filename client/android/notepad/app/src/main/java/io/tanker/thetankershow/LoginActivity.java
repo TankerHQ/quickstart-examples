@@ -28,10 +28,10 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerConnection;
 import io.tanker.api.TankerOptions;
-import io.tanker.bindings.TankerLib;
 
 /**
  * A login screen that offers login via email/password.
@@ -91,16 +91,23 @@ public class LoginActivity extends AppCompatActivity {
 
         String writablePath = getApplicationContext().getFilesDir().getAbsolutePath();
         TankerOptions options = new TankerOptions();
-        options.setTrustchainId("oQl8PAuWb3uNO2hjoMU8nSJPG3nMXwy9L+WKLxkQ7z4=")
+        options.setTrustchainId("Y9T8griM9EJtN++BATiSwc8vpFoFwPXPry7sB//hX0I=")
                 .setWritablePath(writablePath);
         mTanker = new Tanker(options);
 
-        mEventConnection = mTanker.connectValidationHandler(validationCode -> {
-            runOnUiThread(() -> {
-                Intent intent = new Intent(LoginActivity.this, InputUnlockKeyActivity.class);
-                startActivity(intent);
+        mEventConnection = mTanker.connectUnlockRequiredHandler(() -> runOnUiThread (() -> {
+            String password = mPasswordView.getText().toString();
+            mTanker.unlockCurrentDevice(new Password(password)).then((validateFuture) -> {
+                if (validateFuture.getError() != null) {
+                    mPasswordView.setError("Wrong unlock password, please try again");
+                    mPasswordView.requestFocus();
+                } else {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+                return null;
             });
-        });
+        }));
 
         ((TheTankerApplication) this.getApplication()).setTankerInstance(mTanker);
     }
@@ -295,6 +302,17 @@ public class LoginActivity extends AppCompatActivity {
             return token;
         }
 
+        private void goToMainActivity() {
+            runOnUiThread(() -> {
+                // Redirect to the MainActivity
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                intent.putExtra("EXTRA_USERID", mEmail);
+                intent.putExtra("EXTRA_PASSWORD", mPassword);
+                startActivity(intent);
+                showProgress(false);
+            });
+        }
+
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
@@ -307,31 +325,12 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     if (mSignUp) {
-                        mTanker.generateAndRegisterUnlockKey().then((unlockKeyFuture) -> {
-                            if (unlockKeyFuture.getError() != null) {
-                                mError = 1;
-                                return null;
-                            }
-                            runOnUiThread(() -> {
-                                Intent intent = new Intent(LoginActivity.this, SaveUnlockKeyActivity.class);
-                                intent.putExtra("EXTRA_UNLOCK_KEY", unlockKeyFuture.get().string());
-                                intent.putExtra("EXTRA_USERID", mEmail);
-                                intent.putExtra("EXTRA_PASSWORD", mPassword);
-                                startActivity(intent);
-                                showProgress(false);
-                            });
+                        mTanker.setupUnlock(new Password(mPassword)).then((fut) -> {
+                            goToMainActivity();
                             return null;
                         });
-                    }
-                    else {
-                        runOnUiThread(() -> {
-                            // Redirect to the MainActivity
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.putExtra("EXTRA_USERID", mEmail);
-                            intent.putExtra("EXTRA_PASSWORD", mPassword);
-                            startActivity(intent);
-                            showProgress(false);
-                        });
+                    } else {
+                        goToMainActivity();
                     }
                     return null;
                 });
