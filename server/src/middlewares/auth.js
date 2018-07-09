@@ -15,8 +15,8 @@ const authMiddleware = (storage, req, res, next) => {
   }
 
   const user = storage.get(userId);
-  const hash_matches = sodium.crypto_pwhash_str_verify(user.hashed_password, password);
-  if (!hash_matches) {
+  const hashMatches = sodium.crypto_pwhash_str_verify(user.hashed_password, password);
+  if (!hashMatches) {
     log('Authentication error: invalid password', 1);
     res.sendStatus(401);
     return;
