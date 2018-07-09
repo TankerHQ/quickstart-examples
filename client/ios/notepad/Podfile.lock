@@ -2,21 +2,21 @@ PODS:
   - PromiseKit/Promise (1.7.7)
   - PromiseKit/When (1.7.7):
     - PromiseKit/Promise
-  - Tanker (1.7.0-beta7):
+  - Tanker (1.7.0-beta9):
     - PromiseKit/Promise (~> 1.7)
     - PromiseKit/When (~> 1.7)
-    - Tanker/libtanker (= 1.7.0-beta7)
-  - Tanker/libtanker (1.7.0-beta7):
+    - Tanker/libtanker (= 1.7.0-beta9)
+  - Tanker/libtanker (1.7.0-beta9):
     - PromiseKit/Promise (~> 1.7)
     - PromiseKit/When (~> 1.7)
 
 DEPENDENCIES:
-  - Tanker (= 1.7.0-beta7)
+  - Tanker (= 1.7.0-beta9)
 
 SPEC CHECKSUMS:
   PromiseKit: 9007df2f9e2ef725467084ab3880cf932ab935a4
-  Tanker: c5fa78b9da7578ed244173fd5cab97a0e202e84f
+  Tanker: 4e22ac607ea7dd3682535c95f99cfca0f7e04a2a
 
-PODFILE CHECKSUM: 4ce61192007e36def3180ff43985726e8ef506c7
+PODFILE CHECKSUM: 64ca085a15d358478f4a85befdc025fa4b8fd67b
 
 COCOAPODS: 1.4.0

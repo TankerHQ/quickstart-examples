@@ -15,9 +15,10 @@
 
 + (Globals *)sharedInstance;
 
-+ (PMKPromise*)fetchUserToken:(NSString*)method userId:(NSString*)userId password:(NSString*)password;
++ (PMKPromise<NSString*>*)fetchUserToken:(NSString*)serverPath userId:(NSString*)userId password:(NSString*)password;
 + (PMKPromise*) uploadToServer:(NSData*)encryptedData;
-+ (PMKPromise*) dataFromServer;
++ (PMKPromise<NSData*>*) dataFromServer;
++ (PMKPromise*)changePassword:(NSString*)newPassword;
 
 @property TKRTanker* tanker;
 @property NSString* serverAddress;

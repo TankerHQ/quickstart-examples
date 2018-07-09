@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hWE-Yk-UHV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hWE-Yk-UHV">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -13,7 +13,7 @@
         <!--View Controller home-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="home" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" userLabel="View Controller home" customClass="ViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="home" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" userLabel="View Controller home" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -80,8 +80,18 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Ejt-ay-0Q5">
                                 <rect key="frame" x="8" y="40" width="359" height="627"/>
                                 <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sms-bd-2NQ" userLabel="ChangePasswordButton">
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="381"/>
+                                        <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <state key="normal" title="Change Password">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <segue destination="PO3-tA-397" kind="show" id="3tQ-xm-t4e"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GpX-uG-t72">
-                                        <rect key="frame" x="0.0" y="0.0" width="359" height="421"/>
+                                        <rect key="frame" x="0.0" y="391" width="359" height="30"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <state key="normal" title="Logout"/>
@@ -176,6 +186,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8io-i5-Cyz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="249" y="51"/>
         </scene>
         <!--View Controller log in-->
         <scene sceneID="PAd-6d-byW">
@@ -318,9 +329,63 @@
             </objects>
             <point key="canvasLocation" x="-561" y="811"/>
         </scene>
+        <!--View Controller Change Password-->
+        <scene sceneID="ynx-LX-yY8">
+            <objects>
+                <viewController storyboardIdentifier="changePassword" id="PO3-tA-397" userLabel="View Controller Change Password" customClass="ChangePasswordViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="w8i-HP-MBg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="aBn-iu-Bn9">
+                                <rect key="frame" x="8" y="282.5" width="359" height="101.5"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ixo-kG-Dbu" userLabel="passwordField">
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="30"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <textInputTraits key="textInputTraits" textContentType="password"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ghT-sN-IXO">
+                                        <rect key="frame" x="0.0" y="38" width="359" height="30"/>
+                                        <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" title="Change Password"/>
+                                        <connections>
+                                            <action selector="changePasswordAction:" destination="PO3-tA-397" eventType="touchUpInside" id="NHm-b2-XZ7"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bAO-JE-JbZ" userLabel="errorLabel">
+                                        <rect key="frame" x="0.0" y="81" width="359" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="aBn-iu-Bn9" firstAttribute="centerY" secondItem="w8i-HP-MBg" secondAttribute="centerY" id="0kF-Rd-aS3"/>
+                            <constraint firstItem="aBn-iu-Bn9" firstAttribute="leading" secondItem="4tG-hF-ZUQ" secondAttribute="leading" constant="8" id="Nfn-uW-Jm3"/>
+                            <constraint firstItem="4tG-hF-ZUQ" firstAttribute="trailing" secondItem="aBn-iu-Bn9" secondAttribute="trailing" constant="8" id="awH-2m-eqL"/>
+                            <constraint firstItem="aBn-iu-Bn9" firstAttribute="centerX" secondItem="w8i-HP-MBg" secondAttribute="centerX" id="bBQ-a8-1ze"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="4tG-hF-ZUQ"/>
+                    </view>
+                    <connections>
+                        <outlet property="changePasswordButton" destination="ghT-sN-IXO" id="CBc-6S-vCU"/>
+                        <outlet property="errorLabel" destination="bAO-JE-JbZ" id="LbG-PX-EiC"/>
+                        <outlet property="passwordField" destination="ixo-kG-Dbu" id="MIh-MH-S4N"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lqc-dd-4w6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2132" y="36"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="EL0-2x-QBp"/>
         <segue reference="xvk-CX-cL5"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -67,7 +67,7 @@
       [[Globals sharedInstance].tanker unlockCurrentDeviceWithPassword:password];
     }];
     
-    [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken];
+    return [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken];
   })
   .then(^{
     [_activityIndicator stopAnimating];

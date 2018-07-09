@@ -8,7 +8,6 @@
 
 #import "GreatSuccessViewController.h"
 #import "Globals.h"
-#import "ViewController.h"
 
 @import PromiseKit;
 
@@ -63,11 +62,13 @@
 }
 
 - (IBAction)triggerLogout:(UIButton *)sender {
-  [[Globals sharedInstance].tanker close];
-  NSLog(@"Did log out");
-  ViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"home"];
-  [self.navigationController pushViewController:controller animated:YES];
-  
+ [[Globals sharedInstance].tanker close].then(^{
+    NSLog(@"Did log out");
+    UIViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"home"];
+    [self.navigationController pushViewController:controller animated:YES];
+  }).catch(^(NSError* e){
+    NSLog(@"Cannot close tanker %@", [e localizedDescription]);
+  });
 }
 
 - (IBAction)saveNotes:(UIButton *)sender {

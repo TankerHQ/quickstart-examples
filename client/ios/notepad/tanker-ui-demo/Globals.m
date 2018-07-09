@@ -26,6 +26,49 @@ NSString* getWritablePath()
   return libraryDirectory;
 }
 
++ (PMKPromise*) requestToServerWithMethod:(NSString*)method path:(NSString*)path queryArgs:(NSDictionary<NSString*, NSString*>*)args body:(NSData*)body
+{
+  NSString* urlStr = [NSString stringWithFormat:@"%@%@", [Globals sharedInstance].serverAddress, path];
+  if (args && args.count != 0)
+  {
+    urlStr = [urlStr stringByAppendingString:@"?"];
+    for (NSString* key in args)
+    {
+      NSString* value = args[key];
+      urlStr = [urlStr stringByAppendingString:[NSString stringWithFormat:@"%@=%@&", key, value]];
+    }
+    urlStr = [urlStr substringToIndex:urlStr.length - 1];
+  }
+  
+  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
+  request.HTTPMethod = method;
+  [request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+  NSString* postLength = [NSString stringWithFormat:@"%lu",body.length];
+  [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+  request.HTTPBody = body;
+  
+  NSURLSession *session = [NSURLSession sharedSession];
+  
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
+    [[session dataTaskWithRequest:request
+                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                  if (error)
+                    resolve(error);
+                  else
+                  {
+                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+                  if ((long)httpResponse.statusCode != 200 && (long)httpResponse.statusCode != 201)
+                  {
+                    NSLog(@"Response status code: %ld", (long)httpResponse.statusCode);
+                    resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)httpResponse.statusCode userInfo:nil]);
+                  }
+                  else
+                    resolve(data);
+                  }
+                }] resume];
+  }];
+}
+
 - (void)initTanker
 {
   TKRTankerOptions* opts = [TKRTankerOptions options];
@@ -44,103 +87,38 @@ NSString* getWritablePath()
   return instance;
 }
 
-+ (PMKPromise*)fetchUserToken:(NSString*)method userId:(NSString*)userId password:(NSString*)password
++ (PMKPromise<NSString*>*)fetchUserToken:(NSString*)serverPath userId:(NSString*)userId password:(NSString*)password
 {
   [Globals sharedInstance]->_userId = userId;
   [Globals sharedInstance]->_password = password;
   
-  NSString* urlStr = [NSString stringWithFormat:@"%@%@?userId=%@&password=%@", [Globals sharedInstance].serverAddress, method, userId, password];
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
-  [request setHTTPMethod:@"GET"];
-  [request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
-  
-  NSURLSession *session = [NSURLSession sharedSession];
-  
-  return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
-    [[session dataTaskWithRequest:request
-                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                  if (error)
-                    resolve(error);
-                  else
-                  {
-                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                  long statusCode = (long)[httpResponse statusCode];
-                  if(statusCode != 200 && statusCode != 201)
-                  {
-                    NSLog(@"Invalid status code: %ld", (long)[httpResponse statusCode]);
-                    resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
-                  }
-                  else
-                    resolve([[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-                  }
-                }] resume];
-  }];
+  return [Globals requestToServerWithMethod:@"GET" path:serverPath queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* data){
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  });
 }
 
-+ (PMKPromise*) dataFromServer
++ (PMKPromise<NSData*>*) dataFromServer
 {
   NSString* userId = [Globals sharedInstance]->_userId;
   NSString* password = [Globals sharedInstance]->_password;
-  NSString* urlStr = [NSString stringWithFormat:@"%@data/%@?userId=%@&password=%@", [Globals sharedInstance].serverAddress, userId, userId, password];
-  NSLog(@"Request: GET: %@", urlStr);
-
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
-  [request setHTTPMethod:@"GET"];
-  [request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
-  NSURLSession *session = [NSURLSession sharedSession];
   
-  return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
-    [[session dataTaskWithRequest:request
-                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                  if (error)
-                    resolve(error);
-                  else
-                  {
-                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                  if ((long)[httpResponse statusCode] != 200)
-                  {
-                    NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
-                    resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
-                  }
-                    else
-                  resolve(data);
-                  }
-      }] resume];
-  }];
+  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userId] queryArgs:@{@"userId": userId, @"password": password} body:nil];
 }
 
 + (PMKPromise*) uploadToServer:(NSData*)encryptedData
 {
   NSString* userId = [Globals sharedInstance]->_userId;
   NSString* password = [Globals sharedInstance]->_password;
-  NSString* urlStr = [NSString stringWithFormat:@"%@%@?userId=%@&password=%@", [Globals sharedInstance].serverAddress, @"data", userId, password];
-  NSLog(@"Request: PUT: %@", urlStr);
   
-  NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
-  [request setHTTPMethod:@"PUT"];
-  [request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
-  NSString *postLength = [NSString stringWithFormat:@"%lu",[encryptedData length]];
-  [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+  return [Globals requestToServerWithMethod:@"PUT" path:@"data" queryArgs:@{@"userId": userId, @"password": password} body:encryptedData];
+}
+
++ (PMKPromise*)changePassword:(NSString*)newPassword
+{
+  NSString* userId = [Globals sharedInstance]->_userId;
+  NSString* password = [Globals sharedInstance]->_password;
   
-  //NSLog(@"Length: %@, data: %@", postLength, [[NSString alloc] initWithData:encryptedData encoding:NSASCIIStringEncoding]);
-  
-  [request setHTTPBody:encryptedData];
-  NSURLSession *session = [NSURLSession sharedSession];
-  
-  return [PMKPromise promiseWithResolver:^(PMKResolver resolve){
-    [[session dataTaskWithRequest:request
-                completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-                  if (error)
-                    resolve(error);
-                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-                  if ((long)[httpResponse statusCode] != 200)
-                  {
-                    NSLog(@"Response status code: %ld", (long)[httpResponse statusCode]);
-                    resolve([[NSError alloc] initWithDomain:@"io.tanker.ui-demo" code:(long)[httpResponse statusCode] userInfo:nil]);
-                  }
-                  resolve(nil);
-                }] resume];
-  }];
+  return [Globals requestToServerWithMethod:@"PUT" path:@"password" queryArgs:@{@"userId": userId, @"password": password, @"newPassword": newPassword} body:nil];
 }
 
 - (id)init {
