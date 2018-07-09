@@ -109,29 +109,16 @@ public class MainActivity extends AppCompatActivity {
 
         EditText contentEdit = findViewById(R.id.main_content_edit);
         String clearText = contentEdit.getText().toString();
-
-        Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
+        UploadDataTask task = new UploadDataTask();
+        task.execute(clearText);
+        boolean ok = false;
         try {
-            tanker.encrypt(clearText.getBytes("UTF-8"), options).then((encryptFuture) -> {
-                if (encryptFuture.getError() != null) {
-
-                    return null;
-                }
-
-                byte[] encryptedData = encryptFuture.get();
-                try {
-                    uploadToServer(encryptedData);
-                    showToast("Saved !");
-                } catch (Throwable e) {
-                    Log.e("TheTankerShow", "uploadError", e);
-                    showToast("An error happened :(");
-                }
-
-                return null;
-            });
-
+            ok = task.get();
         } catch (Throwable e) {
-            Log.e("TheTankerShow", "saveDataError", e);
+            e.printStackTrace();
+        }
+        if (!ok) {
+            showToast("Upload failed");
         }
     }
 
@@ -213,5 +200,23 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
-}
 
+    public class UploadDataTask extends AsyncTask<String, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String clearText = params[0];
+            byte[] clearData;
+            try {
+                clearData = clearText.getBytes();
+                Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
+                byte[] encryptedData = tanker.encrypt(clearData, null).get();
+                uploadToServer(encryptedData);
+            } catch (Throwable e) {
+                Log.e("notepad", "Failed to upload data: " + e.getMessage());
+                return false;
+            }
+            return true;
+        }
+    }
+}
