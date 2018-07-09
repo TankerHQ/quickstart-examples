@@ -49,17 +49,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private URL userUrl() throws Throwable {
+    private URL getNoteUrl() throws Throwable {
         String address  = ((TheTankerApplication) getApplication()).getServerAddress();
 
         String userId = getIntent().getStringExtra("EXTRA_USERID");
         String password = getIntent().getStringExtra("EXTRA_PASSWORD");
 
-        return new URL(address + "data?userId=" + userId + "&password=" + password);
+        return new URL(address + "data/" + userId + "?userId=" + userId + "&password=" + password);
+    }
+
+    private URL putNoteUrl() throws Throwable {
+        String address  = ((TheTankerApplication) getApplication()).getServerAddress();
+
+        String userId = getIntent().getStringExtra("EXTRA_USERID");
+        String password = getIntent().getStringExtra("EXTRA_PASSWORD");
+
+        return new URL(address + "data/?userId=" + userId + "&password=" + password);
     }
 
     private void uploadToServer(byte[] encryptedData) throws Throwable{
-        URL url = userUrl();
+        URL url = putNoteUrl();
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
         connection.setRequestMethod("PUT");
@@ -72,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private byte[] dataFromServer() throws Throwable {
-        URL url = userUrl();
+        URL url = getNoteUrl();
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
