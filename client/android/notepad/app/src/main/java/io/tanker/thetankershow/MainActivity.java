@@ -97,6 +97,13 @@ public class MainActivity extends AppCompatActivity {
         return Base64.decode(content, Base64.DEFAULT);
     }
 
+    private void updatePassword() {
+        Intent intent = new Intent(MainActivity.this, UpdateUnlockPasswordActivity.class);
+        intent.putExtra("EXTRA_USERID", getIntent().getStringExtra("EXTRA_USERID"));
+        intent.putExtra("EXTRA_PASSWORD", getIntent().getStringExtra("EXTRA_PASSWORD"));
+        startActivity(intent);
+    }
+
     private void saveData() {
         TankerEncryptOptions options = new TankerEncryptOptions();
 
@@ -165,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button logoutButton = (Button) findViewById(R.id.main_logout_button);
+        Button logoutButton = findViewById(R.id.main_logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,7 +180,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button saveButton = (Button) findViewById(R.id.main_save_button);
+        Button updatePasswordButton = findViewById(R.id.main_update_password_button);
+        updatePasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updatePassword();
+            }
+        });
+
+        Button saveButton =  findViewById(R.id.main_save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

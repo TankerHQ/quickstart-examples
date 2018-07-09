@@ -292,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
             connection.connect();
 
             mError = connection.getResponseCode();
-            if(mError < 200 && mError > 202)
+            if(mError < 200 || mError > 202)
                 throw new IOException("");
 
             BufferedReader in = new BufferedReader(
