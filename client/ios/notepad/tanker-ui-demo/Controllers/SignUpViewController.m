@@ -7,7 +7,7 @@
 //
 
 #import "SignUpViewController.h"
-#import "GreatSuccessViewController.h"
+#import "HomeViewController.h"
 #import "Globals.h"
 @import PromiseKit;
 @import Tanker;
@@ -73,7 +73,7 @@
     return [[Globals sharedInstance].tanker setupUnlockWithPassword:password];
   }).then(^{
     [_activityIndicator stopAnimating];
-    GreatSuccessViewController* controller = [self.storyboard instantiateViewControllerWithIdentifier:@"GreatSuccessViewController"];
+    HomeViewController* controller = [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
     [self.navigationController pushViewController:controller animated:YES];
   }).catch(^(NSError* err) {
     [_activityIndicator stopAnimating];

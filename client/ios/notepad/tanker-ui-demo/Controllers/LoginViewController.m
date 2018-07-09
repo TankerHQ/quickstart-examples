@@ -8,7 +8,7 @@
 
 #import "LoginViewController.h"
 #import "Globals.h"
-#import "GreatSuccessViewController.h"
+#import "HomeViewController.h"
 @import PromiseKit;
 
 @interface LoginViewController ()
@@ -72,7 +72,7 @@
   .then(^{
     [_activityIndicator stopAnimating];
     NSLog(@"Tanker is open");
-    GreatSuccessViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"GreatSuccessViewController"];
+    HomeViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
     [self.navigationController pushViewController:controller animated:YES];
   })
   .catch(^(NSError* error) {

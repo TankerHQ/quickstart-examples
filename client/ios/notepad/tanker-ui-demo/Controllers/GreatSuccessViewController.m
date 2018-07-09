@@ -29,7 +29,6 @@
   [_activityIndicator setColor:[UIColor blueColor]];
   [self.view addSubview:_activityIndicator];
   [_activityIndicator startAnimating];
- 
   [Globals dataFromServer].
   then(^(NSData* encryptedData) {
     // needed?
@@ -59,16 +58,6 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (IBAction)triggerLogout:(UIButton *)sender {
- [[Globals sharedInstance].tanker close].then(^{
-    NSLog(@"Did log out");
-    UIViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"home"];
-    [self.navigationController pushViewController:controller animated:YES];
-  }).catch(^(NSError* e){
-    NSLog(@"Cannot close tanker %@", [e localizedDescription]);
-  });
 }
 
 - (IBAction)saveNotes:(UIButton *)sender {
