@@ -14,5 +14,5 @@ public class TheTankerApplication extends Application {
         mTanker = tanker;
     }
 
-    public String getServerAddress() { return "http://10.208.24.87:8080/"; }
+    public String getServerAddress() { return "http://10.0.2.2:8080/"; }
 }
