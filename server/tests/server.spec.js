@@ -27,7 +27,11 @@ const doRequest = async (testServer, request) => {
 const assertRequest = async (testServer, request, expectedResponse) => {
   const actual = await doRequest(testServer, request);
   const expectedStatus = expectedResponse.status;
-  expect(actual.status).to.eq(expectedStatus);
+  if (actual.status !== expectedStatus) {
+    const actualText = await actual.text();
+    console.error(actualText);
+    expect(actual.status).to.eq(expectedStatus);
+  }
   return actual;
 };
 
