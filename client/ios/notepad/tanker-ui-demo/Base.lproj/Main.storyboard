@@ -151,7 +151,7 @@
                                 <rect key="frame" x="8" y="40" width="359" height="627"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sms-bd-2NQ" userLabel="BackButton">
-                                        <rect key="frame" x="0.0" y="0.0" width="359" height="301"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="273"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <state key="normal" title="Back">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -161,7 +161,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uwd-nT-EIi">
-                                        <rect key="frame" x="0.0" y="311" width="359" height="30"/>
+                                        <rect key="frame" x="0.0" y="283" width="359" height="30"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <state key="normal" title="Save"/>
@@ -170,7 +170,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GpX-uG-t72" userLabel="ShareWithButton">
-                                        <rect key="frame" x="0.0" y="351" width="359" height="30"/>
+                                        <rect key="frame" x="0.0" y="323" width="359" height="30"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <state key="normal" title="Share With"/>
@@ -179,13 +179,13 @@
                                         </connections>
                                     </button>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="UserId to share with" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cHU-Jd-npe" userLabel="shareField">
-                                        <rect key="frame" x="0.0" y="391" width="359" height="30"/>
+                                        <rect key="frame" x="0.0" y="363" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6BR-YY-kBd">
-                                        <rect key="frame" x="0.0" y="431" width="359" height="30"/>
+                                        <rect key="frame" x="0.0" y="403" width="359" height="30"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <state key="normal" title="Load">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -194,6 +194,12 @@
                                             <action selector="loadFrom:" destination="Cgj-G9-lG3" eventType="touchUpInside" id="neh-0s-JAj"/>
                                         </connections>
                                     </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jxb-xk-YpN" userLabel="errorLabel">
+                                        <rect key="frame" x="0.0" y="443" width="359" height="18"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" red="1" green="0.17756504333230816" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter your secret notes:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pvR-6n-Rfw">
                                         <rect key="frame" x="0.0" y="471" width="359" height="18"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -248,6 +254,7 @@
                     </view>
                     <connections>
                         <outlet property="SecretNotesField" destination="0nX-mQ-bE8" id="aa8-Au-KJy"/>
+                        <outlet property="errorLabel" destination="jxb-xk-YpN" id="h5T-nY-doj"/>
                         <outlet property="shareWithField" destination="cHU-Jd-npe" id="Wwu-m1-vIe"/>
                     </connections>
                 </viewController>

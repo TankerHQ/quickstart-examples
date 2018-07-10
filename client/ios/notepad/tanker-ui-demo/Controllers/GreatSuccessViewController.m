@@ -16,6 +16,7 @@
 
 @property (weak, nonatomic) IBOutlet UITextView *SecretNotesField;
 @property (weak, nonatomic) IBOutlet UITextField *shareWithField;
+@property (weak, nonatomic) IBOutlet UILabel *errorLabel;
 
 @end
 
@@ -80,9 +81,14 @@
 }
 
 - (IBAction)shareWith:(UIButton *)sender {
-  [_activityIndicator startAnimating];
-  
   NSString* recipientUserId = _shareWithField.text;
+  
+  if ([recipientUserId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
+  {
+    _errorLabel.text = @"Recipient is empty or filled with blanks";
+    return;
+  }
+  [_activityIndicator startAnimating];
   
   [Globals dataFromServer]
   .then(^(NSData* encryptedData) {
@@ -104,9 +110,15 @@
 }
 
 - (IBAction)loadFrom:(UIButton *)sender {
-  [_activityIndicator startAnimating];
-
   NSString* senderUserId = _shareWithField.text;
+  
+  if ([senderUserId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
+  {
+    _errorLabel.text = @"Sender is empty or filled with blanks";
+    return;
+  }
+  [_activityIndicator startAnimating];
+  
   [Globals getDataFromUser:senderUserId].then(^(NSData* encryptedData) {
     return [self decryptDataWithTanker:encryptedData];
   }).then(^(NSString* clearText) {
