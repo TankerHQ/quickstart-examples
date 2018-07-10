@@ -8,6 +8,12 @@ const authMiddleware = (storage, req, res, next) => {
   // Check valid auth credentials
   log('Check authentication', 1);
 
+  if (!password) {
+    res.sendStatus(400);
+    return;
+  }
+
+
   if (typeof userId !== 'string' || !storage.exists(userId)) {
     log(`Authentication error: user "${userId}" does not exist`, 1);
     res.sendStatus(404);
@@ -15,8 +21,8 @@ const authMiddleware = (storage, req, res, next) => {
   }
 
   const user = storage.get(userId);
-  const hash_matches = sodium.crypto_pwhash_str_verify(user.hashed_password, password);
-  if (!hash_matches) {
+  const hashMatches = sodium.crypto_pwhash_str_verify(user.hashed_password, password);
+  if (!hashMatches) {
     log('Authentication error: invalid password', 1);
     res.sendStatus(401);
     return;

@@ -27,7 +27,11 @@ const doRequest = async (testServer, request) => {
 const assertRequest = async (testServer, request, expectedResponse) => {
   const actual = await doRequest(testServer, request);
   const expectedStatus = expectedResponse.status;
-  expect(actual.status).to.eq(expectedStatus);
+  if (actual.status !== expectedStatus) {
+    const actualText = await actual.text();
+    console.error(actualText);
+    expect(actual.status).to.eq(expectedStatus);
+  }
   return actual;
 };
 
@@ -126,6 +130,26 @@ describe('server', () => {
         testServer,
         { verb: 'get', path: '/signup', query },
         { status: 400 },
+      );
+    });
+  });
+
+  describe('/password', () => {
+    specify('can change password', async () => {
+      const newPassword = 'n3wp4ss';
+      signUpBob();
+      const query = { userId: bobId, password: bobPassword, newPassword };
+      await assertRequest(
+        testServer,
+        { verb: 'put', path: '/password', query },
+        { status: 200 },
+      );
+
+      const newQuery = { userId: bobId, password: newPassword };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/login', query: newQuery },
+        { status: 200 },
       );
     });
   });
