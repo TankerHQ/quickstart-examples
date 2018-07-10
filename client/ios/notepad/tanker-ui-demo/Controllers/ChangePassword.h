@@ -9,5 +9,4 @@
 #ifndef ChangePassword_h
 #define ChangePassword_h
 
-
 #endif /* ChangePassword_h */

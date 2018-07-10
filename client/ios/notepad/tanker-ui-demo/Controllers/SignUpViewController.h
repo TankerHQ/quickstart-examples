@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
 
-@interface SignUpViewController : UIViewController<UITextFieldDelegate>
+@interface SignUpViewController : UIViewController <UITextFieldDelegate>
 
 @end
