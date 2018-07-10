@@ -6,7 +6,8 @@
   "author": "Tanker Team",
   "license": "MIT",
   "scripts": {
-    "start": "cd ../.. && yarn start:server",
+    "start": "node src/main.js",
+    "watch": "node-dev src/main.js",
     "test": "mocha --recursive tests",
     "lint": "cd .. && eslint --config=./server/.eslintrc server/src/**.js server/tests/**.js"
   },

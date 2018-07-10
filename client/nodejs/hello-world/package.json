@@ -4,7 +4,7 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "start": "cd ../.. && yarn start:nodejs:hello-world"
+    "start": "node main.js"
   },
   "dependencies": {
     "@tanker/client-node": "^1.7.0-beta",

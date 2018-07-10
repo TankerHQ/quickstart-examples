@@ -14,7 +14,7 @@
     "react-scripts": "1.1.4"
   },
   "scripts": {
-    "start": "cd ../.. && yarn start:web:notepad",
+    "start": "react-scripts start",
     "lint":
       "cd ../../.. && eslint --config=./client/web/notepad/.eslintrc client/web/notepad/src/",
     "prettier":
