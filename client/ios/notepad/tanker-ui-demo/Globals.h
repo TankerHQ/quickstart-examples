@@ -19,6 +19,8 @@
 + (PMKPromise*) uploadToServer:(NSData*)encryptedData;
 + (PMKPromise<NSData*>*) dataFromServer;
 + (PMKPromise*)changePassword:(NSString*)newPassword;
++ (PMKPromise*)shareNoteWith:(NSArray<NSString*>*)recipients;
++ (PMKPromise<NSData*>*) getDataFromUser:(NSString*)userIdFrom;
 
 @property TKRTanker* tanker;
 @property NSString* serverAddress;

@@ -28,6 +28,11 @@ NSString* getWritablePath()
 
 + (PMKPromise*) requestToServerWithMethod:(NSString*)method path:(NSString*)path queryArgs:(NSDictionary<NSString*, NSString*>*)args body:(NSData*)body
 {
+  return [self requestToServerWithMethod:method path:path queryArgs:args body:body contentType:@"text/plain"];
+}
+
++ (PMKPromise*) requestToServerWithMethod:(NSString*)method path:(NSString*)path queryArgs:(NSDictionary<NSString*, NSString*>*)args body:(NSData*)body contentType:(NSString*)contentType
+{
   NSString* urlStr = [NSString stringWithFormat:@"%@%@", [Globals sharedInstance].serverAddress, path];
   if (args && args.count != 0)
   {
@@ -42,7 +47,7 @@ NSString* getWritablePath()
   
   NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlStr]];
   request.HTTPMethod = method;
-  [request setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+  [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
   NSString* postLength = [NSString stringWithFormat:@"%lu",body.length];
   [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
   request.HTTPBody = body;
@@ -105,6 +110,14 @@ NSString* getWritablePath()
   return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userId] queryArgs:@{@"userId": userId, @"password": password} body:nil];
 }
 
++ (PMKPromise<NSData*>*) getDataFromUser:(NSString*)userIdFrom
+{
+  NSString* userId = [Globals sharedInstance]->_userId;
+  NSString* password = [Globals sharedInstance]->_password;
+  
+  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userIdFrom] queryArgs:@{@"userId": userId, @"password": password} body:nil];
+}
+
 + (PMKPromise*) uploadToServer:(NSData*)encryptedData
 {
   NSString* userId = [Globals sharedInstance]->_userId;
@@ -120,6 +133,19 @@ NSString* getWritablePath()
   
   return [Globals requestToServerWithMethod:@"PUT" path:@"password" queryArgs:@{@"userId": userId, @"password": password, @"newPassword": newPassword} body:nil];
 }
+
++ (PMKPromise*)shareNoteWith:(NSArray<NSString*>*)recipients
+{
+  NSString* userId = [Globals sharedInstance]->_userId;
+  NSString* password = [Globals sharedInstance]->_password;
+  
+  NSDictionary* body = @{@"from": userId, @"to": recipients};
+  NSError* err = nil;
+  NSData* jsonBody = [NSJSONSerialization dataWithJSONObject:body options:0 error:&err];
+  
+  return [Globals requestToServerWithMethod:@"POST" path:@"share" queryArgs:@{@"userId": userId, @"password": password} body:jsonBody contentType:@"application/json"];
+}
+
 
 - (id)init {
   self = [super init];

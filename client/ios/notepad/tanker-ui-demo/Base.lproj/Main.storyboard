@@ -151,7 +151,7 @@
                                 <rect key="frame" x="8" y="40" width="359" height="627"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sms-bd-2NQ" userLabel="BackButton">
-                                        <rect key="frame" x="0.0" y="0.0" width="359" height="381"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="301"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <state key="normal" title="Back">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -161,7 +161,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uwd-nT-EIi">
-                                        <rect key="frame" x="0.0" y="391" width="359" height="30"/>
+                                        <rect key="frame" x="0.0" y="311" width="359" height="30"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <state key="normal" title="Save"/>
@@ -170,10 +170,29 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GpX-uG-t72" userLabel="ShareWithButton">
-                                        <rect key="frame" x="0.0" y="431" width="359" height="30"/>
+                                        <rect key="frame" x="0.0" y="351" width="359" height="30"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <state key="normal" title="Share With"/>
+                                        <connections>
+                                            <action selector="shareWith:" destination="Cgj-G9-lG3" eventType="touchUpInside" id="RQQ-4F-NWw"/>
+                                        </connections>
+                                    </button>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="UserId to share with" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cHU-Jd-npe" userLabel="shareField">
+                                        <rect key="frame" x="0.0" y="391" width="359" height="30"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6BR-YY-kBd">
+                                        <rect key="frame" x="0.0" y="431" width="359" height="30"/>
+                                        <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <state key="normal" title="Load">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="loadFrom:" destination="Cgj-G9-lG3" eventType="touchUpInside" id="neh-0s-JAj"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter your secret notes:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pvR-6n-Rfw">
                                         <rect key="frame" x="0.0" y="471" width="359" height="18"/>
@@ -229,6 +248,7 @@
                     </view>
                     <connections>
                         <outlet property="SecretNotesField" destination="0nX-mQ-bE8" id="aa8-Au-KJy"/>
+                        <outlet property="shareWithField" destination="cHU-Jd-npe" id="Wwu-m1-vIe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fnU-Uq-Clr" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -396,6 +416,34 @@
             </objects>
             <point key="canvasLocation" x="-561" y="811"/>
         </scene>
+        <!--Table View Controller Select users share-->
+        <scene sceneID="AfA-9O-9Ui">
+            <objects>
+                <tableViewController id="4zN-Df-0vm" userLabel="Table View Controller Select users share" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="pEq-Wd-hoz">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="fuM-mQ-sH4">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fuM-mQ-sH4" id="ywq-Tf-32W">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="4zN-Df-0vm" id="xKk-pK-Viz"/>
+                            <outlet property="delegate" destination="4zN-Df-0vm" id="HEn-uV-PWI"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SlI-br-glc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1348" y="1666"/>
+        </scene>
         <!--View Controller Change Password-->
         <scene sceneID="ynx-LX-yY8">
             <objects>
@@ -462,7 +510,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="gGo-E5-iJt"/>
+        <segue reference="Oy3-kR-A20"/>
         <segue reference="xvk-CX-cL5"/>
     </inferredMetricsTieBreakers>
 </document>

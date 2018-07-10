@@ -15,10 +15,27 @@
 @property UIActivityIndicatorView* activityIndicator;
 
 @property (weak, nonatomic) IBOutlet UITextView *SecretNotesField;
+@property (weak, nonatomic) IBOutlet UITextField *shareWithField;
 
 @end
 
 @implementation GreatSuccessViewController
+
+- (PMKPromise<NSString*>*)decryptDataWithTanker:(NSData*)encryptedData
+{
+  if (encryptedData.length != 0)
+  {
+    NSString* base64EncodedString = [[NSString alloc] initWithData:encryptedData encoding:NSASCIIStringEncoding];
+    NSData* b64DecodedData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
+    return [[Globals sharedInstance].tanker decryptStringFromData:b64DecodedData]
+    .catch(^(NSError *error){
+      [_activityIndicator stopAnimating];
+      NSLog(@"Could not decrypt data: %@", [error localizedDescription]);
+      return error;
+    });
+  }
+  return [PMKPromise promiseWithValue:@""];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -32,18 +49,7 @@
   [Globals dataFromServer].
   then(^(NSData* encryptedData) {
     // needed?
-    if (encryptedData.length != 0)
-    {
-      NSString* base64EncodedString = [[NSString alloc] initWithData:encryptedData encoding:NSASCIIStringEncoding];
-      NSData* b64DecodedData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
-      return [[Globals sharedInstance].tanker decryptStringFromData:b64DecodedData]
-      .catch(^(NSError *error){
-        [_activityIndicator stopAnimating];
-        NSLog(@"Could not decrypt data: %@", [error localizedDescription]);
-        return error;
-      });
-    }
-    return [PMKPromise promiseWithValue:@""];
+    return [self decryptDataWithTanker:encryptedData];
   }).then(^(NSString* clearText) {
     _SecretNotesField.text = clearText;
     [_activityIndicator stopAnimating];
@@ -72,6 +78,47 @@
   }).catch(^(NSError *error){
     [_activityIndicator stopAnimating];
     NSLog(@"Could not encrypt and send data to server: %@", [error localizedDescription]);
+  });
+}
+
+- (IBAction)shareWith:(UIButton *)sender {
+  [_activityIndicator startAnimating];
+  
+  NSString* recipientUserId = _shareWithField.text;
+  
+  [Globals dataFromServer]
+  .then(^(NSData* b64EncryptedData) {
+    NSString* base64EncodedString = [[NSString alloc] initWithData:b64EncryptedData encoding:NSASCIIStringEncoding];
+    NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
+    TKRTanker* tanker = [Globals sharedInstance].tanker;
+    NSError* err = nil;
+    NSString* resourceId = [tanker resourceIDOfEncryptedData:encryptedData error:&err];
+    if (err)
+      return [PMKPromise promiseWithValue:err];
+    return [tanker shareResourceIDs:@[resourceId] toUserIDs:@[recipientUserId]].then(^{
+    return [Globals shareNoteWith:@[recipientUserId]];
+    });
+    }).then(^ {
+    [_activityIndicator stopAnimating];
+    NSLog(@"Data shared with user: %@", recipientUserId);
+  }).catch(^(NSError *error){
+    [_activityIndicator stopAnimating];
+    NSLog(@"Could not encrypt & share and send data to server: %@", [error localizedDescription]);
+  });
+}
+
+- (IBAction)loadFrom:(UIButton *)sender {
+  [_activityIndicator startAnimating];
+
+  NSString* senderUserId = _shareWithField.text;
+  [Globals getDataFromUser:senderUserId].then(^(NSData* encryptedData) {
+    return [self decryptDataWithTanker:encryptedData];
+  }).then(^(NSString* clearText) {
+    _SecretNotesField.text = clearText;
+    [_activityIndicator stopAnimating];
+  }).catch(^(NSError *error){
+    [_activityIndicator stopAnimating];
+    NSLog(@"Could notload data from server: %@", [error localizedDescription]);
   });
 }
 
