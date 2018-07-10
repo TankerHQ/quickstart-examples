@@ -3,27 +3,27 @@ import { Alert, Button, ControlLabel, FormControl, FormGroup, Panel } from "reac
 
 class NewDevice extends React.Component {
   state = {
-    unlockKey: "",
+    password: "",
     isLoading: false,
     error: null,
   };
 
   onChange = e => {
-    this.setState({ unlockKey: e.currentTarget.value });
+    this.setState({ password: e.currentTarget.value });
   };
 
   onClick = async () => {
     const { onUnlockDevice } = this.props;
     this.setState({ isLoading: true });
     try {
-      await onUnlockDevice(this.state.unlockKey);
+      await onUnlockDevice(this.state.password);
     } catch (e) {
       this.setState({ isLoading: false, error: e.message });
     }
   };
 
   render() {
-    const { error, unlockKey, isLoading } = this.state;
+    const { error, password, isLoading } = this.state;
 
     return (
       <Panel>
@@ -32,11 +32,11 @@ class NewDevice extends React.Component {
           <form action="#" className="form-signin">
             {error && <Alert bsStyle="danger">{error}</Alert>}
             <FormGroup>
-              <ControlLabel>Please enter your unlock Key</ControlLabel>
+              <ControlLabel>Please enter your password</ControlLabel>
               <FormControl
-                id="unlock-key-textarea"
-                componentClass="textarea"
-                value={unlockKey}
+                id="password-input"
+                type="password"
+                value={password}
                 onChange={this.onChange}
                 required
                 autoFocus

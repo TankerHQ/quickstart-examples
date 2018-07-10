@@ -22,13 +22,6 @@ class Client:
         signup_button = self.browser.get_element(id="sign-up-submit")
         signup_button.click()
 
-        self.wait_for_unlock_key()
-        done_button = self.browser.wait_for_button_enabled(id="key-done-button")
-        key_well = self.browser.wait_for_element_presence(id="key-well")
-        self.unlock_key = key_well.text
-        done_button = self.browser.get_element(id="key-done-button")
-        done_button.click()
-
     def sign_out(self) -> None:
         topbar_dropdown = self.browser.get_element(id="topbar_dropdown")
         topbar_dropdown.click()
@@ -45,9 +38,9 @@ class Client:
         sign_in_button = self.browser.get_element(id="sign-in-submit")
         sign_in_button.click()
 
-    def unlock_device(self, unlock_key: str) -> None:
-        text_area = self.browser.get_element(id="unlock-key-textarea")
-        text_area.send_keys(unlock_key)
+    def unlock_device(self, password: str) -> None:
+        text_area = self.browser.get_element(id="password-input")
+        text_area.send_keys(password)
         unlock_button = self.browser.get_element(id="unlock-button")
         unlock_button.click()
 
@@ -185,12 +178,14 @@ def test_share_note(headless: bool, request: Any) -> None:
     request.addfinalizer(alice_browser.close)
     alice_client = Client(alice_browser, alice_email, alice_password)
     alice_client.sign_up()
+    alice_client.wait_for_home()
 
     # Bob signs up
     bob_browser = Browser(headless=headless)
     request.addfinalizer(bob_browser.close)
     bob_client = Client(bob_browser, bob_email, bob_password)
     bob_client.sign_up()
+    bob_client.wait_for_home()
 
     # Bobs shares with Alice
     bs_text = fake.bs()
@@ -221,12 +216,9 @@ def test_add_device(headless: bool, request: Any) -> None:
     first_client = Client(first_browser, email, password)
     first_client.wait_for_session_form()
     first_client.sign_up()
-    unlock_key = first_client.unlock_key
-    assert unlock_key
+    first_client.wait_for_home()
     first_client.create_note(fake_text)
-    # We should wait here for the second device to exist
-    # otherwise the first device may not have time to
-    # share access with the second one
+    first_client.sign_out()
     first_browser.close()
 
     second_browser = Browser(headless=headless)
@@ -235,7 +227,7 @@ def test_add_device(headless: bool, request: Any) -> None:
     second_client.wait_for_session_form()
     second_client.sign_in()
     second_client.wait_for_new_device()
-    second_client.unlock_device(unlock_key)
+    second_client.unlock_device(password)
     second_client.wait_for_home()
     second_client.go_to_edit()
     text_area = second_browser.get_element(id="edit-textarea")

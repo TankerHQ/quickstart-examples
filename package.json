@@ -1,5 +1,5 @@
 {
-  "name": "@tanker/ui-demos",
+  "name": "@tanker/quickstar-examples",
   "version": "1.6.1",
   "main": "server/server.js",
   "description": "Example applications for Tanker.io",

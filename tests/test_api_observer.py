@@ -4,7 +4,7 @@ from typing import Optional
 import pytest
 from faker import Faker
 
-from helpers import Browser
+from helpers import Browser, DEFAULT_TIMEOUT
 
 
 class Page:
@@ -50,7 +50,7 @@ class Page:
     def wait_for_next_log(self, pattern: str) -> None:
         print("Waiting for log containing", pattern, "...")
         waiting_time = 0
-        while waiting_time < 10:
+        while waiting_time < DEFAULT_TIMEOUT:
             current_log = self.get_latest_log_entry()
             if pattern not in current_log:
                 time.sleep(1)

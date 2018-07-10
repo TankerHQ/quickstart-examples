@@ -11,7 +11,7 @@
     "lint": "cd .. && eslint --config=./server/.eslintrc server/src/**.js server/tests/**.js"
   },
   "dependencies": {
-    "@tanker/user-token": "1.4.0",
+    "@tanker/user-token": "1.4.1",
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "commander": "^2.16.0",
