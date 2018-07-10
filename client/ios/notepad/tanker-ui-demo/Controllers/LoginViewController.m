@@ -1,11 +1,3 @@
-//
-//  LoginViewController.m
-//  tanker-ui-demo
-//
-//  Created by Loic on 09/04/2018.
-//  Copyright © 2018 Tanker. All rights reserved.
-//
-
 #import "LoginViewController.h"
 #import "Globals.h"
 #import "HomeViewController.h"
@@ -60,26 +52,30 @@
   }
   
   [_activityIndicator startAnimating];
-  [Globals fetchUserToken:@"login" userId:userId password:password]
-  .then(^(NSString *userToken){
+  [Globals loginWithUserId:userId password:password]
+  .then(^(NSString* userToken) {
     [[Globals sharedInstance].tanker connectUnlockHandler:^{
-      NSLog(@"In the handler");
       [[Globals sharedInstance].tanker unlockCurrentDeviceWithPassword:password];
     }];
     
-    return [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken];
-  })
-  .then(^{
-    [_activityIndicator stopAnimating];
-    NSLog(@"Tanker is open");
-    HomeViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
-    [self.navigationController pushViewController:controller animated:YES];
+    return [[Globals sharedInstance].tanker openWithUserID:userId
+                                                 userToken:userToken].then(^{
+      return [[Globals sharedInstance].tanker isUnlockAlreadySetUp].then(^(NSNumber* setUp){
+        if ([setUp isEqualToNumber:@NO])
+          return [[Globals sharedInstance].tanker setupUnlockWithPassword:password];
+        return [PMKPromise promiseWithValue:nil];
+      }).then(^{
+        [_activityIndicator stopAnimating];
+        HomeViewController *controller = [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
+        [self.navigationController pushViewController:controller animated:YES];
+    });
+    });
   })
   .catch(^(NSError* error) {
     // TODO check error domain to show app errors
     [_activityIndicator stopAnimating];
-    NSLog(@"Could not open Tanker: %@", [error localizedDescription]);
-    _errorLabel.text = @"Could not open Tanker";
+    NSLog(@"Could not open session: %@", [error localizedDescription]);
+    _errorLabel.text = @"Could not open session";
   });
 }
 

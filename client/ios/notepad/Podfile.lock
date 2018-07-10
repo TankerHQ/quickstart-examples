@@ -1,5 +1,43 @@
 PODS:
+  - OMGHTTPURLRQ (3.2.4):
+    - OMGHTTPURLRQ/RQ (= 3.2.4)
+  - OMGHTTPURLRQ/FormURLEncode (3.2.4)
+  - OMGHTTPURLRQ/RQ (3.2.4):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/UserAgent (3.2.4)
+  - PromiseKit (1.7.7):
+    - PromiseKit/CALayer (= 1.7.7)
+    - PromiseKit/NSNotificationCenter (= 1.7.7)
+    - PromiseKit/NSURLConnection (= 1.7.7)
+    - PromiseKit/Pause (= 1.7.7)
+    - PromiseKit/UIActionSheet (= 1.7.7)
+    - PromiseKit/UIAlertView (= 1.7.7)
+    - PromiseKit/UIView (= 1.7.7)
+    - PromiseKit/UIViewController (= 1.7.7)
+    - PromiseKit/Until (= 1.7.7)
+    - PromiseKit/When (= 1.7.7)
+  - PromiseKit/CALayer (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/NSNotificationCenter (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/NSURLConnection (1.7.7):
+    - OMGHTTPURLRQ (~> 3.2)
+    - PromiseKit/Promise
+  - PromiseKit/Pause (1.7.7):
+    - PromiseKit/Promise
   - PromiseKit/Promise (1.7.7)
+  - PromiseKit/UIActionSheet (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/UIAlertView (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/UIView (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/UIViewController (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/Until (1.7.7):
+    - PromiseKit/Promise
+    - PromiseKit/When
   - PromiseKit/When (1.7.7):
     - PromiseKit/Promise
   - Tanker (1.7.0-beta9):
@@ -11,12 +49,14 @@ PODS:
     - PromiseKit/When (~> 1.7)
 
 DEPENDENCIES:
+  - PromiseKit (~> 1.7)
   - Tanker (= 1.7.0-beta9)
 
 SPEC CHECKSUMS:
+  OMGHTTPURLRQ: 9ac96bdf5c90a33f75836630729ea1adc312a9ed
   PromiseKit: 9007df2f9e2ef725467084ab3880cf932ab935a4
   Tanker: 4e22ac607ea7dd3682535c95f99cfca0f7e04a2a
 
-PODFILE CHECKSUM: 64ca085a15d358478f4a85befdc025fa4b8fd67b
+PODFILE CHECKSUM: 3ba70d8b9e4ac02255831fd2ccadb8844f33f372
 
 COCOAPODS: 1.4.0

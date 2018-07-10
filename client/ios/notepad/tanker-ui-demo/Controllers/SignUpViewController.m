@@ -1,16 +1,7 @@
-//
-//  SignUpViewController.m
-//  tanker-ui-demo
-//
-//  Created by Loic on 09/04/2018.
-//  Copyright © 2018 Tanker. All rights reserved.
-//
-
 #import "SignUpViewController.h"
 #import "HomeViewController.h"
 #import "Globals.h"
 @import PromiseKit;
-@import Tanker;
 
 @interface SignUpViewController ()
 @property UIActivityIndicatorView* activityIndicator;
@@ -64,17 +55,16 @@
   
   [_activityIndicator startAnimating];
   
-  [Globals fetchUserToken:@"signup" userId:userId password:password]
-  .then(^(NSString* userToken) {
-    return [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken];
-  })
-  .then(^{
-    NSLog(@"Tanker is open");
-    return [[Globals sharedInstance].tanker setupUnlockWithPassword:password];
-  }).then(^{
-    [_activityIndicator stopAnimating];
-    HomeViewController* controller = [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
-    [self.navigationController pushViewController:controller animated:YES];
+  [Globals signupWithUserId:userId password:password]
+  .then(^(NSString* userToken){
+    return [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken].then(^{
+      NSLog(@"Tanker is open");
+      return [[Globals sharedInstance].tanker setupUnlockWithPassword:password].then(^{
+        [_activityIndicator stopAnimating];
+        HomeViewController* controller = [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
+        [self.navigationController pushViewController:controller animated:YES];
+      });
+    });
   }).catch(^(NSError* err) {
     [_activityIndicator stopAnimating];
     NSString* message = @"Error during signup";

@@ -1,29 +1,22 @@
-//
-//  Globals.m
-//  tanker-ui-demo
-//
-//  Created by Loic on 09/04/2018.
-//  Copyright © 2018 Tanker. All rights reserved.
-//
-
 #import "Globals.h"
 @import PromiseKit;
 
-@interface Globals()
-
-@property NSString* userId;
-@property NSString* password;
-@property NSString* trustchainId;
-
-@end
+NSString* getWritablePath()
+{
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+  NSString *libraryDirectory = [paths objectAtIndex:0];
+  return libraryDirectory;
+}
 
 @implementation Globals
 
-NSString* getWritablePath()
+- (void) initTanker
 {
-  NSArray* paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-  NSString* libraryDirectory = [paths objectAtIndex:0];
-  return libraryDirectory;
+  TKRTankerOptions* opts = [TKRTankerOptions options];
+  opts.trustchainID = self.trustchainId;
+  opts.writablePath = getWritablePath();
+  self.tanker = [TKRTanker tankerWithOptions:opts];
+  NSLog(@"trustchain ID: %@", opts.trustchainID);
 }
 
 + (PMKPromise*) requestToServerWithMethod:(NSString*)method path:(NSString*)path queryArgs:(NSDictionary<NSString*, NSString*>*)args body:(NSData*)body
@@ -74,13 +67,25 @@ NSString* getWritablePath()
   }];
 }
 
-- (void)initTanker
++ (PMKPromise<NSString*>*)signupOrLoginWithUserId:(NSString*)userId password:(NSString*)password path:(NSString*)path
 {
-  TKRTankerOptions* opts = [TKRTankerOptions options];
-  opts.trustchainID = _trustchainId;
-  opts.writablePath = getWritablePath();
-  [self setTanker:[TKRTanker tankerWithOptions:opts]];
-  NSLog(@"Tanker initialization sucessful");
+  Globals* inst = [Globals sharedInstance];
+  
+  inst.userId = userId;
+  inst.password = password;
+  return [Globals requestToServerWithMethod:@"GET" path:path queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* token) {
+    return [[NSString alloc] initWithData:token encoding:NSUTF8StringEncoding];
+  });
+}
+
++ (PMKPromise<NSString*>*)signupWithUserId:(NSString*)userId password:(NSString*)password
+{
+  return [Globals signupOrLoginWithUserId:userId password:password path:@"signup"];
+}
+
++ (PMKPromise<NSString*>*)loginWithUserId:(NSString*)userId password:(NSString*)password;
+{
+  return [Globals signupOrLoginWithUserId:userId password:password path:@"login"];
 }
 
 + (Globals *)sharedInstance {
@@ -92,52 +97,43 @@ NSString* getWritablePath()
   return instance;
 }
 
-+ (PMKPromise<NSString*>*)fetchUserToken:(NSString*)serverPath userId:(NSString*)userId password:(NSString*)password
++ (PMKPromise<NSString*>*) dataFromServer
 {
-  [Globals sharedInstance]->_userId = userId;
-  [Globals sharedInstance]->_password = password;
+  NSString* userId = [Globals sharedInstance]->_userId;
+  NSString* password = [Globals sharedInstance]->_password;
   
-  return [Globals requestToServerWithMethod:@"GET" path:serverPath queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* data){
+  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userId] queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* data) {
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
   });
 }
 
-+ (PMKPromise<NSData*>*) dataFromServer
++ (PMKPromise<NSString*>*) getDataFromUser:(NSString*)userIdFrom
 {
   NSString* userId = [Globals sharedInstance]->_userId;
   NSString* password = [Globals sharedInstance]->_password;
   
-  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userId] queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* b64EncryptedData) {
-    NSString* base64EncodedString = [[NSString alloc] initWithData:b64EncryptedData encoding:NSASCIIStringEncoding];
-    return [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
+  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userIdFrom] queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* data) {
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
   });
 }
 
-+ (PMKPromise<NSData*>*) getDataFromUser:(NSString*)userIdFrom
++ (PMKPromise*) uploadToServer:(NSString*)data
 {
   NSString* userId = [Globals sharedInstance]->_userId;
   NSString* password = [Globals sharedInstance]->_password;
   
-  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userIdFrom] queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* b64EncryptedData) {
-    NSString* base64EncodedString = [[NSString alloc] initWithData:b64EncryptedData encoding:NSASCIIStringEncoding];
-    return [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
-  });
-}
-
-+ (PMKPromise*) uploadToServer:(NSData*)encryptedData
-{
-  NSString* userId = [Globals sharedInstance]->_userId;
-  NSString* password = [Globals sharedInstance]->_password;
-  
-  return [Globals requestToServerWithMethod:@"PUT" path:@"data" queryArgs:@{@"userId": userId, @"password": password} body:encryptedData];
+  NSData* body = [data dataUsingEncoding:NSUTF8StringEncoding];
+  return [Globals requestToServerWithMethod:@"PUT" path:@"data" queryArgs:@{@"userId": userId, @"password": password} body:body];
 }
 
 + (PMKPromise*)changePassword:(NSString*)newPassword
 {
   NSString* userId = [Globals sharedInstance]->_userId;
-  NSString* password = [Globals sharedInstance]->_password;
+  NSString* oldPassword = [Globals sharedInstance]->_password;
   
-  return [Globals requestToServerWithMethod:@"PUT" path:@"password" queryArgs:@{@"userId": userId, @"password": password, @"newPassword": newPassword} body:nil];
+  return [Globals requestToServerWithMethod:@"PUT" path:@"password" queryArgs:@{@"userId": userId, @"password": oldPassword, @"newPassword": newPassword} body:nil].then(^{
+    [Globals sharedInstance]->_password = newPassword;
+  });
 }
 
 + (PMKPromise*)shareNoteWith:(NSArray<NSString*>*)recipients
@@ -159,10 +155,10 @@ NSString* getWritablePath()
     // Get configuration settings from Info.plist
     NSString *path = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
     NSDictionary *settings = [[NSDictionary alloc] initWithContentsOfFile:path];
-    _trustchainId = [settings valueForKey:@"TrustchainId"];
     
+    self.trustchainId = [settings valueForKey:@"TrustchainId"];
+    self.serverAddress = [settings valueForKey:@"ServerAddress"];
     [self initTanker];
-    [self setServerAddress:[settings valueForKey:@"ServerAddress"]];
   }
   return self;
 }

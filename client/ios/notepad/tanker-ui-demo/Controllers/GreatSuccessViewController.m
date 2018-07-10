@@ -1,11 +1,3 @@
-//
-//  GreatSuccessViewController.m
-//  tanker-ui-demo
-//
-//  Created by Loic on 12/04/2018.
-//  Copyright © 2018 Tanker. All rights reserved.
-//
-
 #import "GreatSuccessViewController.h"
 #import "Globals.h"
 
@@ -22,20 +14,6 @@
 
 @implementation GreatSuccessViewController
 
-- (PMKPromise<NSString*>*)decryptDataWithTanker:(NSData*)encryptedData
-{
-  if (encryptedData.length != 0)
-  {
-    return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData]
-    .catch(^(NSError *error){
-      [_activityIndicator stopAnimating];
-      NSLog(@"Could not decrypt data: %@", [error localizedDescription]);
-      return error;
-    });
-  }
-  return [PMKPromise promiseWithValue:@""];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -45,10 +23,10 @@
   [_activityIndicator setColor:[UIColor blueColor]];
   [self.view addSubview:_activityIndicator];
   [_activityIndicator startAnimating];
-  [Globals dataFromServer].
-  then(^(NSData* encryptedData) {
-    // needed?
-    return [self decryptDataWithTanker:encryptedData];
+  [Globals dataFromServer]
+  .then(^(NSString* b64EncryptedData) {
+    NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
+    return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData];
   }).then(^(NSString* clearText) {
     _SecretNotesField.text = clearText;
     [_activityIndicator stopAnimating];
@@ -66,14 +44,20 @@
 }
 
 - (IBAction)saveNotes:(UIButton *)sender {
+  NSString* recipientUserId = [_shareWithField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  
   [_activityIndicator startAnimating];
-  [[Globals sharedInstance].tanker encryptDataFromString:_SecretNotesField.text]
-  .then(^(NSData* encryptedData) {
-    NSString* base64Encoded = [encryptedData base64EncodedStringWithOptions:0];
-    return [Globals uploadToServer:[base64Encoded dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
-  }).then(^ {
+  NSString* text =_SecretNotesField.text;
+  
+  TKREncryptionOptions* opts = [TKREncryptionOptions defaultOptions];
+  if (recipientUserId.length != 0)
+    opts.shareWith = @[recipientUserId];
+  [[Globals sharedInstance].tanker encryptDataFromString:text options:opts].then(^(NSData* encryptedData){
+    NSString* b64EncryptedData = [encryptedData base64EncodedStringWithOptions:0];
+    [Globals uploadToServer:b64EncryptedData].then(^ {
     [_activityIndicator stopAnimating];
     NSLog(@"Data sent to server");
+  });
   }).catch(^(NSError *error){
     [_activityIndicator stopAnimating];
     NSLog(@"Could not encrypt and send data to server: %@", [error localizedDescription]);
@@ -91,14 +75,14 @@
   [_activityIndicator startAnimating];
   
   [Globals dataFromServer]
-  .then(^(NSData* encryptedData) {
-    TKRTanker* tanker = [Globals sharedInstance].tanker;
+  .then(^(NSString* b64EncryptedData) {
+    NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
     NSError* err = nil;
-    NSString* resourceId = [tanker resourceIDOfEncryptedData:encryptedData error:&err];
+    NSString* resourceId = [[Globals sharedInstance].tanker resourceIDOfEncryptedData:encryptedData error:&err];
     if (err)
       return [PMKPromise promiseWithValue:err];
-    return [tanker shareResourceIDs:@[resourceId] toUserIDs:@[recipientUserId]].then(^{
-    return [Globals shareNoteWith:@[recipientUserId]];
+    return [[Globals sharedInstance].tanker shareResourceIDs:@[resourceId] toUserIDs:@[recipientUserId]].then(^{
+      return [Globals shareNoteWith:@[recipientUserId]];
     });
     }).then(^ {
     [_activityIndicator stopAnimating];
@@ -119,11 +103,12 @@
   }
   [_activityIndicator startAnimating];
   
-  [Globals getDataFromUser:senderUserId].then(^(NSData* encryptedData) {
-    return [self decryptDataWithTanker:encryptedData];
-  }).then(^(NSString* clearText) {
+  [Globals getDataFromUser:senderUserId].then(^(NSString* b64EncryptedData) {
+    NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
+    return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData].then(^(NSString* clearText) {
     _SecretNotesField.text = clearText;
     [_activityIndicator stopAnimating];
+    });
   }).catch(^(NSError *error){
     [_activityIndicator stopAnimating];
     NSLog(@"Could notload data from server: %@", [error localizedDescription]);
