@@ -7,13 +7,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -23,6 +29,8 @@ import io.tanker.api.TankerEncryptOptions;
 
 public class MainActivity extends AppCompatActivity {
     private String resourceId = null;
+    private ArrayList<String> receivedNoteAuthors = new ArrayList<>();
+    private ArrayList<String> receivedNoteContents = new ArrayList<>();
 
     private void logout() {
         Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
@@ -44,33 +52,30 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private URL getNoteUrl(String friendId) throws Throwable {
+    private URL makeURL(String endpoint) throws MalformedURLException {
         String address  = ((TheTankerApplication) getApplication()).getServerAddress();
-
-        String myUserId = getIntent().getStringExtra("EXTRA_USERID");
-        if (friendId == null)
-            friendId = myUserId;
+        String userId = getIntent().getStringExtra("EXTRA_USERID");
         String password = getIntent().getStringExtra("EXTRA_PASSWORD");
 
-        return new URL(address + "data/" + friendId + "?userId=" + myUserId + "&password=" + password);
+        return new URL(address + endpoint + "?userId=" + userId + "&password=" + password);
+    }
+
+    private URL getNoteUrl(String friendId) throws Throwable {
+        if (friendId == null)
+            friendId = getIntent().getStringExtra("EXTRA_USERID");
+        return makeURL("data/"+friendId);
     }
 
     private URL putNoteUrl() throws Throwable {
-        String address  = ((TheTankerApplication) getApplication()).getServerAddress();
-
-        String userId = getIntent().getStringExtra("EXTRA_USERID");
-        String password = getIntent().getStringExtra("EXTRA_PASSWORD");
-
-        return new URL(address + "data/?userId=" + userId + "&password=" + password);
+        return makeURL("data/");
     }
 
     private URL shareNoteUrl() throws Throwable {
-        String address  = ((TheTankerApplication) getApplication()).getServerAddress();
+        return makeURL("share/");
+    }
 
-        String userId = getIntent().getStringExtra("EXTRA_USERID");
-        String password = getIntent().getStringExtra("EXTRA_PASSWORD");
-
-        return new URL(address + "share/?userId=" + userId + "&password=" + password);
+    private URL getMeUrl() throws Throwable {
+        return makeURL("me/");
     }
 
     private void uploadToServer(byte[] encryptedData) throws Throwable{
@@ -103,33 +108,54 @@ public class MainActivity extends AppCompatActivity {
         return Base64.decode(content, Base64.DEFAULT);
     }
 
-    private void loadDataFromUser(String userId) {
+    private void loadSharedWithMe() throws Throwable {
+        URL url = getMeUrl();
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(
+                        connection.getInputStream()));
+        String data = in.readLine();
+
+        ObjectMapper jsonMapper = new ObjectMapper();
+        JsonNode json = jsonMapper.readTree(data);
+        if (json.has("accessibleNotes")) {
+            JsonNode notes = json.get("accessibleNotes");
+            for (final JsonNode note : notes) {
+                String author = note.asText();
+                receivedNoteAuthors.add(author);
+                receivedNoteContents.add(loadDataFromUser(author));
+            }
+
+
+            runOnUiThread(() -> {
+                ListView notesList = findViewById(R.id.notes_list);
+                notesList.setAdapter(new NoteListAdapter(this, R.layout.notes_list_item, receivedNoteAuthors, receivedNoteContents));
+                for (String note : receivedNoteContents) {
+                    //noinspection unchecked (this is fine)
+                    ((ArrayAdapter<String>)notesList.getAdapter()).add(note);
+                }
+            });
+        }
+    }
+
+    private String loadDataFromUser(String userId) {
         TankerDecryptOptions options = new TankerDecryptOptions();
 
         try {
             byte[] data = dataFromServer(userId);
             if(data == null) {
-                return;
+                return null;
             }
 
             Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
-            tanker.decrypt(data, options).then((decryptFuture) -> {
-                if (decryptFuture.getError() != null) {
-                    return null;
-                }
-
-                byte[] clearData = decryptFuture.get();
-                String clearString = new String(clearData, "UTF-8");
-
-                runOnUiThread(() -> {
-                    EditText contentEdit = findViewById(R.id.main_content_edit);
-                    contentEdit.setText(clearString);
-                });
-                return null;
-            });
-
+            byte[] clearData = tanker.decrypt(data, options).get();
+            return new String(clearData, "UTF-8");
         } catch (Throwable e) {
             Log.e("TheTankerShow", "loadDataError", e);
+            return null;
         }
     }
 
@@ -172,16 +198,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void view() {
-        EditText recipientEdit = findViewById(R.id.recipient_name_edit);
-        String friend = recipientEdit.getText().toString();
-        FetchDataTask backgroundTask = new FetchDataTask();
-        backgroundTask.execute(friend);
-    }
-
     private void saveData() {
-        TankerEncryptOptions options = new TankerEncryptOptions();
-
         EditText contentEdit = findViewById(R.id.main_content_edit);
         String clearText = contentEdit.getText().toString();
         UploadDataTask task = new UploadDataTask();
@@ -234,14 +251,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button viewButton = findViewById(R.id.view_button);
-        viewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                view();
-            }
-        });
-
         FetchDataTask backgroundTask = new FetchDataTask();
         backgroundTask.execute((String)null);
     }
@@ -256,7 +265,18 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(String... params) {
             String userId = params[0];
-            loadDataFromUser(userId);
+            String data = loadDataFromUser(userId);
+            runOnUiThread(() -> {
+                EditText contentEdit = findViewById(R.id.main_content_edit);
+                contentEdit.setText(data);
+            });
+
+            try {
+                loadSharedWithMe();
+            } catch (Throwable e) {
+                Log.e("notepad", "Failed to fetch share data: " + e.getMessage());
+                return false;
+            }
             return true;
         }
     }
