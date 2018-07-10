@@ -25,9 +25,7 @@
 {
   if (encryptedData.length != 0)
   {
-    NSString* base64EncodedString = [[NSString alloc] initWithData:encryptedData encoding:NSASCIIStringEncoding];
-    NSData* b64DecodedData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
-    return [[Globals sharedInstance].tanker decryptStringFromData:b64DecodedData]
+    return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData]
     .catch(^(NSError *error){
       [_activityIndicator stopAnimating];
       NSLog(@"Could not decrypt data: %@", [error localizedDescription]);
@@ -87,9 +85,7 @@
   NSString* recipientUserId = _shareWithField.text;
   
   [Globals dataFromServer]
-  .then(^(NSData* b64EncryptedData) {
-    NSString* base64EncodedString = [[NSString alloc] initWithData:b64EncryptedData encoding:NSASCIIStringEncoding];
-    NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
+  .then(^(NSData* encryptedData) {
     TKRTanker* tanker = [Globals sharedInstance].tanker;
     NSError* err = nil;
     NSString* resourceId = [tanker resourceIDOfEncryptedData:encryptedData error:&err];

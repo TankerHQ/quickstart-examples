@@ -107,7 +107,10 @@ NSString* getWritablePath()
   NSString* userId = [Globals sharedInstance]->_userId;
   NSString* password = [Globals sharedInstance]->_password;
   
-  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userId] queryArgs:@{@"userId": userId, @"password": password} body:nil];
+  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userId] queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* b64EncryptedData) {
+    NSString* base64EncodedString = [[NSString alloc] initWithData:b64EncryptedData encoding:NSASCIIStringEncoding];
+    return [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
+  });
 }
 
 + (PMKPromise<NSData*>*) getDataFromUser:(NSString*)userIdFrom
@@ -115,7 +118,10 @@ NSString* getWritablePath()
   NSString* userId = [Globals sharedInstance]->_userId;
   NSString* password = [Globals sharedInstance]->_password;
   
-  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userIdFrom] queryArgs:@{@"userId": userId, @"password": password} body:nil];
+  return [Globals requestToServerWithMethod:@"GET" path:[@"data" stringByAppendingPathComponent:userIdFrom] queryArgs:@{@"userId": userId, @"password": password} body:nil].then(^(NSData* b64EncryptedData) {
+    NSString* base64EncodedString = [[NSString alloc] initWithData:b64EncryptedData encoding:NSASCIIStringEncoding];
+    return [[NSData alloc] initWithBase64EncodedString:base64EncodedString options:0];
+  });
 }
 
 + (PMKPromise*) uploadToServer:(NSData*)encryptedData
