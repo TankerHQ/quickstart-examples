@@ -77,7 +77,7 @@ await tanker.open(${quote(userId)}, userToken);
   serverHint: () => ({
     title: 'Have you started the server?',
     type: 'hint',
-    body: 'Then retry to open a session',
+    body: 'Then reload the page',
     language: 'bash',
     code: `
 # Hint:

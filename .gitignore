@@ -10,7 +10,6 @@
 # configs
 /config/*
 !/config/.gitkeep
-**/config.js
 
 # tutorial build
 /client/web/tutorial/**/*.orig

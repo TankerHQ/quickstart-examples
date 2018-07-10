@@ -1,11 +1,9 @@
 const fs = require('fs');
 const pathlib = require('path');
-const config = require('./config');
-
 
 class Storage {
-  constructor(dataFolder) {
-    const escapedTrustchainId = config.trustchainId.replace(/[/\\]/g, '_');
+  constructor(dataFolder, trustchainId) {
+    const escapedTrustchainId = trustchainId.replace(/[/\\]/g, '_');
     this.dataFolder = `${dataFolder}/${escapedTrustchainId}`;
     if (!fs.existsSync(this.dataFolder)) {
       fs.mkdirSync(this.dataFolder);

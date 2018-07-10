@@ -3,18 +3,23 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
-const tankerConfig = require('./config');
-
-// Folder to store tanker client data
-const dbPath = `${__dirname}/data/${tankerConfig.trustchainId.replace(/[\/\\]/g, '_')}/`;
-
-if (!fs.existsSync(dbPath)) {
-  fs.mkdirSync(dbPath);
-}
-
-tankerConfig.dataStore = { dbPath };
-
 const users = new Set();
+
+async function getTankerConfig() {
+  const res = await fetch(`http://localhost:8080/config`);
+  const config = await res.json();
+
+  // Folder to store tanker client data
+  const dbPath = `${__dirname}/data/${config.trustchainId.replace(/[\/\\]/g, '_')}/`;
+
+  if (!fs.existsSync(dbPath)) {
+    fs.mkdirSync(dbPath);
+  }
+
+  config.dataStore = { dbPath };
+
+  return config;
+}
 
 async function getToken(userId) {
   let res;
@@ -48,6 +53,7 @@ async function main () {
   const bobId = 'bob-' + uuid();
 
   // Init tanker
+  const tankerConfig = await getTankerConfig();
   const tanker = new Tanker(tankerConfig);
 
   tanker.on('waitingForValidation', () => console.log('This user is already created, please use another userId'));

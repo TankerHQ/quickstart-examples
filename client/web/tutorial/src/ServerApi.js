@@ -15,22 +15,48 @@ export default class Api {
   }
 
   urlFor(path) {
-    const queryString = `userId=${encodeURIComponent(this.userId)}&password=${encodeURIComponent(
-      this.password,
-    )}`;
-    return `${appServerUrl}${path}?${queryString}`;
+    let queryString = '';
+    if (this.userId) {
+      const escapedUserId = encodeURIComponent(this.userId);
+      const escapedPassword = encodeURIComponent(this.password);
+      queryString = `?userId=${escapedUserId}&password=${escapedPassword}`;
+    }
+    return `${appServerUrl}${path}${queryString}`;
+  }
+
+  async doRequest(path, fetchOpts) {
+    const response = await this.doRequestUnchecked(path, fetchOpts);
+    if (!response.ok) {
+      this.onFailedRequest(response);
+    }
+    return response;
+  }
+
+  async doRequestUnchecked(path, fetchOpts) {
+    const response = await fetch(this.urlFor(path), fetchOpts);
+    return response;
+  }
+
+  async onFailedRequest(response) {
+    const text = await response.text();
+    throw new Error(`Request failed: (${response.status}): ${text}`);
+  }
+
+  async tankerConfig() {
+    const res = await this.doRequest("/config");
+    return res.json();
   }
 
   signUp() {
-    return fetch(this.urlFor("/signup"));
+    return this.doRequestUnchecked("/signup");
   }
 
   login() {
-    return fetch(this.urlFor("/login"));
+    return this.doRequestUnchecked("/login");
   }
 
   delete() {
-    return fetch(this.urlFor("/data"), { method: "DELETE" });
+    return this.doRequest("/data", { method: "DELETE" });
   }
 
   push(content) {
@@ -40,24 +66,27 @@ export default class Api {
       );
     }
 
-    return fetch(this.urlFor("/data"), { method: "PUT", body: content });
+    return this.doRequest("/data", { method: "PUT", body: content });
   }
 
   async get(userId) {
-    return fetch(this.urlFor(`/data/${userId}`));
+    // this is allowed to return 404
+    const response = await this.doRequestUnchecked(`/data/${userId}`);
+    if (response.ok || response.status === 404) {
+      return response;
+    } else {
+      // but anything else is an error:
+      this.onFailedRequest(response);
+    }
   }
 
   async getMyData() {
-    const headers = { "Content-Type": "application/json" };
-    const response = await fetch(this.urlFor("/me"), { headers });
-    if (!response.ok) throw new Error("Request failed: " + response.status);
+    const response = await this.doRequest("/me");
     return response.json();
   }
 
   async getUsers() {
-    const headers = { "Content-Type": "application/json" };
-    const response = await fetch(this.urlFor("/users"), { headers });
-    if (!response.ok) throw new Error("Request failed: " + response.status);
+    const response = await this.doRequest("/users");
     return response.json();
   }
 
@@ -67,11 +96,7 @@ export default class Api {
       to: recipients,
     };
     const headers = { "Content-Type": "application/json" };
-    const response = await fetch(this.urlFor("/share"), {
-      headers,
-      body: JSON.stringify(data),
-      method: "POST",
-    });
-    if (!response.ok) throw new Error("Request failed: " + response.status);
+    const body = JSON.stringify(data);
+    await this.doRequest("/share", { headers, body, method: "POST" });
   }
 }

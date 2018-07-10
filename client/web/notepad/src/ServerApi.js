@@ -15,10 +15,13 @@ export default class Api {
   }
 
   urlFor(path) {
-    const queryString = `userId=${encodeURIComponent(this.userId)}&password=${encodeURIComponent(
-      this.password,
-    )}`;
-    return `${appServerUrl}${path}?${queryString}`;
+    let queryString = '';
+    if (this.userId) {
+      const escapedUserId = encodeURIComponent(this.userId);
+      const escapedPassword = encodeURIComponent(this.password);
+      queryString = `?userId=${escapedUserId}&password=${escapedPassword}`;
+    }
+    return `${appServerUrl}${path}${queryString}`;
   }
 
   async doRequest(path, fetchOpts) {
@@ -39,12 +42,17 @@ export default class Api {
     throw new Error(`Request failed: (${response.status}): ${text}`);
   }
 
+  async tankerConfig() {
+    const res = await this.doRequest("/config");
+    return res.json();
+  }
+
   signUp() {
-    return this.doRequest("/signup");
+    return this.doRequestUnchecked("/signup");
   }
 
   login() {
-    return this.doRequest("/login");
+    return this.doRequestUnchecked("/login");
   }
 
   delete() {
@@ -73,16 +81,13 @@ export default class Api {
   }
 
   async getMyData() {
-    const headers = { "Content-Type": "application/json" };
-    const response = await this.doRequest("/me", { headers });
+    const response = await this.doRequest("/me");
     return response.json();
   }
 
   async getUsers() {
-    const headers = { "Content-Type": "application/json" };
-    const response = await this.doRequest("/users", { headers });
-    const res = await response.json();
-    return res;
+    const response = await this.doRequest("/users");
+    return response.json();
   }
 
   async share(recipients) {
