@@ -52,7 +52,8 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Server error!");
 
     const userToken = await response.text();
-    return this.openSession(userId, userToken);
+    await this.openSession(userId, userToken);
+    // FIXME: setup the password to unlock additional devices
   }
 
   async signIn(userId, password) {
@@ -75,14 +76,8 @@ export default class Session extends EventEmitter {
     await this.openSession(userId, userToken);
   }
 
-  async getUnlockKey() {
-    // FIXME: generate and return unlock key
-    return 'This will be replaced by a real key later in the tutorial. Click on Done for now.';
-  }
-
-
-  async addCurrentDevice(unlockKey) {
-    // FIXME: validate current device using the unlock key
+  async unlockCurrentDevice(password) {
+    // FIXME: unlock current device using the password
   }
 
   async saveText(text) {
