@@ -7,7 +7,7 @@
     "start": "react-scripts start"
   },
   "dependencies": {
-    "@tanker/client-browser": "^1.7.0-beta8",
+    "@tanker/client-browser": "^1.7.1",
     "babel-polyfill": "^6.26.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
