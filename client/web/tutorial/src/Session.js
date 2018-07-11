@@ -84,7 +84,7 @@ export default class Session extends EventEmitter {
     const recipients = await this.getNoteRecipients();
     // FIXME: encrypt text
     // FIXME: update this.resourceId
-    // FIXME: push encrypted text, base64-endoced
+    // FIXME: push encrypted text, base64-encoded
     await this.serverApi.push(text);
   }
 
