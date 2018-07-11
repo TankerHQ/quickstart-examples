@@ -16,7 +16,7 @@ export default class Session extends EventEmitter {
     if (this.tanker) return;
     const config = await this.serverApi.tankerConfig();
     // FIXME: construct this.tanker
-    // FIXME: handle waitingForValidation event
+    // FIXME: handle the 'unlockRequired' event
   }
 
   get userId() {

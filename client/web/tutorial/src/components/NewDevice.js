@@ -27,7 +27,7 @@ class NewDevice extends React.Component {
 
     return (
       <Panel>
-        <Panel.Heading id="new-device-heading">First connection on a device</Panel.Heading>
+        <Panel.Heading id="new-device-heading">First connection on a new device</Panel.Heading>
         <Panel.Body>
           <form action="#" className="form-signin">
             {error && <Alert bsStyle="danger">{error}</Alert>}
