@@ -1,18 +1,19 @@
 import EventEmitter from "events";
 import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/client-browser";
 import ServerApi from "./ServerApi";
-import { trustchainId, url } from "./config";
 
 export default class Session extends EventEmitter {
   constructor() {
     super();
-    this.serverApi = new ServerApi();
-    // Note: the url parameter is used internally by Tanker staff
-    // in order to point to a different Tanker server.
-    // You should leave this undefined.
-    this.tanker = new Tanker({ trustchainId, url });
-    this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
     this.resourceId = null;
+    this.serverApi = new ServerApi();
+  }
+
+  async initTanker() {
+    if (this.tanker) return;
+    const config = await this.serverApi.tankerConfig();
+    this.tanker = new Tanker(config);
+    this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
   }
 
   get userId() {
@@ -24,7 +25,7 @@ export default class Session extends EventEmitter {
   }
 
   isOpen() {
-    return this.tanker.status === this.tanker.OPEN;
+    return this.tanker && this.tanker.isOpen();
   }
 
   async close() {
@@ -36,6 +37,8 @@ export default class Session extends EventEmitter {
   }
 
   async signUp(userId, password) {
+    await this.initTanker();
+
     this.serverApi.setUserInfo(userId, password);
     const response = await this.serverApi.signUp();
 
@@ -43,10 +46,13 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Server error!");
 
     const userToken = await response.text();
-    return this.openSession(userId, userToken);
+    await this.openSession(userId, userToken);
+    await this.tanker.setupUnlock({ password });
   }
 
   async signIn(userId, password) {
+    await this.initTanker();
+
     this.serverApi.setUserInfo(userId, password);
     let response;
     try {
@@ -64,12 +70,8 @@ export default class Session extends EventEmitter {
     await this.openSession(userId, userToken);
   }
 
-  async getUnlockKey() {
-    return this.tanker.generateAndRegisterUnlockKey();
-  }
-
-  async addCurrentDevice(unlockKey) {
-    return this.tanker.unlockCurrentDevice(unlockKey);
+  async unlockCurrentDevice(password) {
+    await this.tanker.unlockCurrentDevice({ password });
   }
 
   async saveText(text) {

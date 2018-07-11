@@ -61,6 +61,12 @@ The example server provides applications with:
 * an endpoint to retrieve user tokens as needed by the Tanker SDK
 * a couple of routes to upload/download user data
 
+You may also provide the path of a config file explicitely:
+
+```bash
+yarn start:server --config <path>
+```
+
 ### Run example applications
 
 Note: before running any of the example applications, don't forget to always start the server first!

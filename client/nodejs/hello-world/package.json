@@ -4,10 +4,10 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "start": "cd ../.. && yarn start:nodejs:hello-world"
+    "start": "node main.js"
   },
   "dependencies": {
-    "@tanker/client-node": "^1.6.3",
+    "@tanker/client-node": "^1.7.0-beta",
     "fetch": "^1.1.0",
     "uuid": "^3.2.1"
   }

@@ -51,19 +51,21 @@ Now that the application is up and running, please follow the steps below:
 
 1. Sign up with the user name `alice` and the password `p4ssw0rd`. (Actually, you can use any user name and password, but if you choose to use other authentication values, please note that the server does not implement a "Forgot my password" feature...)
 
-2. Type some text in the notepad's input and save it.
+1. Click on "Done" when prompted to save an unlock key.
 
-3. Open a new tab and sign up a new user (for instance `bob` with the password `letmein`).
+1. Click on the "Edit your note" link, type some text in the notepad's input and save it.
 
-4. Go back to the first tab, edit a new note (say `my message for Bob`) and click on the `share` button.
+1. Open a new tab and sign up a new user (for instance `bob` with the password `letmein`).
 
-5. A list of users pops up. Select `bob` and click on `share`.
+1. Go back to the first tab, edit a new note (say `my message for Bob`) and click on the `share` button.
 
-6. Go back to the second tab, click on the `Refresh` button next to the `Shared with me` panel in the home page.
+1. A list of users pops up. Select `bob` and click on `share`.
 
-7. You should see a `From alice` entry in the list. Click on it.
+1. Go back to the second tab, click on the `Refresh` button next to the `Notes shared with me` panel in the home page.
 
-8. The text `my message from Bob` should be displayed.
+1. You should see a `From alice` entry in the list. Click on it.
+
+1. The text `my message from Bob` should be displayed.
 
 OK, so far we have demonstrated how users can edit and share notes.
 
@@ -97,29 +99,28 @@ In order to help you we left some `FIXME` comments throughout the file.
 
 The goal here is to [open and close a tanker session](https://tanker.io/docs/latest/guide/open/?language=javascript).
 
-In the `./client/web/tutorial/src/Session.js` file, the `trustchainId` has already been extracted from the config file for you:
+In the `./client/web/tutorial/src/Session.js` file, the Tanker `config` has already been fetched from the server for you in the `initTanker` method:
 ```javascript
-import { trustchainId } from './config';
+const config = await this.serverApi.tankerConfig();
+// e.g. { trustchainId: "..." };
 ```
 
-*Use it to initialize a new Tanker instance in the constructor.*
+*Use it to initialize a new Tanker instance in `Session.initTanker`.*
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
-constructor() {
-  super();
-  this.serverApi = new ServerApi();
-+ this.tanker = new Tanker({ trustchainId });
-  this.opened = false;
-  // ...
+async initTanker() {
+  if (this.tanker) return;
+  const config = await this.serverApi.tankerConfig();
++ this.tanker = new Tanker(config);
 }
 ```
 </details>
 <br />
 
-Note that `this.opened` is just a placeholder attribute that materializes where Tanker session opening and closing will occur.
+Note that `this.opened` is just a placeholder attribute used throughout the file to materialize where Tanker session opening and closing will occur.
 
 Now we need to handle the creation of a Tanker session, with the help of the [`tanker.open()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#open) method.
 
@@ -161,7 +162,7 @@ constructor() {
 
 isOpen(): bool {
 - return this.opened;
-+ return this.tanker.status === this.tanker.OPEN;
++ return this.tanker && this.tanker.isOpen();
 }
 
 async close(): Promise<void> {
@@ -241,7 +242,9 @@ async loadTextFromUser(userId: string) {
 ### Checking it works
 
 Now the data on the server can no longer be used by the clients. So go ahead, and edit the
-`.json` files on the server to remove the data stored in plain text, keeping only the user token and the hashed password.
+`.json` files on the server to remove the data stored in plain text, keeping only the `id`, `hashed_password`, and `token` fields.
+
+Migrating existing data from plain text to encrypted text is of course possible, but this is beyond the scope of this tutorial.
 
 You can then try to log in, and check that:
 
@@ -280,7 +283,8 @@ Also make sure to *get the resource ID matching the newly generated key by using
 ```diff
 async saveText(text: string) {
   const recipients = await this.getNoteRecipients();
-  const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
+- const encryptedData = await this.tanker.encrypt(text);
++ const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
   const encryptedText = toBase64(encryptedData);
 + this.resourceId = getResourceId(encryptedData);
   await this.serverApi.push(toBase64(encryptedText));
@@ -323,11 +327,10 @@ Then *make sure to emit the `newDevice` event (using `this.emit()`), when the  `
 <summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
-constructor() {
+async initTanker() {
   // ...
-  this.tanker = new Tanker({ trustchainId });
+  this.tanker = new Tanker(config);
 + this.tanker.on('waitingForValidation', () => this.emit('newDevice'));
-  // ...
 }
 ```
 </details>

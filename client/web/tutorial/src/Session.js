@@ -1,17 +1,20 @@
 import EventEmitter from "events";
 import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/client-browser";
 import ServerApi from "./ServerApi";
-import { trustchainId } from "./config";
 
 export default class Session extends EventEmitter {
 
   constructor() {
     super();
+    this.resourceId = null;
     this.serverApi = new ServerApi();
     // FIXME: get rid of this.opened
     this.opened = false;
-    this.resourceId = null;
+  }
 
+  async initTanker() {
+    if (this.tanker) return;
+    const config = await this.serverApi.tankerConfig();
     // FIXME: construct this.tanker
     // FIXME: handle waitingForValidation event
   }
@@ -40,6 +43,8 @@ export default class Session extends EventEmitter {
   }
 
   async signUp(userId, password) {
+    await this.initTanker();
+
     this.serverApi.setUserInfo(userId, password);
     const response = await this.serverApi.signUp();
 
@@ -51,6 +56,8 @@ export default class Session extends EventEmitter {
   }
 
   async signIn(userId, password) {
+    await this.initTanker();
+
     this.serverApi.setUserInfo(userId, password);
     let response;
     try {

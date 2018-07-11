@@ -41,26 +41,31 @@ describe('server', () => {
   let app;
   let testServer;
 
+  const trustchainId = '4bPbtrLr82kNDoaieRDMXIPycLrTynpL7hmIjPGXsWw=';
+  const trustchainPrivateKey = '6+Z3FlkU8n1g27/aNF2+3DFOwOXYVZXqiDhuvmF5Lpj0myDj+nNAkKZZxaPE7luhcRMQzTItDyk/zBh21rTyHw==';
+
   const bobId = 'bob';
   const bobPassword = 'p4ssw0rd';
   const bobPasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$88wT+5X56Ui7EAQMz/wIdw$37pEnuujONgGxa6FudmN9aa0K3TUQbL/tziT30PX7v4';
+  const bobToken = 'bobToken';
 
   const aliceId = 'alice';
   const alicePassword = '4lic3';
   const alicePasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$UNqRSixl3aeit4F7mR+5pw$KKfiAWPyUaDkVefJ77w2XRdb8gafLpR1a2Uqd0zYnlY';
+  const aliceToken = 'aliceToken';
 
   const signUpBob = () => {
-    const user = { id: bobId, hashed_password: bobPasswordHash };
+    const user = { id: bobId, hashed_password: bobPasswordHash, token: bobToken };
     app.storage.save(user);
   };
 
   const signUpAlice = () => {
-    const user = { id: aliceId, hashed_password: alicePasswordHash };
+    const user = { id: aliceId, hashed_password: alicePasswordHash, token: aliceToken };
     app.storage.save(user);
   };
 
   const createBobNote = async (contents) => {
-    const user = { id: bobId, hashed_password: bobPasswordHash };
+    const user = app.storage.get(bobId);
     user.data = contents;
     app.storage.save(user);
   };
@@ -68,7 +73,11 @@ describe('server', () => {
 
   beforeEach(() => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
-    app = server.setup({ dataPath: tempPath.name });
+    app = server.setup({
+      dataPath: tempPath.name,
+      trustchainId,
+      trustchainPrivateKey,
+    });
     testServer = app.listen(0);
   });
 
@@ -81,17 +90,26 @@ describe('server', () => {
     await assertRequest(testServer, { verb: 'get', path: '/' }, { status: 200 });
   });
 
+  it('/config', async () => {
+    const response = await assertRequest(testServer, { verb: 'get', path: '/config' }, { status: 200 });
+    const json = await response.json();
+    expect(json).to.deep.equal({ trustchainId });
+  });
+
   describe('/signup', () => {
     specify('signin up a new user', async () => {
       const userId = 'user_42';
       const password = 'p4ssw0rd';
       const query = { userId, password };
 
-      await assertRequest(
+      const response = await assertRequest(
         testServer,
         { verb: 'get', path: '/signup', query },
         { status: 201 },
       );
+
+      const token = await response.text();
+      expect(token).to.be.a('string');
     });
 
     it('returns 400 if password is missing', async () => {
@@ -140,11 +158,13 @@ describe('server', () => {
     specify('signed up users can log in', async () => {
       signUpBob();
       const query = { userId: bobId, password: bobPassword };
-      await assertRequest(
+      const response = await assertRequest(
         testServer,
         { verb: 'get', path: '/login', query },
         { status: 200 },
       );
+      const token = await response.text();
+      expect(token).to.equal(bobToken);
     });
 
     it('refuses to log in with incorrect password', async () => {

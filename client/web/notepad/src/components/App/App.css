@@ -4,10 +4,6 @@ body {
   font-family: sans-serif;
 }
 
-.unlockKey {
-  word-break: break-all;
-}
-
 .app .panel {
   width: 500px;
   max-width: 100%;

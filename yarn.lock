@@ -78,11 +78,11 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@tanker/client-browser@^1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.6.3.tgz#6f3ff9c82c7312998c0be96e7708e89fde56937e"
+"@tanker/client-browser@1.7.0-beta5", "@tanker/client-browser@^1.7.0-beta5":
+  version "1.7.0-beta5"
+  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.7.0-beta5.tgz#437337d2992d26e365d45f763b8643076be50dc0"
   dependencies:
-    "@tanker/crypto" "1.6.3"
+    "@tanker/crypto" "1.7.0-beta5"
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
     babel-runtime "^6.22.0"
@@ -91,11 +91,11 @@
     socket.io-client "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
     varint "^5.0.0"
 
-"@tanker/client-node@^1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.6.3.tgz#0ebf305b425da5bf92c33fc061675454aa921ae2"
+"@tanker/client-node@^1.7.0-beta":
+  version "1.7.0-beta5"
+  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.7.0-beta5.tgz#b6aa76470f0db57b0d20f8abbf7848ad7fdd203a"
   dependencies:
-    "@tanker/crypto" "1.6.3"
+    "@tanker/crypto" "1.7.0-beta5"
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
     babel-runtime "^6.22.0"
@@ -112,14 +112,27 @@
   dependencies:
     libsodium-wrappers "^0.5.1"
 
-"@tanker/crypto@1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.6.3.tgz#68ea6bbc0c844b2eed1f79b6fd7e3975639480d9"
+"@tanker/crypto@1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.6.2.tgz#a5a8191bbf48e8110224a7a6a922bcca372aa6b7"
   dependencies:
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
 
-"@tanker/user-token@1.4.0", "@tanker/user-token@^1.4.0":
+"@tanker/crypto@1.7.0-beta5":
+  version "1.7.0-beta5"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.7.0-beta5.tgz#d0cbe1c21d8c2001b3b6ba8e8039658cfb8ee0be"
+  dependencies:
+    babel-runtime "^6.22.0"
+    libsodium-wrappers "^0.5.1"
+
+"@tanker/user-token@1.4.1":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@tanker/user-token/-/user-token-1.4.1.tgz#2fee8d4f36ee8eb0b70e50c411eaf494d4ee300e"
+  dependencies:
+    "@tanker/crypto" "1.6.2"
+
+"@tanker/user-token@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@tanker/user-token/-/user-token-1.4.0.tgz#de0be533dfee108918f74efd1fc33f78868e9a4b"
   dependencies:
@@ -1876,6 +1889,10 @@ colors@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
 
+colors@~0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-0.6.2.tgz#2423fe6678ac0c5dae8852e5d0e5be08c997abcc"
+
 colors@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
@@ -1889,6 +1906,10 @@ combined-stream@1.0.6, combined-stream@~1.0.5:
 commander@2.15.1, commander@2.15.x, commander@^2.11.0, commander@~2.15.0:
   version "2.15.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
+
+commander@^2.16.0:
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.16.0.tgz#f16390593996ceb4f3eeb020b31d78528f7f8a50"
 
 common-tags@^1.4.0:
   version "1.7.2"
@@ -7627,6 +7648,12 @@ schema-utils@^0.3.0:
 select-hose@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
+
+select-shell@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/select-shell/-/select-shell-1.1.2.tgz#b9bf5fe5850f1a53b190606aa1b0a48b39079c44"
+  dependencies:
+    colors "~0.6.2"
 
 selfsigned@^1.9.1:
   version "1.10.3"

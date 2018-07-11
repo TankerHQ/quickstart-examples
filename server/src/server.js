@@ -17,7 +17,6 @@ const debugMiddleware = require('debug-error-middleware').express;
 const authMiddleware = require('./middlewares/auth');
 const corsMiddleware = require('./middlewares/cors');
 
-const config = require('./config');
 const log = require('./log');
 const home = require('./home');
 const Storage = require('./storage');
@@ -26,12 +25,26 @@ const Storage = require('./storage');
 const app = express();
 
 // Setup server
-const setup = (serverConfig) => {
-  const { dataPath } = serverConfig;
+let serverConfig;
+let clientConfig;
+
+const makeClientConfig = (fullConfig) => {
+  const config = { ...fullConfig };
+  // WARNING: the Trustchain private key MUST never be sent to the client
+  delete config.trustchainPrivateKey;
+  delete config.dataPath;
+  return config;
+};
+
+const setup = (config) => {
+  serverConfig = config;
+  clientConfig = makeClientConfig(config);
+
+  const { dataPath, trustchainId } = config;
   if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath);
   }
-  app.storage = new Storage(dataPath);
+  app.storage = new Storage(dataPath, trustchainId);
   return app;
 };
 
@@ -59,10 +72,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// Add config route (non authenticated)
+app.get('/config', (req, res) => {
+  log('Serve the client Tanker config', 1);
+  res.set('Content-Type', 'application/json');
+  res.status(200).send(clientConfig);
+});
 
 // Add signup route (non authenticated)
 app.get('/signup', (req, res) => {
   const { userId, password } = req.query;
+  const { trustchainId, trustchainPrivateKey } = serverConfig;
+
   if (password === undefined) {
     res.status(400).send('missing password');
     return;
@@ -81,8 +102,8 @@ app.get('/signup', (req, res) => {
 
   log('Generate a new user token', 1);
   const token = userToken.generateUserToken(
-    config.trustchainId,
-    config.trustchainPrivateKey,
+    trustchainId,
+    trustchainPrivateKey,
     userId,
   );
 

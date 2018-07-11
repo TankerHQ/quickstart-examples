@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Button, Col, ControlLabel, FormGroup, FormControl, Grid, InputGroup, PageHeader, Panel, Row } from 'react-bootstrap';
 import Tanker, { toBase64, fromBase64, errors } from '@tanker/client-browser';
 
-import config from './config';
 import { getEntry, LogPanel } from './log';
 
 class App extends Component {
@@ -13,10 +12,27 @@ class App extends Component {
       clearText: '',
       encryptedText: '',
       shareWith: '',
-      log: [getEntry('initialize', config.trustchainId)]
+      loading: true,
+      log: []
     };
+    this.initTanker();
+  }
 
-    this.tanker = new Tanker(config);
+  initTanker = async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/config`);
+      const config = await res.json();
+      this.tanker = new Tanker(config);
+      this.log('initialize', config.trustchainId);
+      this.setState({ loading: false });
+    } catch (e) {
+      this.log(e);
+
+      // Could it be that the server is not started yet?
+      if (!(e instanceof errors.TankerError)) {
+        this.log('serverHint');
+      }
+    }
   }
 
   log = (...args) => {
@@ -105,21 +121,12 @@ class App extends Component {
     event.preventDefault();
     const userId = this.state.userId;
 
-    try {
-      this.log('openingSession', userId);
+    this.log('openingSession', userId);
 
-      const userToken = await this.getToken(userId);
-      await this.tanker.open(userId, userToken);
+    const userToken = await this.getToken(userId);
+    await this.tanker.open(userId, userToken);
 
-      this.log('openedSession', userId);
-    } catch (e) {
-      this.log(e);
-
-      // Could it be that the server is not started yet?
-      if (!(e instanceof errors.TankerError)) {
-        this.log('serverHint');
-      }
-    }
+    this.log('openedSession', userId);
   }
 
   render = () => (
@@ -152,10 +159,10 @@ class App extends Component {
                             }
                           }
                         }}
-                        disabled={this.tanker.status !== this.tanker.CLOSED}
+                        disabled={this.state.loading || this.tanker.status !== this.tanker.CLOSED}
                       />
                       <InputGroup.Button>
-                        {this.tanker.status === this.tanker.CLOSED && (
+                        {(this.state.loading || this.tanker.status === this.tanker.CLOSED) && (
                           <Button
                             bsStyle="primary"
                             onClick={this.onOpen}
@@ -164,7 +171,7 @@ class App extends Component {
                             Open
                           </Button>
                         )}
-                        {this.tanker.status !== this.tanker.CLOSED && (
+                        {!this.state.loading && this.tanker.status !== this.tanker.CLOSED && (
                           <Button
                             bsStyle="danger"
                             onClick={this.onClose}

@@ -4,10 +4,10 @@
   "main": "src/index.js",
   "private": true,
   "scripts": {
-    "start": "cd ../.. && yarn start:web:api-observer"
+    "start": "react-scripts start"
   },
   "dependencies": {
-    "@tanker/client-browser": "^1.6.3",
+    "@tanker/client-browser": "^1.7.0-beta5",
     "babel-polyfill": "^6.26.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",

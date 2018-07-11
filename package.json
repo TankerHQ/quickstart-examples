@@ -1,5 +1,5 @@
 {
-  "name": "@tanker/ui-demos",
+  "name": "@tanker/quickstar-examples",
   "version": "1.6.1",
   "main": "server/server.js",
   "description": "Example applications for Tanker.io",
@@ -22,14 +22,13 @@
     "yarn": ">= 1.0"
   },
   "scripts": {
-    "config:check": "node ./bin/config-check",
     "start": "yarn start:server",
-    "start:server": "node ./bin/config-check && cd server/src && node main.js",
-    "watch:server": "node ./bin/config-check && cd server/src && node-dev main.js",
-    "start:nodejs:hello-world": "node ./bin/config-check && cd client/nodejs/hello-world && node main.js",
-    "start:web:api-observer": "node ./bin/config-check && cd client/web/api-observer && react-scripts start",
-    "start:web:notepad": "node ./bin/config-check && cd client/web/notepad && react-scripts start",
-    "start:web:tutorial": "node ./bin/config-check && cd client/web/tutorial && react-scripts start"
+    "start:server": "cd server && yarn start",
+    "watch:server": "cd server && yarn watch",
+    "start:nodejs:hello-world": "cd client/nodejs/hello-world && yarn start",
+    "start:web:api-observer": "cd client/web/api-observer && yarn start",
+    "start:web:notepad": "cd client/web/notepad && yarn start",
+    "start:web:tutorial": "cd client/web/tutorial && yarn start"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
