@@ -78,11 +78,11 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@tanker/client-browser@^1.7.0-beta8":
-  version "1.7.0-beta8"
-  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.7.0-beta8.tgz#3d9398fa3081e2e4f942942a6799d4fc9f71d059"
+"@tanker/client-browser@^1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.7.1.tgz#36827cf8e1b3777384d8daf103c75b76b67d93e1"
   dependencies:
-    "@tanker/crypto" "1.7.0-beta8"
+    "@tanker/crypto" "1.7.1"
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
     babel-runtime "^6.22.0"
@@ -91,11 +91,11 @@
     socket.io-client "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
     varint "^5.0.0"
 
-"@tanker/client-node@^1.7.0-beta8":
-  version "1.7.0-beta8"
-  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.7.0-beta8.tgz#9a20ceb17c7a8dced012b2575520b7cc11831e95"
+"@tanker/client-node@^1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.7.1.tgz#59626c22a1e80a9f2c6b2aca764ae3ceeaefac3d"
   dependencies:
-    "@tanker/crypto" "1.7.0-beta8"
+    "@tanker/crypto" "1.7.1"
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
     babel-runtime "^6.22.0"
@@ -119,9 +119,9 @@
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
 
-"@tanker/crypto@1.7.0-beta8":
-  version "1.7.0-beta8"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.7.0-beta8.tgz#8839502dfe999412907710b25220723680d31602"
+"@tanker/crypto@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.7.1.tgz#c5fcb8f06b776a54e161879b0a9f4ce6dfe2610e"
   dependencies:
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
