@@ -1,22 +1,69 @@
 PODS:
-  - PromiseKit/Promise (1.7.6)
-  - PromiseKit/When (1.7.6):
+  - OMGHTTPURLRQ (3.2.4):
+    - OMGHTTPURLRQ/RQ (= 3.2.4)
+  - OMGHTTPURLRQ/FormURLEncode (3.2.4)
+  - OMGHTTPURLRQ/RQ (3.2.4):
+    - OMGHTTPURLRQ/FormURLEncode
+    - OMGHTTPURLRQ/UserAgent
+  - OMGHTTPURLRQ/UserAgent (3.2.4)
+  - PromiseKit (1.7.7):
+    - PromiseKit/CALayer (= 1.7.7)
+    - PromiseKit/NSNotificationCenter (= 1.7.7)
+    - PromiseKit/NSURLConnection (= 1.7.7)
+    - PromiseKit/Pause (= 1.7.7)
+    - PromiseKit/UIActionSheet (= 1.7.7)
+    - PromiseKit/UIAlertView (= 1.7.7)
+    - PromiseKit/UIView (= 1.7.7)
+    - PromiseKit/UIViewController (= 1.7.7)
+    - PromiseKit/Until (= 1.7.7)
+    - PromiseKit/When (= 1.7.7)
+  - PromiseKit/CALayer (1.7.7):
     - PromiseKit/Promise
-  - Tanker (1.6.0):
-    - PromiseKit/Promise (~> 1.7.6)
-    - PromiseKit/When (~> 1.7.6)
-    - Tanker/libtanker (= 1.6.0)
-  - Tanker/libtanker (1.6.0):
-    - PromiseKit/Promise (~> 1.7.6)
-    - PromiseKit/When (~> 1.7.6)
+  - PromiseKit/NSNotificationCenter (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/NSURLConnection (1.7.7):
+    - OMGHTTPURLRQ (~> 3.2)
+    - PromiseKit/Promise
+  - PromiseKit/Pause (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/Promise (1.7.7)
+  - PromiseKit/UIActionSheet (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/UIAlertView (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/UIView (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/UIViewController (1.7.7):
+    - PromiseKit/Promise
+  - PromiseKit/Until (1.7.7):
+    - PromiseKit/Promise
+    - PromiseKit/When
+  - PromiseKit/When (1.7.7):
+    - PromiseKit/Promise
+  - Tanker (1.7.0-beta10):
+    - PromiseKit/Promise (~> 1.7)
+    - PromiseKit/When (~> 1.7)
+    - Tanker/libtanker (= 1.7.0-beta10)
+  - Tanker/libtanker (1.7.0-beta10):
+    - PromiseKit/Promise (~> 1.7)
+    - PromiseKit/When (~> 1.7)
 
 DEPENDENCIES:
-  - Tanker (~> 1.6.0)
+  - PromiseKit (~> 1.7)
+  - Tanker (= 1.7.0-beta10)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - OMGHTTPURLRQ
+    - PromiseKit
+  https://github.com/SuperTanker/PodSpecs.git:
+    - Tanker
 
 SPEC CHECKSUMS:
-  PromiseKit: 94bcf2f44424df0384af81c6221cb3bfa3e7ed4c
-  Tanker: eef724932156b6645e7374e84de85e766db8391b
+  OMGHTTPURLRQ: 9ac96bdf5c90a33f75836630729ea1adc312a9ed
+  PromiseKit: 9007df2f9e2ef725467084ab3880cf932ab935a4
+  Tanker: 5c91e97c1004dbbb246dad8e32b88e53e88c40d0
 
-PODFILE CHECKSUM: d787d5428f9a42126a88ac1335956f82db433668
+PODFILE CHECKSUM: 973f68ce458c6fe03af35b580fe9714708b7dfba
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3

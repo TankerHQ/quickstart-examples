@@ -32,6 +32,7 @@ import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerConnection;
 import io.tanker.api.TankerOptions;
+import io.tanker.bindings.TankerLib;
 
 /**
  * A login screen that offers login via email/password.

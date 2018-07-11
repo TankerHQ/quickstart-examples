@@ -1,27 +1,24 @@
-//
-//  Globals.h
-//  tanker-ui-demo
-//
-//  Created by Loic on 09/04/2018.
-//  Copyright © 2018 Tanker. All rights reserved.
-//
 
-#ifndef Globals_h
-#define Globals_h
-
+#import "fwd.h"
+#import <Foundation/Foundation.h>
 @import Tanker;
 
 @interface Globals : NSObject
 
-+ (Globals *)sharedInstance;
++ (Globals*)sharedInstance;
 
-+ (PMKPromise*)fetchUserToken:(NSString*)method userId:(NSString*)userId password:(NSString*)password;
-+ (PMKPromise*) uploadToServer:(NSData*)encryptedData;
-+ (PMKPromise*) dataFromServer;
++ (PMKPromise<NSString*>*)signupWithUserId:(NSString*)userId password:(NSString*)password;
++ (PMKPromise<NSString*>*)loginWithUserId:(NSString*)userId password:(NSString*)password;
++ (PMKPromise*)uploadToServer:(NSString*)data;
++ (PMKPromise<NSString*>*)dataFromServer;
++ (PMKPromise*)changePassword:(NSString*)newPassword;
++ (PMKPromise*)shareNoteWith:(NSArray<NSString*>*)recipients;
++ (PMKPromise<NSString*>*)getDataFromUser:(NSString*)userIdFrom;
 
-@property TKRTanker* tanker;
 @property NSString* serverAddress;
+@property TKRTanker* tanker;
+@property NSString* userId;
+@property NSString* password;
+@property NSString* trustchainId;
 
 @end
-
-#endif /* Globals_h */
