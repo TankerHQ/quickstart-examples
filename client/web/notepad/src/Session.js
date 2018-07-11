@@ -13,7 +13,7 @@ export default class Session extends EventEmitter {
     if (this.tanker) return;
     const config = await this.serverApi.tankerConfig();
     this.tanker = new Tanker(config);
-    this.tanker.on("waitingForValidation", () => this.emit("newDevice"));
+    this.tanker.on("unlockRequired", () => this.emit("newDevice"));
   }
 
   get userId() {

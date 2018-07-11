@@ -12,7 +12,9 @@ class NewDevice extends React.Component {
     this.setState({ password: e.currentTarget.value });
   };
 
-  onClick = async () => {
+  onClick = async event => {
+    event.preventDefault();
+
     const { onUnlockDevice } = this.props;
     this.setState({ isLoading: true });
     try {
@@ -27,9 +29,9 @@ class NewDevice extends React.Component {
 
     return (
       <Panel>
-        <Panel.Heading id="new-device-heading">First connection on a device</Panel.Heading>
+        <Panel.Heading id="new-device-heading">First connection on a new device</Panel.Heading>
         <Panel.Body>
-          <form action="#" className="form-signin">
+          <form className="form-signin">
             {error && <Alert bsStyle="danger">{error}</Alert>}
             <FormGroup>
               <ControlLabel>Please enter your password</ControlLabel>
@@ -45,6 +47,7 @@ class NewDevice extends React.Component {
             </FormGroup>
             <Button
               id="unlock-button"
+              type="submit"
               bsStyle="primary"
               className="pull-right"
               disabled={isLoading}

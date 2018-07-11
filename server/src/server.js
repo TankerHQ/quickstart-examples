@@ -48,6 +48,11 @@ const setup = (config) => {
   return app;
 };
 
+const hashPassword = password => sodium.crypto_pwhash_str(
+  password,
+  sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+  sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+);
 
 app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
@@ -84,21 +89,24 @@ app.get('/signup', (req, res) => {
   const { userId, password } = req.query;
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
-  if (password === undefined) {
+  if (!userId) {
+    res.status(400).send('missing userId');
+    return;
+  }
+
+  if (!password) {
     res.status(400).send('missing password');
     return;
   }
-  const hashedPassword = sodium.crypto_pwhash_str(
-    password,
-    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
-  );
 
   if (app.storage.exists(userId)) {
     log(`User "${userId}" already exists`, 1);
     res.sendStatus(409);
     return;
   }
+
+  log('Hash the password', 1);
+  const hashedPassword = hashPassword(password);
 
   log('Generate a new user token', 1);
   const token = userToken.generateUserToken(
@@ -107,7 +115,7 @@ app.get('/signup', (req, res) => {
     userId,
   );
 
-  log('Save password and token to storage', 1);
+  log('Save hashed password and token to storage', 1);
   app.storage.save({ id: userId, hashed_password: hashedPassword, token });
 
   log('Serve the token', 1);
@@ -142,11 +150,7 @@ app.put('/password', (req, res) => {
     res.sendStatus(400);
     return;
   }
-  user.hashed_password = sodium.crypto_pwhash_str(
-    newPassword,
-    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
-  );
+  user.hashed_password = hashPassword(newPassword);
   app.storage.save(user);
   res.sendStatus(200);
 });

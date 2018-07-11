@@ -51,8 +51,6 @@ Now that the application is up and running, please follow the steps below:
 
 1. Sign up with the user name `alice` and the password `p4ssw0rd`. (Actually, you can use any user name and password, but if you choose to use other authentication values, please note that the server does not implement a "Forgot my password" feature...)
 
-1. Click on "Done" when prompted to save an unlock key.
-
 1. Click on the "Edit your note" link, type some text in the notepad's input and save it.
 
 1. Open a new tab and sign up a new user (for instance `bob` with the password `letmein`).
@@ -105,7 +103,7 @@ const config = await this.serverApi.tankerConfig();
 // e.g. { trustchainId: "..." };
 ```
 
-*Use it to initialize a new Tanker instance in `Session.initTanker`.*
+*Use this config to initialize a new Tanker instance in `Session.initTanker`.*
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
@@ -180,7 +178,7 @@ The `close()` method will be called when the user logs out. It's important to cl
 
 At this point, nothing has changed in the application, we just made sure we could open and close a Tanker section correctly.
 
-You can check this by refreshing your browser, and log in. You should see the text you wrote in the previous step, and in the console log, the "Tanker session is ready" you've just added.
+You can check this by refreshing your browser, and log in. You should see the text you wrote in the previous step, and in the console log, the "Tanker session is ready" message you've just added.
 
 Now that we know how to open a Tanker session, it's time to [encrypt, decrypt and share](https://www.tanker.io/docs/latest/guide/encryption/?language=javascript) the notes!
 
@@ -251,6 +249,8 @@ You can then try to log in, and check that:
 * you can still edit and save a note,
 * the `data` field in the `json` is now encrypted.
 
+If you get a `Tanker error: invalid_encryption_format` message, you probably forgot to clean up plain text data as requested at the beginning of this section.
+
 ### Sharing
 
 There is a problem, though. The "share" functionality no longer works.
@@ -315,13 +315,13 @@ You can now re-try sharing notes between Alice and Bob, the "share" functionalit
 
 ### Device management
 
-At this point, if you try to log in the same user in an other browser in private mode, or in any other device, you get an error message about a missing event handler.
+At this point, if you try to log in the same user either in private browsing mode, in any other browser, or in any other device, you will get an error message about a missing event handler.
 
 That is because we did not take care of device management so far.
 
 You should now go read the [section about device management](https://tanker.io/docs/latest/guide/device-management/?language=javascript).
 
-Then *make sure to emit the `newDevice` event (using `this.emit()`), when the  `waitingForValidation` event of the Tanker is received*.
+Then *make sure to emit the `newDevice` event (using `this.emit()`), when the  `unlockRequired` event of the Tanker is received*.
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
@@ -330,7 +330,7 @@ Then *make sure to emit the `newDevice` event (using `this.emit()`), when the  `
 async initTanker() {
   // ...
   this.tanker = new Tanker(config);
-+ this.tanker.on('waitingForValidation', () => this.emit('newDevice'));
++ this.tanker.on('unlockRequired', () => this.emit('newDevice'));
 }
 ```
 </details>
@@ -340,20 +340,14 @@ That way, when the user needs to perform manual operations about its device, the
 
 (The `newDevice` event is handled in the other React components of the application).
 
-Then *fill the code inside `Session.getUnlockKey()` and `Session.addCurrentDevice()` methods using [`tanker.generateAndRegisterUnlockKey()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#generateandregisterunlockkey) and [`tanker.unlockCurrentDevice()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#unlockcurrentdevice) respectively*.
+Then *fill the code inside the `Session.unlockCurrentDevice()` method using [`tanker.unlockCurrentDevice()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#unlockcurrentdevice)*.
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
-async getUnlockKey(): Promise<string> {
-- return 'This will be replaced by a real key [...]. Click on Done for now.';
-+ const key = await this.tanker.generateAndRegisterUnlockKey();
-+ return key;
-}
-
-async addCurrentDevice(unlockKey: string): Promise<void> {
-+ await this.tanker.unlockCurrentDevice(unlockKey);
+async unlockCurrentDevice(password) {
++ await this.tanker.unlockCurrentDevice({ password });
 }
 ```
 </details>
@@ -361,29 +355,45 @@ async addCurrentDevice(unlockKey: string): Promise<void> {
 
 Thus, when the user needs to unlock a new device, the web application will end up calling `tanker.unlockCurrentDevice()`.
 
+Finally, we need to set up the password used to unlock new devices. For the sake of simplicity, we will reuse the password defined at signup in this tutorial.
+
+At the end of the `Session.signUp()` method, *use the [`tanker.setupUnlock()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#setupunlock) method to register the password given at user sign up*.
+
+<details>
+<summary><strong>Click here to see the solution</strong></summary>
+
+```diff
+async signUp(userId, password) {
+  // ...
+  await this.openSession(userId, userToken);
++ await this.tanker.setupUnlock({ password });
+}
+```
+</details>
+<br />
+
 You can now check that device management is indeed working by following those steps:
 
 1. Sign up **with a new user** in the application (the previously created user cannot be used here since the unlock key feature wasn't implemented at the time of their creation),
-2. Copy the user's unlock key and save it somewhere,
-3. Fill the input with some content and click on the save button,
-4. Keep your browser tab open.
+1. Fill the input with some content and click on the save button.
 
-You've just created a new user and some content associated, except this time you've saved the user's unlock key.
+You've just created a new user and some content associated, except this time you've set up a password to unlock other devices.
 
-Now, you'll launch **a different browser** to emulate a new device (technically, different browsers don't share Tanker data and behave as separate devices):
+Now, you'll launch **a different browser** to emulate another device (technically, different browsers don't share Tanker data and behave as separate devices):
 
 1. Open a new tab in a second different browser,
-2. You should now be redirected to a page where you can enter the unlock key you saved in the previous sequence,
-3. Upon entering the unlock key, the second browser should display the same content that was saved in the first browser,
-4. You can then change the content on the second browser, click save, go back to the first browser, and load the new content.
+1. You should be prompted the password to unlock your new device,
+1. Upon entering the password, the second browser should display the same content that was saved in the first browser,
+1. You can then change the content on the second browser, click save, go back to the first browser, and load the new content.
 
 Note 1: instead of a second browser, you could also have used the first browser in private browsing mode to emulate a new device. Nevertheless, the browser won't persist Tanker data over private browsing sessions, so you would have to unlock the device every time you restart such a private browsing session.
 
+Note 2: of course, in applications with strong security needs, you should ask your users to set up a password different from the one used in authentication to unlock devices. The authentication scheme becomes a 2-Factor one, where the password to unlock devices is the second factor.
 
-Note 2: of course, in a more realistic application, users should not have to copy/paste an unlock key themselves. Tanker staff is working on implementing two different ways to implement the feature properly:
+Note 3: Tanker staff is currently working on alternative second factors to achieve device unlocking:
 
-* First way is to use a "passphrase" (a set of 6 to 10 words) that the user can either safely note somewhere, or store in a dedicated device for instance.
-* Or, store the encrypted unlock key on the Tanker servers. The user will then have to use some form of 2-Factor authentication to retrieve their unlock key.
+* By registering an email address or a phone number to which an unlocking code could be sent,
+* By generating a "passphrase" (a set of 6 to 10 words) that power users can either safely note somewhere, or store in a dedicated device for instance.
 
 ## Conclusion
 

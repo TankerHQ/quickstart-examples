@@ -112,6 +112,15 @@ describe('server', () => {
       expect(token).to.be.a('string');
     });
 
+    it('returns 400 if userId is missing', async () => {
+      const invalidQuery = { password: 'secret' };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/signup', query: invalidQuery },
+        { status: 400 },
+      );
+    });
+
     it('returns 400 if password is missing', async () => {
       const invalidQuery = { userId: 'bob' };
       await assertRequest(

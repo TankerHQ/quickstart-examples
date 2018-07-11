@@ -10,6 +10,10 @@ from helpers import Browser, DEFAULT_TIMEOUT
 class Page:
     def __init__(self, browser: Browser) -> None:
         self.browser = browser
+        self.wait_until_ready()
+
+    def wait_until_ready(self) -> None:
+        self.wait_for_next_log("Initialize Tanker SDK")
 
     def open(self, user_id: str) -> None:
         user_id_input = self.browser.wait_for_element_presence(id="userId")

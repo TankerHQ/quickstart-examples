@@ -1,6 +1,5 @@
 import React from "react";
 
-import SaveUnlockKey from "../SaveUnlockKey";
 import NewDevice from "../NewDevice";
 import SessionForm from "../SessionForm";
 import Topbar from "../Topbar";
@@ -35,7 +34,7 @@ class App extends React.Component {
     }
 
     await session.signUp(login, password);
-    this.setState({ status: "saveKey" });
+    this.setState({ status: "ready" });
   };
 
   onSignOut = async () => {
@@ -46,13 +45,8 @@ class App extends React.Component {
     this.setState({ status: "signIn" });
   };
 
-  onKeySaved = async () => {
-    this.setState({ status: "ready" });
-  };
-
-  onUnlockDevice = async unlockKey => {
-    await this.props.session.addCurrentDevice(unlockKey);
-    this.setState({ status: "ready" });
+  onUnlockDevice = async password => {
+    await this.props.session.unlockCurrentDevice(password);
   };
 
   render = () => {
@@ -64,7 +58,6 @@ class App extends React.Component {
         <Topbar isOpen={session.isOpen()} userId={session.userId} onSignOut={this.onSignOut} />
         <div className="container">
           {status === "signIn" && <SessionForm onSignIn={this.onSignIn} onSignUp={this.onSignUp} />}
-          {status === "saveKey" && <SaveUnlockKey session={session} onKeySaved={this.onKeySaved} />}
           {status === "validateDevice" && <NewDevice onUnlockDevice={this.onUnlockDevice} />}
           {status === "ready" && <Notepad session={session} />}
         </div>
