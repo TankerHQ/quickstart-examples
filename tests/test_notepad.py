@@ -87,9 +87,6 @@ class Client:
         friend_button.click()
         self.wait_for_friend_view()
 
-    def wait_for_unlock_key(self) -> None:
-        self.browser.wait_for_element_presence(id="save-unlock-key-heading")
-
     def wait_for_session_form(self) -> None:
         self.browser.wait_for_element_presence(id="session_form_container-tab-sign-in")
 
