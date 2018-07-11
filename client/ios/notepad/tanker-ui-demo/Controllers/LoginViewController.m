@@ -57,7 +57,7 @@
   [_activityIndicator startAnimating];
   [Globals loginWithUserId:userId password:password]
       .then(^(NSString* userToken) {
-        [[Globals sharedInstance].tanker connectUnlockHandler:^{
+        [[Globals sharedInstance].tanker connectUnlockRequiredHandler:^{
           [[Globals sharedInstance].tanker unlockCurrentDeviceWithPassword:password];
         }];
 
