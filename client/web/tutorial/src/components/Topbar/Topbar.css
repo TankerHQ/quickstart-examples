@@ -6,3 +6,10 @@
 .navbar .logo {
   margin: 0 10px 0 0;
 }
+
+#topbar_tutorial_tag {
+  display: inline-block;
+  margin-left: .5em;
+  opacity: .6;
+  font-size: .8em;
+}

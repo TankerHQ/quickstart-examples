@@ -16,7 +16,7 @@ const Topbar = ({ isOpen, userId, onSignOut }) => (
   <Navbar staticTop>
     <Navbar.Header>
       <Navbar.Brand>
-        <Logo className="logo" /> Notepad
+        <Logo className="logo" /> Notepad <span id="topbar_tutorial_tag">- tutorial</span>
       </Navbar.Brand>
       <Navbar.Toggle />
     </Navbar.Header>
