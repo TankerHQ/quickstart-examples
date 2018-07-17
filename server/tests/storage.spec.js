@@ -42,13 +42,21 @@ describe('Storage', () => {
     expect(storage.exists('no_such_id')).to.be.false;
   });
 
+  it('can get user id from email', () => {
+    const user = { id: 'user_42', email: 'user_42@example.com' };
+    storage.save(user);
+
+    expect(storage.emailToId(user.email)).to.equal(user.id);
+    expect(storage.emailToId('wrong@example.com')).to.be.null;
+  });
+
   it('can list all users', () => {
     const user1 = { id: 'user_1' };
     storage.save(user1);
     const user2 = { id: 'user_2' };
     storage.save(user2);
 
-    expect(storage.getAllIds()).to.have.members(['user_1', 'user_2']);
+    expect(storage.getAll()).to.deep.equal([user1, user2]);
   });
 
   it('can record a share between users', () => {

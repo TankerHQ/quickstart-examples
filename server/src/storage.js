@@ -25,6 +25,16 @@ class Storage {
     return fs.existsSync(path);
   }
 
+  emailToId(email) {
+    const users = this.getAll();
+    for (const user of users) {
+      if (user.email === email) {
+        return user.id;
+      }
+    }
+    return null;
+  }
+
   clearData(userId) {
     const path = this.dataFilePath(userId);
     const user = this.get(userId);
@@ -59,12 +69,12 @@ class Storage {
     this.save(user);
   }
 
-  getAllIds() {
+  getAll() {
     const jsonFiles = fs.readdirSync(this.dataFolder).filter(f => f.match(/\.json$/));
     return jsonFiles.map((path) => {
       const fullPath = `${this.dataFolder}/${path}`;
       const user = this.parseJson(fullPath);
-      return user.id;
+      return user;
     });
   }
 

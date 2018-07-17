@@ -45,22 +45,28 @@ describe('server', () => {
   const trustchainPrivateKey = '6+Z3FlkU8n1g27/aNF2+3DFOwOXYVZXqiDhuvmF5Lpj0myDj+nNAkKZZxaPE7luhcRMQzTItDyk/zBh21rTyHw==';
 
   const bobId = 'bob';
+  const bobEmail = 'bob@example.com';
   const bobPassword = 'p4ssw0rd';
   const bobPasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$88wT+5X56Ui7EAQMz/wIdw$37pEnuujONgGxa6FudmN9aa0K3TUQbL/tziT30PX7v4';
   const bobToken = 'bobToken';
 
   const aliceId = 'alice';
+  const aliceEmail = 'alice@example.com';
   const alicePassword = '4lic3';
   const alicePasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$UNqRSixl3aeit4F7mR+5pw$KKfiAWPyUaDkVefJ77w2XRdb8gafLpR1a2Uqd0zYnlY';
   const aliceToken = 'aliceToken';
 
   const signUpBob = () => {
-    const user = { id: bobId, hashed_password: bobPasswordHash, token: bobToken };
+    const user = {
+      id: bobId, email: bobEmail, hashed_password: bobPasswordHash, token: bobToken,
+    };
     app.storage.save(user);
   };
 
   const signUpAlice = () => {
-    const user = { id: aliceId, hashed_password: alicePasswordHash, token: aliceToken };
+    const user = {
+      id: aliceId, email: aliceEmail, hashed_password: alicePasswordHash, token: aliceToken,
+    };
     app.storage.save(user);
   };
 
@@ -97,10 +103,10 @@ describe('server', () => {
   });
 
   describe('/signup', () => {
-    specify('signin up a new user', async () => {
-      const userId = 'user_42';
+    specify('sign up with an email', async () => {
+      const email = 'user42@example.com';
       const password = 'p4ssw0rd';
-      const query = { userId, password };
+      const query = { email, password };
 
       const response = await assertRequest(
         testServer,
@@ -108,11 +114,12 @@ describe('server', () => {
         { status: 201 },
       );
 
-      const token = await response.text();
+      const { id, token } = await response.json();
+      expect(id).to.be.a('string');
       expect(token).to.be.a('string');
     });
 
-    it('returns 400 if userId is missing', async () => {
+    it('returns 400 if email is missing', async () => {
       const invalidQuery = { password: 'secret' };
       await assertRequest(
         testServer,
@@ -122,7 +129,8 @@ describe('server', () => {
     });
 
     it('returns 400 if password is missing', async () => {
-      const invalidQuery = { userId: 'bob' };
+      const invalidQuery = { email: 'bob@example.com' };
+
       await assertRequest(
         testServer,
         { verb: 'get', path: '/signup', query: invalidQuery },
@@ -131,10 +139,10 @@ describe('server', () => {
     });
 
     it('refuses to sign up existing users', async () => {
-      const existingUser = { id: 'existing' };
+      const existingUser = { id: 'existing', email: 'existing@example.com' };
       app.storage.save(existingUser);
 
-      const query = { userId: 'existing' };
+      const query = { email: existingUser.email };
       await assertRequest(
         testServer,
         { verb: 'get', path: '/signup', query },
@@ -147,14 +155,14 @@ describe('server', () => {
     specify('can change password', async () => {
       const newPassword = 'n3wp4ss';
       signUpBob();
-      const query = { userId: bobId, password: bobPassword, newPassword };
+      const query = { email: bobEmail, password: bobPassword, newPassword };
       await assertRequest(
         testServer,
         { verb: 'put', path: '/password', query },
         { status: 200 },
       );
 
-      const newQuery = { userId: bobId, password: newPassword };
+      const newQuery = { email: bobEmail, password: newPassword };
       await assertRequest(
         testServer,
         { verb: 'get', path: '/login', query: newQuery },
@@ -166,20 +174,21 @@ describe('server', () => {
   describe('/login', () => {
     specify('signed up users can log in', async () => {
       signUpBob();
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const response = await assertRequest(
         testServer,
         { verb: 'get', path: '/login', query },
         { status: 200 },
       );
-      const token = await response.text();
+      const { id, token } = await response.json();
+      expect(id).to.equal(bobId);
       expect(token).to.equal(bobToken);
     });
 
     it('refuses to log in with incorrect password', async () => {
       signUpBob();
       const incorrectPassword = 'letmein';
-      const query = { userId: bobId, password: incorrectPassword };
+      const query = { email: bobEmail, password: incorrectPassword };
       await assertRequest(
         testServer,
         { verb: 'get', path: '/login', query },
@@ -194,7 +203,7 @@ describe('server', () => {
 
       const bobNote = 'the note of bob';
 
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const body = bobNote;
       await assertRequest(
         testServer,
@@ -214,7 +223,7 @@ describe('server', () => {
       createBobNote('old note');
 
       const newNote = 'new note';
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const body = newNote;
       await assertRequest(
         testServer,
@@ -230,7 +239,7 @@ describe('server', () => {
 
     specify('delete', async () => {
       signUpBob();
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       await assertRequest(
         testServer,
         { verb: 'delete', path: '/data', query },
@@ -252,7 +261,7 @@ describe('server', () => {
       createBobNote('For Alice');
 
       // Post a share request
-      let query = { userId: bobId, password: bobPassword };
+      let query = { email: bobEmail, password: bobPassword };
       const headers = { 'Content-Type': 'application/json' };
       const body = JSON.stringify({ from: bobId, to: [aliceId] });
       await assertRequest(
@@ -264,13 +273,13 @@ describe('server', () => {
       );
 
       // Alice should have Bob in her accessibleNotes
-      query = { userId: aliceId, password: alicePassword };
+      query = { email: aliceEmail, password: alicePassword };
       let response = await doRequest(testServer, { verb: 'get', path: '/me', query });
       let actual = await response.json();
       expect(actual.accessibleNotes).to.have.members(['bob']);
 
       // Bob should have Alice in his recipients
-      query = { userId: bobId, password: bobPassword };
+      query = { email: bobEmail, password: bobPassword };
       response = await doRequest(testServer, { verb: 'get', path: '/me', query });
       actual = await response.json();
       expect(actual.noteRecipients).to.have.members(['alice']);
@@ -278,17 +287,20 @@ describe('server', () => {
   });
 
   describe('/users', () => {
-    it('returns the list of all user ids', async () => {
+    it('returns the list of all users (id and email only)', async () => {
       signUpBob();
       signUpAlice();
 
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const response = await doRequest(
         testServer,
         { verb: 'get', path: '/users', query },
       );
       const res = await response.json();
-      expect(res).to.have.members([bobId, aliceId]);
+      expect(res).to.deep.equal([
+        { id: aliceId, email: aliceEmail },
+        { id: bobId, email: bobEmail },
+      ]);
     });
 
     it('does not crash if a json file is corrupted', async () => {
@@ -298,7 +310,7 @@ describe('server', () => {
       const alicePath = app.storage.dataFilePath(aliceId);
       fs.writeFileSync(alicePath, 'this is {not} valid json[]');
 
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const response = await doRequest(
         testServer,
         { verb: 'get', path: '/users', query },

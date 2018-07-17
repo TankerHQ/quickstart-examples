@@ -10,11 +10,12 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const fs = require('fs');
 const morgan = require('morgan');
+const uuid = require('uuid/v4');
 const userToken = require('@tanker/user-token');
 const sodium = require('libsodium-wrappers-sumo');
 const debugMiddleware = require('debug-error-middleware').express;
 
-const authMiddleware = require('./middlewares/auth');
+const authMiddlewareBuilder = require('./middlewares/auth');
 const corsMiddleware = require('./middlewares/cors');
 
 const log = require('./log');
@@ -55,7 +56,7 @@ const hashPassword = async (password) => {
     sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
     sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
   );
-}
+};
 
 app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
@@ -74,8 +75,8 @@ app.use(home);
 // Add middlewares to log requests on routes defined below
 app.use(morgan('dev'));
 app.use((req, res, next) => {
-  const { userId } = req.query;
-  const maybeFrom = userId ? ` from ${userId}:` : ':';
+  const { email } = req.query;
+  const maybeFrom = email ? ` from ${email}:` : ':';
   log(`New ${req.path} request${maybeFrom}`);
   next();
 });
@@ -89,11 +90,11 @@ app.get('/config', (req, res) => {
 
 // Add signup route (non authenticated)
 app.get('/signup', async (req, res) => {
-  const { userId, password } = req.query;
+  const { email, password } = req.query;
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
-  if (!userId) {
-    res.status(400).send('missing userId');
+  if (!email) {
+    res.status(400).send('missing email');
     return;
   }
 
@@ -102,11 +103,16 @@ app.get('/signup', async (req, res) => {
     return;
   }
 
-  if (app.storage.exists(userId)) {
-    log(`User "${userId}" already exists`, 1);
+  const existingUserId = app.storage.emailToId(email);
+
+  if (existingUserId) {
+    log(`Email "${email}" already taken`, 1);
     res.sendStatus(409);
     return;
   }
+
+  log('Generate the user id', 1);
+  const userId = uuid();
 
   log('Hash the password', 1);
   const hashedPassword = await hashPassword(password);
@@ -118,20 +124,23 @@ app.get('/signup', async (req, res) => {
     userId,
   );
 
-  log('Save hashed password and token to storage', 1);
-  app.storage.save({ id: userId, hashed_password: hashedPassword, token });
+  log('Save the user to storage', 1);
+  const user = {
+    id: userId, email, hashed_password: hashedPassword, token,
+  };
+  app.storage.save(user);
 
-  log('Serve the token', 1);
-  res.set('Content-Type', 'text/plain');
-  res.status(201).send(token);
+  log('Return the user id and token', 1);
+  res.set('Content-Type', 'application/json');
+  res.status(201).json({ id: userId, token });
 });
 
 
 // Add authentication middleware for all routes below
-//   - check valid "userId" and "password" query params
+//   - check valid "email" and "password" query params
 //   - set res.locals.user for the request handlers
-const authFunc = authMiddleware(app);
-app.use(authFunc);
+const authMiddleware = authMiddlewareBuilder(app);
+app.use(authMiddleware);
 
 
 // Add authenticated routes
@@ -140,8 +149,8 @@ app.get('/login', (req, res) => {
   const { user } = res.locals;
 
   log('Serve the token', 1);
-  res.set('Content-Type', 'text/plain');
-  res.send(user.token);
+  res.set('Content-Type', 'application/json');
+  res.json({ id: user.id, token: user.token });
 });
 
 app.put('/password', async (req, res) => {
@@ -206,10 +215,15 @@ app.get('/data/:userId', (req, res) => {
 
 
 app.get('/users', (req, res) => {
-  const knownIds = app.storage.getAllIds();
+  const knownUsers = app.storage.getAll();
+
+  const safeUsers = knownUsers.map((user) => {
+    const { id, email } = user;
+    return { id, email };
+  });
 
   res.set('Content-Type', 'application/json');
-  res.json(knownIds);
+  res.json(safeUsers);
 });
 
 // Register a new share
