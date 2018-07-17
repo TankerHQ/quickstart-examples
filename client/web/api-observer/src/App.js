@@ -4,11 +4,13 @@ import Tanker, { toBase64, fromBase64, errors } from '@tanker/client-browser';
 
 import { getEntry, LogPanel } from './log';
 
+const serverRoot = 'http://localhost:8080';
+
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      userId: '',
+      email: '',
       clearText: '',
       encryptedText: '',
       shareWith: '',
@@ -20,7 +22,7 @@ class App extends Component {
 
   initTanker = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/config`);
+      const res = await fetch(`${serverRoot}/config`);
       const config = await res.json();
       this.tanker = new Tanker(config);
       this.log('initialize', config.trustchainId);
@@ -41,8 +43,8 @@ class App extends Component {
     this.setState({ log: [entry, ...this.state.log] });
   }
 
-  onUserChange = (event) => {
-    this.setState({ userId: event.target.value });
+  onEmailChange = (event) => {
+    this.setState({ email: event.target.value });
   }
 
   onClearTextChange = (event) => {
@@ -60,7 +62,12 @@ class App extends Component {
   onEncrypt = async () => {
     try {
       const { clearText, shareWith } = this.state;
-      const options = shareWith ? { shareWith: [shareWith] } : {};
+
+      const options = {};
+      if (shareWith) {
+        const id = await this.getUserId(shareWith);
+        options.shareWith = [id];
+      }
 
       this.log('encryption', clearText, shareWith);
 
@@ -97,36 +104,47 @@ class App extends Component {
     }
   }
 
-  getToken = async (userId) => {
+  authenticate = async (email, password) => {
+    const eEmail = encodeURIComponent(email);
+    const ePassword = encodeURIComponent(password);
+
     // Authenticated request: always pass "Tanker" as password (mock auth)
-    let res = await fetch(`http://localhost:8080/login?userId=${encodeURIComponent(userId)}&password=Tanker`);
+    let res = await fetch(`${serverRoot}/login?email=${eEmail}&password=${ePassword}`);
 
     // User not found
     if (res.status === 404) {
-      res = await fetch(`http://localhost:8080/signup?userId=${encodeURIComponent(userId)}&password=Tanker`);
+      res = await fetch(`${serverRoot}/signup?email=${eEmail}&password=${ePassword}`);
     }
 
-    return res.text();
+    return res.json();
+  }
+
+  getUserId = async (email) => {
+    const password = 'Tanker';
+    const { id } = await this.authenticate(email, password);
+    return id;
   }
 
   onClose = async () => {
-    this.log('closingSession', this.state.userId);
+    this.log('closingSession', this.state.email);
 
     await this.tanker.close();
 
-    this.log('closedSession', this.state.userId);
+    this.log('closedSession', this.state.email);
   }
 
   onOpen = async (event) => {
     event.preventDefault();
-    const userId = this.state.userId;
 
-    this.log('openingSession', userId);
+    const email = this.state.email;
+    const password = 'Tanker'; // Note: this is for demo only
 
-    const userToken = await this.getToken(userId);
-    await this.tanker.open(userId, userToken);
+    this.log('openingSession', email, password);
 
-    this.log('openedSession', userId);
+    const user = await this.authenticate(email, password);
+    await this.tanker.open(user.id, user.token);
+
+    this.log('openedSession', email);
   }
 
   render = () => (
@@ -145,13 +163,13 @@ class App extends Component {
                     <ControlLabel>Session</ControlLabel>
                     <InputGroup>
                       <FormControl
-                        id="userId"
-                        placeholder={"User ID, e.g. \"alice-id\""}
+                        id="email"
+                        placeholder={"Email address, e.g. \"alice@example.com\""}
                         type="text"
-                        value={this.state.userId}
-                        onChange={this.onUserChange}
+                        value={this.state.email}
+                        onChange={this.onEmailChange}
                         onKeyPress={event => {
-                          if (event.key === "Enter" && this.state.userId) {
+                          if (event.key === "Enter" && this.state.email) {
                             if (this.tanker.status === this.tanker.CLOSED) {
                               this.onOpen(event);
                             } else {
@@ -166,7 +184,7 @@ class App extends Component {
                           <Button
                             bsStyle="primary"
                             onClick={this.onOpen}
-                            disabled={this.state.userId === ''}
+                            disabled={this.state.email === ''}
                           >
                             Open
                           </Button>
@@ -175,7 +193,7 @@ class App extends Component {
                           <Button
                             bsStyle="danger"
                             onClick={this.onClose}
-                            disabled={this.state.userId === ''}
+                            disabled={this.state.email === ''}
                           >
                             Close
                           </Button>
@@ -215,7 +233,7 @@ class App extends Component {
                         name="shareWith"
                         value={this.state.shareWith}
                         onChange={this.onShareChange}
-                        placeholder="User ID of another user"
+                        placeholder="Email address of another user"
                       />
                     </InputGroup>
                   </FormGroup>
