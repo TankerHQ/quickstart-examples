@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node src/main.js",
     "watch": "node-dev src/main.js",
-    "test": "mocha --recursive tests",
+    "test": "mocha --recursive tests --timeout 5000",
     "lint": "cd .. && eslint --config=./server/.eslintrc server/src/**.js server/tests/**.js"
   },
   "dependencies": {

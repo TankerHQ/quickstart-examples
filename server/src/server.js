@@ -48,11 +48,14 @@ const setup = (config) => {
   return app;
 };
 
-const hashPassword = password => sodium.crypto_pwhash_str(
-  password,
-  sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-  sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
-);
+const hashPassword = async (password) => {
+  await sodium.ready;
+  return sodium.crypto_pwhash_str(
+    password,
+    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+  );
+}
 
 app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
@@ -85,7 +88,7 @@ app.get('/config', (req, res) => {
 });
 
 // Add signup route (non authenticated)
-app.get('/signup', (req, res) => {
+app.get('/signup', async (req, res) => {
   const { userId, password } = req.query;
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
@@ -106,7 +109,7 @@ app.get('/signup', (req, res) => {
   }
 
   log('Hash the password', 1);
-  const hashedPassword = hashPassword(password);
+  const hashedPassword = await hashPassword(password);
 
   log('Generate a new user token', 1);
   const token = userToken.generateUserToken(
@@ -141,7 +144,7 @@ app.get('/login', (req, res) => {
   res.send(user.token);
 });
 
-app.put('/password', (req, res) => {
+app.put('/password', async (req, res) => {
   log('Change password', 1);
   const { user } = res.locals;
   const { newPassword } = req.query;
@@ -150,7 +153,7 @@ app.put('/password', (req, res) => {
     res.sendStatus(400);
     return;
   }
-  user.hashed_password = hashPassword(newPassword);
+  user.hashed_password = await hashPassword(newPassword);
   app.storage.save(user);
   res.sendStatus(200);
 });
