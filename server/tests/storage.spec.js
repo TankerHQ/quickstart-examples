@@ -61,8 +61,8 @@ describe('Storage', () => {
 
   it('can record a share between users', () => {
     const alice = { id: 'alice' };
-    storage.save(alice);
     const bob = { id: 'bob' };
+    storage.save(alice);
     storage.save(bob);
     storage.share('alice', ['bob']);
 
@@ -71,6 +71,21 @@ describe('Storage', () => {
 
     const bobAccessibleNotes = storage.get('bob').accessibleNotes;
     expect(bobAccessibleNotes).to.have.members(['alice']);
+  });
+
+  it('can unshare data', () => {
+    const alice = { id: 'alice' };
+    const bob = { id: 'bob' };
+    storage.save(alice);
+    storage.save(bob);
+    storage.share('alice', ['bob']);
+    storage.share('alice', []); // unshare
+
+    const aliceRecipients = storage.get('alice').noteRecipients;
+    expect(aliceRecipients).to.not.have.members(['bob']);
+
+    const bobAccessibleNotes = storage.get('bob').accessibleNotes;
+    expect(bobAccessibleNotes).to.not.have.members(['alice']);
   });
 
   it('can clear data', () => {

@@ -1,6 +1,19 @@
 const fs = require('fs');
 const pathlib = require('path');
 
+const diffArrays = (a, b) => {
+  const aSet = new Set(a);
+  const bSet = new Set(b);
+  const removed = [];
+  aSet.forEach((el) => {
+    if (!bSet.delete(el)) {
+      removed.push(el);
+    }
+  });
+  const added = Array.from(bSet.values());
+  return { added, removed };
+};
+
 class Storage {
   constructor(dataFolder, trustchainId) {
     const escapedTrustchainId = trustchainId.replace(/[/\\]/g, '_');
@@ -42,15 +55,20 @@ class Storage {
     fs.writeFileSync(path, JSON.stringify(user, null, 2));
   }
 
-  // Record a share from `author` to a list of recpients
-  share(author, recipients) {
-    recipients.forEach((recipient) => {
-      this.addAccessibleNoteId(author, recipient);
-    });
-    this.addNoteRecipients(author, recipients);
+  // Record a share from `author` to a list of recipients
+  share(authorId, recipientIds) {
+    const author = this.get(authorId);
+
+    const prevRecipientIds = author.noteRecipients || [];
+    const { added, removed } = diffArrays(prevRecipientIds, recipientIds);
+    added.forEach(recipientId => this.addAccessibleNoteId(authorId, recipientId));
+    removed.forEach(recipientId => this.removeAccessibleNoteId(authorId, recipientId));
+
+    author.noteRecipients = recipientIds;
+    this.save(author);
   }
 
-  // Record that `to` shared a note with `from`
+  // Record that `to` has access to the note of `from`
   addAccessibleNoteId(from, to) {
     const user = this.get(to);
     if (!user.accessibleNotes) {
@@ -62,10 +80,13 @@ class Storage {
     this.save(user);
   }
 
-  // Record that the note of `from` is shared with `to`
-  addNoteRecipients(from, to) {
-    const user = this.get(from);
-    user.noteRecipients = to;
+  // Record that `to` has no longer access to the note of `from`
+  removeAccessibleNoteId(from, to) {
+    const user = this.get(to);
+    if (!user.accessibleNotes) {
+      user.accessibleNotes = [];
+    }
+    user.accessibleNotes = user.accessibleNotes.filter(id => id !== from);
     this.save(user);
   }
 
