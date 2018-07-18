@@ -58,6 +58,15 @@ const hashPassword = async (password) => {
   );
 };
 
+const sanitizeUser = (user) => {
+  const sensitiveKeys = ['hashed_password', 'token'];
+  const safeUser = { ...user };
+  for (const key of sensitiveKeys) {
+    delete safeUser[key];
+  }
+  return safeUser;
+};
+
 app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
@@ -215,12 +224,8 @@ app.get('/data/:userId', (req, res) => {
 
 
 app.get('/users', (req, res) => {
-  const knownUsers = app.storage.getAll();
-
-  const safeUsers = knownUsers.map((user) => {
-    const { id, email } = user;
-    return { id, email };
-  });
+  const allUsers = app.storage.getAll();
+  const safeUsers = allUsers.map(sanitizeUser);
 
   res.set('Content-Type', 'application/json');
   res.json(safeUsers);
@@ -242,7 +247,8 @@ app.post('/share', (req, res) => {
 app.get('/me', (req, res) => {
   // res.locals.user is set by the auth middleware
   const me = res.locals.user;
-  res.json(me);
+  const safeMe = sanitizeUser(me);
+  res.json(safeMe);
 });
 
 // Return nice 500 message when an exception is thrown
