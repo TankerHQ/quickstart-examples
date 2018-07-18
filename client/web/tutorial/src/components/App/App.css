@@ -4,8 +4,63 @@ body {
   font-family: sans-serif;
 }
 
+.app section {
+  margin-bottom: 3em;
+}
+
+.app section:last-of-type {
+  margin-bottom: 1em;
+}
+
+.app h2 {
+  font-size: 16px;
+  margin: 0 0 16px 0;
+  padding: 0;
+}
+
+.app .edit-link {
+  padding-left: 0;
+}
+
 .app .panel {
   width: 500px;
   max-width: 100%;
   margin: 6rem auto;
+}
+
+.app .panel-body {
+  padding: 3rem;
+}
+
+.app #session_form_container {
+  border: 0;
+  box-shadow: 0;
+}
+
+.app #session_form_container--heading {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background-color: transparent;
+}
+
+.app #session_form_container .panel-body {
+  border-width: 0 1px 1px 1px;
+  border-style: solid;
+  border-color: #ddd;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.app #refresh-button {
+  margin-top: -.5em;
+}
+
+.app .flip {
+  -moz-transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  -o-transform: scale(-1, 1);
+  -ms-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+  display: inline-block;
 }

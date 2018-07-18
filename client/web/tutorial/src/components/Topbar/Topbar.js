@@ -1,18 +1,11 @@
 import * as React from "react";
 import { MenuItem, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { withRouter } from "react-router-dom";
 
 import Logo from "./Logo";
 import "./Topbar.css";
 
-const Signout = ({ userId, onSignOut }) => (
-  <NavDropdown eventKey={1} title={userId} id="topbar_dropdown">
-    <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={1}>
-      Sign out
-    </MenuItem>
-  </NavDropdown>
-);
-
-const Topbar = ({ isOpen, userId, onSignOut }) => (
+const Topbar = ({ isOpen, email, onSignOut, history }) => (
   <Navbar staticTop>
     <Navbar.Header>
       <Navbar.Brand>
@@ -21,9 +14,20 @@ const Topbar = ({ isOpen, userId, onSignOut }) => (
       <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
-      <Nav pullRight>{isOpen && <Signout userId={userId} onSignOut={onSignOut} />}</Nav>
+      {isOpen && (
+        <Nav pullRight>
+          <NavDropdown title={email} id="topbar_dropdown">
+            <MenuItem id="settings-menu-item" onClick={() => history.push(`/settings`)} eventKey={1}>
+              Settings
+            </MenuItem>
+            <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={2}>
+              Sign out
+            </MenuItem>
+          </NavDropdown>
+        </Nav>
+      )}
     </Navbar.Collapse>
   </Navbar>
 );
 
-export default Topbar;
+export default withRouter(Topbar);

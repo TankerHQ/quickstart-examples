@@ -7,6 +7,7 @@ export default class Session extends EventEmitter {
   constructor() {
     super();
     this.resourceId = null;
+    this.userId = null;
     this.serverApi = new ServerApi();
     // FIXME: get rid of this.opened
     this.opened = false;
@@ -19,12 +20,8 @@ export default class Session extends EventEmitter {
     // FIXME: handle the 'unlockRequired' event
   }
 
-  get userId() {
-    return this.serverApi.userId;
-  }
-
-  get password() {
-    return this.serverApi.password;
+  get email() {
+    return this.serverApi.email;
   }
 
   isOpen() {
@@ -33,6 +30,8 @@ export default class Session extends EventEmitter {
   }
 
   async close() {
+    this.userId = null;
+    this.serverApi.setUserInfo(null, null);
     // FIXME: close tanker session
     this.opened = false;
   }
@@ -42,24 +41,26 @@ export default class Session extends EventEmitter {
     this.opened = true;
   }
 
-  async signUp(userId, password) {
+  async signUp(email, password) {
     await this.initTanker();
 
-    this.serverApi.setUserInfo(userId, password);
+    this.serverApi.setUserInfo(email, password);
     const response = await this.serverApi.signUp();
 
-    if (response.status === 409) throw new Error(`User '${userId}' already exists`);
+    if (response.status === 409) throw new Error(`Email '${email}' already taken`);
     if (!response.ok) throw new Error("Server error!");
 
-    const userToken = await response.text();
-    await this.openSession(userId, userToken);
+    const user = await response.json();
+    this.userId = user.id;
+
+    await this.openSession(user.id, user.token);
     // FIXME: setup the password to unlock additional devices
   }
 
-  async signIn(userId, password) {
+  async signIn(email, password) {
     await this.initTanker();
 
-    this.serverApi.setUserInfo(userId, password);
+    this.serverApi.setUserInfo(email, password);
     let response;
     try {
       response = await this.serverApi.login();
@@ -72,8 +73,10 @@ export default class Session extends EventEmitter {
     if (response.status === 401) throw new Error("Bad login or password");
     if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
-    const userToken = await response.text();
-    await this.openSession(userId, userToken);
+    const user = await response.json();
+    this.userId = user.id;
+
+    await this.openSession(user.id, user.token);
   }
 
   async unlockCurrentDevice(password) {
@@ -82,6 +85,7 @@ export default class Session extends EventEmitter {
 
   async saveText(text) {
     const recipients = await this.getNoteRecipients();
+    const recipientIds = recipients.map(user => user.id);
     // FIXME: encrypt text
     // FIXME: update this.resourceId
     // FIXME: push encrypted text, base64-encoded
@@ -89,7 +93,7 @@ export default class Session extends EventEmitter {
   }
 
   async loadTextFromUser(userId) {
-    const response = await this.serverApi.get(userId);
+    const response = await this.serverApi.getUserData(userId);
 
     if (response.status === 404) return "";
 
@@ -100,14 +104,14 @@ export default class Session extends EventEmitter {
   }
 
   async getAccessibleNotes() {
-    return (await this.serverApi.getMyData()).accessibleNotes || [];
+    return (await this.serverApi.getMe()).accessibleNotes;
   }
 
   async getNoteRecipients() {
-    return (await this.serverApi.getMyData()).noteRecipients || [];
+    return (await this.serverApi.getMe()).noteRecipients;
   }
 
-  async getUsers() {
+  getUsers() {
     return this.serverApi.getUsers();
   }
 
@@ -116,10 +120,20 @@ export default class Session extends EventEmitter {
     this.resourceId = this.userId;
     if (!this.resourceId) throw new Error("No resource id.");
     // FIXME: share [this.resourceId] with the recipients
-    await this.serverApi.share(recipients);
+    await this.serverApi.share(this.userId, recipients);
   }
 
-  async delete() {
+  delete() {
     return this.serverApi.delete();
+  }
+
+  async changeEmail(newEmail) {
+    await this.serverApi.changeEmail(newEmail);
+    // FIXME: update the unlock email
+  }
+
+  async changePassword(oldPassword, newPassword) {
+    await this.serverApi.changePassword(oldPassword, newPassword);
+    // FIXME: update the unlock password
   }
 }

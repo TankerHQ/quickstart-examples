@@ -65,12 +65,12 @@ export default class Form extends React.Component {
     return (
       <form className="form-signin">
         {serverError && <Alert bsStyle="danger">{serverError}</Alert>}
-        <FormGroup controlId={`${formId}-user-id`} validationState={loginError ? "error" : null}>
-          <ControlLabel>Username</ControlLabel>
+        <FormGroup controlId={`${formId}-email`} validationState={loginError ? "error" : null}>
+          <ControlLabel>Email</ControlLabel>
           <FormControl
             type="text"
             value={login}
-            placeholder="Username"
+            placeholder="Email"
             onChange={this.handleLoginChange}
             required
             autoFocus

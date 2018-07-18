@@ -18,7 +18,7 @@ class App extends React.Component {
   onSignIn = async (login, password) => {
     const { session } = this.props;
     if (session.isOpen()) {
-      console.warn(`Closing previous session opened by ${session.userId}`);
+      console.warn(`Closing previous session opened by ${session.email}`);
       await session.close();
     }
 
@@ -29,7 +29,7 @@ class App extends React.Component {
   onSignUp = async (login, password) => {
     const { session } = this.props;
     if (session.isOpen()) {
-      console.warn(`Closing previous session opened by ${session.userId}`);
+      console.warn(`Closing previous session opened by ${session.email}`);
       await session.close();
     }
 
@@ -55,7 +55,7 @@ class App extends React.Component {
 
     return (
       <div className="app">
-        <Topbar isOpen={session.isOpen()} userId={session.userId} onSignOut={this.onSignOut} />
+        <Topbar isOpen={session.isOpen()} email={session.email} onSignOut={this.onSignOut} />
         <div className="container">
           {status === "signIn" && <SessionForm onSignIn={this.onSignIn} onSignUp={this.onSignUp} />}
           {status === "validateDevice" && <NewDevice onUnlockDevice={this.onUnlockDevice} />}

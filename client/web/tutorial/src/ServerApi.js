@@ -1,25 +1,25 @@
 const appServerUrl = "http://localhost:8080";
 
 export default class Api {
-  get userId() {
-    return this._userId;
+  get email() {
+    return this._email;
   }
 
   get password() {
     return this._password;
   }
 
-  setUserInfo(userId, password) {
-    this._userId = userId;
+  setUserInfo(email, password) {
+    this._email = email;
     this._password = password;
   }
 
   urlFor(path) {
     let queryString = '';
-    if (this.userId) {
-      const escapedUserId = encodeURIComponent(this.userId);
+    if (this.email) {
+      const escapedEmail = encodeURIComponent(this.email);
       const escapedPassword = encodeURIComponent(this.password);
-      queryString = `?userId=${escapedUserId}&password=${escapedPassword}`;
+      queryString = `?email=${escapedEmail}&password=${escapedPassword}`;
     }
     return `${appServerUrl}${path}${queryString}`;
   }
@@ -27,7 +27,7 @@ export default class Api {
   async doRequest(path, fetchOpts) {
     const response = await this.doRequestUnchecked(path, fetchOpts);
     if (!response.ok) {
-      this.onFailedRequest(response);
+      await this.onFailedRequest(response);
     }
     return response;
   }
@@ -69,7 +69,7 @@ export default class Api {
     return this.doRequest("/data", { method: "PUT", body: content });
   }
 
-  async get(userId) {
+  async getUserData(userId) {
     // this is allowed to return 404
     const response = await this.doRequestUnchecked(`/data/${userId}`);
     if (response.ok || response.status === 404) {
@@ -80,7 +80,7 @@ export default class Api {
     }
   }
 
-  async getMyData() {
+  async getMe() {
     const response = await this.doRequest("/me");
     return response.json();
   }
@@ -90,13 +90,29 @@ export default class Api {
     return response.json();
   }
 
-  async share(recipients) {
+  async share(from, recipients) {
     const data = {
-      from: this.userId,
+      from,
       to: recipients,
     };
     const headers = { "Content-Type": "application/json" };
     const body = JSON.stringify(data);
     await this.doRequest("/share", { headers, body, method: "POST" });
+  }
+
+  async changeEmail(newEmail) {
+    const data = { email: newEmail };
+    const headers = { "Content-Type": "application/json" };
+    const body = JSON.stringify(data);
+    await this.doRequest("/me/email", { headers, body, method: "PUT" });
+    this._email = newEmail;
+  }
+
+  async changePassword(oldPassword, newPassword) {
+    const data = { oldPassword, newPassword };
+    const headers = { "Content-Type": "application/json" };
+    const body = JSON.stringify(data);
+    await this.doRequest("/me/password", { headers, body, method: "PUT" });
+    this._password = newPassword;
   }
 }
