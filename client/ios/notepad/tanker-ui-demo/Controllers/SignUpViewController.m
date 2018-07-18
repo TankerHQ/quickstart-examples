@@ -5,7 +5,7 @@
 
 @interface SignUpViewController ()
 @property UIActivityIndicatorView* activityIndicator;
-@property(weak, nonatomic) IBOutlet UITextField* unameField;
+@property(weak, nonatomic) IBOutlet UITextField* emailField;
 @property(weak, nonatomic) IBOutlet UITextField* passwordField;
 @property(weak, nonatomic) IBOutlet UILabel* errorLabel;
 
@@ -18,8 +18,8 @@
   [super viewDidLoad];
   // Do any additional setup after loading the view.
 
-  _unameField.returnKeyType = UIReturnKeyNext;
-  _unameField.delegate = self;
+  _emailField.returnKeyType = UIReturnKeyNext;
+  _emailField.delegate = self;
   _passwordField.returnKeyType = UIReturnKeyNext;
   _passwordField.delegate = self;
 
@@ -42,12 +42,12 @@
 {
   _errorLabel.text = @"";
 
-  NSString* userId = _unameField.text;
+  NSString* email = _emailField.text;
   NSString* password = _passwordField.text;
 
-  if ([userId stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
+  if ([email stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
   {
-    _errorLabel.text = @"UserID is empty or filled with blanks";
+    _errorLabel.text = @"Email is empty or filled with blanks";
     return;
   }
   if ([password stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
@@ -58,8 +58,10 @@
 
   [_activityIndicator startAnimating];
 
-  [Globals signupWithUserId:userId password:password]
+  [Globals signupWithEmail:email password:password]
       .then(^(NSString* userToken) {
+        NSString *userId = [Globals sharedInstance].userId;
+
         return [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken].then(^{
           NSLog(@"Tanker is open");
           return [[Globals sharedInstance].tanker setupUnlockWithPassword:password].then(^{
@@ -85,7 +87,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField
 {
-  if (textField == self.unameField)
+  if (textField == self.emailField)
   {
     [self.passwordField becomeFirstResponder];
   }

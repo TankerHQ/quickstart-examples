@@ -7,18 +7,20 @@
 
 + (Globals*)sharedInstance;
 
-+ (PMKPromise<NSString*>*)signupWithUserId:(NSString*)userId password:(NSString*)password;
-+ (PMKPromise<NSString*>*)loginWithUserId:(NSString*)userId password:(NSString*)password;
++ (PMKPromise<NSString*>*)signupWithEmail:(NSString*)email password:(NSString*)password;
++ (PMKPromise<NSString*>*)loginWithEmail:(NSString*)email password:(NSString*)password;
 + (PMKPromise*)uploadToServer:(NSString*)data;
 + (PMKPromise<NSString*>*)dataFromServer;
 + (PMKPromise*)changePassword:(NSString*)newPassword;
-+ (PMKPromise*)shareNoteWith:(NSArray<NSString*>*)recipients;
++ (PMKPromise*)shareNoteFrom:(NSString*)userId to:(NSArray<NSString*>*)recipients;
 + (PMKPromise<NSString*>*)getDataFromUser:(NSString*)userIdFrom;
++ (PMKPromise<NSArray<id>*>*)getUsers;
 
 @property NSString* serverAddress;
 @property TKRTanker* tanker;
-@property NSString* userId;
+@property NSString* email;
 @property NSString* password;
 @property NSString* trustchainId;
+@property NSString* userId;
 
 @end

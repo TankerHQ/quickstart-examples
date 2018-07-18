@@ -20,7 +20,7 @@
 
   if ([password stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
   {
-    _errorLabel.text = @"UserID is empty or filled with blanks";
+    _errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }
 

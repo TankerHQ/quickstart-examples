@@ -77,29 +77,38 @@ NSString* getWritablePath()
   }];
 }
 
-+ (PMKPromise<NSString*>*)signupOrLoginWithUserId:(NSString*)userId password:(NSString*)password path:(NSString*)path
++ (PMKPromise<NSString*>*)signupOrLoginWithEmail:(NSString*)email password:(NSString*)password path:(NSString*)path
 {
   Globals* inst = [Globals sharedInstance];
 
-  inst.userId = userId;
+  inst.email = email;
   inst.password = password;
   return [Globals requestToServerWithMethod:@"GET"
                                        path:path
-                                  queryArgs:@{@"userId" : userId, @"password" : password}
+                                  queryArgs:@{@"email" : email, @"password" : password}
                                        body:nil]
-      .then(^(NSData* token) {
-        return [[NSString alloc] initWithData:token encoding:NSUTF8StringEncoding];
+      .then(^(NSData* jsonUser) {
+        // Get JSON data into a Foundation object
+        NSError *error = nil;
+        id user = [NSJSONSerialization JSONObjectWithData:jsonUser options:NSJSONReadingAllowFragments error:&error];
+
+        NSString *id = [user objectForKey:@"id"];
+        NSString *token = [user objectForKey:@"token"];
+
+        inst.userId = id;
+
+        return token;
       });
 }
 
-+ (PMKPromise<NSString*>*)signupWithUserId:(NSString*)userId password:(NSString*)password
++ (PMKPromise<NSString*>*)signupWithEmail:(NSString*)email password:(NSString*)password
 {
-  return [Globals signupOrLoginWithUserId:userId password:password path:@"signup"];
+  return [Globals signupOrLoginWithEmail:email password:password path:@"signup"];
 }
 
-+ (PMKPromise<NSString*>*)loginWithUserId:(NSString*)userId password:(NSString*)password;
++ (PMKPromise<NSString*>*)loginWithEmail:(NSString*)email password:(NSString*)password;
 {
-  return [Globals signupOrLoginWithUserId:userId password:password path:@"login"];
+  return [Globals signupOrLoginWithEmail:email password:password path:@"login"];
 }
 
 + (Globals*)sharedInstance
@@ -114,12 +123,13 @@ NSString* getWritablePath()
 
 + (PMKPromise<NSString*>*)dataFromServer
 {
-  NSString* userId = [Globals sharedInstance] -> _userId;
+  NSString* email = [Globals sharedInstance] -> _email;
   NSString* password = [Globals sharedInstance] -> _password;
+  NSString* userId = [Globals sharedInstance] -> _userId;
 
   return [Globals requestToServerWithMethod:@"GET"
                                        path:[@"data" stringByAppendingPathComponent:userId]
-                                  queryArgs:@{@"userId" : userId, @"password" : password}
+                                  queryArgs:@{@"email" : email, @"password" : password}
                                        body:nil]
       .then(^(NSData* data) {
         return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -128,12 +138,12 @@ NSString* getWritablePath()
 
 + (PMKPromise<NSString*>*)getDataFromUser:(NSString*)userIdFrom
 {
-  NSString* userId = [Globals sharedInstance] -> _userId;
+  NSString* email = [Globals sharedInstance] -> _email;
   NSString* password = [Globals sharedInstance] -> _password;
 
   return [Globals requestToServerWithMethod:@"GET"
                                        path:[@"data" stringByAppendingPathComponent:userIdFrom]
-                                  queryArgs:@{@"userId" : userId, @"password" : password}
+                                  queryArgs:@{@"email" : email, @"password" : password}
                                        body:nil]
       .then(^(NSData* data) {
         return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -142,34 +152,34 @@ NSString* getWritablePath()
 
 + (PMKPromise*)uploadToServer:(NSString*)data
 {
-  NSString* userId = [Globals sharedInstance] -> _userId;
+  NSString* email = [Globals sharedInstance] -> _email;
   NSString* password = [Globals sharedInstance] -> _password;
 
   NSData* body = [data dataUsingEncoding:NSUTF8StringEncoding];
   return [Globals requestToServerWithMethod:@"PUT"
                                        path:@"data"
-                                  queryArgs:@{@"userId" : userId, @"password" : password}
+                                  queryArgs:@{@"email" : email, @"password" : password}
                                        body:body];
 }
 
 + (PMKPromise*)changePassword:(NSString*)newPassword
 {
-  NSString* userId = [Globals sharedInstance] -> _userId;
+  NSString* email = [Globals sharedInstance] -> _email;
   NSString* oldPassword = [Globals sharedInstance] -> _password;
 
   return
       [Globals requestToServerWithMethod:@"PUT"
                                     path:@"password"
-                               queryArgs:@{@"userId" : userId, @"password" : oldPassword, @"newPassword" : newPassword}
+                               queryArgs:@{@"email" : email, @"password" : oldPassword, @"newPassword" : newPassword}
                                     body:nil]
           .then(^{
             [Globals sharedInstance] -> _password = newPassword;
           });
 }
 
-+ (PMKPromise*)shareNoteWith:(NSArray<NSString*>*)recipients
++ (PMKPromise*)shareNoteFrom:(NSString*)userId to:(NSArray<NSString*>*)recipients
 {
-  NSString* userId = [Globals sharedInstance] -> _userId;
+  NSString* email = [Globals sharedInstance] -> _email;
   NSString* password = [Globals sharedInstance] -> _password;
 
   NSDictionary* body = @{@"from" : userId, @"to" : recipients};
@@ -178,10 +188,28 @@ NSString* getWritablePath()
 
   return [Globals requestToServerWithMethod:@"POST"
                                        path:@"share"
-                                  queryArgs:@{@"userId" : userId, @"password" : password}
+                                  queryArgs:@{@"email" : email, @"password" : password}
                                        body:jsonBody
                                 contentType:@"application/json"];
 }
+
++ (PMKPromise<NSArray<id>*>*)getUsers
+{
+  NSString* email = [Globals sharedInstance] -> _email;
+  NSString* password = [Globals sharedInstance] -> _password;
+
+  return [Globals requestToServerWithMethod:@"GET"
+                                       path:@"users"
+                                  queryArgs:@{@"email" : email, @"password" : password}
+                                       body:nil]
+    .then(^(NSData* jsonUsers) {
+      // Get JSON data into a Foundation object
+      NSError *error = nil;
+      NSArray<id> *users = [NSJSONSerialization JSONObjectWithData:jsonUsers options:NSJSONReadingAllowFragments error:&error];
+      return users;
+    });
+}
+
 
 - (id)init
 {

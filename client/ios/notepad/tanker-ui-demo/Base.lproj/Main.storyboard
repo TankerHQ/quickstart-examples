@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hWE-Yk-UHV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hWE-Yk-UHV">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="9Y2-ho-UNk">
-                                <rect key="frame" x="8" y="282" width="359" height="104"/>
+                                <rect key="frame" x="8" y="281.5" width="359" height="104"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Tanker!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YyG-Gq-UeS" userLabel="Welcome to tanker">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="18"/>
@@ -291,7 +291,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="2OL-9f-Oof">
-                                <rect key="frame" x="8" y="246" width="359" height="176"/>
+                                <rect key="frame" x="8" y="245.5" width="359" height="176"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GIH-7X-lLh">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="30"/>
@@ -302,11 +302,11 @@
                                             <segue destination="BYZ-38-t0r" kind="show" id="pVh-AI-9Bk"/>
                                         </connections>
                                     </button>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Wr-OV-o8i" userLabel="unameField">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5Wr-OV-o8i" userLabel="emailField">
                                         <rect key="frame" x="0.0" y="38" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" enablesReturnKeyAutomatically="YES" textContentType="username"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" enablesReturnKeyAutomatically="YES" textContentType="email"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bET-JA-lZ9" userLabel="passwordField">
                                         <rect key="frame" x="0.0" y="76" width="359" height="30"/>
@@ -344,9 +344,9 @@
                         <viewLayoutGuide key="safeArea" id="8xT-xx-v62"/>
                     </view>
                     <connections>
+                        <outlet property="emailField" destination="5Wr-OV-o8i" id="myB-fv-2FY"/>
                         <outlet property="errorLabel" destination="BJS-8B-at0" id="G52-N5-PrD"/>
                         <outlet property="passwordField" destination="bET-JA-lZ9" id="6wT-Wk-Cjt"/>
-                        <outlet property="usernameField" destination="5Wr-OV-o8i" id="Q7e-0F-ggh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nnz-w0-FK3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -362,7 +362,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="bxt-Rr-Bcx">
-                                <rect key="frame" x="8" y="241" width="359" height="186"/>
+                                <rect key="frame" x="8" y="240.5" width="359" height="186"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8FA-WP-WdB">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="34"/>
@@ -372,11 +372,11 @@
                                             <segue destination="BYZ-38-t0r" kind="show" id="xvk-CX-cL5"/>
                                         </connections>
                                     </button>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cJ3-pO-xtB" userLabel="usernameField">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cJ3-pO-xtB" userLabel="emailField">
                                         <rect key="frame" x="0.0" y="42" width="359" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" enablesReturnKeyAutomatically="YES" textContentType="username"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" enablesReturnKeyAutomatically="YES" textContentType="email"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aRV-fs-bEk" userLabel="passwordField">
                                         <rect key="frame" x="0.0" y="82" width="359" height="30"/>
@@ -414,9 +414,9 @@
                         <viewLayoutGuide key="safeArea" id="hDg-Y8-7yO"/>
                     </view>
                     <connections>
+                        <outlet property="emailField" destination="cJ3-pO-xtB" id="u99-OT-oEA"/>
                         <outlet property="errorLabel" destination="zcw-bZ-AqT" id="cJm-yk-h1k"/>
                         <outlet property="passwordField" destination="aRV-fs-bEk" id="P4v-1D-kaf"/>
-                        <outlet property="unameField" destination="cJ3-pO-xtB" id="6eV-9P-vfs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U4I-wY-CWY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -460,7 +460,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="aBn-iu-Bn9">
-                                <rect key="frame" x="8" y="263.5" width="359" height="139.5"/>
+                                <rect key="frame" x="8" y="264" width="359" height="139"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="11i-ks-Rhu" userLabel="BackButton">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="30"/>
@@ -488,7 +488,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bAO-JE-JbZ" userLabel="errorLabel">
-                                        <rect key="frame" x="0.0" y="119" width="359" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="118.5" width="359" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -518,6 +518,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Oy3-kR-A20"/>
-        <segue reference="xvk-CX-cL5"/>
+        <segue reference="pVh-AI-9Bk"/>
     </inferredMetricsTieBreakers>
 </document>
