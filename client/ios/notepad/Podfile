@@ -4,5 +4,5 @@ source 'https://github.com/SuperTanker/PodSpecs.git'
 target 'tanker-ui-demo' do
   use_frameworks!
   pod 'PromiseKit', '~> 1.7'
-  pod 'Tanker', '1.7.0-beta10'
+  pod 'Tanker', '1.7.0'
 end

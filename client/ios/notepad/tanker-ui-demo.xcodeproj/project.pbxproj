@@ -171,7 +171,6 @@
 				EB26171F207B8D8C00FCB028 /* Frameworks */,
 				EB261720207B8D8C00FCB028 /* Resources */,
 				8A651541C4FA9F245476C58A /* [CP] Embed Pods Frameworks */,
-				8A82E58E0D7D14105D29F691 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -284,32 +283,19 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-tanker-ui-demo/Pods-tanker-ui-demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/OMGHTTPURLRQ/OMGHTTPURLRQ.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Tanker/Tanker.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OMGHTTPURLRQ.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Tanker.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-tanker-ui-demo/Pods-tanker-ui-demo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8A82E58E0D7D14105D29F691 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-tanker-ui-demo/Pods-tanker-ui-demo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
