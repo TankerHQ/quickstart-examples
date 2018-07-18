@@ -2,12 +2,12 @@ import React from "react";
 import { Button, Panel, Alert } from "react-bootstrap";
 import UserList from "./UserList";
 
-const withoutMe = (me, elements) => elements.filter(e => e !== me);
+const withoutMe = (myId, elements) => elements.filter(e => e.id !== myId);
 
 class Share extends React.Component {
   state = {
     users: [], //all the users
-    selected: new Set(), // the new selection
+    selectedUserIds: new Set(), // the new selection
     isLoading: true,
     isLoaded: false,
     isSharing: false,
@@ -25,7 +25,7 @@ class Share extends React.Component {
         isLoading: false,
         isLoaded: true,
         users: withoutMe(session.userId, users),
-        selected: new Set(withoutMe(session.userId, recipients)),
+        selectedUserIds: new Set(withoutMe(session.userId, recipients).map(user => user.id)),
         error: null,
       });
     } catch (err) {
@@ -34,14 +34,14 @@ class Share extends React.Component {
     }
   };
 
-  onToggle = (user, checked) => {
-    const { selected } = this.state;
+  onToggle = (userId, checked) => {
+    const { selectedUserIds } = this.state;
     if (checked) {
-      selected.add(user);
+      selectedUserIds.add(userId);
     } else {
-      selected.delete(user);
+      selectedUserIds.delete(userId);
     }
-    this.setState({ selected });
+    this.setState({ selectedUserIds });
   };
 
   onBackClicked = event => {
@@ -51,10 +51,10 @@ class Share extends React.Component {
 
   onShareClicked = async () => {
     const { session } = this.props;
-    const { selected } = this.state;
+    const { selectedUserIds } = this.state;
     this.setState({ error: null, isSharing: true });
     try {
-      const recipients = Array.from(selected.values());
+      const recipients = Array.from(selectedUserIds.values());
       await session.share(recipients);
       this.setState({ isSharing: false });
       this.props.history.push("/edit");
@@ -65,7 +65,7 @@ class Share extends React.Component {
   };
 
   render() {
-    const { users, selected, error, isLoading, isLoaded, isSharing } = this.state;
+    const { users, selectedUserIds, error, isLoading, isLoaded, isSharing } = this.state;
     return (
       <Panel>
         <Panel.Heading id="share-heading">Share</Panel.Heading>
@@ -80,7 +80,7 @@ class Share extends React.Component {
               Loading...
             </Alert>
           )}
-          <UserList users={users} selected={selected} onToggle={this.onToggle} />
+          <UserList users={users} selectedUserIds={selectedUserIds} onToggle={this.onToggle} />
           <Button
             id="share-button"
             bsStyle="primary"

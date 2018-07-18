@@ -67,6 +67,8 @@ const sanitizeUser = (user) => {
   return safeUser;
 };
 
+const reviveUsers = ids => ids.map(id => sanitizeUser(app.storage.get(id)));
+
 app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
@@ -248,6 +250,8 @@ app.get('/me', (req, res) => {
   // res.locals.user is set by the auth middleware
   const me = res.locals.user;
   const safeMe = sanitizeUser(me);
+  safeMe.accessibleNotes = reviveUsers(safeMe.accessibleNotes || []);
+  safeMe.noteRecipients = reviveUsers(safeMe.noteRecipients || []);
   res.json(safeMe);
 });
 

@@ -197,6 +197,22 @@ describe('server', () => {
     });
   });
 
+  describe('/me', () => {
+    it('returns the current user', async () => {
+      signUpBob();
+      const query = { email: bobEmail, password: bobPassword };
+      const response = await assertRequest(
+        testServer,
+        { verb: 'get', path: '/me', query },
+        { status: 200 },
+      );
+      const user = await response.json();
+      expect(user.id).to.equal(bobId);
+      expect(user.email).to.equal(bobEmail);
+      expect(user.token).to.be.undefined;
+    });
+  });
+
   describe('/data', () => {
     specify('put and get', async () => {
       signUpBob();
@@ -276,13 +292,13 @@ describe('server', () => {
       query = { email: aliceEmail, password: alicePassword };
       let response = await doRequest(testServer, { verb: 'get', path: '/me', query });
       let actual = await response.json();
-      expect(actual.accessibleNotes).to.have.members(['bob']);
+      expect(actual.accessibleNotes.map(user => user.id)).to.have.members(['bob']);
 
       // Bob should have Alice in his recipients
       query = { email: bobEmail, password: bobPassword };
       response = await doRequest(testServer, { verb: 'get', path: '/me', query });
       actual = await response.json();
-      expect(actual.noteRecipients).to.have.members(['alice']);
+      expect(actual.noteRecipients.map(user => user.id)).to.have.members(['alice']);
     });
   });
 

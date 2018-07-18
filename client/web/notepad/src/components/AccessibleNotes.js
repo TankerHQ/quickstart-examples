@@ -25,8 +25,8 @@ const AccessibleNotes = ({ isLoading, error, accessibleNotes, history }) => {
   return (
     <ListGroup id="accessible-notes-list">
       {accessibleNotes.map(friend => (
-        <ListGroupItem key={friend} onClick={() => history.push(`/view/${friend}`)}>
-          {`From ${friend}`}
+        <ListGroupItem key={friend.id} onClick={() => history.push(`/view/${friend.id}/${friend.email}`)}>
+          {`From ${friend.email}`}
         </ListGroupItem>
       ))}
     </ListGroup>

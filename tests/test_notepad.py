@@ -15,8 +15,8 @@ class Client:
     def sign_up(self) -> None:
         sign_up = self.browser.get_element(id="session_form_container-tab-sign-up")
         sign_up.click()
-        username_input = self.browser.get_element(id="sign-up-user-id")
-        username_input.send_keys(self.email)
+        email_input = self.browser.get_element(id="sign-up-email")
+        email_input.send_keys(self.email)
         password_input = self.browser.get_element(id="sign-up-password")
         password_input.send_keys(self.password)
         signup_button = self.browser.get_element(id="sign-up-submit")
@@ -31,8 +31,8 @@ class Client:
     def sign_in(self) -> None:
         sign_in = self.browser.get_element(id="session_form_container-tab-sign-in")
         sign_in.click()
-        username_input = self.browser.get_element(id="sign-in-user-id")
-        username_input.send_keys(self.email)
+        email_input = self.browser.get_element(id="sign-in-email")
+        email_input.send_keys(self.email)
         password_input = self.browser.get_element(id="sign-in-password")
         password_input.send_keys(self.password)
         sign_in_button = self.browser.get_element(id="sign-in-submit")

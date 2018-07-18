@@ -1,25 +1,25 @@
 const appServerUrl = "http://localhost:8080";
 
 export default class Api {
-  get userId() {
-    return this._userId;
+  get email() {
+    return this._email;
   }
 
   get password() {
     return this._password;
   }
 
-  setUserInfo(userId, password) {
-    this._userId = userId;
+  setUserInfo(email, password) {
+    this._email = email;
     this._password = password;
   }
 
   urlFor(path) {
     let queryString = '';
-    if (this.userId) {
-      const escapedUserId = encodeURIComponent(this.userId);
+    if (this.email) {
+      const escapedEmail = encodeURIComponent(this.email);
       const escapedPassword = encodeURIComponent(this.password);
-      queryString = `?userId=${escapedUserId}&password=${escapedPassword}`;
+      queryString = `?email=${escapedEmail}&password=${escapedPassword}`;
     }
     return `${appServerUrl}${path}${queryString}`;
   }
@@ -90,9 +90,9 @@ export default class Api {
     return response.json();
   }
 
-  async share(recipients) {
+  async share(from, recipients) {
     const data = {
-      from: this.userId,
+      from,
       to: recipients,
     };
     const headers = { "Content-Type": "application/json" };

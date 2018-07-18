@@ -4,15 +4,15 @@ import { MenuItem, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import Logo from "./Logo";
 import "./Topbar.css";
 
-const Signout = ({ userId, onSignOut }) => (
-  <NavDropdown eventKey={1} title={userId} id="topbar_dropdown">
+const Signout = ({ email, onSignOut }) => (
+  <NavDropdown eventKey={1} title={email} id="topbar_dropdown">
     <MenuItem id="sign-out-menu-item" onClick={onSignOut} eventKey={1}>
       Sign out
     </MenuItem>
   </NavDropdown>
 );
 
-const Topbar = ({ isOpen, userId, onSignOut }) => (
+const Topbar = ({ isOpen, email, onSignOut }) => (
   <Navbar staticTop>
     <Navbar.Header>
       <Navbar.Brand>
@@ -21,7 +21,7 @@ const Topbar = ({ isOpen, userId, onSignOut }) => (
       <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
-      <Nav pullRight>{isOpen && <Signout userId={userId} onSignOut={onSignOut} />}</Nav>
+      <Nav pullRight>{isOpen && <Signout email={email} onSignOut={onSignOut} />}</Nav>
     </Navbar.Collapse>
   </Navbar>
 );

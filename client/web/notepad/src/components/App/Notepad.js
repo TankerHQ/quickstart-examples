@@ -8,7 +8,7 @@ import Edit from "../Edit";
 
 const Content = ({ session }) => (
   <Switch>
-    <Route path="/view/:friendId" render={props => <ViewNote session={session} {...props} />} />
+    <Route path="/view/:friendId/:friendEmail" render={props => <ViewNote session={session} {...props} />} />
     <Route path="/edit" render={props => <Edit session={session} {...props} />} />
     <Route path="/share" render={props => <Share session={session} {...props} />} />
     <Route path="/" render={props => <Home session={session} {...props} />} />
