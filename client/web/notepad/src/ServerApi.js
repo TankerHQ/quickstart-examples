@@ -69,7 +69,7 @@ export default class Api {
     return this.doRequest("/data", { method: "PUT", body: content });
   }
 
-  async get(userId) {
+  async getUserData(userId) {
     // this is allowed to return 404
     const response = await this.doRequestUnchecked(`/data/${userId}`);
     if (response.ok || response.status === 404) {
@@ -80,7 +80,7 @@ export default class Api {
     }
   }
 
-  async getMyData() {
+  async getMe() {
     const response = await this.doRequest("/me");
     return response.json();
   }

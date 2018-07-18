@@ -83,7 +83,7 @@ export default class Session extends EventEmitter {
   }
 
   async loadTextFromUser(userId) {
-    const response = await this.serverApi.get(userId);
+    const response = await this.serverApi.getUserData(userId);
 
     if (response.status === 404) return "";
 
@@ -94,11 +94,11 @@ export default class Session extends EventEmitter {
   }
 
   async getAccessibleNotes() {
-    return (await this.serverApi.getMyData()).accessibleNotes || [];
+    return (await this.serverApi.getMe()).accessibleNotes || [];
   }
 
   async getNoteRecipients() {
-    return (await this.serverApi.getMyData()).noteRecipients || [];
+    return (await this.serverApi.getMe()).noteRecipients || [];
   }
 
   async getUsers() {
