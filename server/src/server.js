@@ -12,10 +12,9 @@ const fs = require('fs');
 const morgan = require('morgan');
 const uuid = require('uuid/v4');
 const userToken = require('@tanker/user-token');
-const sodium = require('libsodium-wrappers-sumo');
 const debugMiddleware = require('debug-error-middleware').express;
 
-const authMiddlewareBuilder = require('./middlewares/auth');
+const { authMiddlewareBuilder, hashPassword, verifyPassword } = require('./middlewares/auth');
 const corsMiddleware = require('./middlewares/cors');
 
 const log = require('./log');
@@ -47,15 +46,6 @@ const setup = (config) => {
   }
   app.storage = new Storage(dataPath, trustchainId);
   return app;
-};
-
-const hashPassword = async (password) => {
-  await sodium.ready;
-  return sodium.crypto_pwhash_str(
-    password,
-    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
-  );
 };
 
 const sanitizeUser = (user) => {
@@ -117,8 +107,8 @@ app.get('/signup', async (req, res) => {
   const existingUserId = app.storage.emailToId(email);
 
   if (existingUserId) {
-    log(`Email "${email}" already taken`, 1);
-    res.sendStatus(409);
+    log(`Email ${email} already taken`, 1);
+    res.status(409).json({ error: 'Email already taken' });
     return;
   }
 
@@ -164,16 +154,58 @@ app.get('/login', (req, res) => {
   res.json({ id: user.id, token: user.token });
 });
 
-app.put('/password', async (req, res) => {
-  log('Change password', 1);
+app.get('/me', (req, res) => {
+  // res.locals.user is set by the auth middleware
+  const me = res.locals.user;
+  const safeMe = sanitizeUser(me);
+  safeMe.accessibleNotes = reviveUsers(safeMe.accessibleNotes || []);
+  safeMe.noteRecipients = reviveUsers(safeMe.noteRecipients || []);
+  res.json(safeMe);
+});
+
+app.put('/me/password', async (req, res) => {
   const { user } = res.locals;
-  const { newPassword } = req.query;
-  if (!newPassword) {
-    log('newPassword not set', 1);
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    log('Invalid arguments', 1);
     res.sendStatus(400);
     return;
   }
+
+  log('Verify old password', 1);
+  const passwordOk = await verifyPassword(user, oldPassword);
+  if (!passwordOk) {
+    log('Wrong old password', 1);
+    res.sendStatus(400, 1);
+    return;
+  }
+
+  log('Change password', 1);
   user.hashed_password = await hashPassword(newPassword);
+  app.storage.save(user);
+  res.sendStatus(200);
+});
+
+app.put('/me/email', async (req, res) => {
+  const { user } = res.locals;
+  const { email } = req.body;
+
+  if (!email) {
+    log('Invalid arguments', 1);
+    res.sendStatus(400);
+    return;
+  }
+
+  const otherUser = app.storage.emailToId(email);
+  if (otherUser) {
+    log(`Email ${email} already taken`, 1);
+    res.status(409).json({ error: 'Email already taken' });
+    return;
+  }
+
+  log('Change email', 1);
+  user.email = email;
   app.storage.save(user);
   res.sendStatus(200);
 });
@@ -244,15 +276,6 @@ app.post('/share', (req, res) => {
 
   app.storage.share(from, to);
   res.sendStatus('201');
-});
-
-app.get('/me', (req, res) => {
-  // res.locals.user is set by the auth middleware
-  const me = res.locals.user;
-  const safeMe = sanitizeUser(me);
-  safeMe.accessibleNotes = reviveUsers(safeMe.accessibleNotes || []);
-  safeMe.noteRecipients = reviveUsers(safeMe.noteRecipients || []);
-  res.json(safeMe);
 });
 
 // Return nice 500 message when an exception is thrown

@@ -151,26 +151,6 @@ describe('server', () => {
     });
   });
 
-  describe('/password', () => {
-    specify('can change password', async () => {
-      const newPassword = 'n3wp4ss';
-      signUpBob();
-      const query = { email: bobEmail, password: bobPassword, newPassword };
-      await assertRequest(
-        testServer,
-        { verb: 'put', path: '/password', query },
-        { status: 200 },
-      );
-
-      const newQuery = { email: bobEmail, password: newPassword };
-      await assertRequest(
-        testServer,
-        { verb: 'get', path: '/login', query: newQuery },
-        { status: 200 },
-      );
-    });
-  });
-
   describe('/login', () => {
     specify('signed up users can log in', async () => {
       signUpBob();
@@ -198,7 +178,7 @@ describe('server', () => {
   });
 
   describe('/me', () => {
-    it('returns the current user', async () => {
+    it('gets the current user', async () => {
       signUpBob();
       const query = { email: bobEmail, password: bobPassword };
       const response = await assertRequest(
@@ -210,6 +190,69 @@ describe('server', () => {
       expect(user.id).to.equal(bobId);
       expect(user.email).to.equal(bobEmail);
       expect(user.token).to.be.undefined;
+    });
+
+    it('can change password', async () => {
+      signUpBob();
+      const newPassword = 'n3wp4ss';
+      const query = { email: bobEmail, password: bobPassword };
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ oldPassword: bobPassword, newPassword });
+
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/me/password', query, body, headers,
+        },
+        { status: 200 },
+      );
+
+      const newQuery = { email: bobEmail, password: newPassword };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/login', query: newQuery },
+        { status: 200 },
+      );
+    });
+
+    it('can change email', async () => {
+      signUpBob();
+      const newEmail = 'new.bob@example.com';
+      const query = { email: bobEmail, password: bobPassword };
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ email: newEmail });
+
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/me/email', query, body, headers,
+        },
+        { status: 200 },
+      );
+
+      const newQuery = { email: newEmail, password: bobPassword };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/login', query: newQuery },
+        { status: 200 },
+      );
+    });
+
+    it('cannot change email if already taken', async () => {
+      signUpAlice();
+      signUpBob();
+      const newEmail = aliceEmail;
+      const query = { email: bobEmail, password: bobPassword };
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ email: newEmail });
+
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/me/email', query, body, headers,
+        },
+        { status: 409 },
+      );
     });
   });
 

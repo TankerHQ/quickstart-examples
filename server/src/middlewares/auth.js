@@ -2,6 +2,20 @@
 const log = require('../log');
 const sodium = require('libsodium-wrappers-sumo');
 
+const hashPassword = async (password) => {
+  await sodium.ready;
+  return sodium.crypto_pwhash_str(
+    password,
+    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+  );
+};
+
+const verifyPassword = async (user, password) => {
+  await sodium.ready;
+  return sodium.crypto_pwhash_str_verify(user.hashed_password, password);
+};
+
 const authMiddleware = async (storage, req, res, next) => {
   const { email, password } = req.query;
 
@@ -22,9 +36,8 @@ const authMiddleware = async (storage, req, res, next) => {
   }
 
   const user = storage.get(userId);
-  await sodium.ready;
-  const hashMatches = sodium.crypto_pwhash_str_verify(user.hashed_password, password);
-  if (!hashMatches) {
+  const passwordOk = await verifyPassword(user, password);
+  if (!passwordOk) {
     log('Authentication error: invalid password', 1);
     res.sendStatus(401);
     return;
@@ -42,4 +55,8 @@ const authMiddlewareBuilder = (app) => { // eslint-disable-line arrow-body-style
   });
 };
 
-module.exports = authMiddlewareBuilder;
+module.exports = {
+  authMiddlewareBuilder,
+  hashPassword,
+  verifyPassword,
+};
