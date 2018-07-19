@@ -8,42 +8,43 @@ import {
   FormControl,
   HelpBlock,
 } from "react-bootstrap";
+import * as emailValidator from 'email-validator';
 
 export default class Form extends React.Component {
   state = {
     isLoading: false,
-    login: "",
+    email: "",
     password: "",
-    loginError: false,
+    emailError: false,
     passwordError: false,
     serverError: null,
   };
 
-  onClick = async event => {
+  onSubmit = async event => {
     event.preventDefault();
 
-    const { isLoading, login, password } = this.state;
+    const { isLoading, email, password } = this.state;
     const { onSubmit } = this.props;
 
     if (isLoading) return;
 
-    if (!login || !password) {
-      const loginError = login === "";
-      const passwordError = password === "";
-      this.setState({ isLoading: false, loginError, passwordError });
+    const emailError = !email || !emailValidator.validate(email);
+    const passwordError = password === "";
 
+    if (emailError || passwordError) {
+      this.setState({ isLoading: false, emailError, passwordError });
       return;
     }
 
     this.setState({
       isLoading: true,
-      loginError: false,
+      emailError: false,
       passwordError: false,
       serverError: null,
     });
 
     try {
-      await onSubmit(login, password);
+      await onSubmit(email, password);
     } catch (e) {
       console.error(e);
       this.setState({ isLoading: false, serverError: e.message });
@@ -51,7 +52,7 @@ export default class Form extends React.Component {
   };
 
   handleLoginChange = e => {
-    this.setState({ login: e.target.value });
+    this.setState({ email: e.target.value });
   };
 
   handlePasswordChange = e => {
@@ -60,23 +61,23 @@ export default class Form extends React.Component {
 
   render() {
     const { typeAction, formId } = this.props;
-    const { login, password, loginError, passwordError, serverError, isLoading } = this.state;
+    const { email, password, emailError, passwordError, serverError, isLoading } = this.state;
 
     return (
-      <form className="form-signin">
+      <form className="form-login">
         {serverError && <Alert bsStyle="danger">{serverError}</Alert>}
-        <FormGroup controlId={`${formId}-email`} validationState={loginError ? "error" : null}>
+        <FormGroup controlId={`${formId}-email`} validationState={emailError ? "error" : null}>
           <ControlLabel>Email</ControlLabel>
           <FormControl
             type="text"
-            value={login}
+            value={email}
             placeholder="Email"
             onChange={this.handleLoginChange}
             required
             autoFocus
           />
           <FormControl.Feedback />
-          {loginError && <HelpBlock>This field is required</HelpBlock>}
+          {emailError && <HelpBlock>This email address is invalid</HelpBlock>}
         </FormGroup>
         <FormGroup
           controlId={`${formId}-password`}
@@ -93,13 +94,13 @@ export default class Form extends React.Component {
           <FormControl.Feedback />
           {passwordError && <HelpBlock>This field is required</HelpBlock>}
         </FormGroup>
-        <ButtonGroup block vertical>
+        <ButtonGroup>
           <Button
             id={`${formId}-submit`}
             type="submit"
             bsStyle="primary"
             disabled={isLoading}
-            onClick={this.onClick}
+            onClick={this.onSubmit}
           >
             {typeAction}
           </Button>

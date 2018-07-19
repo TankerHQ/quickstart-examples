@@ -24,7 +24,7 @@ Each user has access to exactly one note.
 It implements the following features:
 
 * Signing up
-* Login
+* Logging in
 * Loading and saving the contents of the notes
 
 Here is the user experience flow:

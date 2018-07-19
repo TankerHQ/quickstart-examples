@@ -57,7 +57,7 @@ export default class Session extends EventEmitter {
     // FIXME: setup the password to unlock additional devices
   }
 
-  async signIn(email, password) {
+  async logIn(email, password) {
     await this.initTanker();
 
     this.serverApi.setUserInfo(email, password);
