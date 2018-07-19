@@ -8,8 +8,6 @@ import {
   Panel
 } from "react-bootstrap";
 
-import "./Settings.css";
-
 const cleanEmail = { newEmail: "" };
 const cleanMessages = { errorMessage: null, successMessage: null };
 const cleanPassword = { newPassword: "", newPasswordConfirmation: "", oldPassword: "" }

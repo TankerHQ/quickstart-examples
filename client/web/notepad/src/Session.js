@@ -119,11 +119,13 @@ export default class Session extends EventEmitter {
     return this.serverApi.delete();
   }
 
-  changeEmail(newEmail) {
-    return this.serverApi.changeEmail(newEmail);
+  async changeEmail(newEmail) {
+    await this.serverApi.changeEmail(newEmail);
+    // TODO: updateUnlock email
   }
 
-  changePassword(oldPassword, newPassword) {
-    return this.serverApi.changePassword(oldPassword, newPassword);
+  async changePassword(oldPassword, newPassword) {
+    await this.serverApi.changePassword(oldPassword, newPassword);
+    await this.tanker.updateUnlock({ password: newPassword });
   }
 }

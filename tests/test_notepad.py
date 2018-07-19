@@ -92,7 +92,7 @@ class Client:
 
     def wait_for_home(self) -> None:
         self.browser.wait_for_element_presence(id="my-note-heading")
-        self.browser.wait_for_any_element(ids=["accessible-notes-list", "accessible-notes-empty-span"])
+        self.browser.wait_for_any_element(ids=["accessible-notes-list", "accessible-notes-empty-warning"])
 
     def wait_for_edit(self) -> None:
         self.browser.wait_for_element_presence(id="your-note-heading")
