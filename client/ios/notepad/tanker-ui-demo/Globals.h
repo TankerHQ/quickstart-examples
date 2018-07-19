@@ -11,7 +11,7 @@
 + (PMKPromise<NSString*>*)loginWithEmail:(NSString*)email password:(NSString*)password;
 + (PMKPromise*)uploadToServer:(NSString*)data;
 + (PMKPromise<NSString*>*)dataFromServer;
-+ (PMKPromise*)changePassword:(NSString*)newPassword;
++ (PMKPromise*)changePasswordFrom:(NSString*)oldPassword to:(NSString*)newPassword;
 + (PMKPromise*)shareNoteFrom:(NSString*)userId to:(NSArray<NSString*>*)recipients;
 + (PMKPromise<NSString*>*)getDataFromUser:(NSString*)userIdFrom;
 + (PMKPromise<NSArray<id>*>*)getUsers;

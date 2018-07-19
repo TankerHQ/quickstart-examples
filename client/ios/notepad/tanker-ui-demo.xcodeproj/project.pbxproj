@@ -53,7 +53,6 @@
 		EB261740207B8D8C00FCB028 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EB84AE5D20F3BA150045CA98 /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		EB84AE5F20F3BA2F0045CA98 /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
-		EB9215EC20F3C36400677596 /* ChangePassword.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangePassword.h; sourceTree = "<group>"; };
 		EB9215ED20F3C36400677596 /* ChangePasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangePasswordViewController.h; sourceTree = "<group>"; };
 		EB9215EE20F3C36400677596 /* ChangePasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangePasswordViewController.m; sourceTree = "<group>"; };
 		EB9852AC207B9BB70008C567 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
@@ -144,7 +143,6 @@
 		EB7C684C20863218000C037B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				EB9215EC20F3C36400677596 /* ChangePassword.h */,
 				EB9215ED20F3C36400677596 /* ChangePasswordViewController.h */,
 				EB9215EE20F3C36400677596 /* ChangePasswordViewController.m */,
 				EB1A5D0A207BB721007A269F /* LoginViewController.h */,
