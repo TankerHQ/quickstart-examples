@@ -118,4 +118,12 @@ export default class Session extends EventEmitter {
   delete() {
     return this.serverApi.delete();
   }
+
+  changeEmail(newEmail) {
+    return this.serverApi.changeEmail(newEmail);
+  }
+
+  changePassword(oldPassword, newPassword) {
+    return this.serverApi.changePassword(oldPassword, newPassword);
+  }
 }

@@ -99,4 +99,20 @@ export default class Api {
     const body = JSON.stringify(data);
     await this.doRequest("/share", { headers, body, method: "POST" });
   }
+
+  async changeEmail(newEmail) {
+    const data = { email: newEmail };
+    const headers = { "Content-Type": "application/json" };
+    const body = JSON.stringify(data);
+    await this.doRequest("/me/email", { headers, body, method: "PUT" });
+    this._email = newEmail;
+  }
+
+  async changePassword(oldPassword, newPassword) {
+    const data = { oldPassword, newPassword };
+    const headers = { "Content-Type": "application/json" };
+    const body = JSON.stringify(data);
+    await this.doRequest("/me/password", { headers, body, method: "PUT" });
+    this._password = newPassword;
+  }
 }
