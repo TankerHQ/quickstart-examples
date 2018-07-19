@@ -63,7 +63,7 @@ export default class Form extends React.Component {
     const { login, password, loginError, passwordError, serverError, isLoading } = this.state;
 
     return (
-      <form className="form-signin">
+      <form className="form-login">
         {serverError && <Alert bsStyle="danger">{serverError}</Alert>}
         <FormGroup controlId={`${formId}-email`} validationState={loginError ? "error" : null}>
           <ControlLabel>Email</ControlLabel>
@@ -93,7 +93,7 @@ export default class Form extends React.Component {
           <FormControl.Feedback />
           {passwordError && <HelpBlock>This field is required</HelpBlock>}
         </FormGroup>
-        <ButtonGroup block vertical>
+        <ButtonGroup>
           <Button
             id={`${formId}-submit`}
             type="submit"

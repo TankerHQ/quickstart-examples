@@ -13,7 +13,7 @@ class Client:
         self.unlock_key: Optional[str] = None
 
     def sign_up(self) -> None:
-        sign_up = self.browser.get_element(id="session_form_container-tab-sign-up")
+        sign_up = self.browser.get_element(id="session_form_container-tab-signup")
         sign_up.click()
         email_input = self.browser.get_element(id="sign-up-email")
         email_input.send_keys(self.email)
@@ -25,17 +25,17 @@ class Client:
     def sign_out(self) -> None:
         topbar_dropdown = self.browser.get_element(id="topbar_dropdown")
         topbar_dropdown.click()
-        signout = self.browser.get_element(id="sign-out-menu-item")
-        signout.click()
+        logout = self.browser.get_element(id="log-out-menu-item")
+        logout.click()
 
     def sign_in(self) -> None:
-        sign_in = self.browser.get_element(id="session_form_container-tab-sign-in")
+        sign_in = self.browser.get_element(id="session_form_container-tab-login")
         sign_in.click()
-        email_input = self.browser.get_element(id="sign-in-email")
+        email_input = self.browser.get_element(id="log-in-email")
         email_input.send_keys(self.email)
-        password_input = self.browser.get_element(id="sign-in-password")
+        password_input = self.browser.get_element(id="log-in-password")
         password_input.send_keys(self.password)
-        sign_in_button = self.browser.get_element(id="sign-in-submit")
+        sign_in_button = self.browser.get_element(id="log-in-submit")
         sign_in_button.click()
 
     def unlock_device(self, password: str) -> None:
@@ -88,7 +88,7 @@ class Client:
         self.wait_for_friend_view()
 
     def wait_for_session_form(self) -> None:
-        self.browser.wait_for_element_presence(id="session_form_container-tab-sign-in")
+        self.browser.wait_for_element_presence(id="session_form_container-tab-login")
 
     def wait_for_home(self) -> None:
         self.browser.wait_for_element_presence(id="my-note-heading")

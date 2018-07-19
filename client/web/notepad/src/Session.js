@@ -51,7 +51,7 @@ export default class Session extends EventEmitter {
     await this.tanker.setupUnlock({ password });
   }
 
-  async signIn(email, password) {
+  async logIn(email, password) {
     await this.initTanker();
 
     this.serverApi.setUserInfo(email, password);

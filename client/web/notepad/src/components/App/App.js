@@ -1,28 +1,28 @@
 import React from "react";
 
+import Authentication from "../Authentication";
 import NewDevice from "../NewDevice";
-import SessionForm from "../SessionForm";
-import Topbar from "../Topbar";
 import Notepad from "./Notepad";
+import Topbar from "../Topbar";
 
 import "./App.css";
 
 class App extends React.Component {
-  state = { status: "signIn" };
+  state = { status: "logIn" };
 
   componentWillMount() {
     const { session } = this.props;
     session.on("newDevice", () => this.setState({ status: "validateDevice" }));
   }
 
-  onSignIn = async (login, password) => {
+  onLogIn = async (login, password) => {
     const { session } = this.props;
     if (session.isOpen()) {
       console.warn(`Closing previous session opened by ${session.email}`);
       await session.close();
     }
 
-    await session.signIn(login, password);
+    await session.logIn(login, password);
     this.setState({ status: "ready" });
   };
 
@@ -37,13 +37,25 @@ class App extends React.Component {
     this.setState({ status: "ready" });
   };
 
-  onSignOut = async () => {
+  onLogOut = async () => {
     const { session } = this.props;
     if (session.isOpen()) {
       await session.close();
     }
-    this.setState({ status: "signIn" });
+    this.setState({ status: "logIn" });
   };
+
+  onPasswordResetRequest = async () => {
+    // TODO: implement feature!
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    //throw new Error("Oops");
+  }
+
+  onPasswordResetConfirm = async () => {
+    // TODO: implement feature!
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    //throw new Error("Oops");
+  }
 
   onUnlockDevice = async password => {
     await this.props.session.unlockCurrentDevice(password);
@@ -55,9 +67,16 @@ class App extends React.Component {
 
     return (
       <div className="app">
-        <Topbar isOpen={session.isOpen()} email={session.email} onSignOut={this.onSignOut} />
+        <Topbar isOpen={session.isOpen()} email={session.email} onLogOut={this.onLogOut} />
         <div className="container">
-          {status === "signIn" && <SessionForm onSignIn={this.onSignIn} onSignUp={this.onSignUp} />}
+          {status === "logIn" && (
+            <Authentication
+              onLogIn={this.onLogIn}
+              onSignUp={this.onSignUp}
+              onPasswordResetRequest={this.onPasswordResetRequest}
+              onPasswordResetConfirm={this.onPasswordResetConfirm}
+            />
+          )}
           {status === "validateDevice" && <NewDevice onUnlockDevice={this.onUnlockDevice} />}
           {status === "ready" && <Notepad session={session} />}
         </div>
