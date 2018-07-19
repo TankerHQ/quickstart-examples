@@ -105,7 +105,7 @@ export default class Session extends EventEmitter {
     return (await this.serverApi.getMe()).noteRecipients;
   }
 
-  async getUsers() {
+  getUsers() {
     return this.serverApi.getUsers();
   }
 
@@ -115,7 +115,7 @@ export default class Session extends EventEmitter {
     await this.serverApi.share(this.userId, recipients);
   }
 
-  async delete() {
+  delete() {
     return this.serverApi.delete();
   }
 }
