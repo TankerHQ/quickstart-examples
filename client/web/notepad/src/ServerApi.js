@@ -27,7 +27,7 @@ export default class Api {
   async doRequest(path, fetchOpts) {
     const response = await this.doRequestUnchecked(path, fetchOpts);
     if (!response.ok) {
-      this.onFailedRequest(response);
+      await this.onFailedRequest(response);
     }
     return response;
   }
