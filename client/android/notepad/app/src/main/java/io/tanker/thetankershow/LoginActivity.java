@@ -100,8 +100,11 @@ public class LoginActivity extends AppCompatActivity {
             String password = mPasswordView.getText().toString();
             mTanker.unlockCurrentDevice(new Password(password)).then((validateFuture) -> {
                 if (validateFuture.getError() != null) {
-                    mPasswordView.setError("Wrong unlock password, please try again");
-                    mPasswordView.requestFocus();
+                    runOnUiThread(() -> {
+                        mPasswordView.setError("Tanker: Wrong unlock password");
+                        mPasswordView.requestFocus();
+                        showProgress(false);
+                    });
                 } else {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
