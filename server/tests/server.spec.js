@@ -128,6 +128,15 @@ describe('server', () => {
       );
     });
 
+    it('returns 400 if email is invalid', async () => {
+      const invalidQuery = { password: 'secret', email: 'not.an.email.address' };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/signup', query: invalidQuery },
+        { status: 400 },
+      );
+    });
+
     it('returns 400 if password is missing', async () => {
       const invalidQuery = { email: 'bob@example.com' };
 
@@ -252,6 +261,23 @@ describe('server', () => {
           verb: 'put', path: '/me/email', query, body, headers,
         },
         { status: 409 },
+      );
+    });
+
+    it('cannot change email if given address is invalid', async () => {
+      signUpAlice();
+      signUpBob();
+      const newEmail = 'not.an.email.address';
+      const query = { email: bobEmail, password: bobPassword };
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ email: newEmail });
+
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/me/email', query, body, headers,
+        },
+        { status: 400 },
       );
     });
   });

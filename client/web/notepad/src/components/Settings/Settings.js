@@ -7,10 +7,11 @@ import {
   HelpBlock,
   Panel
 } from "react-bootstrap";
+import * as emailValidator from "email-validator";
 
 const cleanEmail = { newEmail: "" };
 const cleanMessages = { errorMessage: null, successMessage: null };
-const cleanPassword = { newPassword: "", newPasswordConfirmation: "", oldPassword: "" }
+const cleanPassword = { newPassword: "", newPasswordConfirmation: "", oldPassword: "" };
 
 const defaultState = {
   changeInProgress: false,
@@ -84,9 +85,11 @@ class Settings extends React.Component {
   validateEmail = () => {
     const { session } = this.props;
     const { newEmail } = this.state;
-    // TODO: email format validation
+    if (!emailValidator.validate(newEmail)) {
+      return [false, "Invalid email address"];
+    }
     if (newEmail === session.email) {
-      return [false, "This is already your current email address"]
+      return [false, "This is already your current email address"];
     }
     return [true, null];
   };
@@ -99,7 +102,7 @@ class Settings extends React.Component {
     if (newPassword !== newPasswordConfirmation) {
       return [false, "The new password and its confirmation do not match"];
     }
-    return [true, null]
+    return [true, null];
   }
 
   render() {
@@ -128,7 +131,7 @@ class Settings extends React.Component {
               <form>
                 {errorMessage && <Alert bsStyle="danger">{errorMessage}</Alert>}
                 {successMessage && <Alert bsStyle="success">{successMessage}</Alert>}
-                <FormGroup validationState={emailValid ? null : "error"}>
+                <FormGroup validationState={!!newEmail && !emailValid ? "error" : null}>
                   <FormControl
                     type="text"
                     value={newEmail}
@@ -138,7 +141,7 @@ class Settings extends React.Component {
                     required
                   />
                   <FormControl.Feedback />
-                  {!emailValid && <HelpBlock>{emailError}</HelpBlock>}
+                  {!!newEmail && !emailValid && <HelpBlock>{emailError}</HelpBlock>}
                 </FormGroup>
                 <Button
                   id="save-email-button"

@@ -15,25 +15,25 @@ class App extends React.Component {
     session.on("newDevice", () => this.setState({ status: "validateDevice" }));
   }
 
-  onLogIn = async (login, password) => {
+  onLogIn = async (email, password) => {
     const { session } = this.props;
     if (session.isOpen()) {
       console.warn(`Closing previous session opened by ${session.email}`);
       await session.close();
     }
 
-    await session.logIn(login, password);
+    await session.logIn(email, password);
     this.setState({ status: "ready" });
   };
 
-  onSignUp = async (login, password) => {
+  onSignUp = async (email, password) => {
     const { session } = this.props;
     if (session.isOpen()) {
       console.warn(`Closing previous session opened by ${session.email}`);
       await session.close();
     }
 
-    await session.signUp(login, password);
+    await session.signUp(email, password);
     this.setState({ status: "ready" });
   };
 

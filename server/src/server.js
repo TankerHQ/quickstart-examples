@@ -8,6 +8,7 @@
 // @flow
 const bodyParser = require('body-parser');
 const express = require('express');
+const emailValidator = require('email-validator');
 const fs = require('fs');
 const morgan = require('morgan');
 const uuid = require('uuid/v4');
@@ -94,13 +95,13 @@ app.get('/signup', async (req, res) => {
   const { email, password } = req.query;
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
-  if (!email) {
-    res.status(400).send('missing email');
+  if (!email || !emailValidator.validate(email)) {
+    res.status(400).send('Invalid email address');
     return;
   }
 
   if (!password) {
-    res.status(400).send('missing password');
+    res.status(400).send('Missing password');
     return;
   }
 
@@ -191,8 +192,8 @@ app.put('/me/email', async (req, res) => {
   const { user } = res.locals;
   const { email } = req.body;
 
-  if (!email) {
-    log('Invalid arguments', 1);
+  if (!email || !emailValidator.validate(email)) {
+    log('Invalid new email address', 1);
     res.sendStatus(400);
     return;
   }
