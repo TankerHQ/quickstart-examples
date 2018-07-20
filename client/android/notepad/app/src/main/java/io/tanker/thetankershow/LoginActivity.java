@@ -21,6 +21,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -276,7 +279,9 @@ public class LoginActivity extends AppCompatActivity {
         private final String mEmail;
         private final String mPassword;
         private final Boolean mSignUp;
+        private  String mUserId;
         private Integer mError;
+
 
         UserLoginTask(String email, String password, Boolean isSignUp) {
             mEmail = email;
@@ -285,11 +290,11 @@ public class LoginActivity extends AppCompatActivity {
             mError = 200;
         }
 
-        private String fetchUserToken(String userId, String password) throws IOException {
+        private String fetchUserToken(String email, String password) throws IOException {
             String method = mSignUp ? "signup" : "login";
             String address  = ((TheTankerApplication) getApplication()).getServerAddress();
 
-            URL url = new URL( address + method + "?userId=" + userId + "&password=" + password);
+            URL url = new URL( address + method + "?email=" + email + "&password=" + password);
 
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("GET");
@@ -302,7 +307,16 @@ public class LoginActivity extends AppCompatActivity {
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(
                             connection.getInputStream()));
-            String token = in.readLine();
+
+            String token = "";
+            try {
+                JSONObject res  = new JSONObject(in.readLine());
+                token = res.getString("token");
+                mUserId = res.getString("id");
+            } catch (JSONException e) {
+                Log.e("TheTankerShow", "JSON error", e);
+                return token;
+            }
             return token;
         }
 
@@ -310,7 +324,8 @@ public class LoginActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 // Redirect to the MainActivity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra("EXTRA_USERID", mEmail);
+                intent.putExtra("EXTRA_EMAIL", mEmail);
+                intent.putExtra("EXTRA_USERID", mUserId);
                 intent.putExtra("EXTRA_PASSWORD", mPassword);
                 startActivity(intent);
                 showProgress(false);
@@ -323,13 +338,15 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 String userToken = fetchUserToken(mEmail, mPassword);
-                mTanker.open(mEmail, userToken).then((openFuture) -> {
+                mTanker.open(mUserId, userToken).then((openFuture) -> {
                     if (openFuture.getError() != null) {
+                        Log.e("TheTankerShow", "Error while opening Tanker session", openFuture.getError());
                         return null;
                     }
 
                     if (mSignUp) {
                         mTanker.setupUnlock(new Password(mPassword)).then((fut) -> {
+                            Log.e("TheTankershow", "" + fut.getError());
                             goToMainActivity();
                             return null;
                         });
@@ -378,7 +395,7 @@ public class LoginActivity extends AppCompatActivity {
                     mEmailView.requestFocus();
                     break;
                 default:
-                    mPasswordView.setError("Unkown Error");
+                    mPasswordView.setError("Unknown Error");
                     mPasswordView.requestFocus();
                     break;
             }

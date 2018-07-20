@@ -21,19 +21,23 @@ public class UpdateUnlockPasswordActivity extends AppCompatActivity {
     private URL updatePasswordUrl(String newPassword) throws Throwable {
         String address  = ((TheTankerApplication) getApplication()).getServerAddress();
 
-        String userId = getIntent().getStringExtra("EXTRA_USERID");
+        String userId = getIntent().getStringExtra("EXTRA_EMAIL");
         String oldPassword = getIntent().getStringExtra("EXTRA_PASSWORD");
 
-        return new URL(address + "password/?userId=" + userId + "&password=" + oldPassword + "&newPassword=" + newPassword);
+        return new URL(address + "me/password?email=" + userId + "&password=" + oldPassword);
     }
 
     private void updateAppPassword(String newPassword) throws Throwable {
         URL url = updatePasswordUrl(newPassword);
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
+        connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
         connection.setRequestMethod("PUT");
-        connection.getInputStream();
+        connection.setDoOutput(true);
 
+        String oldPassword = getIntent().getStringExtra("EXTRA_PASSWORD");
+        String jsonText = String.format("{\"oldPassword\": \"%s\", \"newPassword\": \"%s\" }", oldPassword, newPassword);
+        Log.i("TheTankerShow", jsonText);
+        connection.getOutputStream().write(jsonText.getBytes());
         int mError = connection.getResponseCode();
         if (mError < 200 || mError > 202)
             throw new IOException("Update password failed with error code "+mError);
@@ -62,6 +66,7 @@ public class UpdateUnlockPasswordActivity extends AppCompatActivity {
 
             tanker.updateUnlockPassword(new Password(unlockPassword)).then((validateFuture) -> {
                if (validateFuture.getError() != null) {
+                   Log.e("TheTankerShow", validateFuture.getError().toString());
                    runOnUiThread (() -> {
                        unlockPasswordEdit.setError("Error, couldn't update unlock password!");
                        unlockPasswordEdit.requestFocus();
