@@ -17,7 +17,7 @@ getConfig(cli.config).then(async (config) => {
 
   log('Tanker mock server:');
   log(`Configured with Trustchain: ${config.trustchainId}`, 1);
-  log(`Listening on http://localhost:${port}/`, 1);
+  log(`Listening on http://127.0.0.1:${port}/`, 1);
 
   server.listen(port);
 }).catch(error => console.error(error));

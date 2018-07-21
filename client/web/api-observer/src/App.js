@@ -5,7 +5,7 @@ import Tanker, { toBase64, fromBase64, errors } from '@tanker/client-browser';
 
 import { getEntry, LogPanel } from './log';
 
-const serverRoot = 'http://localhost:8080';
+const serverRoot = 'http://127.0.0.1:8080';
 
 class App extends Component {
   constructor() {

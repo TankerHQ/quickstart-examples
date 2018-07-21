@@ -15,7 +15,7 @@ const doRequest = async (testServer, request) => {
     verb, path, query, body, headers,
   } = request;
   const queryString = querystring.stringify(query);
-  const url = `http://localhost:${port}${path}?${queryString}`;
+  const url = `http://127.0.0.1:${port}${path}?${queryString}`;
   const fetchOpts = { headers, method: verb };
   if (body !== undefined) {
     fetchOpts.body = body;

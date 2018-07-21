@@ -74,7 +74,7 @@ Note: before running any of the example applications, don't forget to always sta
 Go to the homepage of the example server in your browser:
 
 ```
-http://localhost:8080/
+http://127.0.0.1:8080/
 ```
 
 On this page, you will find all the instructions needed to run the example applications and a link to a tutorial.

@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
-const serverRoot = 'http://localhost:8080';
+const serverRoot = 'http://127.0.0.1:8080';
 const emails = new Set();
 
 async function getTankerConfig() {
