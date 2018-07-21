@@ -31,10 +31,8 @@ let serverConfig;
 let clientConfig;
 
 const makeClientConfig = (fullConfig) => {
-  const config = { ...fullConfig };
   // WARNING: the Trustchain private key MUST never be sent to the client
-  delete config.trustchainPrivateKey;
-  delete config.dataPath;
+  const { dataPath, trustchainPrivateKey, ...config } = fullConfig;
   return config;
 };
 
@@ -55,11 +53,7 @@ const setup = async (config) => {
 };
 
 const sanitizeUser = (user) => {
-  const sensitiveKeys = ['hashed_password', 'token'];
-  const safeUser = { ...user };
-  for (const key of sensitiveKeys) {
-    delete safeUser[key];
-  }
+  const { hashed_password, token, ...safeUser } = user; // eslint-disable-line camelcase
   return safeUser;
 };
 
