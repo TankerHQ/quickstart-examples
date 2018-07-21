@@ -14,6 +14,7 @@ const morgan = require('morgan');
 const uuid = require('uuid/v4');
 const userToken = require('@tanker/user-token');
 const debugMiddleware = require('debug-error-middleware').express;
+const sodium = require('libsodium-wrappers-sumo');
 
 const { authMiddlewareBuilder, hashPassword, verifyPassword } = require('./middlewares/auth');
 const corsMiddleware = require('./middlewares/cors');
@@ -37,7 +38,7 @@ const makeClientConfig = (fullConfig) => {
   return config;
 };
 
-const setup = (config) => {
+const setup = async (config) => {
   serverConfig = config;
   clientConfig = makeClientConfig(config);
 
@@ -46,6 +47,10 @@ const setup = (config) => {
     fs.mkdirSync(dataPath);
   }
   app.storage = new Storage(dataPath, trustchainId);
+
+  // Libsodium loads asynchronously (Wasm module)
+  await sodium.ready;
+
   return app;
 };
 
@@ -91,7 +96,7 @@ app.get('/config', (req, res) => {
 });
 
 // Add signup route (non authenticated)
-app.get('/signup', async (req, res) => {
+app.get('/signup', (req, res) => {
   const { email, password } = req.query;
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
@@ -117,7 +122,7 @@ app.get('/signup', async (req, res) => {
   const userId = uuid();
 
   log('Hash the password', 1);
-  const hashedPassword = await hashPassword(password);
+  const hashedPassword = hashPassword(password);
 
   log('Generate a new user token', 1);
   const token = userToken.generateUserToken(
@@ -164,7 +169,7 @@ app.get('/me', (req, res) => {
   res.json(safeMe);
 });
 
-app.put('/me/password', async (req, res) => {
+app.put('/me/password', (req, res) => {
   const { user } = res.locals;
   const { oldPassword, newPassword } = req.body;
 
@@ -175,7 +180,7 @@ app.put('/me/password', async (req, res) => {
   }
 
   log('Verify old password', 1);
-  const passwordOk = await verifyPassword(user, oldPassword);
+  const passwordOk = verifyPassword(user, oldPassword);
   if (!passwordOk) {
     log('Wrong old password', 1);
     res.sendStatus(400, 1);
@@ -183,7 +188,7 @@ app.put('/me/password', async (req, res) => {
   }
 
   log('Change password', 1);
-  user.hashed_password = await hashPassword(newPassword);
+  user.hashed_password = hashPassword(newPassword);
   app.storage.save(user);
   res.sendStatus(200);
 });

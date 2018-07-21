@@ -2,21 +2,17 @@
 const log = require('../log');
 const sodium = require('libsodium-wrappers-sumo');
 
-const hashPassword = async (password) => {
-  await sodium.ready;
-  return sodium.crypto_pwhash_str(
-    password,
-    sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-    sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
-  );
-};
+const hashPassword = password => sodium.crypto_pwhash_str(
+  password,
+  sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+  sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+);
 
-const verifyPassword = async (user, password) => {
-  await sodium.ready;
+const verifyPassword = (user, password) => { // eslint-disable-line arrow-body-style
   return sodium.crypto_pwhash_str_verify(user.hashed_password, password);
 };
 
-const authMiddleware = async (storage, req, res, next) => {
+const authMiddleware = (storage, req, res, next) => {
   const { email, password } = req.query;
 
   // Check valid auth credentials
@@ -36,7 +32,7 @@ const authMiddleware = async (storage, req, res, next) => {
   }
 
   const user = storage.get(userId);
-  const passwordOk = await verifyPassword(user, password);
+  const passwordOk = verifyPassword(user, password);
   if (!passwordOk) {
     log('Authentication error: invalid password', 1);
     res.sendStatus(401);
@@ -49,10 +45,7 @@ const authMiddleware = async (storage, req, res, next) => {
 };
 
 const authMiddlewareBuilder = (app) => { // eslint-disable-line arrow-body-style
-  return (req, res, next) => authMiddleware(app.storage, req, res, next).catch((err) => {
-    // Forward error to the global Express error handler
-    next(err);
-  });
+  return (req, res, next) => authMiddleware(app.storage, req, res, next);
 };
 
 module.exports = {

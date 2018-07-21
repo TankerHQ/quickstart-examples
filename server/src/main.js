@@ -10,10 +10,10 @@ const dataPath = path.resolve(__dirname, '../data').normalize();
 
 cli.option('-c, --config <c>', 'A Tanker JSON config file').parse(process.argv);
 
-getConfig(cli.config).then((config) => {
+getConfig(cli.config).then(async (config) => {
   if (!config) return;
 
-  server.setup({ ...config, dataPath });
+  await server.setup({ ...config, dataPath });
 
   log('Tanker mock server:');
   log(`Configured with Trustchain: ${config.trustchainId}`, 1);

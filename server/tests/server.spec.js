@@ -77,9 +77,9 @@ describe('server', () => {
   };
 
 
-  beforeEach(() => {
+  beforeEach(async () => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
-    app = server.setup({
+    app = await server.setup({
       dataPath: tempPath.name,
       trustchainId,
       trustchainPrivateKey,
