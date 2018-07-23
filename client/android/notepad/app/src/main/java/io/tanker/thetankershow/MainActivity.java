@@ -1,5 +1,6 @@
 package io.tanker.thetankershow;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,44 +29,23 @@ import java.util.ArrayList;
 
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerDecryptOptions;
-import io.tanker.api.TankerEncryptOptions;
 
 public class MainActivity extends AppCompatActivity {
-    private String resourceId = null;
+    private String email;
+    private String password;
+    private String userId;
+    private String server;
+    private String resourceId;
     private ArrayList<String> receivedNoteAuthors = new ArrayList<>();
     private ArrayList<String> receivedNoteContents = new ArrayList<>();
 
-    private void logout() {
-        Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
-        tanker.close().then((closeFuture) -> {
-            runOnUiThread(() -> {
-                // Redirect to the Login activity
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            });
-
-            return null;
-        });
-    }
-
-    private void showToast(String message) {
-        runOnUiThread(() -> {
-            Toast.makeText(this, message,
-                    Toast.LENGTH_LONG).show();
-        });
-    }
-
     private URL makeURL(String endpoint) throws MalformedURLException {
-        String address = ((TheTankerApplication) getApplication()).getServerAddress();
-        String email = getIntent().getStringExtra("EXTRA_EMAIL");
-        String password = getIntent().getStringExtra("EXTRA_PASSWORD");
-
-        return new URL(address + endpoint + "?email=" + email + "&password=" + password);
+        return new URL(this.server + endpoint + "?email=" + this.email + "&password=" + this.password);
     }
 
     private URL getNoteUrl(String friendId) throws Throwable {
         if (friendId == null)
-            friendId = getIntent().getStringExtra("EXTRA_USERID");
+            friendId = this.userId;
         return makeURL("data/" + friendId);
     }
 
@@ -83,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
     private URL getUsersURL() throws Throwable {
         return makeURL("users/");
+    }
+
+    private void showToast(String message) {
+        runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
     }
 
     private String getUserIdFromEmail(String email) throws Throwable {
@@ -191,20 +175,29 @@ public class MainActivity extends AppCompatActivity {
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
 
-        String userId = getIntent().getStringExtra("EXTRA_USERID");
-
-        String jsonPasCher = String.format("{\"to\": [\"%s\"], \"from\": \"%s\" }", recipient, userId);
+        String jsonPasCher = String.format("{\"to\": [\"%s\"], \"from\": \"%s\" }", recipient, this.userId);
         Log.i("TheTankerShow", jsonPasCher);
         connection.getOutputStream().write(jsonPasCher.getBytes());
         connection.getInputStream();
     }
 
+    private void logout() {
+        Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
+        tanker.close().then((closeFuture) -> {
+            runOnUiThread(() -> {
+                // Redirect to the Login activity
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            });
+            return null;
+        });
+    }
 
-    private void updatePassword() {
-        Intent intent = new Intent(MainActivity.this, UpdateUnlockPasswordActivity.class);
-        intent.putExtra("EXTRA_EMAIL", getIntent().getStringExtra("EXTRA_EMAIL"));
-        intent.putExtra("EXTRA_PASSWORD", getIntent().getStringExtra("EXTRA_PASSWORD"));
-        startActivity(intent);
+    private void setting() {
+        Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+        intent.putExtra("EXTRA_EMAIL", this.email);
+        intent.putExtra("EXTRA_PASSWORD", this.password);
+        startActivityForResult(intent, 1);
     }
 
     private void share() {
@@ -242,41 +235,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                this.email = data.getStringExtra("EXTRA_EMAIL");
+                this.password = data.getStringExtra("EXTRA_PASSWORD");
+            }
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button logoutButton = findViewById(R.id.main_logout_button);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                logout();
-            }
-        });
+        this.email = getIntent().getStringExtra("EXTRA_EMAIL");
+        this.password = getIntent().getStringExtra("EXTRA_PASSWORD");
+        this.userId = getIntent().getStringExtra("EXTRA_USERID");
+        this.server = ((TheTankerApplication) getApplication()).getServerAddress();
 
-        Button updatePasswordButton = findViewById(R.id.main_update_password_button);
-        updatePasswordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                updatePassword();
-            }
-        });
+        Button logoutButton = findViewById(R.id.main_logout_button);
+        logoutButton.setOnClickListener( (View v) -> logout());
+
+        Button settingButton = findViewById(R.id.main_setting_button);
+        settingButton.setOnClickListener((View v) -> setting());
 
         Button saveButton = findViewById(R.id.main_save_button);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveData();
-            }
-        });
+        saveButton.setOnClickListener((View v) -> saveData());
 
         Button shareButton = findViewById(R.id.share_button);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        shareButton.setOnClickListener((View v) -> {
                 saveData();
                 share();
-            }
         });
 
         FetchDataTask backgroundTask = new FetchDataTask();
@@ -287,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         logout();
     }
-
 
     public class FetchDataTask extends AsyncTask<String, Void, Boolean> {
         @Override
@@ -302,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 loadSharedWithMe();
             } catch (Throwable e) {
-                Log.e("notepad", "Failed to fetch share data: " + e.getMessage());
+                Log.e("TheTankerShow", "Failed to fetch share data: " + e.getMessage());
                 return false;
             }
             return true;
@@ -322,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                 resourceId = tanker.getResourceID(encryptedData);
                 uploadToServer(encryptedData);
             } catch (Throwable e) {
-                Log.e("notepad", "Failed to upload data: " + e.getMessage());
+                Log.e("TheTankerShow", "Failed to upload data: " + e.getMessage());
                 return false;
             }
             return true;
@@ -337,14 +326,14 @@ public class MainActivity extends AppCompatActivity {
             try {
                 String recipientUserId = getUserIdFromEmail(recipientEmail);
                 if (recipientUserId == null) {
-                    Log.e("notepad", "Failed to get the UserId from Email");
+                    Log.e("TheTankerShow", "Failed to get the UserId from Email");
                     return false;
                 }
                 Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
                 tanker.share(new String[]{resourceId}, new String[]{recipientUserId}).get();
                 registerShareWithServer(recipientUserId);
             } catch (Throwable e) {
-                Log.e("notepad", "Failed to register share with server: " + e.getMessage());
+                Log.e("TheTankerShow", "Failed to register share with server: " + e.getMessage());
                 return false;
             }
             return true;

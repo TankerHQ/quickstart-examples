@@ -30,11 +30,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/main_update_password_button"
+                android:id="@+id/main_setting_button"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="117dp"
                 android:layout_height="wrap_content"
-                android:text="Update Password"
+                android:text="@string/setting"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/main_save_button"
                 app:layout_constraintHorizontal_bias="0.5"

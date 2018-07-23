@@ -10,8 +10,13 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="change_email_title">Enter your new email address:</string>
+    <string name="change_password_title">Enter your new password:</string>
+    <string name="change_email_button">Change email</string>
+    <string name="change_password_button">Change password</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="setting">Setting</string>
     <string name="title_activity_main">MainActivity</string>
 </resources>

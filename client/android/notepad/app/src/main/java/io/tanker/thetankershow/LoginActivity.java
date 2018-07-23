@@ -12,10 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -36,7 +34,9 @@ import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerConnection;
 import io.tanker.api.TankerOptions;
-import io.tanker.bindings.TankerLib;
+
+import static io.tanker.thetankershow.Utils.isEmailValid;
+import static io.tanker.thetankershow.Utils.isPasswordValid;
 
 /**
  * A login screen that offers login via email/password.
@@ -61,9 +61,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -75,21 +75,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton.setOnClickListener((View v) -> attemptLogin());
 
-        Button mSignUpButton = (Button) findViewById(R.id.email_sign_up_button2);
-        mSignUpButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signUp();
-            }
-        });
+        Button mSignUpButton = findViewById(R.id.email_sign_up_button2);
+        mSignUpButton.setOnClickListener( (View v) -> signUp());
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -225,14 +215,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isEmailValid(String email) {
-        return (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches());
-    }
 
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return true;
-    }
 
     /**
      * Shows the progress UI and hides the login form.
@@ -334,7 +317,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
             try {
                 String userToken = fetchUserToken(mEmail, mPassword);
