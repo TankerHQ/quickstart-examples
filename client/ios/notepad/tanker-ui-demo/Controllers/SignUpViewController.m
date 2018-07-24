@@ -58,26 +58,30 @@
 
   [_activityIndicator startAnimating];
 
-  [Globals signupWithEmail:email password:password]
-      .then(^(NSString* userToken) {
-        NSString *userId = [Globals sharedInstance].userId;
+  __block NSString *userToken;
 
-        return [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken].then(^{
-          NSLog(@"Tanker is open");
-          return [[Globals sharedInstance].tanker setupUnlockWithPassword:password].then(^{
-            [_activityIndicator stopAnimating];
-            HomeViewController* controller =
-                [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
-            [self.navigationController pushViewController:controller animated:YES];
-          });
-        });
-      })
-      .catch(^(NSError* err) {
-        [_activityIndicator stopAnimating];
-        NSString* message = @"Error during signup";
-        NSLog(@"%@: %@", message, [err localizedDescription]);
-        _errorLabel.text = message;
-      });
+  [Globals signupWithEmail:email password:password].then(^(NSString *token) {
+    userToken = token;
+    return [[Globals sharedInstance] buildTanker];
+  }).then(^() {
+                NSString *userId = [Globals sharedInstance].userId;
+
+                return [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken];
+              }).then(^{
+                  NSLog(@"Tanker is open");
+                return [[Globals sharedInstance].tanker setupUnlockWithPassword:password];
+              }).then(^{
+                    [_activityIndicator stopAnimating];
+                    HomeViewController* controller =
+                        [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
+                    [self.navigationController pushViewController:controller animated:YES];
+              })
+              .catch(^(NSError* err) {
+                [_activityIndicator stopAnimating];
+                NSString* message = @"Error during signup";
+                NSLog(@"%@: %@", message, [err localizedDescription]);
+                _errorLabel.text = message;
+              });
 }
 
 - (IBAction)signUpButton:(UIButton*)sender
