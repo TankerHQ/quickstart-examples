@@ -64,6 +64,16 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
+                android:id="@+id/forgot_password_button"
+                android:layout_width="154dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/forgot_password_button"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@android:color/holo_blue_dark" />
+
+            <Button
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"

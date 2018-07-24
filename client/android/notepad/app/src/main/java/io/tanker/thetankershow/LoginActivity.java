@@ -79,15 +79,31 @@ public class LoginActivity extends AppCompatActivity {
         mEmailSignInButton.setOnClickListener((View v) -> attemptLogin());
 
         Button mSignUpButton = findViewById(R.id.email_sign_up_button2);
-        mSignUpButton.setOnClickListener( (View v) -> signUp());
+        mSignUpButton.setOnClickListener((View v) -> signUp());
+
+        Button mForgotPasswordButton = findViewById(R.id.forgot_password_button);
+        mForgotPasswordButton.setOnClickListener((View v) -> forgotPassword());
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
         String writablePath = getApplicationContext().getFilesDir().getAbsolutePath();
         TankerOptions options = new TankerOptions();
-        options.setTrustchainId("Y9T8griM9EJtN++BATiSwc8vpFoFwPXPry7sB//hX0I=")
-                .setWritablePath(writablePath);
+
+        FetchTankerConfig task = new FetchTankerConfig();
+        String trustchainId;
+
+        try {
+             trustchainId = task.execute().get().getString("trustchainId");
+        } catch(Throwable throwable) {
+            Log.e("TheTankerShow", "Failed to fetch tanker config from server!");
+            trustchainId = "Y9T8griM9EJtN++BATiSwc8vpFoFwPXPry7sB//hX0I=";
+            Log.e("TheTankerShow", "Set Trustchain ID to " + trustchainId);
+            throwable.printStackTrace();
+        }
+
+        options.setTrustchainId(trustchainId).setWritablePath(writablePath);
+        
         mTanker = new Tanker(options);
 
         mEventConnection = mTanker.connectUnlockRequiredHandler(() -> runOnUiThread (() -> {
@@ -108,6 +124,32 @@ public class LoginActivity extends AppCompatActivity {
         }));
 
         ((TheTankerApplication) this.getApplication()).setTankerInstance(mTanker);
+    }
+
+    public class FetchTankerConfig extends AsyncTask<String, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            String address  = ((TheTankerApplication) getApplication()).getServerAddress();
+
+            try {
+                URL url = new URL( address + "config");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(
+                                connection.getInputStream()));
+                return new JSONObject(in.readLine());
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    private void forgotPassword() {
+        Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -328,7 +370,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (mSignUp) {
                         mTanker.setupUnlock(new Password(mPassword)).then((fut) -> {
-                            Log.e("TheTankershow", "" + fut.getError());
+                            Log.e("TheTankerShow", "" + fut.getError());
                             goToMainActivity();
                             return null;
                         });

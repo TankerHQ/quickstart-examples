@@ -17,6 +17,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="forgot_password_button">Forgot password</string>
     <string name="setting">Setting</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="send_link">Send link</string>
+    <string name="email">Email</string>
 </resources>
