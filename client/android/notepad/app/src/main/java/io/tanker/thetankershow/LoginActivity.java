@@ -55,25 +55,27 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
     private Tanker mTanker;
     private TankerConnection mEventConnection;
+    private TheTankerApplication mTankerApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mTankerApp = (TheTankerApplication) getApplicationContext();
+
         // Set up the login form.
         mEmailView = findViewById(R.id.email);
 
         mPasswordView = findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        mPasswordView.setOnEditorActionListener((TextView textView, int id, KeyEvent keyEvent) -> {
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
-        });
+            return false;
+            }
+        );
 
         Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener((View v) -> attemptLogin());
@@ -91,22 +93,20 @@ public class LoginActivity extends AppCompatActivity {
         TankerOptions options = new TankerOptions();
 
         FetchTankerConfig task = new FetchTankerConfig();
-        String trustchainId;
+        String trustchainId = null;
 
         try {
-             trustchainId = task.execute().get().getString("trustchainId");
-        } catch(Throwable throwable) {
-            Log.e("TheTankerShow", "Failed to fetch tanker config from server!");
-            trustchainId = "Y9T8griM9EJtN++BATiSwc8vpFoFwPXPry7sB//hX0I=";
-            Log.e("TheTankerShow", "Set Trustchain ID to " + trustchainId);
+            trustchainId = task.execute().get().getString("trustchainId");
+        } catch (Throwable throwable) {
+            Log.e("TheTankerShow", getString(R.string.no_trustchain_config));
             throwable.printStackTrace();
         }
 
         options.setTrustchainId(trustchainId).setWritablePath(writablePath);
-        
+
         mTanker = new Tanker(options);
 
-        mEventConnection = mTanker.connectUnlockRequiredHandler(() -> runOnUiThread (() -> {
+        mEventConnection = mTanker.connectUnlockRequiredHandler(() -> runOnUiThread(() -> {
             String password = mPasswordView.getText().toString();
             mTanker.unlockCurrentDevice(new Password(password)).then((validateFuture) -> {
                 if (validateFuture.getError() != null) {
@@ -129,10 +129,9 @@ public class LoginActivity extends AppCompatActivity {
     public class FetchTankerConfig extends AsyncTask<String, Void, JSONObject> {
         @Override
         protected JSONObject doInBackground(String... params) {
-            String address  = ((TheTankerApplication) getApplication()).getServerAddress();
 
             try {
-                URL url = new URL( address + "config");
+                URL url = LoginActivity.this.mTankerApp.makeURL("/config");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
@@ -258,7 +257,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -304,7 +302,7 @@ public class LoginActivity extends AppCompatActivity {
         private final String mEmail;
         private final String mPassword;
         private final Boolean mSignUp;
-        private  String mUserId;
+        private String mUserId;
         private Integer mError;
 
 
@@ -315,18 +313,16 @@ public class LoginActivity extends AppCompatActivity {
             mError = 200;
         }
 
-        private String fetchUserToken(String email, String password) throws IOException {
-            String method = mSignUp ? "signup" : "login";
-            String address  = ((TheTankerApplication) getApplication()).getServerAddress();
+        private String authenticate(String email, String password) throws IOException {
+            String endpoint = mSignUp ? "/signup" : "/login";
 
-            URL url = new URL( address + method + "?email=" + email + "&password=" + password);
-
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            URL url = LoginActivity.this.mTankerApp.makeURL(endpoint, email, password);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
 
             mError = connection.getResponseCode();
-            if(mError < 200 || mError > 202)
+            if (mError < 200 || mError > 202)
                 throw new IOException("");
 
             BufferedReader in = new BufferedReader(
@@ -335,13 +331,18 @@ public class LoginActivity extends AppCompatActivity {
 
             String token = "";
             try {
-                JSONObject res  = new JSONObject(in.readLine());
+                JSONObject res = new JSONObject(in.readLine());
                 token = res.getString("token");
                 mUserId = res.getString("id");
             } catch (JSONException e) {
                 Log.e("TheTankerShow", "JSON error", e);
                 return token;
             }
+
+            LoginActivity.this.mTankerApp.setEmail(mEmail);
+            LoginActivity.this.mTankerApp.setPassword(mPassword);
+            LoginActivity.this.mTankerApp.setUserId(mUserId);
+
             return token;
         }
 
@@ -349,9 +350,6 @@ public class LoginActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 // Redirect to the MainActivity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra("EXTRA_EMAIL", mEmail);
-                intent.putExtra("EXTRA_USERID", mUserId);
-                intent.putExtra("EXTRA_PASSWORD", mPassword);
                 startActivity(intent);
                 showProgress(false);
             });
@@ -361,10 +359,11 @@ public class LoginActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... params) {
 
             try {
-                String userToken = fetchUserToken(mEmail, mPassword);
+                String userToken = authenticate(mEmail, mPassword);
                 mTanker.open(mUserId, userToken).then((openFuture) -> {
                     if (openFuture.getError() != null) {
-                        Log.e("TheTankerShow", "Error while opening Tanker session", openFuture.getError());
+                        Log.e("TheTankerShow", "Error while opening Tanker session",
+                                openFuture.getError());
                         return null;
                     }
 
@@ -397,13 +396,13 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
 
-            switch(mError) {
+            switch (mError) {
                 case 200:
                 case 201:
                 case 202:
                     return;
                 case 409:
-                    mEmailView.setError("User already exists");
+                    mEmailView.setError(getString(R.string.email_exist));
                     mEmailView.requestFocus();
                     break;
                 case 401:
@@ -411,7 +410,7 @@ public class LoginActivity extends AppCompatActivity {
                     mPasswordView.requestFocus();
                     break;
                 case 404:
-                    mEmailView.setError("User doesn't exist");
+                    mEmailView.setError("Email not registered");
                     mEmailView.requestFocus();
                     break;
                 case 503:

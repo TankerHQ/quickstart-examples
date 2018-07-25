@@ -18,8 +18,15 @@
         completions."
     </string>
     <string name="forgot_password_button">Forgot password</string>
-    <string name="setting">Setting</string>
+    <string name="settings">Settings</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="send_link">Send link</string>
     <string name="email">Email</string>
+    <string name="no_trustchain_config">Failed to fetch the Trustchain configuration from the server!\nPlease make sure the server is running and the Trustchain configuration file is added to the server."</string>
+    <string name="recovery_email">A recovery email was sent to you</string>
+    <string name="change_email_success">Change email successfully</string>
+    <string name="change_password_success">Change password successfully</string>
+    <string name="change_email_fail">Failed to change email</string>
+    <string name="change_password_fail">Failed to change password</string>
+    <string name="email_exist">Email already registered</string>
 </resources>
