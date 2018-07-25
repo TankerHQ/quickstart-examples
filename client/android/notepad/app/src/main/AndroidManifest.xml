@@ -25,7 +25,8 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".UpdateUnlockPasswordActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".ForgotPasswordActivity"></activity>
     </application>
 
 </manifest>

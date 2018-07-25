@@ -14,12 +14,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +34,9 @@ import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerConnection;
 import io.tanker.api.TankerOptions;
-import io.tanker.bindings.TankerLib;
+
+import static io.tanker.thetankershow.Utils.isEmailValid;
+import static io.tanker.thetankershow.Utils.isPasswordValid;
 
 /**
  * A login screen that offers login via email/password.
@@ -51,57 +55,66 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
     private Tanker mTanker;
     private TankerConnection mEventConnection;
+    private TheTankerApplication mTankerApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        mTankerApp = (TheTankerApplication) getApplicationContext();
+
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = findViewById(R.id.email);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mPasswordView = findViewById(R.id.password);
+        mPasswordView.setOnEditorActionListener((TextView textView, int id, KeyEvent keyEvent) -> {
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                 attemptLogin();
+                return true;
             }
-        });
+            return false;
+            }
+        );
 
-        Button mSignUpButton = (Button) findViewById(R.id.email_sign_up_button2);
-        mSignUpButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signUp();
-            }
-        });
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton.setOnClickListener((View v) -> attemptLogin());
+
+        Button mSignUpButton = findViewById(R.id.email_sign_up_button2);
+        mSignUpButton.setOnClickListener((View v) -> signUp());
+
+        Button mForgotPasswordButton = findViewById(R.id.forgot_password_button);
+        mForgotPasswordButton.setOnClickListener((View v) -> forgotPassword());
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
         String writablePath = getApplicationContext().getFilesDir().getAbsolutePath();
         TankerOptions options = new TankerOptions();
-        options.setTrustchainId("Y9T8griM9EJtN++BATiSwc8vpFoFwPXPry7sB//hX0I=")
-                .setWritablePath(writablePath);
+
+        FetchTankerConfig task = new FetchTankerConfig();
+        String trustchainId = null;
+
+        try {
+            trustchainId = task.execute().get().getString("trustchainId");
+        } catch (Throwable throwable) {
+            Log.e("TheTankerShow", getString(R.string.no_trustchain_config));
+            throwable.printStackTrace();
+        }
+
+        options.setTrustchainId(trustchainId).setWritablePath(writablePath);
+
         mTanker = new Tanker(options);
 
-        mEventConnection = mTanker.connectUnlockRequiredHandler(() -> runOnUiThread (() -> {
+        mEventConnection = mTanker.connectUnlockRequiredHandler(() -> runOnUiThread(() -> {
             String password = mPasswordView.getText().toString();
             mTanker.unlockCurrentDevice(new Password(password)).then((validateFuture) -> {
                 if (validateFuture.getError() != null) {
-                    mPasswordView.setError("Wrong unlock password, please try again");
-                    mPasswordView.requestFocus();
+                    runOnUiThread(() -> {
+                        mPasswordView.setError("Tanker: Wrong unlock password");
+                        mPasswordView.requestFocus();
+                        showProgress(false);
+                    });
                 } else {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -111,6 +124,31 @@ public class LoginActivity extends AppCompatActivity {
         }));
 
         ((TheTankerApplication) this.getApplication()).setTankerInstance(mTanker);
+    }
+
+    public class FetchTankerConfig extends AsyncTask<String, Void, JSONObject> {
+        @Override
+        protected JSONObject doInBackground(String... params) {
+
+            try {
+                URL url = LoginActivity.this.mTankerApp.makeURL("/config");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(
+                                connection.getInputStream()));
+                return new JSONObject(in.readLine());
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+                return null;
+            }
+        }
+    }
+
+    private void forgotPassword() {
+        Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -218,15 +256,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return true;
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return true;
-    }
 
     /**
      * Shows the progress UI and hides the login form.
@@ -273,7 +302,9 @@ public class LoginActivity extends AppCompatActivity {
         private final String mEmail;
         private final String mPassword;
         private final Boolean mSignUp;
+        private String mUserId;
         private Integer mError;
+
 
         UserLoginTask(String email, String password, Boolean isSignUp) {
             mEmail = email;
@@ -282,24 +313,36 @@ public class LoginActivity extends AppCompatActivity {
             mError = 200;
         }
 
-        private String fetchUserToken(String userId, String password) throws IOException {
-            String method = mSignUp ? "signup" : "login";
-            String address  = ((TheTankerApplication) getApplication()).getServerAddress();
+        private String authenticate(String email, String password) throws IOException {
+            String endpoint = mSignUp ? "/signup" : "/login";
 
-            URL url = new URL( address + method + "?userId=" + userId + "&password=" + password);
-
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            URL url = LoginActivity.this.mTankerApp.makeURL(endpoint, email, password);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
 
             mError = connection.getResponseCode();
-            if(mError < 200 || mError > 202)
+            if (mError < 200 || mError > 202)
                 throw new IOException("");
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(
                             connection.getInputStream()));
-            String token = in.readLine();
+
+            String token = "";
+            try {
+                JSONObject res = new JSONObject(in.readLine());
+                token = res.getString("token");
+                mUserId = res.getString("id");
+            } catch (JSONException e) {
+                Log.e("TheTankerShow", "JSON error", e);
+                return token;
+            }
+
+            LoginActivity.this.mTankerApp.setEmail(mEmail);
+            LoginActivity.this.mTankerApp.setPassword(mPassword);
+            LoginActivity.this.mTankerApp.setUserId(mUserId);
+
             return token;
         }
 
@@ -307,8 +350,6 @@ public class LoginActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 // Redirect to the MainActivity
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                intent.putExtra("EXTRA_USERID", mEmail);
-                intent.putExtra("EXTRA_PASSWORD", mPassword);
                 startActivity(intent);
                 showProgress(false);
             });
@@ -316,17 +357,19 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
             try {
-                String userToken = fetchUserToken(mEmail, mPassword);
-                mTanker.open(mEmail, userToken).then((openFuture) -> {
+                String userToken = authenticate(mEmail, mPassword);
+                mTanker.open(mUserId, userToken).then((openFuture) -> {
                     if (openFuture.getError() != null) {
+                        Log.e("TheTankerShow", "Error while opening Tanker session",
+                                openFuture.getError());
                         return null;
                     }
 
                     if (mSignUp) {
                         mTanker.setupUnlock(new Password(mPassword)).then((fut) -> {
+                            Log.e("TheTankerShow", "" + fut.getError());
                             goToMainActivity();
                             return null;
                         });
@@ -353,13 +396,13 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
 
-            switch(mError) {
+            switch (mError) {
                 case 200:
                 case 201:
                 case 202:
                     return;
                 case 409:
-                    mEmailView.setError("User already exists");
+                    mEmailView.setError(getString(R.string.email_exist));
                     mEmailView.requestFocus();
                     break;
                 case 401:
@@ -367,7 +410,7 @@ public class LoginActivity extends AppCompatActivity {
                     mPasswordView.requestFocus();
                     break;
                 case 404:
-                    mEmailView.setError("User doesn't exist");
+                    mEmailView.setError("Email not registered");
                     mEmailView.requestFocus();
                     break;
                 case 503:
@@ -375,7 +418,7 @@ public class LoginActivity extends AppCompatActivity {
                     mEmailView.requestFocus();
                     break;
                 default:
-                    mPasswordView.setError("Unkown Error");
+                    mPasswordView.setError("Unknown Error");
                     mPasswordView.requestFocus();
                     break;
             }
