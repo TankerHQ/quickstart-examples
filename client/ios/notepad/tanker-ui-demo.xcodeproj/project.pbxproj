@@ -17,7 +17,7 @@
 		EB261735207B8D8C00FCB028 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = EB261734207B8D8C00FCB028 /* main.m */; };
 		EB26173F207B8D8C00FCB028 /* tanker_ui_demoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = EB26173E207B8D8C00FCB028 /* tanker_ui_demoUITests.m */; };
 		EB84AE5E20F3BA150045CA98 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB84AE5D20F3BA150045CA98 /* HomeViewController.m */; };
-		EB9215F120F3C36400677596 /* ChangePasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9215EE20F3C36400677596 /* ChangePasswordViewController.m */; };
+		EB9215F120F3C36400677596 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9215EE20F3C36400677596 /* SettingsViewController.m */; };
 		EB9852AE207B9C210008C567 /* Globals.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9852AD207B9C210008C567 /* Globals.m */; };
 /* End PBXBuildFile section */
 
@@ -53,8 +53,8 @@
 		EB261740207B8D8C00FCB028 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EB84AE5D20F3BA150045CA98 /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		EB84AE5F20F3BA2F0045CA98 /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
-		EB9215ED20F3C36400677596 /* ChangePasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChangePasswordViewController.h; sourceTree = "<group>"; };
-		EB9215EE20F3C36400677596 /* ChangePasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChangePasswordViewController.m; sourceTree = "<group>"; };
+		EB9215ED20F3C36400677596 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		EB9215EE20F3C36400677596 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		EB9852AC207B9BB70008C567 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		EB9852AD207B9C210008C567 /* Globals.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Globals.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -143,8 +143,8 @@
 		EB7C684C20863218000C037B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				EB9215ED20F3C36400677596 /* ChangePasswordViewController.h */,
-				EB9215EE20F3C36400677596 /* ChangePasswordViewController.m */,
+				EB9215ED20F3C36400677596 /* SettingsViewController.h */,
+				EB9215EE20F3C36400677596 /* SettingsViewController.m */,
 				EB1A5D0A207BB721007A269F /* LoginViewController.h */,
 				EB1A5D0B207BB721007A269F /* LoginViewController.m */,
 				EB1A5D0D207BB739007A269F /* SignUpViewController.h */,
@@ -169,7 +169,6 @@
 				EB26171F207B8D8C00FCB028 /* Frameworks */,
 				EB261720207B8D8C00FCB028 /* Resources */,
 				8A651541C4FA9F245476C58A /* [CP] Embed Pods Frameworks */,
-				07CC2F8E102F904C662A3908 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -275,21 +274,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		07CC2F8E102F904C662A3908 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-tanker-ui-demo/Pods-tanker-ui-demo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8A651541C4FA9F245476C58A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -320,7 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB9852AE207B9C210008C567 /* Globals.m in Sources */,
-				EB9215F120F3C36400677596 /* ChangePasswordViewController.m in Sources */,
+				EB9215F120F3C36400677596 /* SettingsViewController.m in Sources */,
 				EB141894207F919800A69EDA /* GreatSuccessViewController.m in Sources */,
 				EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */,
 				EB261735207B8D8C00FCB028 /* main.m in Sources */,

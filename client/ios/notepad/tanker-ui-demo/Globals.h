@@ -14,6 +14,7 @@
                                   password:(NSString *)password;
 + (PMKPromise *)uploadToServer:(NSString *)data;
 + (PMKPromise<NSString *> *)dataFromServer;
++ (PMKPromise *)changeEmail:(NSString *)newEmail;
 + (PMKPromise *)changePasswordFrom:(NSString *)oldPassword
                                 to:(NSString *)newPassword;
 + (PMKPromise *)shareNoteFrom:(NSString *)userId

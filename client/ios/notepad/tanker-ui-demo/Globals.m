@@ -204,6 +204,27 @@ NSString *getWritablePath() {
                            body:body];
 }
 
++ (PMKPromise *)changeEmail:(NSString *)newEmail {
+  NSString *email = [Globals sharedInstance] -> _email;
+  NSString *password = [Globals sharedInstance] -> _password;
+
+  NSDictionary *body = @{@"email" : newEmail};
+  NSError *err = nil;
+  NSData *jsonBody =
+      [NSJSONSerialization dataWithJSONObject:body options:0 error:&err];
+
+  return
+      [Globals
+          requestToServerWithMethod:@"PUT"
+                               path:@"me/email"
+                          queryArgs:@{@"email" : email, @"password" : password}
+                               body:jsonBody
+                        contentType:@"application/json"]
+          .then(^{
+            [Globals sharedInstance] -> _email = newEmail;
+          });
+}
+
 + (PMKPromise *)changePasswordFrom:(NSString *)oldPassword
                                 to:(NSString *)newPassword {
   NSString *email = [Globals sharedInstance] -> _email;

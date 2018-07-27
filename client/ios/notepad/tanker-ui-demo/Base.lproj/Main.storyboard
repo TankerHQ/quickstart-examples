@@ -90,10 +90,10 @@
                                             <action selector="triggerLogout:" destination="q2W-Gx-jLJ" eventType="touchUpInside" id="uFM-oZ-BJg"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NRS-mZ-MAs" userLabel="Change Password">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NRS-mZ-MAs" userLabel="Settings">
                                         <rect key="frame" x="0.0" y="38" width="359" height="30"/>
                                         <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
-                                        <state key="normal" title="Change Password">
+                                        <state key="normal" title="Settings">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
@@ -454,7 +454,7 @@
         <!--View Controller Change Password-->
         <scene sceneID="ynx-LX-yY8">
             <objects>
-                <viewController storyboardIdentifier="changePassword" id="PO3-tA-397" userLabel="View Controller Change Password" customClass="ChangePasswordViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="changePassword" id="PO3-tA-397" userLabel="View Controller Change Password" customClass="SettingsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="w8i-HP-MBg">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -507,6 +507,23 @@
                                     </label>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NMg-mp-2Qk" userLabel="Change Email">
+                                <rect key="frame" x="8" y="470" width="359" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Change Email"/>
+                                <connections>
+                                    <action selector="changeEmailAction:" destination="PO3-tA-397" eventType="touchUpInside" id="afT-XX-Wi4"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New email address" textAlignment="center" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="b0V-ZH-taI" userLabel="emailField">
+                                <rect key="frame" x="8" y="432" width="359" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <textInputTraits key="textInputTraits" textContentType="email"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" red="0.94117647059999998" green="0.95294117649999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="0.23921568630000001" green="0.32156862749999998" blue="0.72156862749999995" alpha="1" colorSpace="calibratedRGB"/>
@@ -519,7 +536,9 @@
                         <viewLayoutGuide key="safeArea" id="4tG-hF-ZUQ"/>
                     </view>
                     <connections>
+                        <outlet property="changeEmailButton" destination="NMg-mp-2Qk" id="c2R-w1-Vl0"/>
                         <outlet property="changePasswordButton" destination="ghT-sN-IXO" id="Bjq-iJ-o9T"/>
+                        <outlet property="emailField" destination="b0V-ZH-taI" id="OOs-tI-0GZ"/>
                         <outlet property="errorLabel" destination="bAO-JE-JbZ" id="LbG-PX-EiC"/>
                         <outlet property="theNewPasswordField" destination="ixo-kG-Dbu" id="fEA-wr-QGk"/>
                         <outlet property="theOldPasswordField" destination="GDf-Sc-Btk" id="LYF-Cb-oNz"/>
