@@ -95,7 +95,7 @@ NSString *getWritablePath() {
                       NSLog(@"Response status code: %ld",
                             (long)httpResponse.statusCode);
                       resolve([[NSError alloc]
-                          initWithDomain:@"io.tanker.ui-demo"
+                          initWithDomain:@"io.tanker.notepad"
                                     code:(long)httpResponse.statusCode
                                 userInfo:nil]);
                     } else

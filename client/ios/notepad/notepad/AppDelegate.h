@@ -1,6 +1,6 @@
 //
 //  AppDelegate.h
-//  tanker-ui-demo
+//  notepad
 //
 //  Created by Loic on 09/04/2018.
 //  Copyright © 2018 Tanker. All rights reserved.

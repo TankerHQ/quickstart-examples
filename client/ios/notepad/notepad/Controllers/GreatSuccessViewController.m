@@ -37,7 +37,7 @@
       .catch(^(NSError* error) {
         [_activityIndicator stopAnimating];
         // TODO constant
-        if ([error.domain isEqualToString:@"io.tanker-ui-demo"] && error.code == 404)
+        if ([error.domain isEqualToString:@"io.notepad"] && error.code == 404)
           _SecretNotesField.text = @"";
       });
 }

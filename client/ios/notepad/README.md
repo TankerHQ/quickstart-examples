@@ -6,7 +6,7 @@
 cd client/ios/notepad/
 pod update
 pod install
-open tanker-ui-demo.xcworkspace/
+open notepad.xcworkspace/
 ```
 
 Then build and run as usual.

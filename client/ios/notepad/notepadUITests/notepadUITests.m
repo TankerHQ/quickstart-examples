@@ -1,6 +1,6 @@
 //
-//  tanker_ui_demoUITests.m
-//  tanker-ui-demoUITests
+//  notepadUITests.m
+//  notepadUITests
 //
 //  Created by Loic on 09/04/2018.
 //  Copyright © 2018 Tanker. All rights reserved.
@@ -8,11 +8,11 @@
 
 #import <XCTest/XCTest.h>
 
-@interface tanker_ui_demoUITests : XCTestCase
+@interface notepadUITests : XCTestCase
 
 @end
 
-@implementation tanker_ui_demoUITests
+@implementation notepadUITests
 
 - (void)setUp {
     [super setUp];
