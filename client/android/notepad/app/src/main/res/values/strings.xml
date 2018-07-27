@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">The Tanker Show</string>
+    <string name="app_name">Notepad</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
