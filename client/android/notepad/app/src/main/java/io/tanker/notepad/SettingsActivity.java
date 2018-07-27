@@ -26,7 +26,7 @@ import static io.tanker.notepad.Utils.isEmailValid;
 
 public class SettingsActivity extends AppCompatActivity {
     private View mProgressView;
-    private TheTankerApplication mTankerApp;
+    private NotepadApplication mTankerApp;
     private EditText mNewEmailEdit;
 
     @Override
@@ -34,7 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        mTankerApp = (TheTankerApplication) getApplicationContext();
+        mTankerApp = (NotepadApplication) getApplicationContext();
 
         mProgressView = findViewById(R.id.setting_progress_bar);
         mNewEmailEdit = findViewById(R.id.input_change_email);
@@ -58,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String jsonText = gson.toJson(data);
 
-        Log.i("TheTankerShow", String.format("PUT: %s with data: %s", url, jsonText));
+        Log.i("Notepad", String.format("PUT: %s with data: %s", url, jsonText));
         connection.getOutputStream().write(jsonText.getBytes());
         int mError = connection.getResponseCode();
         if (mError == 200) {
@@ -111,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
                 updateAppEmail(newEmail);
                 return true;
             } catch (Throwable throwable) {
-                Log.e("TheTankerShow", "Failed to change email: " + throwable.getMessage());
+                Log.e("Notepad", "Failed to change email: " + throwable.getMessage());
                 return false;
             }
         }
@@ -130,7 +130,7 @@ public class SettingsActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String jsonText = gson.toJson(data);
 
-        Log.i("TheTankerShow", jsonText);
+        Log.i("Notepad", jsonText);
         connection.getOutputStream().write(jsonText.getBytes());
         int mError = connection.getResponseCode();
         if (mError < 200 || mError > 202)
@@ -148,10 +148,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         mProgressView.setVisibility(ProgressBar.VISIBLE);
 
-        Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
+        Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
         if (tanker == null) {
             mProgressView.setVisibility(ProgressBar.INVISIBLE);
-            Log.e("TheTankerShow", "Empty tanker instance");
+            Log.e("Notepad", "Empty tanker instance");
             throw new NullPointerException("Empty tanker instance");
         }
 
@@ -159,7 +159,7 @@ public class SettingsActivity extends AppCompatActivity {
         tanker.updateUnlockPassword(new Password(unlockPassword)).then((validateFuture) -> {
 
             if (validateFuture.getError() != null) {
-                Log.e("TheTankerShow", validateFuture.getError().toString());
+                Log.e("Notepad", validateFuture.getError().toString());
                 runOnUiThread(() -> {
                     unlockPasswordEdit.setError("Error, couldn't update password!");
                     unlockPasswordEdit.requestFocus();

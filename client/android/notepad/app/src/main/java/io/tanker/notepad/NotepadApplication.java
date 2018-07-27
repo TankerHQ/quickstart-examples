@@ -8,7 +8,7 @@ import java.net.URL;
 
 import io.tanker.api.Tanker;
 
-public class TheTankerApplication extends Application {
+public class NotepadApplication extends Application {
     private Tanker mTanker;
     private String mEmail;
     private String mPassword;

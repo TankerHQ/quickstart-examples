@@ -55,14 +55,14 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
     private Tanker mTanker;
     private TankerConnection mEventConnection;
-    private TheTankerApplication mTankerApp;
+    private NotepadApplication mTankerApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mTankerApp = (TheTankerApplication) getApplicationContext();
+        mTankerApp = (NotepadApplication) getApplicationContext();
 
         // Set up the login form.
         mEmailView = findViewById(R.id.email);
@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         try {
             trustchainId = task.execute().get().getString("trustchainId");
         } catch (Throwable throwable) {
-            Log.e("TheTankerShow", getString(R.string.no_trustchain_config));
+            Log.e("Notepad", getString(R.string.no_trustchain_config));
             throwable.printStackTrace();
         }
 
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
             });
         }));
 
-        ((TheTankerApplication) this.getApplication()).setTankerInstance(mTanker);
+        ((NotepadApplication) this.getApplication()).setTankerInstance(mTanker);
     }
 
     public class FetchTankerConfig extends AsyncTask<String, Void, JSONObject> {
@@ -335,7 +335,7 @@ public class LoginActivity extends AppCompatActivity {
                 token = res.getString("token");
                 mUserId = res.getString("id");
             } catch (JSONException e) {
-                Log.e("TheTankerShow", "JSON error", e);
+                Log.e("Notepad", "JSON error", e);
                 return token;
             }
 
@@ -362,14 +362,14 @@ public class LoginActivity extends AppCompatActivity {
                 String userToken = authenticate(mEmail, mPassword);
                 mTanker.open(mUserId, userToken).then((openFuture) -> {
                     if (openFuture.getError() != null) {
-                        Log.e("TheTankerShow", "Error while opening Tanker session",
+                        Log.e("Notepad", "Error while opening Tanker session",
                                 openFuture.getError());
                         return null;
                     }
 
                     if (mSignUp) {
                         mTanker.setupUnlock(new Password(mPassword)).then((fut) -> {
-                            Log.e("TheTankerShow", "" + fut.getError());
+                            Log.e("Notepad", "" + fut.getError());
                             goToMainActivity();
                             return null;
                         });
@@ -379,13 +379,13 @@ public class LoginActivity extends AppCompatActivity {
                     return null;
                 });
             } catch (ConnectException e) {
-                Log.i("TheTankerShow", "Server Connection error", e);
+                Log.i("Notepad", "Server Connection error", e);
                 mError = 503;
             } catch (IOException e) {
-                Log.i("TheTankerShow", "Login error", e);
+                Log.i("Notepad", "Login error", e);
                 return false;
             } catch (Throwable e) {
-                Log.e("TheTankerShow", "Other error", e);
+                Log.e("Notepad", "Other error", e);
                 return false;
             }
 

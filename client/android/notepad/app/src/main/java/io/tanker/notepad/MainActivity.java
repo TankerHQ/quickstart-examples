@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private String resourceId;
     private ArrayList<String> receivedNoteAuthors = new ArrayList<>();
     private ArrayList<String> receivedNoteContents = new ArrayList<>();
-    private TheTankerApplication mTankerApp;
+    private NotepadApplication mTankerApp;
 
     private URL getNoteUrl(String friendId) throws Throwable {
         if (friendId == null)
@@ -75,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
         JSONArray users = new JSONArray(in.readLine());
         for (int i = 0; i < users.length(); i++) {
             JSONObject user = users.getJSONObject(i);
-            if (user.getString("email").equals(email))
+            if (user.has("email") && user.getString("email").equals(email))
                 return user.getString("id");
         }
-        Log.i("TheTankerShow", "User to share not found");
+        Log.i("Notepad", "User to share not found");
         return null;
     }
 
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         connection.setDoOutput(true);
 
         String base64 = Base64.encodeToString(encryptedData, Base64.NO_WRAP);
-        Log.i("TheTankerShow", base64);
+        Log.i("Notepad", base64);
         connection.getOutputStream().write(base64.getBytes());
         connection.getInputStream();
     }
@@ -155,11 +155,11 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
 
-            Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
+            Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
             byte[] clearData = tanker.decrypt(data, options).get();
             return new String(clearData, "UTF-8");
         } catch (Throwable e) {
-            Log.e("TheTankerShow", "loadDataError", e);
+            Log.e("Notepad", "loadDataError", e);
             return null;
         }
     }
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String jsonText = gson.toJson(data);
 
-        Log.i("TheTankerShow", jsonText);
+        Log.i("Notepad", jsonText);
         connection.getOutputStream().write(jsonText.getBytes());
         connection.getInputStream();
 
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
+        Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
         tanker.close().then((closeFuture) -> {
             runOnUiThread(() -> {
                 // Redirect to the Login activity
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTankerApp = (TheTankerApplication) getApplicationContext();
+        mTankerApp = (NotepadApplication) getApplicationContext();
 
         Button logoutButton = findViewById(R.id.main_logout_button);
         logoutButton.setOnClickListener((View v) -> logout());
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 loadSharedWithMe();
             } catch (Throwable e) {
-                Log.e("TheTankerShow", "Failed to fetch share data: " + e.getMessage());
+                Log.e("Notepad", "Failed to fetch share data: " + e.getMessage());
                 return false;
             }
             return true;
@@ -302,12 +302,12 @@ public class MainActivity extends AppCompatActivity {
             byte[] clearData;
             try {
                 clearData = clearText.getBytes();
-                Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
+                Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
                 byte[] encryptedData = tanker.encrypt(clearData, null).get();
                 resourceId = tanker.getResourceID(encryptedData);
                 uploadToServer(encryptedData);
             } catch (Throwable e) {
-                Log.e("TheTankerShow", "Failed to upload data: " + e.getMessage());
+                Log.e("Notepad", "Failed to upload data: " + e.getMessage());
                 return false;
             }
             return true;
@@ -322,14 +322,14 @@ public class MainActivity extends AppCompatActivity {
             try {
                 String recipientUserId = getUserIdFromEmail(recipientEmail);
                 if (recipientUserId == null) {
-                    Log.e("TheTankerShow", "Failed to get the UserId from Email");
+                    Log.e("Notepad", "Failed to get the UserId from Email");
                     return false;
                 }
-                Tanker tanker = ((TheTankerApplication) getApplication()).getTankerInstance();
+                Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
                 tanker.share(new String[]{resourceId}, new String[]{recipientUserId}).get();
                 registerShareWithServer(recipientUserId);
             } catch (Throwable e) {
-                Log.e("TheTankerShow", "Failed to register share with server: " + e.getMessage());
+                Log.e("Notepad", "Failed to register share with server: " + e.getMessage());
                 return false;
             }
             return true;
