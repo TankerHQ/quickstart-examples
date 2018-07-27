@@ -142,7 +142,7 @@
         <!--View Controller note-->
         <scene sceneID="qGL-vg-WEh">
             <objects>
-                <viewController storyboardIdentifier="GreatSuccessViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Cgj-G9-lG3" userLabel="View Controller note" customClass="GreatSuccessViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GreatSuccessViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Cgj-G9-lG3" userLabel="View Controller note" customClass="EditNoteViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dE9-7I-Y26">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -551,7 +551,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="gGo-E5-iJt"/>
+        <segue reference="Oy3-kR-A20"/>
         <segue reference="pVh-AI-9Bk"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -1,9 +1,9 @@
-#import "GreatSuccessViewController.h"
+#import "EditNoteViewController.h"
 #import "Globals.h"
 
 @import PromiseKit;
 
-@interface GreatSuccessViewController ()
+@interface EditNoteViewController ()
 @property UIActivityIndicatorView* activityIndicator;
 
 @property(weak, nonatomic) IBOutlet UITextView* SecretNotesField;
@@ -12,7 +12,7 @@
 
 @end
 
-@implementation GreatSuccessViewController
+@implementation EditNoteViewController
 
 - (void)viewDidLoad
 {

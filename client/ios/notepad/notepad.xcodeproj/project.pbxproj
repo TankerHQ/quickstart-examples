@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6BC58E12FBCAEBC9E7E78970 /* Pods_notepad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63880F6E7BCD4AB2182D2B47 /* Pods_notepad.framework */; };
-		EB141894207F919800A69EDA /* GreatSuccessViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB141893207F919800A69EDA /* GreatSuccessViewController.m */; };
+		EB141894207F919800A69EDA /* EditNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB141893207F919800A69EDA /* EditNoteViewController.m */; };
 		EB1A5D0C207BB721007A269F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB1A5D0B207BB721007A269F /* LoginViewController.m */; };
 		EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB1A5D0E207BB739007A269F /* SignUpViewController.m */; };
 		EB261727207B8D8C00FCB028 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = EB261726207B8D8C00FCB028 /* AppDelegate.m */; };
@@ -34,8 +34,8 @@
 /* Begin PBXFileReference section */
 		63880F6E7BCD4AB2182D2B47 /* Pods_notepad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_notepad.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99FA34511BC095E89FEC4058 /* Pods-notepad.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.release.xcconfig"; path = "Pods/Target Support Files/Pods-notepad/Pods-notepad.release.xcconfig"; sourceTree = "<group>"; };
-		EB141892207F919800A69EDA /* GreatSuccessViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GreatSuccessViewController.h; sourceTree = "<group>"; };
-		EB141893207F919800A69EDA /* GreatSuccessViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GreatSuccessViewController.m; sourceTree = "<group>"; };
+		EB141892207F919800A69EDA /* EditNoteViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EditNoteViewController.h; sourceTree = "<group>"; };
+		EB141893207F919800A69EDA /* EditNoteViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EditNoteViewController.m; sourceTree = "<group>"; };
 		EB1A5D0A207BB721007A269F /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		EB1A5D0B207BB721007A269F /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		EB1A5D0D207BB739007A269F /* SignUpViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
@@ -149,8 +149,8 @@
 				EB1A5D0B207BB721007A269F /* LoginViewController.m */,
 				EB1A5D0D207BB739007A269F /* SignUpViewController.h */,
 				EB1A5D0E207BB739007A269F /* SignUpViewController.m */,
-				EB141892207F919800A69EDA /* GreatSuccessViewController.h */,
-				EB141893207F919800A69EDA /* GreatSuccessViewController.m */,
+				EB141892207F919800A69EDA /* EditNoteViewController.h */,
+				EB141893207F919800A69EDA /* EditNoteViewController.m */,
 				EB84AE5F20F3BA2F0045CA98 /* HomeViewController.h */,
 				EB84AE5D20F3BA150045CA98 /* HomeViewController.m */,
 			);
@@ -305,7 +305,7 @@
 			files = (
 				EB9852AE207B9C210008C567 /* Globals.m in Sources */,
 				EB9215F120F3C36400677596 /* SettingsViewController.m in Sources */,
-				EB141894207F919800A69EDA /* GreatSuccessViewController.m in Sources */,
+				EB141894207F919800A69EDA /* EditNoteViewController.m in Sources */,
 				EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */,
 				EB261735207B8D8C00FCB028 /* main.m in Sources */,
 				EB261727207B8D8C00FCB028 /* AppDelegate.m in Sources */,
