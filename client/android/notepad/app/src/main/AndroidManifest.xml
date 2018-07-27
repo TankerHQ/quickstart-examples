@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.tanker.thetankershow">
+    package="io.tanker.notepad">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".TheTankerApplication"
+        android:name="io.tanker.notepad.NotepadApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
+            android:name="io.tanker.notepad.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,11 +22,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="io.tanker.notepad.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".ForgotPasswordActivity"></activity>
+        <activity android:name="io.tanker.notepad.SettingsActivity" />
+        <activity android:name="io.tanker.notepad.ForgotPasswordActivity"></activity>
     </application>
 
 </manifest>

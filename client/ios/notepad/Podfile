@@ -1,7 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
 source 'https://github.com/SuperTanker/PodSpecs.git'
 
-target 'tanker-ui-demo' do
+target 'notepad' do
   use_frameworks!
   pod 'PromiseKit', '~> 1.7'
   pod 'Tanker', '1.7.0'
