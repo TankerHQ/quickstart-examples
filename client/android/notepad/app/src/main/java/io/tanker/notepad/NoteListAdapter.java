@@ -1,4 +1,4 @@
-package io.tanker.thetankershow;
+package io.tanker.notepad;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

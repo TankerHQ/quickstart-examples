@@ -1,4 +1,4 @@
-package io.tanker.thetankershow;
+package io.tanker.notepad;
 
 import android.content.Intent;
 import android.os.AsyncTask;

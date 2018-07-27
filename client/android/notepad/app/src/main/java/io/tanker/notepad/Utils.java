@@ -1,4 +1,4 @@
-package io.tanker.thetankershow;
+package io.tanker.notepad;
 
 import android.text.TextUtils;
 import android.util.Patterns;

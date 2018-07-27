@@ -1,4 +1,4 @@
-package io.tanker.thetankershow;
+package io.tanker.notepad;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,8 +15,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -24,7 +22,7 @@ import java.net.URL;
 import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 
-import static io.tanker.thetankershow.Utils.isEmailValid;
+import static io.tanker.notepad.Utils.isEmailValid;
 
 public class SettingsActivity extends AppCompatActivity {
     private View mProgressView;

@@ -1,4 +1,4 @@
-package io.tanker.thetankershow;
+package io.tanker.notepad;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,8 +35,8 @@ import io.tanker.api.Tanker;
 import io.tanker.api.TankerConnection;
 import io.tanker.api.TankerOptions;
 
-import static io.tanker.thetankershow.Utils.isEmailValid;
-import static io.tanker.thetankershow.Utils.isPasswordValid;
+import static io.tanker.notepad.Utils.isEmailValid;
+import static io.tanker.notepad.Utils.isPasswordValid;
 
 /**
  * A login screen that offers login via email/password.

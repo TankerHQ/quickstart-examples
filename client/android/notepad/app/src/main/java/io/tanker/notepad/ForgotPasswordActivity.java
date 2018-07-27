@@ -1,14 +1,13 @@
-package io.tanker.thetankershow;
+package io.tanker.notepad;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
-import static io.tanker.thetankershow.Utils.isEmailValid;
+import static io.tanker.notepad.Utils.isEmailValid;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
