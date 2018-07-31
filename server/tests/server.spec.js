@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const tmp = require('tmp');
 const querystring = require('querystring');
 
-const server = require('../src/server');
+const { app, setup } = require('../src/server');
 
 const { expect } = chai;
 
@@ -38,7 +38,6 @@ const assertRequest = async (testServer, request, expectedResponse) => {
 
 describe('server', () => {
   let tempPath;
-  let app;
   let testServer;
 
   const trustchainId = '4bPbtrLr82kNDoaieRDMXIPycLrTynpL7hmIjPGXsWw=';
@@ -63,6 +62,19 @@ describe('server', () => {
     app.storage.save(user);
   };
 
+
+  const requestResetBobPassword = () => {
+    const body = JSON.stringify({ email: bobEmail });
+    const headers = { 'Content-Type': 'application/json' };
+
+    return doRequest(
+      testServer,
+      {
+        verb: 'post', path: '/requestResetPassword', body, headers,
+      },
+    );
+  };
+
   const signUpAlice = () => {
     const user = {
       id: aliceId, email: aliceEmail, hashed_password: alicePasswordHash, token: aliceToken,
@@ -79,10 +91,11 @@ describe('server', () => {
 
   beforeEach(async () => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
-    app = await server.setup({
+    await setup({
       dataPath: tempPath.name,
       trustchainId,
       trustchainPrivateKey,
+      testMode: true,
     });
     testServer = app.listen(0);
   });
@@ -99,7 +112,7 @@ describe('server', () => {
   it('/config', async () => {
     const response = await assertRequest(testServer, { verb: 'get', path: '/config' }, { status: 200 });
     const json = await response.json();
-    expect(json).to.deep.equal({ trustchainId });
+    expect(json).to.deep.equal({ trustchainId, testMode: true });
   });
 
   describe('/signup', () => {
@@ -403,6 +416,56 @@ describe('server', () => {
       expect(response.status).to.eq(500);
       const details = await response.json();
       expect(details.error).to.contain(`${aliceId}.json`);
+    });
+  });
+
+  describe('forgot password', () => {
+    it('calls trustchaind properly', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const actualRequest = app.trustchaindClient.sentRequest;
+      const actualEmail = actualRequest.email;
+      expect(actualEmail.to_email).to.eq(bobEmail);
+      expect(actualEmail.html).to.contains('{{ verificationCode }}');
+    });
+
+    it('can reset password with a token', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const bob = app.storage.get(bobId);
+      const passwordResetToken = bob.password_reset_token;
+
+      const newPassword = 'n3wp4ss';
+      const body = JSON.stringify({ passwordResetToken, newPassword });
+      const headers = { 'Content-Type': 'application/json' };
+      const answer = await doRequest(
+        testServer,
+        {
+          verb: 'post', path: '/resetPassword', body, headers,
+        },
+      );
+
+      const response = await answer.json();
+      expect(response.email).to.eq(bobEmail);
+    });
+
+    it('refuses to reset password if token is invalid', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const newPassword = 'n3wp4ss';
+      const body = JSON.stringify({ passwordResetToken: 'invalid', newPassword });
+      const headers = { 'Content-Type': 'application/json' };
+      const answer = await doRequest(
+        testServer,
+        {
+          verb: 'post', path: '/resetPassword', body, headers,
+        },
+      );
+
+      expect(answer.status).to.eq(403);
     });
   });
 });

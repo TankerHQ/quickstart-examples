@@ -115,4 +115,19 @@ export default class Api {
     await this.doRequest("/me/password", { headers, body, method: "PUT" });
     this._password = newPassword;
   }
+
+  async resetPassword(passwordResetToken, newPassword) {
+    const body = JSON.stringify({ passwordResetToken, newPassword });
+    const headers = { 'Content-Type': 'application/json' };
+    return this.doRequest("/resetPassword", { headers, body, method: "POST" });
+  }
+
+  async requestResetPassword(email) {
+    const data = { email };
+    const headers = { "Content-Type": "application/json" };
+    const body = JSON.stringify(data);
+    await this.doRequest("/requestResetPassword", { headers, body, method: "POST" });
+  }
+
+
 }

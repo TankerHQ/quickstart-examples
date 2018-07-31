@@ -1,4 +1,5 @@
 const { expect } = require('chai');
+const auth = require('../src/middlewares/auth');
 const tmp = require('tmp');
 
 const Storage = require('../src/storage');
@@ -97,5 +98,19 @@ describe('Storage', () => {
 
     const fromDb = storage.get('user_42');
     expect(fromDb.data).to.be.undefined;
+  });
+
+  it('can store a password reset token and retrieve the corresponding user', () => {
+    const bobEmail = 'bob@example.org';
+    const bobId = '42';
+    const bob = { id: bobId, email: bobEmail };
+    storage.save(bob);
+
+    const secret = auth.generateSecret();
+    const token = auth.generatePasswordResetToken({ email: bobEmail, secret });
+    storage.setPasswordResetToken(bobId, token);
+
+    const storedBob = storage.get(bobId);
+    expect(storedBob.password_reset_token).to.eq(token);
   });
 });

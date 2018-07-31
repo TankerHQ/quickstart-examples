@@ -90,6 +90,12 @@ class Storage {
     this.save(user);
   }
 
+  setPasswordResetToken(userId, token) {
+    const user = this.get(userId);
+    user.password_reset_token = token;
+    this.save(user);
+  }
+
   getAll() {
     const jsonFiles = fs.readdirSync(this.dataFolder).filter(f => f.match(/\.json$/));
     return jsonFiles.map((path) => {

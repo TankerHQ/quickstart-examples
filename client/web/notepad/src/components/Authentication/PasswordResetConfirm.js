@@ -10,6 +10,12 @@ import {
 } from "react-bootstrap";
 
 class PasswordResetConfirm extends React.Component {
+  constructor() {
+    super();
+    this.passwordResetToken = null;
+    this.verificationCode = null;
+  }
+
   state = {
     newPassword: "",
     newPasswordConfirmation: "",
@@ -21,12 +27,17 @@ class PasswordResetConfirm extends React.Component {
   onSubmit = async (event) => {
     event.preventDefault();
 
-    const { email } = this.state;
+    const { newPassword } = this.state;
     this.setState({ formDisabled: true });
 
     try {
-      await this.props.onSubmit(email);
-      this.setState({ successMessage: `Password successfully changed!` });
+      await this.props.onSubmit(
+      {
+        newPassword,
+        verificationCode: this.verificationCode,
+        passwordResetToken: this.passwordResetToken
+      }
+      );
     } catch (e) {
       this.setState({ errorMessage: e.message, formDisabled: false });
     }
@@ -50,7 +61,18 @@ class PasswordResetConfirm extends React.Component {
     return newPassword === newPasswordConfirmation;
   }
 
+  parseUrl = () => {
+    const combinedToken = window.location.hash;
+    const separatorIndex = combinedToken.indexOf(":")
+    const passwordResetToken = combinedToken.substring(1, separatorIndex);
+    const verificationCode = combinedToken.substring(separatorIndex +1);
+    return { passwordResetToken, verificationCode }
+  }
+
   render() {
+    const { passwordResetToken, verificationCode } = this.parseUrl();
+    this.passwordResetToken = passwordResetToken;
+    this.verificationCode = verificationCode;
     const { newPassword, newPasswordConfirmation, errorMessage, formDisabled, successMessage } = this.state;
     const passwordEmpty = !newPassword || !newPasswordConfirmation;
     const passwordValid = this.validatePassword();
