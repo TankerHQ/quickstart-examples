@@ -1,4 +1,6 @@
 const fs = require('fs');
+const sodium = require('libsodium-wrappers-sumo');
+const auth = require('../src/middlewares/auth');
 const chai = require('chai');
 const fetch = require('node-fetch');
 const tmp = require('tmp');
@@ -435,7 +437,11 @@ describe('server', () => {
       await requestResetBobPassword();
 
       const bob = app.storage.get(bobId);
-      const passwordResetToken = bob.password_reset_token;
+      const bobResetSecret = sodium.from_base64(bob.b64_password_reset_secret);
+      const passwordResetToken = auth.generatePasswordResetToken({
+        email: bobEmail,
+        secret: bobResetSecret,
+      });
 
       const newPassword = 'n3wp4ss';
       const body = JSON.stringify({ passwordResetToken, newPassword });

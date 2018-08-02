@@ -157,7 +157,7 @@ app.post('/requestResetPassword', async (req, res) => {
 
     const secret = auth.generateSecret();
     const passwordResetToken = auth.generatePasswordResetToken({ email: userEmail, secret });
-    app.storage.setPasswordResetToken(userId, passwordResetToken);
+    app.storage.setPasswordResetSecret(userId, secret);
 
     const confirmUrl = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}:{{ verificationCode }}`;
 
@@ -188,19 +188,22 @@ app.post('/requestResetPassword', async (req, res) => {
 app.post('/resetPassword', (req, res) => {
   const { newPassword, passwordResetToken } = req.body;
   let email;
+  let secret;
   try {
-    ({ email } = auth.parsePasswordResetToken(passwordResetToken));
+    ({ email, secret } = auth.parsePasswordResetToken(passwordResetToken));
   } catch (error) {
     res.status(403).json('Invalid password reset token');
     return;
   }
   const userId = app.storage.emailToId(email);
   const user = app.storage.get(userId);
-  if (user.password_reset_token !== passwordResetToken) {
+  const b64Secret = user.b64_password_reset_secret;
+  const storedSecret = sodium.from_base64(b64Secret);
+  if (sodium.compare(storedSecret, secret) !== 0) {
     res.status(403).json('Invalid password reset token');
     return;
   }
-  user.password_reset_token = undefined;
+  user.b64_password_reset_secret = undefined;
   user.hashed_password = auth.hashPassword(newPassword);
   app.storage.save(user);
 

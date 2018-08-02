@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 const auth = require('../src/middlewares/auth');
+const sodium = require('libsodium-wrappers-sumo');
 const tmp = require('tmp');
 
 const Storage = require('../src/storage');
@@ -100,17 +101,18 @@ describe('Storage', () => {
     expect(fromDb.data).to.be.undefined;
   });
 
-  it('can store a password reset token and retrieve the corresponding user', () => {
+  it('can store a password reset secret', () => {
     const bobEmail = 'bob@example.org';
     const bobId = '42';
     const bob = { id: bobId, email: bobEmail };
     storage.save(bob);
 
     const secret = auth.generateSecret();
-    const token = auth.generatePasswordResetToken({ email: bobEmail, secret });
-    storage.setPasswordResetToken(bobId, token);
+    storage.setPasswordResetSecret(bobId, secret);
 
     const storedBob = storage.get(bobId);
-    expect(storedBob.password_reset_token).to.eq(token);
+    const actualSecret = storedBob.b64_password_reset_secret;
+    const expectedSecret = sodium.to_base64(secret);
+    expect(actualSecret).to.eq(expectedSecret);
   });
 });
