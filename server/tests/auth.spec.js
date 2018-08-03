@@ -5,6 +5,9 @@ const sodium = require('libsodium-wrappers-sumo');
 const { expect } = chai;
 
 describe('password reset token', () => {
+  beforeEach(async () => {
+    await sodium.ready;
+  });
   it('serializes/deserialize token', () => {
     const secret = auth.generateSecret();
     const token = auth.generatePasswordResetToken({ email: 'bob@example.com', secret });

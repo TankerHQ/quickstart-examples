@@ -1,12 +1,12 @@
 const fs = require('fs');
 const sodium = require('libsodium-wrappers-sumo');
-const auth = require('../src/middlewares/auth');
 const chai = require('chai');
 const fetch = require('node-fetch');
 const tmp = require('tmp');
 const querystring = require('querystring');
 
 const { app, setup } = require('../src/server');
+const auth = require('../src/middlewares/auth');
 
 const { expect } = chai;
 
@@ -421,7 +421,7 @@ describe('server', () => {
     });
   });
 
-  describe('forgot password', () => {
+  describe.only('forgot password', () => {
     it('calls trustchaind properly', async () => {
       signUpBob();
       await requestResetBobPassword();
@@ -432,46 +432,107 @@ describe('server', () => {
       expect(actualEmail.html).to.contains('{{ verificationCode }}');
     });
 
+    const attempResetPassword = async (resetToken) => {
+      const newPassword = 'n3wp4ss';
+      const body = JSON.stringify({ passwordResetToken: resetToken, newPassword });
+      const headers = { 'Content-Type': 'application/json' };
+      return doRequest(
+        testServer,
+        {
+          verb: 'post', path: '/resetPassword', body, headers,
+        },
+      );
+    };
+
+    const retrieveResetPasswordToken = (userId) => {
+      const user = app.storage.get(userId);
+      const userResetSecret = sodium.from_base64(user.b64_password_reset_secret);
+      return auth.generatePasswordResetToken({
+        email: user.email,
+        secret: userResetSecret,
+      });
+    };
+
+    const asserAttemptFail = async (passwordResetToken) => {
+      const answer = await attempResetPassword(passwordResetToken);
+
+      expect(answer.status).to.eq(403);
+
+      const message = await answer.json();
+
+      expect(message).to.eq('Invalid password reset token');
+    };
+
     it('can reset password with a token', async () => {
       signUpBob();
       await requestResetBobPassword();
 
-      const bob = app.storage.get(bobId);
-      const bobResetSecret = sodium.from_base64(bob.b64_password_reset_secret);
-      const passwordResetToken = auth.generatePasswordResetToken({
-        email: bobEmail,
-        secret: bobResetSecret,
-      });
-
-      const newPassword = 'n3wp4ss';
-      const body = JSON.stringify({ passwordResetToken, newPassword });
-      const headers = { 'Content-Type': 'application/json' };
-      const answer = await doRequest(
-        testServer,
-        {
-          verb: 'post', path: '/resetPassword', body, headers,
-        },
-      );
-
+      const passwordResetToken = retrieveResetPasswordToken(bobId);
+      const answer = await attempResetPassword(passwordResetToken);
       const response = await answer.json();
+
       expect(response.email).to.eq(bobEmail);
     });
 
-    it('refuses to reset password if token is invalid', async () => {
+    it('refuses to reset password if token can not be parsed', async () => {
       signUpBob();
       await requestResetBobPassword();
 
-      const newPassword = 'n3wp4ss';
-      const body = JSON.stringify({ passwordResetToken: 'invalid', newPassword });
-      const headers = { 'Content-Type': 'application/json' };
-      const answer = await doRequest(
-        testServer,
-        {
-          verb: 'post', path: '/resetPassword', body, headers,
-        },
-      );
+      await asserAttemptFail('invalid');
+    });
 
-      expect(answer.status).to.eq(403);
+    it('refuses to reset password if the secret is invalid', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const invalidSecret = auth.generateSecret();
+      const invalidResetToken = auth.generatePasswordResetToken({
+        email: bobEmail, secret: invalidSecret,
+      });
+
+      await asserAttemptFail(invalidResetToken);
+    });
+
+    it('refuses to reset password if the email is not found', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const secret = auth.generateSecret();
+      const noSuchEmail = 'nosuchemail@tanker.io';
+      const invalidResetToken = auth.generatePasswordResetToken({ email: noSuchEmail, secret });
+
+      await asserAttemptFail(invalidResetToken);
+    });
+
+    it('invalidates the secret after the first failure', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const firstPasswordResetToken = retrieveResetPasswordToken(bobId);
+
+      const invalidSecret = auth.generateSecret();
+      const invalidResetToken = auth.generatePasswordResetToken({
+        email: bobEmail, secret: invalidSecret,
+      });
+
+      // First attempt
+      await attempResetPassword(invalidResetToken);
+
+      // Second attempt should fail
+      await asserAttemptFail(firstPasswordResetToken);
+    });
+
+    it('prevents resetPasswordToken reuse', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const firstPasswordResetToken = retrieveResetPasswordToken(bobId);
+
+      // First attempt
+      await attempResetPassword(firstPasswordResetToken);
+
+      // Second attempt should fail
+      await asserAttemptFail(firstPasswordResetToken);
     });
   });
 });

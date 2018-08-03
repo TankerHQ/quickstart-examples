@@ -196,11 +196,25 @@ app.post('/resetPassword', (req, res) => {
     return;
   }
   const userId = app.storage.emailToId(email);
+
+  if (!userId) {
+    res.status(403).json('Invalid password reset token');
+    return;
+  }
+
   const user = app.storage.get(userId);
   const b64Secret = user.b64_password_reset_secret;
+
+  if (!b64Secret) {
+    res.status(403).json('Invalid password reset token');
+    return;
+  }
+
   const storedSecret = sodium.from_base64(b64Secret);
   if (sodium.compare(storedSecret, secret) !== 0) {
     res.status(403).json('Invalid password reset token');
+    user.b64_password_reset_secret = undefined;
+    app.storage.save(user);
     return;
   }
   user.b64_password_reset_secret = undefined;
