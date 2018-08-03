@@ -1,6 +1,6 @@
 from faker import Faker
 import pytest
-from typing import Any, Optional
+from typing import Any, Optional, Generator
 
 from helpers import Browser
 
@@ -111,36 +111,43 @@ class Client:
         self.browser.get("/")
 
 
-def test_sign_up_then_sign_out_then_sign_in(browser: Browser) -> None:
+@pytest.fixture
+def new_client(browser: Browser) -> Generator[Client, None, None]:
     fake = Faker()
     email = fake.email()
     password = fake.password()
     client = Client(browser, email, password)
-    client.wait_for_session_form()
-    client.sign_up()
-    client.wait_for_home()
-    client.sign_out()
-    client.wait_for_session_form()
-    client.sign_in()
-    client.wait_for_home()
+    yield client
+    try:
+        client.sign_out()
+    except Exception as e:
+        print("could not sign out", e)
+        pass
 
 
-def test_sign_up_then_sign_in(browser: Browser) -> None:
-    fake = Faker()
-    email = fake.email()
-    password = fake.password()
-    client = Client(browser, email, password)
-    client.wait_for_session_form()
-    client.sign_up()
-    client.wait_for_home()
+def test_sign_up_then_sign_out_then_sign_in(browser: Browser, new_client: Client) -> None:
+    new_client.wait_for_session_form()
+    new_client.sign_up()
+    new_client.wait_for_home()
+    new_client.sign_out()
+    new_client.wait_for_session_form()
+    new_client.sign_in()
+    new_client.wait_for_home()
 
-    client.go_to_home()  # will actually re-direct to sign_in form
-    client.sign_in()
-    client.wait_for_home()
+
+def test_sign_up_then_sign_in(browser: Browser, new_client: Client) -> None:
+    new_client.wait_for_session_form()
+    new_client.sign_up()
+    new_client.wait_for_home()
+
+    new_client.go_to_home()  # will actually re-direct to sign_in form
+    new_client.sign_in()
+    new_client.wait_for_home()
+    new_client.sign_out()
 
 
 @pytest.fixture
-def signed_in_client(browser: Browser) -> Client:
+def signed_in_client(browser: Browser) -> Generator[Client, None, None]:
     fake = Faker()
     email = fake.email()
     password = fake.password()
@@ -148,7 +155,12 @@ def signed_in_client(browser: Browser) -> Client:
     client.wait_for_session_form()
     client.sign_up()
     client.wait_for_home()
-    return client
+    yield client
+    try:
+        client.sign_out()
+    except Exception as e:
+        print("could not sign out", e)
+        pass
 
 
 def test_create_note(browser: Browser, signed_in_client: Client) -> None:
