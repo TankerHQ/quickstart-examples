@@ -48,6 +48,8 @@ describe('server', () => {
   const bobId = 'bob';
   const bobEmail = 'bob@example.com';
   const bobPassword = 'p4ssw0rd';
+  const bobNewPassword = 'n3wp4ss';
+
   const bobPasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$88wT+5X56Ui7EAQMz/wIdw$37pEnuujONgGxa6FudmN9aa0K3TUQbL/tziT30PX7v4';
   const bobToken = 'bobToken';
 
@@ -421,20 +423,21 @@ describe('server', () => {
     });
   });
 
-  describe.only('forgot password', () => {
+  describe('forgot password', () => {
+    const msgInvalidToken = 'Invalid password reset token';
+    const msgInvalidNewPassword = 'Invalid new password';
+
     it('calls trustchaind properly', async () => {
       signUpBob();
       await requestResetBobPassword();
-
       const actualRequest = app.trustchaindClient.sentRequest;
       const actualEmail = actualRequest.email;
       expect(actualEmail.to_email).to.eq(bobEmail);
       expect(actualEmail.html).to.contains('{{ verificationCode }}');
     });
 
-    const attempResetPassword = async (resetToken) => {
-      const newPassword = 'n3wp4ss';
-      const body = JSON.stringify({ passwordResetToken: resetToken, newPassword });
+    const attempResetPassword = async (passwordResetToken, newPassword) => {
+      const body = JSON.stringify({ passwordResetToken, newPassword });
       const headers = { 'Content-Type': 'application/json' };
       return doRequest(
         testServer,
@@ -444,23 +447,23 @@ describe('server', () => {
       );
     };
 
+    const assertAttemptFail = async (passwordResetToken, newPassword, msgError) => {
+      const answer = await attempResetPassword(passwordResetToken, newPassword);
+
+      expect(answer.status).to.eq(401);
+
+      const message = await answer.json();
+
+      expect(message).to.eq(msgError);
+    };
+
     const retrieveResetPasswordToken = (userId) => {
       const user = app.storage.get(userId);
       const userResetSecret = sodium.from_base64(user.b64_password_reset_secret);
       return auth.generatePasswordResetToken({
-        email: user.email,
+        userId,
         secret: userResetSecret,
       });
-    };
-
-    const asserAttemptFail = async (passwordResetToken) => {
-      const answer = await attempResetPassword(passwordResetToken);
-
-      expect(answer.status).to.eq(403);
-
-      const message = await answer.json();
-
-      expect(message).to.eq('Invalid password reset token');
     };
 
     it('can reset password with a token', async () => {
@@ -468,17 +471,33 @@ describe('server', () => {
       await requestResetBobPassword();
 
       const passwordResetToken = retrieveResetPasswordToken(bobId);
-      const answer = await attempResetPassword(passwordResetToken);
+      const answer = await attempResetPassword(passwordResetToken, bobNewPassword);
       const response = await answer.json();
-
-      expect(response.email).to.eq(bobEmail);
+      console.log(response);
+      expect(response.userId).to.eq(bobId);
     });
 
-    it('refuses to reset password if token can not be parsed', async () => {
+    it('refuses to reset password if the password is emtpy', async () => {
       signUpBob();
       await requestResetBobPassword();
 
-      await asserAttemptFail('invalid');
+      const passwordResetToken = retrieveResetPasswordToken(bobId);
+
+      assertAttemptFail(passwordResetToken, '', msgInvalidNewPassword);
+    });
+
+    it('refuses to reset password if the passwordResetToken is empty', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      await assertAttemptFail('', bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses to reset password if passwordResetToken can not be parsed', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      await assertAttemptFail('an invalid token', bobNewPassword, msgInvalidToken);
     });
 
     it('refuses to reset password if the secret is invalid', async () => {
@@ -487,21 +506,21 @@ describe('server', () => {
 
       const invalidSecret = auth.generateSecret();
       const invalidResetToken = auth.generatePasswordResetToken({
-        email: bobEmail, secret: invalidSecret,
+        userId: bobId, secret: invalidSecret,
       });
 
-      await asserAttemptFail(invalidResetToken);
+      await assertAttemptFail(invalidResetToken, bobNewPassword, msgInvalidToken);
     });
 
-    it('refuses to reset password if the email is not found', async () => {
+    it('refuses to reset password if the userId is not found', async () => {
       signUpBob();
       await requestResetBobPassword();
 
       const secret = auth.generateSecret();
-      const noSuchEmail = 'nosuchemail@tanker.io';
-      const invalidResetToken = auth.generatePasswordResetToken({ email: noSuchEmail, secret });
+      const noSuchUserId = 'no such userId';
+      const invalidResetToken = auth.generatePasswordResetToken({ userId: noSuchUserId, secret });
 
-      await asserAttemptFail(invalidResetToken);
+      await assertAttemptFail(invalidResetToken, bobNewPassword, msgInvalidToken);
     });
 
     it('invalidates the secret after the first failure', async () => {
@@ -512,27 +531,27 @@ describe('server', () => {
 
       const invalidSecret = auth.generateSecret();
       const invalidResetToken = auth.generatePasswordResetToken({
-        email: bobEmail, secret: invalidSecret,
+        userId: bobId, secret: invalidSecret,
       });
 
       // First attempt
-      await attempResetPassword(invalidResetToken);
+      await attempResetPassword(invalidResetToken, bobNewPassword);
 
       // Second attempt should fail
-      await asserAttemptFail(firstPasswordResetToken);
+      await assertAttemptFail(firstPasswordResetToken, bobNewPassword, msgInvalidToken);
     });
 
-    it('prevents resetPasswordToken reuse', async () => {
+    it('refuses resetPasswordToken reuse', async () => {
       signUpBob();
       await requestResetBobPassword();
 
       const firstPasswordResetToken = retrieveResetPasswordToken(bobId);
 
       // First attempt
-      await attempResetPassword(firstPasswordResetToken);
+      await attempResetPassword(firstPasswordResetToken, bobNewPassword);
 
       // Second attempt should fail
-      await asserAttemptFail(firstPasswordResetToken);
+      await assertAttemptFail(firstPasswordResetToken, bobNewPassword, msgInvalidToken);
     });
   });
 });

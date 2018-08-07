@@ -10,13 +10,9 @@ import {
 } from "react-bootstrap";
 
 class PasswordResetConfirm extends React.Component {
-  constructor() {
-    super();
-    this.passwordResetToken = null;
-    this.verificationCode = null;
-  }
-
   state = {
+    passwordResetToken: null,
+    verificationCode: null,
     newPassword: "",
     newPasswordConfirmation: "",
     errorMessage: null,
@@ -24,24 +20,27 @@ class PasswordResetConfirm extends React.Component {
     formDisabled: false,
   }
 
+  componentDidMount = () => {
+    const { passwordResetToken, verificationCode } = this.parseUrl();
+    this.setState({passwordResetToken, verificationCode});
+  };
+
   onSubmit = async (event) => {
     event.preventDefault();
 
-    const { newPassword } = this.state;
+    const { newPassword, verificationCode, passwordResetToken } = this.state;
     this.setState({ formDisabled: true });
 
     try {
-      await this.props.onSubmit(
-      {
+      await this.props.onSubmit({
         newPassword,
-        verificationCode: this.verificationCode,
-        passwordResetToken: this.passwordResetToken
-      }
-      );
+        verificationCode,
+        passwordResetToken
+      });
     } catch (e) {
       this.setState({ errorMessage: e.message, formDisabled: false });
     }
-  }
+  };
 
   onPasswordChange = (passwordChanges) => {
     this.setState({ ...passwordChanges });
@@ -54,25 +53,22 @@ class PasswordResetConfirm extends React.Component {
       event.preventDefault();
       history.replace(path);
     };
-  }
+  };
 
   validatePassword = () => {
     const { newPassword, newPasswordConfirmation } = this.state;
     return newPassword === newPasswordConfirmation;
-  }
+  };
 
   parseUrl = () => {
-    const combinedToken = window.location.hash;
-    const separatorIndex = combinedToken.indexOf(":")
-    const passwordResetToken = combinedToken.substring(1, separatorIndex);
-    const verificationCode = combinedToken.substring(separatorIndex +1);
-    return { passwordResetToken, verificationCode }
-  }
+    const [passwordResetToken, verificationCode] = window.location.hash.substr(1).split(':');
+    return {
+      passwordResetToken: decodeURIComponent(passwordResetToken),
+      verificationCode: decodeURIComponent(verificationCode),
+    };
+  };
 
   render() {
-    const { passwordResetToken, verificationCode } = this.parseUrl();
-    this.passwordResetToken = passwordResetToken;
-    this.verificationCode = verificationCode;
     const { newPassword, newPasswordConfirmation, errorMessage, formDisabled, successMessage } = this.state;
     const passwordEmpty = !newPassword || !newPasswordConfirmation;
     const passwordValid = this.validatePassword();

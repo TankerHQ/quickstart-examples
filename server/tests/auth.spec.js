@@ -10,10 +10,10 @@ describe('password reset token', () => {
   });
   it('serializes/deserialize token', () => {
     const secret = auth.generateSecret();
-    const token = auth.generatePasswordResetToken({ email: 'bob@example.com', secret });
+    const token = auth.generatePasswordResetToken({ userId: 'bob', secret });
 
     const parsed = auth.parsePasswordResetToken(token);
-    expect(parsed.email).to.eq('bob@example.com');
+    expect(parsed.userId).to.eq('bob');
     const actualSecret = parsed.secret;
     expect(sodium.compare(actualSecret, secret)).to.eq(0);
   });

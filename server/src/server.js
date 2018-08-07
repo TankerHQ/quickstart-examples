@@ -156,7 +156,7 @@ app.post('/requestResetPassword', async (req, res) => {
     }
 
     const secret = auth.generateSecret();
-    const passwordResetToken = auth.generatePasswordResetToken({ email: userEmail, secret });
+    const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
     app.storage.setPasswordResetSecret(userId, secret);
 
     const confirmUrl = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}:{{ verificationCode }}`;
@@ -187,42 +187,55 @@ app.post('/requestResetPassword', async (req, res) => {
 
 app.post('/resetPassword', (req, res) => {
   const { newPassword, passwordResetToken } = req.body;
-  let email;
+
+  if (!newPassword) {
+    res.status(401).json('Invalid new password');
+    return;
+  }
+
+  if (!passwordResetToken) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  let userId;
   let secret;
   try {
-    ({ email, secret } = auth.parsePasswordResetToken(passwordResetToken));
+    ({ userId, secret } = auth.parsePasswordResetToken(passwordResetToken));
   } catch (error) {
-    res.status(403).json('Invalid password reset token');
-    return;
-  }
-  const userId = app.storage.emailToId(email);
-
-  if (!userId) {
-    res.status(403).json('Invalid password reset token');
+    res.status(401).json('Invalid password reset token');
     return;
   }
 
-  const user = app.storage.get(userId);
+  let user;
+  try {
+    user = app.storage.get(userId);
+  } catch (error) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
   const b64Secret = user.b64_password_reset_secret;
 
   if (!b64Secret) {
-    res.status(403).json('Invalid password reset token');
+    res.status(401).json('Invalid password reset token');
     return;
   }
 
   const storedSecret = sodium.from_base64(b64Secret);
   if (sodium.compare(storedSecret, secret) !== 0) {
-    res.status(403).json('Invalid password reset token');
+    res.status(401).json('Invalid password reset token');
     user.b64_password_reset_secret = undefined;
     app.storage.save(user);
     return;
   }
   user.b64_password_reset_secret = undefined;
+  console.log(`new password: ${newPassword}`);
   user.hashed_password = auth.hashPassword(newPassword);
   app.storage.save(user);
 
   res.set('Content-Type', 'application/json');
-  res.status(200).json({ email });
+  res.status(200).json({ userId });
 });
 
 
