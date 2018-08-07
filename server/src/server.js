@@ -16,8 +16,9 @@ const userToken = require('@tanker/user-token');
 const debugMiddleware = require('debug-error-middleware').express;
 const sodium = require('libsodium-wrappers-sumo');
 
-const { authMiddlewareBuilder, hashPassword, verifyPassword } = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 const corsMiddleware = require('./middlewares/cors');
+const { FakeTrustchaindClient, TrustchaindClient } = require('./TrustchaindClient');
 
 const log = require('./log');
 const home = require('./home');
@@ -40,16 +41,24 @@ const setup = async (config) => {
   serverConfig = config;
   clientConfig = makeClientConfig(config);
 
-  const { dataPath, trustchainId } = config;
+  const {
+    dataPath, trustchainId, testMode, authToken,
+  } = config;
   if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath);
   }
   app.storage = new Storage(dataPath, trustchainId);
 
+
+  if (testMode) {
+    app.trustchaindClient = new FakeTrustchaindClient();
+  } else {
+    const trustchaindUrl = config.url || 'https://api.tanker.io';
+    app.trustchaindClient = new TrustchaindClient({ trustchaindUrl, authToken, trustchainId });
+  }
+
   // Libsodium loads asynchronously (Wasm module)
   await sodium.ready;
-
-  return app;
 };
 
 const sanitizeUser = (user) => {
@@ -112,11 +121,11 @@ app.get('/signup', (req, res) => {
     return;
   }
 
-  log('Generate the user id', 1);
+
   const userId = uuid();
 
   log('Hash the password', 1);
-  const hashedPassword = hashPassword(password);
+  const hashedPassword = auth.hashPassword(password);
 
   log('Generate a new user token', 1);
   const token = userToken.generateUserToken(
@@ -137,10 +146,103 @@ app.get('/signup', (req, res) => {
 });
 
 
+app.post('/requestResetPassword', async (req, res) => {
+  try {
+    const userEmail = req.body.email;
+    const userId = app.storage.emailToId(userEmail);
+    if (userId === null) {
+      res.status(404).json({ error: `no such email: ${userEmail}` });
+      return;
+    }
+
+    const secret = auth.generateSecret();
+    const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
+    app.storage.setPasswordResetSecret(userId, secret);
+
+    const confirmUrl = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}:{{ verificationCode }}`;
+
+    const email = {
+      subject: 'Password Reset',
+      html: `<p>Click <a href="${confirmUrl}">here</a> to reset your password</p>`,
+      from_email: 'noreply@tanker.io',
+      from_name: 'the friendly unlock server',
+      to_email: userEmail,
+    };
+
+    const response = await app.trustchaindClient.sendVerification({
+      userId,
+      email,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      res.status(500).json(`sendVerification failed with status ${response.status}: ${JSON.stringify(error)}`);
+      return;
+    }
+    res.status(200).json('{}');
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.post('/resetPassword', (req, res) => {
+  const { newPassword, passwordResetToken } = req.body;
+
+  if (!newPassword) {
+    res.status(401).json('Invalid new password');
+    return;
+  }
+
+  if (!passwordResetToken) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  let userId;
+  let secret;
+  try {
+    ({ userId, secret } = auth.parsePasswordResetToken(passwordResetToken));
+  } catch (error) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  let user;
+  try {
+    user = app.storage.get(userId);
+  } catch (error) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  const b64Secret = user.b64_password_reset_secret;
+
+  if (!b64Secret) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  const storedSecret = sodium.from_base64(b64Secret);
+  if (sodium.compare(storedSecret, secret) !== 0) {
+    res.status(401).json('Invalid password reset token');
+    user.b64_password_reset_secret = undefined;
+    app.storage.save(user);
+    return;
+  }
+  user.b64_password_reset_secret = undefined;
+  console.log(`new password: ${newPassword}`);
+  user.hashed_password = auth.hashPassword(newPassword);
+  app.storage.save(user);
+
+  res.set('Content-Type', 'application/json');
+  res.status(200).json({ userId });
+});
+
+
 // Add authentication middleware for all routes below
 //   - check valid "email" and "password" query params
 //   - set res.locals.user for the request handlers
-const authMiddleware = authMiddlewareBuilder(app);
+const authMiddleware = auth.authMiddlewareBuilder(app);
 app.use(authMiddleware);
 
 
@@ -174,7 +276,7 @@ app.put('/me/password', (req, res) => {
   }
 
   log('Verify old password', 1);
-  const passwordOk = verifyPassword(user, oldPassword);
+  const passwordOk = auth.verifyPassword(user, oldPassword);
   if (!passwordOk) {
     log('Wrong old password', 1);
     res.sendStatus(400, 1);
@@ -182,7 +284,7 @@ app.put('/me/password', (req, res) => {
   }
 
   log('Change password', 1);
-  user.hashed_password = hashPassword(newPassword);
+  user.hashed_password = auth.hashPassword(newPassword);
   app.storage.save(user);
   res.sendStatus(200);
 });
@@ -287,9 +389,7 @@ const errorHandler = (err, req, res, next) => { // eslint-disable-line  no-unuse
 app.use(errorHandler);
 
 
-const listen = port => app.listen(port);
-
 module.exports = {
-  listen,
   setup,
+  app,
 };

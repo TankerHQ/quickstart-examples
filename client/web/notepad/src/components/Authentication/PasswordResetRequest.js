@@ -58,7 +58,7 @@ class PasswordResetRequest extends React.Component {
       <form>
         {errorMessage && <Alert bsStyle="danger">{errorMessage}</Alert>}
         {successMessage && <Alert bsStyle="success">{successMessage}</Alert>}
-        <FormGroup validationState={emailValid ? null : "error"}>
+        <FormGroup controlId="newEmailFormGroup" validationState={emailValid ? null : "error"}>
           {!errorMessage && !successMessage && (
             <Alert>Please fill in your email address to receive a password reset link.</Alert>
           )}

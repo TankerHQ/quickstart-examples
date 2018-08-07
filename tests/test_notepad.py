@@ -1,6 +1,6 @@
 from faker import Faker
 import pytest
-from typing import Any, Optional
+from typing import Any, Optional, Generator
 
 from helpers import Browser
 
@@ -49,6 +49,39 @@ class Client:
         edit_link.click()
         self.browser.wait_for_element_presence(id="edit-textarea")
         self.browser.wait_for_button_enabled(id="save-button")
+
+    def goto_settings(self) -> None:
+        topbar_dropdown = self.browser.get_element(id="topbar_dropdown")
+        topbar_dropdown.click()
+        settings = self.browser.get_element(id="settings-menu-item")
+        settings.click()
+        self.browser.wait_for_element_presence(id="settings-heading")
+
+    def change_password(self, new_password: str) -> None:
+        edit_password = self.browser.get_element(id="edit-password-button")
+        edit_password.click()
+        self.browser.wait_for_element_presence(id="old-password-input")
+        old_password_input = self.browser.get_element(id="old-password-input")
+        old_password_input.send_keys(self.password)
+
+        new_password_input = self.browser.get_element(id="new-password-input")
+        new_password_input.send_keys(new_password)
+
+        password_confirmation_input = self.browser.get_element(id="password-confirmation-input")
+        password_confirmation_input.send_keys(new_password)
+
+        save_password_button = self.browser.get_element(id="save-password-button")
+        save_password_button.click()
+
+    def change_email(self, new_email: str) -> None:
+        edit_email_button = self.browser.get_element(id="edit-email-button")
+        edit_email_button.click()
+
+        new_email_input = self.browser.wait_for_element_presence(id="new-email-input")
+        new_email_input.send_keys(new_email)
+
+        save_email_button = self.browser.get_element(id="save-email-button")
+        save_email_button.click()
 
     def click_back(self) -> None:
         back_link = self.browser.get_element(id="back-link")
@@ -111,36 +144,43 @@ class Client:
         self.browser.get("/")
 
 
-def test_sign_up_then_sign_out_then_sign_in(browser: Browser) -> None:
+@pytest.fixture
+def new_client(browser: Browser) -> Generator[Client, None, None]:
     fake = Faker()
     email = fake.email()
     password = fake.password()
     client = Client(browser, email, password)
-    client.wait_for_session_form()
-    client.sign_up()
-    client.wait_for_home()
-    client.sign_out()
-    client.wait_for_session_form()
-    client.sign_in()
-    client.wait_for_home()
+    yield client
+    try:
+        client.sign_out()
+    except Exception as e:
+        print("could not sign out", e)
+        pass
 
 
-def test_sign_up_then_sign_in(browser: Browser) -> None:
-    fake = Faker()
-    email = fake.email()
-    password = fake.password()
-    client = Client(browser, email, password)
-    client.wait_for_session_form()
-    client.sign_up()
-    client.wait_for_home()
+def test_sign_up_then_sign_out_then_sign_in(browser: Browser, new_client: Client) -> None:
+    new_client.wait_for_session_form()
+    new_client.sign_up()
+    new_client.wait_for_home()
+    new_client.sign_out()
+    new_client.wait_for_session_form()
+    new_client.sign_in()
+    new_client.wait_for_home()
 
-    client.go_to_home()  # will actually re-direct to sign_in form
-    client.sign_in()
-    client.wait_for_home()
+
+def test_sign_up_then_sign_in(browser: Browser, new_client: Client) -> None:
+    new_client.wait_for_session_form()
+    new_client.sign_up()
+    new_client.wait_for_home()
+
+    new_client.go_to_home()  # will actually re-direct to sign_in form
+    new_client.sign_in()
+    new_client.wait_for_home()
+    new_client.sign_out()
 
 
 @pytest.fixture
-def signed_in_client(browser: Browser) -> Client:
+def signed_in_client(browser: Browser) -> Generator[Client, None, None]:
     fake = Faker()
     email = fake.email()
     password = fake.password()
@@ -148,7 +188,12 @@ def signed_in_client(browser: Browser) -> Client:
     client.wait_for_session_form()
     client.sign_up()
     client.wait_for_home()
-    return client
+    yield client
+    try:
+        client.sign_out()
+    except Exception as e:
+        print("could not sign out", e)
+        pass
 
 
 def test_create_note(browser: Browser, signed_in_client: Client) -> None:
@@ -161,6 +206,29 @@ def test_create_note(browser: Browser, signed_in_client: Client) -> None:
     signed_in_client.go_to_edit()
     text_area = browser.get_element(id="edit-textarea")
     assert text_area.text == bs_text
+
+
+def test_change_password(browser: Browser, signed_in_client: Client) -> None:
+    signed_in_client.goto_settings()
+    new_password = "n3wp4ss"
+    signed_in_client.change_password(new_password)
+    signed_in_client.sign_out()
+
+    signed_in_client.password = new_password
+    signed_in_client.sign_in()
+    signed_in_client.wait_for_home()
+
+
+def test_change_email(browser: Browser, signed_in_client: Client) -> None:
+    signed_in_client.goto_settings()
+    old_email = signed_in_client.email
+    new_email = "new-" + old_email
+    signed_in_client.change_email(new_email)
+    signed_in_client.sign_out()
+
+    signed_in_client.email = new_email
+    signed_in_client.sign_in()
+    signed_in_client.wait_for_home()
 
 
 def test_share_note(headless: bool, request: Any) -> None:

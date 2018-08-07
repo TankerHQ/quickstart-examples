@@ -134,6 +134,7 @@ class Settings extends React.Component {
                 <FormGroup validationState={!!newEmail && !emailValid ? "error" : null}>
                   <FormControl
                     type="text"
+                    id="new-email-input"
                     value={newEmail}
                     placeholder="Enter your new email address"
                     onChange={event => this.onEmailChange({ newEmail: event.target.value })}
@@ -188,6 +189,7 @@ class Settings extends React.Component {
                 <FormGroup>
                   <FormControl
                     type="password"
+                    id="old-password-input"
                     value={oldPassword}
                     placeholder="Enter your current password"
                     onChange={event => this.onPasswordChange({ oldPassword: event.target.value })}
@@ -198,6 +200,7 @@ class Settings extends React.Component {
                 <FormGroup validationState={passwordValid ? null : "error"}>
                   <FormControl
                     type="password"
+                    id="new-password-input"
                     value={newPassword}
                     placeholder="Enter your new password"
                     onChange={event => this.onPasswordChange({ newPassword: event.target.value })}
@@ -207,6 +210,7 @@ class Settings extends React.Component {
                 <FormGroup validationState={passwordValid ? null : "error"}>
                   <FormControl
                     type="password"
+                    id="password-confirmation-input"
                     value={newPasswordConfirmation}
                     placeholder="Confirm your new password"
                     onChange={event => this.onPasswordChange({ newPasswordConfirmation: event.target.value })}

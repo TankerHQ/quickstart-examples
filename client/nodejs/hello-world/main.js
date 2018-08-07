@@ -1,10 +1,12 @@
-const Tanker = require('@tanker/client-node').default;
+const tankerlib = require('@tanker/client-node');
 const fetch = require('node-fetch');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
 const serverRoot = 'http://127.0.0.1:8080';
 const emails = new Set();
+
+const Tanker = tankerlib.default;
 
 async function getTankerConfig() {
   const res = await fetch(`${serverRoot}/config`);
@@ -87,6 +89,7 @@ async function main () {
 }
 
 main().then(() => {
+  console.log(`Using Tanker version: ${tankerlib.getTankerVersion()}`);
   process.exit(0);
 }).catch(e => {
   console.error(e);

@@ -1,10 +1,12 @@
 const fs = require('fs');
+const sodium = require('libsodium-wrappers-sumo');
 const chai = require('chai');
 const fetch = require('node-fetch');
 const tmp = require('tmp');
 const querystring = require('querystring');
 
-const server = require('../src/server');
+const { app, setup } = require('../src/server');
+const auth = require('../src/middlewares/auth');
 
 const { expect } = chai;
 
@@ -38,7 +40,6 @@ const assertRequest = async (testServer, request, expectedResponse) => {
 
 describe('server', () => {
   let tempPath;
-  let app;
   let testServer;
 
   const trustchainId = '4bPbtrLr82kNDoaieRDMXIPycLrTynpL7hmIjPGXsWw=';
@@ -47,6 +48,8 @@ describe('server', () => {
   const bobId = 'bob';
   const bobEmail = 'bob@example.com';
   const bobPassword = 'p4ssw0rd';
+  const bobNewPassword = 'n3wp4ss';
+
   const bobPasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$88wT+5X56Ui7EAQMz/wIdw$37pEnuujONgGxa6FudmN9aa0K3TUQbL/tziT30PX7v4';
   const bobToken = 'bobToken';
 
@@ -61,6 +64,19 @@ describe('server', () => {
       id: bobId, email: bobEmail, hashed_password: bobPasswordHash, token: bobToken,
     };
     app.storage.save(user);
+  };
+
+
+  const requestResetBobPassword = () => {
+    const body = JSON.stringify({ email: bobEmail });
+    const headers = { 'Content-Type': 'application/json' };
+
+    return doRequest(
+      testServer,
+      {
+        verb: 'post', path: '/requestResetPassword', body, headers,
+      },
+    );
   };
 
   const signUpAlice = () => {
@@ -79,10 +95,11 @@ describe('server', () => {
 
   beforeEach(async () => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
-    app = await server.setup({
+    await setup({
       dataPath: tempPath.name,
       trustchainId,
       trustchainPrivateKey,
+      testMode: true,
     });
     testServer = app.listen(0);
   });
@@ -99,7 +116,7 @@ describe('server', () => {
   it('/config', async () => {
     const response = await assertRequest(testServer, { verb: 'get', path: '/config' }, { status: 200 });
     const json = await response.json();
-    expect(json).to.deep.equal({ trustchainId });
+    expect(json).to.deep.equal({ trustchainId, testMode: true });
   });
 
   describe('/signup', () => {
@@ -403,6 +420,138 @@ describe('server', () => {
       expect(response.status).to.eq(500);
       const details = await response.json();
       expect(details.error).to.contain(`${aliceId}.json`);
+    });
+  });
+
+  describe('forgot password', () => {
+    const msgInvalidToken = 'Invalid password reset token';
+    const msgInvalidNewPassword = 'Invalid new password';
+
+    it('calls trustchaind properly', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+      const actualRequest = app.trustchaindClient.sentRequest;
+      const actualEmail = actualRequest.email;
+      expect(actualEmail.to_email).to.eq(bobEmail);
+      expect(actualEmail.html).to.contains('{{ verificationCode }}');
+    });
+
+    const attempResetPassword = async (passwordResetToken, newPassword) => {
+      const body = JSON.stringify({ passwordResetToken, newPassword });
+      const headers = { 'Content-Type': 'application/json' };
+      return doRequest(
+        testServer,
+        {
+          verb: 'post', path: '/resetPassword', body, headers,
+        },
+      );
+    };
+
+    const assertAttemptFail = async (passwordResetToken, newPassword, msgError) => {
+      const answer = await attempResetPassword(passwordResetToken, newPassword);
+
+      expect(answer.status).to.eq(401);
+
+      const message = await answer.json();
+
+      expect(message).to.eq(msgError);
+    };
+
+    const retrieveResetPasswordToken = (userId) => {
+      const user = app.storage.get(userId);
+      const userResetSecret = sodium.from_base64(user.b64_password_reset_secret);
+      return auth.generatePasswordResetToken({
+        userId,
+        secret: userResetSecret,
+      });
+    };
+
+    it('can reset password with a token', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const passwordResetToken = retrieveResetPasswordToken(bobId);
+      const answer = await attempResetPassword(passwordResetToken, bobNewPassword);
+      const response = await answer.json();
+      console.log(response);
+      expect(response.userId).to.eq(bobId);
+    });
+
+    it('refuses to reset password if the password is emtpy', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const passwordResetToken = retrieveResetPasswordToken(bobId);
+
+      assertAttemptFail(passwordResetToken, '', msgInvalidNewPassword);
+    });
+
+    it('refuses to reset password if the passwordResetToken is empty', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      await assertAttemptFail('', bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses to reset password if passwordResetToken can not be parsed', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      await assertAttemptFail('an invalid token', bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses to reset password if the secret is invalid', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const invalidSecret = auth.generateSecret();
+      const invalidResetToken = auth.generatePasswordResetToken({
+        userId: bobId, secret: invalidSecret,
+      });
+
+      await assertAttemptFail(invalidResetToken, bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses to reset password if the userId is not found', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const secret = auth.generateSecret();
+      const noSuchUserId = 'no such userId';
+      const invalidResetToken = auth.generatePasswordResetToken({ userId: noSuchUserId, secret });
+
+      await assertAttemptFail(invalidResetToken, bobNewPassword, msgInvalidToken);
+    });
+
+    it('invalidates the secret after the first failure', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const firstPasswordResetToken = retrieveResetPasswordToken(bobId);
+
+      const invalidSecret = auth.generateSecret();
+      const invalidResetToken = auth.generatePasswordResetToken({
+        userId: bobId, secret: invalidSecret,
+      });
+
+      // First attempt
+      await attempResetPassword(invalidResetToken, bobNewPassword);
+
+      // Second attempt should fail
+      await assertAttemptFail(firstPasswordResetToken, bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses resetPasswordToken reuse', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const firstPasswordResetToken = retrieveResetPasswordToken(bobId);
+
+      // First attempt
+      await attempResetPassword(firstPasswordResetToken, bobNewPassword);
+
+      // Second attempt should fail
+      await assertAttemptFail(firstPasswordResetToken, bobNewPassword, msgInvalidToken);
     });
   });
 });

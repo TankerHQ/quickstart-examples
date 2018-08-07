@@ -8,13 +8,22 @@ export default class Session extends EventEmitter {
     this.resourceId = null;
     this.userId = null;
     this.serverApi = new ServerApi();
+    this.verificationCode = null;
   }
 
   async initTanker() {
     if (this.tanker) return;
     const config = await this.serverApi.tankerConfig();
     this.tanker = new Tanker(config);
-    this.tanker.on("unlockRequired", () => this.emit("newDevice"));
+    this.tanker.on("unlockRequired", () => {
+      if (this.verificationCode) {
+        this.tanker.unlockCurrentDevice({ verificationCode: this.verificationCode });
+        // prevent re-use
+        this.verificationCode = null;
+      } else {
+        this.emit('newDevice');
+      }
+    });
   }
 
   get email() {
@@ -48,7 +57,7 @@ export default class Session extends EventEmitter {
     this.userId = user.id;
 
     await this.openSession(user.id, user.token);
-    await this.tanker.setupUnlock({ password });
+    await this.tanker.setupUnlock({ password, email });
   }
 
   async logIn(email, password) {
@@ -121,7 +130,7 @@ export default class Session extends EventEmitter {
 
   async changeEmail(newEmail) {
     await this.serverApi.changeEmail(newEmail);
-    // TODO: updateUnlock email
+    await this.tanker.updateUnlock({ email: newEmail });
   }
 
   async changePassword(oldPassword, newPassword) {

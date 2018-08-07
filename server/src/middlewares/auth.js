@@ -48,8 +48,32 @@ const authMiddlewareBuilder = (app) => { // eslint-disable-line arrow-body-style
   return (req, res, next) => authMiddleware(app.storage, req, res, next);
 };
 
+const generateSecret = () => sodium.randombytes_buf(32);
+
+const generatePasswordResetToken = ({ userId, secret }) => {
+  const b64secret = sodium.to_base64(secret);
+  const asString = JSON.stringify({ userId, secret: b64secret });
+  const buf = sodium.from_string(asString);
+  return sodium.to_base64(buf);
+};
+
+
+const parsePasswordResetToken = (b64token) => {
+  const buf = sodium.from_base64(b64token);
+  const string = sodium.to_string(buf);
+  const obj = JSON.parse(string);
+  const b64secret = obj.secret;
+  return {
+    userId: obj.userId,
+    secret: sodium.from_base64(b64secret),
+  };
+};
+
 module.exports = {
   authMiddlewareBuilder,
   hashPassword,
   verifyPassword,
+  generateSecret,
+  generatePasswordResetToken,
+  parsePasswordResetToken,
 };
