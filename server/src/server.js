@@ -235,7 +235,7 @@ app.post('/resetPassword', (req, res) => {
   app.storage.save(user);
 
   res.set('Content-Type', 'application/json');
-  res.status(200).json({ userId });
+  res.status(200).json({ userId, email: user.email });
 });
 
 

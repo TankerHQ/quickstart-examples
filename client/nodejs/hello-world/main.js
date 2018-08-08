@@ -57,6 +57,7 @@ async function openSession(tanker, email) {
 }
 
 async function main () {
+  console.log(`Using Tanker version: ${tankerlib.getTankerVersion()}`);
   // Randomize emails so that each test runs with new users
   const aliceEmail = `alice-${uuid()}@example.com`;
   const bobEmail = `bob-${uuid()}@example.com`;
@@ -89,7 +90,6 @@ async function main () {
 }
 
 main().then(() => {
-  console.log(`Using Tanker version: ${tankerlib.getTankerVersion()}`);
   process.exit(0);
 }).catch(e => {
   console.error(e);

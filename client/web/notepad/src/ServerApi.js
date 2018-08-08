@@ -124,7 +124,7 @@ export default class Api {
   }
 
   async resetPassword(passwordResetToken, newPassword) {
-    const data = JSON.stringify({ passwordResetToken, newPassword });
+    const data = { passwordResetToken, newPassword };
     return this.doRequest("/resetPassword", { json: data, method: "POST" });
   }
 
