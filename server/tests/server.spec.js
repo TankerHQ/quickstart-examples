@@ -475,6 +475,7 @@ describe('server', () => {
       const response = await answer.json();
       console.log(response);
       expect(response.userId).to.eq(bobId);
+      expect(response.email).to.eq(bobEmail);
     });
 
     it('refuses to reset password if the password is emtpy', async () => {
