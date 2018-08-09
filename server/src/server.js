@@ -159,7 +159,7 @@ app.post('/requestResetPassword', async (req, res) => {
     const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
     app.storage.setPasswordResetSecret(userId, secret);
 
-    const confirmUrl = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}:{{ verificationCode }}`;
+    const confirmUrl = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}:TANKER_VERIFICATION_CODE`;
 
     const email = {
       subject: 'Password Reset',
