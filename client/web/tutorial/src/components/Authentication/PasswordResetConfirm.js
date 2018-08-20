@@ -11,6 +11,8 @@ import {
 
 class PasswordResetConfirm extends React.Component {
   state = {
+    passwordResetToken: null,
+    verificationCode: null,
     newPassword: "",
     newPasswordConfirmation: "",
     errorMessage: null,
@@ -18,19 +20,27 @@ class PasswordResetConfirm extends React.Component {
     formDisabled: false,
   }
 
+  componentDidMount = () => {
+    const { passwordResetToken, verificationCode } = this.parseUrl();
+    this.setState({ passwordResetToken, verificationCode });
+  };
+
   onSubmit = async (event) => {
     event.preventDefault();
 
-    const { email } = this.state;
+    const { newPassword, verificationCode, passwordResetToken } = this.state;
     this.setState({ formDisabled: true });
 
     try {
-      await this.props.onSubmit(email);
-      this.setState({ successMessage: `Password successfully changed!` });
+      await this.props.onSubmit({
+        newPassword,
+        verificationCode,
+        passwordResetToken
+      });
     } catch (e) {
       this.setState({ errorMessage: e.message, formDisabled: false });
     }
-  }
+  };
 
   onPasswordChange = (passwordChanges) => {
     this.setState({ ...passwordChanges });
@@ -43,12 +53,20 @@ class PasswordResetConfirm extends React.Component {
       event.preventDefault();
       history.replace(path);
     };
-  }
+  };
 
   validatePassword = () => {
     const { newPassword, newPasswordConfirmation } = this.state;
     return newPassword === newPasswordConfirmation;
-  }
+  };
+
+  parseUrl = () => {
+    const [passwordResetToken, verificationCode] = window.location.hash.substr(1).split(':');
+    return {
+      passwordResetToken: decodeURIComponent(passwordResetToken),
+      verificationCode: decodeURIComponent(verificationCode),
+    };
+  };
 
   render() {
     const { newPassword, newPasswordConfirmation, errorMessage, formDisabled, successMessage } = this.state;
