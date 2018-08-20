@@ -230,7 +230,6 @@ app.post('/resetPassword', (req, res) => {
     return;
   }
   user.b64_password_reset_secret = undefined;
-  console.log(`new password: ${newPassword}`);
   user.hashed_password = auth.hashPassword(newPassword);
   app.storage.save(user);
 

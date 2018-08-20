@@ -22,7 +22,7 @@ class PasswordResetConfirm extends React.Component {
 
   componentDidMount = () => {
     const { passwordResetToken, verificationCode } = this.parseUrl();
-    this.setState({passwordResetToken, verificationCode});
+    this.setState({ passwordResetToken, verificationCode });
   };
 
   onSubmit = async (event) => {
