@@ -2,7 +2,7 @@
 
 In this tutorial we will demonstrate how to use the Tanker SDK inside an existing React JavaScript application.
 
-Your mission, if you accept it, is to follow the instructions below in order to implement end-to-end encryption.
+Your mission, should you decide to accept it, is to follow the instructions below in order to implement end-to-end encryption.
 
 Knowledge about UI frameworks such as React is not required. However, the functions and methods of the Tanker API are asynchronous, so to take out the most of this tutorial you should know about [async functions](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Instructions/async_function).
 
@@ -322,9 +322,15 @@ At this point, if you try to log in the same user either in private browsing mod
 
 That is because we did not take care of device management so far.
 
-You should now go read the [section about device management](https://tanker.io/docs/latest/guide/device-management/?language=javascript).
+You should now go read the [unlocking devices](https://tanker.io/docs/latest/guide/unlocking-devices/?language=javascript) section of the guide.
 
-Then *make sure to emit the `newDevice` event (using `this.emit()`), when the  `unlockRequired` event of the Tanker is received*.
+For the sake of simplicity, we will implement a password-only unlock mechanism in this tutorial.
+
+Note that this is not [the recommended option](https://tanker.io/docs/latest/guide/unlocking-devices/?language=javascript#why_we_dont_recommend_a_password-only_unlock_mechanism) and an unlock email address should be added to handle cases where a user no longer remembers their password. However it would require to set up email templates and email delegation, which are beyond the scope of this tutorial.
+
+That said, let's get back to coding.
+
+*Make sure to emit the `newDevice` event (using `this.emit()`), when the  `unlockRequired` event of the Tanker is received*.
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
@@ -396,7 +402,7 @@ Notes:
 * Of course, in applications with strong security needs, you should ask your users to set up a password different from the one used in authentication to unlock devices. The authentication scheme becomes a 2-Factor one, where the password to unlock devices is the second factor.
 
 * Tanker staff is currently working on alternative second factors to achieve device unlocking:
-    * By registering an email address or a phone number to which an unlocking code could be sent,
+    * By registering a phone number to which the verification code could be sent,
     * By generating a "passphrase" (a set of 6 to 10 words) that power users can either safely note somewhere, or store in a dedicated device for instance.
 
 ## Conclusion

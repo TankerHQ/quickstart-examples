@@ -24,15 +24,28 @@ export default class Api {
     return `${appServerUrl}${path}${queryString}`;
   }
 
-  async doRequest(path, fetchOpts) {
-    const response = await this.doRequestUnchecked(path, fetchOpts);
+  async doRequest(path, requestOpts) {
+    const response = await this.doRequestUnchecked(path, requestOpts);
     if (!response.ok) {
       await this.onFailedRequest(response);
     }
     return response;
   }
 
-  async doRequestUnchecked(path, fetchOpts) {
+  async doRequestUnchecked(path, requestOpts) {
+    const fetchOpts = requestOpts;
+
+    if (requestOpts) {
+      const {raw , json} = requestOpts;
+
+      if (raw)
+        fetchOpts.body = raw;
+      else if (json) {
+        fetchOpts.body = JSON.stringify(json)
+        fetchOpts.headers = { "Content-Type": "application/json" };
+      }
+    }
+
     const response = await fetch(this.urlFor(path), fetchOpts);
     return response;
   }
@@ -66,7 +79,7 @@ export default class Api {
       );
     }
 
-    return this.doRequest("/data", { method: "PUT", body: content });
+    return this.doRequest("/data", { method: "PUT", raw: content });
   }
 
   async getUserData(userId) {
@@ -95,24 +108,28 @@ export default class Api {
       from,
       to: recipients,
     };
-    const headers = { "Content-Type": "application/json" };
-    const body = JSON.stringify(data);
-    await this.doRequest("/share", { headers, body, method: "POST" });
+    await this.doRequest("/share", { json: data, method: "POST" });
   }
 
   async changeEmail(newEmail) {
     const data = { email: newEmail };
-    const headers = { "Content-Type": "application/json" };
-    const body = JSON.stringify(data);
-    await this.doRequest("/me/email", { headers, body, method: "PUT" });
+    await this.doRequest("/me/email", { json: data, method: "PUT" });
     this._email = newEmail;
   }
 
   async changePassword(oldPassword, newPassword) {
     const data = { oldPassword, newPassword };
-    const headers = { "Content-Type": "application/json" };
-    const body = JSON.stringify(data);
-    await this.doRequest("/me/password", { headers, body, method: "PUT" });
+    await this.doRequest("/me/password", { json: data, method: "PUT" });
     this._password = newPassword;
+  }
+
+  async resetPassword(passwordResetToken, newPassword) {
+    const data = { passwordResetToken, newPassword };
+    return this.doRequest("/resetPassword", { json: data, method: "POST" });
+  }
+
+  async requestResetPassword(email) {
+    const data = { email };
+    await this.doRequest("/requestResetPassword", { json: data, method: "POST" });
   }
 }

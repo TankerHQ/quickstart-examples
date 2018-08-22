@@ -5,10 +5,12 @@ import ServerApi from "./ServerApi";
 export default class Session extends EventEmitter {
   constructor() {
     super();
+
     this.resourceId = null;
     this.userId = null;
-    this.serverApi = new ServerApi();
     this.verificationCode = null;
+
+    this.serverApi = new ServerApi();
   }
 
   async initTanker() {

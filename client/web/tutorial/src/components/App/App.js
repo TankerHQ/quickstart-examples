@@ -4,6 +4,7 @@ import Authentication from "../Authentication";
 import NewDevice from "../NewDevice";
 import Notepad from "./Notepad";
 import Topbar from "../Topbar";
+import ServerApi from '../../ServerApi';
 
 import "./App.css";
 
@@ -45,16 +46,19 @@ class App extends React.Component {
     this.setState({ status: "logIn" });
   };
 
-  onPasswordResetRequest = async () => {
-    // TODO: implement feature!
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    //throw new Error("Oops");
+  onPasswordResetRequest = async (email) => {
+    const serverApi = new ServerApi();
+    await serverApi.requestResetPassword(email);
   }
 
-  onPasswordResetConfirm = async () => {
-    // TODO: implement feature!
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    //throw new Error("Oops");
+  onPasswordResetConfirm = async ({ newPassword, passwordResetToken, verificationCode }) => {
+    const serverApi = new ServerApi();
+    const answer = await serverApi.resetPassword(passwordResetToken, newPassword);
+    const jsonResponse = await answer.json();
+    const { email } = jsonResponse;
+    this.props.session.verificationCode = verificationCode;
+    await this.props.session.logIn(email, newPassword);
+    this.setState({ status: "ready" });
   }
 
   onUnlockDevice = async password => {

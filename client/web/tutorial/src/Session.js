@@ -6,9 +6,13 @@ export default class Session extends EventEmitter {
 
   constructor() {
     super();
+
     this.resourceId = null;
     this.userId = null;
+    this.verificationCode = null;
+
     this.serverApi = new ServerApi();
+
     // FIXME: get rid of this.opened
     this.opened = false;
   }
@@ -54,7 +58,7 @@ export default class Session extends EventEmitter {
     this.userId = user.id;
 
     await this.openSession(user.id, user.token);
-    // FIXME: setup the password to unlock additional devices
+    // FIXME: setup the email and password to unlock additional devices
   }
 
   async logIn(email, password) {
