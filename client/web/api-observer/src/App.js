@@ -7,6 +7,8 @@ import { getEntry, LogPanel } from './log';
 
 const serverRoot = 'http://127.0.0.1:8080';
 
+const doRequest = (url, options = {}) => fetch(url, { credentials: 'include', ...options });
+
 class App extends Component {
   constructor() {
     super();
@@ -23,7 +25,7 @@ class App extends Component {
 
   initTanker = async () => {
     try {
-      const res = await fetch(`${serverRoot}/config`);
+      const res = await doRequest(`${serverRoot}/config`);
       const config = await res.json();
       this.tanker = new Tanker(config);
       this.log('initialize', config.trustchainId);
@@ -110,11 +112,11 @@ class App extends Component {
     const ePassword = encodeURIComponent(password);
 
     // Authenticated request: always pass "Tanker" as password (mock auth)
-    let res = await fetch(`${serverRoot}/login?email=${eEmail}&password=${ePassword}`);
+    let res = await doRequest(`${serverRoot}/login?email=${eEmail}&password=${ePassword}`);
 
     // User not found
     if (res.status === 404) {
-      res = await fetch(`${serverRoot}/signup?email=${eEmail}&password=${ePassword}`);
+      res = await doRequest(`${serverRoot}/signup?email=${eEmail}&password=${ePassword}`);
     }
 
     return res.json();

@@ -24,7 +24,7 @@ export default class Api {
     return `${appServerUrl}${path}${queryString}`;
   }
 
-  async doRequest(path, requestOpts) {
+  async doRequest(path, requestOpts = {}) {
     const response = await this.doRequestUnchecked(path, requestOpts);
     if (!response.ok) {
       await this.onFailedRequest(response);
@@ -32,18 +32,16 @@ export default class Api {
     return response;
   }
 
-  async doRequestUnchecked(path, requestOpts) {
-    const fetchOpts = requestOpts;
+  async doRequestUnchecked(path, requestOpts = {}) {
+    const { raw, json, ...fetchOpts } = requestOpts;
 
-    if (requestOpts) {
-      const {raw , json} = requestOpts;
+    fetchOpts.credentials = "include"; // cross-domain auth cookies
 
-      if (raw)
-        fetchOpts.body = raw;
-      else if (json) {
-        fetchOpts.body = JSON.stringify(json)
-        fetchOpts.headers = { "Content-Type": "application/json" };
-      }
+    if (raw)
+      fetchOpts.body = raw;
+    else if (json) {
+      fetchOpts.body = JSON.stringify(json)
+      fetchOpts.headers = { "Content-Type": "application/json" };
     }
 
     const response = await fetch(this.urlFor(path), fetchOpts);

@@ -3,13 +3,15 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
+const Tanker = tankerlib.default;
+
 const serverRoot = 'http://127.0.0.1:8080';
 const emails = new Set();
 
-const Tanker = tankerlib.default;
+const doRequest = (url, options = {}) => fetch(url, { credentials: 'include', ...options });
 
 async function getTankerConfig() {
-  const res = await fetch(`${serverRoot}/config`);
+  const res = await doRequest(`${serverRoot}/config`);
   const config = await res.json();
 
   // Folder to store tanker client data
@@ -31,12 +33,12 @@ async function authenticate(email) {
 
   // User known: log in
   if (emails.has(email)) {
-    res = await fetch(`${serverRoot}/login?email=${eEmail}&password=${ePassword}`);
+    res = await doRequest(`${serverRoot}/login?email=${eEmail}&password=${ePassword}`);
 
     // User not known: sign up
   } else {
     // Always sign up with "Tanker" as password (mock auth)
-    res = await fetch(`${serverRoot}/signup?email=${eEmail}&password=${ePassword}`);
+    res = await doRequest(`${serverRoot}/signup?email=${eEmail}&password=${ePassword}`);
     emails.add(email);
   }
 
