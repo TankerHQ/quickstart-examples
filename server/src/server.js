@@ -18,6 +18,8 @@ const sodium = require('libsodium-wrappers-sumo');
 
 const auth = require('./middlewares/auth');
 const corsMiddleware = require('./middlewares/cors');
+const session = require('./middlewares/session');
+
 const { FakeTrustchaindClient, TrustchaindClient } = require('./TrustchaindClient');
 
 const log = require('./log');
@@ -69,10 +71,10 @@ const sanitizeUser = (user) => {
 
 const reviveUsers = ids => ids.map(id => sanitizeUser(app.storage.get(id)));
 
-app.use(corsMiddleware); // enable CORS
+app.use(corsMiddleware()); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
-app.options('*', corsMiddleware); // enable pre-flight CORS requests
+app.options('*', corsMiddleware()); // enable pre-flight CORS requests
 
 // Show helpful error messages. In a production server,
 // remove this as it could leak sensitive information.
@@ -99,9 +101,22 @@ app.get('/config', (req, res) => {
   res.status(200).send(clientConfig);
 });
 
+
+// Add session middleware
+app.use(session.middleware());
+
+
+// Add logout route (non authenticated)
+app.get('/logout', async (req, res) => {
+  log('Destroy the current session if any', 1);
+  await session.destroy(req, res);
+  res.status(200).json('{}');
+});
+
+
 // Add signup route (non authenticated)
-app.get('/signup', (req, res) => {
-  const { email, password } = req.query;
+app.post('/signup', async (req, res) => {
+  const { email, password } = req.body;
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
   if (!email || !emailValidator.validate(email)) {
@@ -122,7 +137,6 @@ app.get('/signup', (req, res) => {
     return;
   }
 
-
   const userId = uuid();
 
   log('Hash the password', 1);
@@ -141,11 +155,50 @@ app.get('/signup', (req, res) => {
   };
   app.storage.save(user);
 
+  log('Save the userId in the session', 1);
+  await session.regenerate(req);
+  req.session.userId = userId;
+
   log('Return the user id and token', 1);
   res.set('Content-Type', 'application/json');
   res.status(201).json({ id: userId, token });
 });
 
+// Add login route (non authenticated)
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  log('Check login credentials', 1);
+
+  if (!email || !password) {
+    log('Missing email or password', 1);
+    res.sendStatus(400);
+    return;
+  }
+
+  const userId = app.storage.emailToId(email);
+  if (!userId) {
+    log(`Authentication error: ${email} not found`, 1);
+    res.sendStatus(404);
+    return;
+  }
+
+  const user = app.storage.get(userId);
+  const passwordOk = auth.verifyPassword(user, password);
+  if (!passwordOk) {
+    log('Authentication error: invalid password', 1);
+    res.sendStatus(401);
+    return;
+  }
+
+  log('Save the userId in the session', 1);
+  await session.regenerate(req);
+  req.session.userId = userId;
+
+  log('Serve the token', 1);
+  res.set('Content-Type', 'application/json');
+  res.json({ id: user.id, token: user.token });
+});
 
 app.post('/requestResetPassword', async (req, res) => {
   try {
@@ -240,22 +293,12 @@ app.post('/resetPassword', (req, res) => {
 
 
 // Add authentication middleware for all routes below
-//   - check valid "email" and "password" query params
+//   - check valid session cookie
 //   - set res.locals.user for the request handlers
-const authMiddleware = auth.authMiddlewareBuilder(app);
-app.use(authMiddleware);
+app.use(auth.middleware(app));
 
 
 // Add authenticated routes
-app.get('/login', (req, res) => {
-  log('Retrieve token from storage', 1);
-  const { user } = res.locals;
-
-  log('Serve the token', 1);
-  res.set('Content-Type', 'application/json');
-  res.json({ id: user.id, token: user.token });
-});
-
 app.get('/me', (req, res) => {
   // res.locals.user is set by the auth middleware
   const me = res.locals.user;
