@@ -26,6 +26,7 @@ const Storage = require('./storage');
 
 // Build express application
 const app = express();
+app.disable('x-powered-by'); // don't advertise the use of Express
 
 // Setup server
 let serverConfig;
