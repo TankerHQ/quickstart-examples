@@ -303,6 +303,7 @@ app.get('/me', (req, res) => {
   // res.locals.user is set by the auth middleware
   const me = res.locals.user;
   const safeMe = sanitizeUser(me);
+  safeMe.token = me.token; // re-add Tanker user token
   safeMe.accessibleNotes = reviveUsers(safeMe.accessibleNotes || []);
   safeMe.noteRecipients = reviveUsers(safeMe.noteRecipients || []);
   res.json(safeMe);

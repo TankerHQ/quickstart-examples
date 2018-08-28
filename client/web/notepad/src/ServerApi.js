@@ -42,7 +42,9 @@ export default class Api {
   async authenticate(path, email, password) {
     const response = await this.doRequestUnchecked(path, { method: "POST", json: { email, password } });
     if (response.ok) { // HTTP code in 200-299: successful auth
+      const user = await response.clone().json();
       this.email = email;
+      this.userId = user.id;
     }
     return response;
   }
@@ -55,8 +57,10 @@ export default class Api {
     return this.authenticate('/signup', email, password);
   }
 
-  logout() {
+  async logout() {
+    await this.doRequest("/logout");
     this.email = null;
+    this.userId = null;
   }
 
   delete() {
@@ -86,7 +90,12 @@ export default class Api {
 
   async getMe() {
     const response = await this.doRequest("/me");
-    return response.json();
+    const me = await response.json();
+    if (!this.userId) {
+      this.email = me.email;
+      this.userId = me.id;
+    }
+    return me;
   }
 
   async getUsers() {

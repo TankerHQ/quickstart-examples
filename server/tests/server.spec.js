@@ -269,7 +269,6 @@ describe('server', () => {
       const user = await response.json();
       expect(user.id).to.equal(bobId);
       expect(user.email).to.equal(bobEmail);
-      expect(user.token).to.be.undefined;
     });
 
     it('can change password', async () => {
