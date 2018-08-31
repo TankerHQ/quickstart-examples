@@ -7,9 +7,9 @@
 //
 
 #import "AppDelegate.h"
+@import Tanker;
 
 @interface AppDelegate ()
-
 @end
 
 @implementation AppDelegate
@@ -17,6 +17,8 @@
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
   // Override point for customization after application launch.
+  NSString* tankerVersion = [TKRTanker versionString];
+  NSLog(@"Using Tanker SDK version %@", tankerVersion);
   return YES;
 }
 
