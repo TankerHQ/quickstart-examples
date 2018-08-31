@@ -12,6 +12,7 @@
                                    password:(NSString *)password;
 + (PMKPromise<NSString *> *)loginWithEmail:(NSString *)email
                                   password:(NSString *)password;
++ (PMKPromise *)logout;
 + (PMKPromise *)uploadToServer:(NSString *)data;
 + (PMKPromise<NSString *> *)dataFromServer;
 + (PMKPromise *)changeEmail:(NSString *)newEmail;
@@ -25,7 +26,6 @@
 @property NSString *serverAddress;
 @property TKRTanker *tanker;
 @property NSString *email;
-@property NSString *password;
 @property NSString *trustchainId;
 @property NSString *userId;
 
