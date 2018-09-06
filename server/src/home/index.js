@@ -4,12 +4,28 @@
 //  - uses poor man's handmade templating
 const express = require('express');
 const fs = require('fs');
-const marked = require('marked'); // markdown parser
+const marked = require('marked');
 const path = require('path');
 
 // Build an express router
 const homeRouter = express.Router();
 const rootPath = path.join(__dirname, '../../..');
+
+// Github nav and local server nav require different links
+const fixReadmeLinks = markup => markup.replace('"../../../README.md"', '"/"');
+
+// Retina screenshots must be displayed at 50% of their original size
+const downsizeScreenshots = markup => markup.replace(/<img.+?>/g, (tag) => {
+  if (!tag.match('alt="screenshot"')) {
+    return tag;
+  }
+
+  return tag.replace(/src="(.+?)"/g, (_, src) => `srcset="${src} 2x"`);
+});
+
+// Markdown would convert email addresses to <a href="mailto:..."> links,
+// behavior we're avoided by writting them like email_at_server.com
+const nonClickableEmails = markup => markup.replace(/_at_/g, '@');
 
 // Home page routing
 homeRouter.get('/', (req, res) => {
@@ -30,12 +46,15 @@ homeRouter.get('/', (req, res) => {
   // Display app README
   if (readmePath) {
     readme = fs.readFileSync(readmePath, 'utf8');
-    readme = marked(readme).replace('"../../../README.md"', '"/"');
+    readme = marked(readme);
+    readme = fixReadmeLinks(readme);
+    readme = downsizeScreenshots(readme);
+    readme = nonClickableEmails(readme);
 
     const backLinkPath = path.join(__dirname, 'templates/back_link.html');
     const backLink = fs.readFileSync(backLinkPath, 'utf8');
 
-    html = layout.replace('{{ content }}', backLink + '\n' + readme);
+    html = layout.replace('{{ content }}', `${backLink}\n${readme}`);
 
   // Display server README
   } else {
@@ -46,7 +65,7 @@ homeRouter.get('/', (req, res) => {
     const appListPath = path.join(__dirname, 'templates/app_list.html');
     const appList = fs.readFileSync(appListPath, 'utf8');
 
-    html = layout.replace('{{ content }}', readme.replace('</h1>', '</h1>\n' + appList));
+    html = layout.replace('{{ content }}', readme.replace('</h1>', `</h1>\n${appList}`));
   }
 
   res.send(html);

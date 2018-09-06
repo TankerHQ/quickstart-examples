@@ -2,18 +2,19 @@ const ellipsis = (s, max = 10) => (s.length > max) ? s.substring(0, max) + '...'
 const quoteEllipsis = (s, max = 10) => JSON.stringify(ellipsis(s, max));
 const quote = (s) => JSON.stringify(s);
 
-const getCodeEncryptAndShare = (text, shareWith) => `
-const opts = { shareWith: [${quoteEllipsis(shareWith)}] };
+const getCodeEncryptAndShare = (text, shareWithEmail) => `
+const userId = getUserId(${quoteEllipsis(shareWithEmail)});
+const opts = { shareWith: [userId] };
 const clear = ${quoteEllipsis(text, 20)};
-const binary = await tanker.encrypt(clear,
-                                    opts);
+const binary = await tanker.encrypt(clear, opts);
 const base64 = toBase64(binary);
 
-// Or
+// Or:
+// const userId = getUserId(${quoteEllipsis(shareWithEmail)});
 // const clear = ${quoteEllipsis(text, 20)};
 // const binary = await tanker.encrypt(clear);
 // const resourceId = getResourceId(binary);
-// await tanker.share([resourceId], [${quoteEllipsis(shareWith)}]);
+// await tanker.share([resourceId], [userId]);
 `;
 
 const getCodeEncryptionOnly = (text) => `
@@ -57,22 +58,25 @@ const clear = await tanker.decrypt(binary);
     code: `clear === ${quoteEllipsis(clear, 20)}; // true`
   }),
 
-  closingSession: (userId) => ({
-    title: `Closing session for ${userId}`,
+  closingSession: (email) => ({
+    title: `Closing session for ${email}`,
     code: 'await tanker.close();'
   }),
 
-  closedSession: (userId) => ({ title: `Closed session for ${userId}` }),
+  closedSession: (email) => ({ title: `Closed session for ${email}` }),
 
-  openingSession: (userId) => ({
-    title: `Opening session for ${userId}`,
+  openingSession: (email, password) => ({
+    title: `Opening session for ${email}`,
     code: `
-const userToken = await getToken(${quote(userId)});
-await tanker.open(${quote(userId)}, userToken);
+const email = ${quote(email)};
+const password = ${quote(password)};
+const user = await authenticate(email, password);
+
+await tanker.open(user.id, user.token);
 `
   }),
 
-  openedSession: (userId) => ({ title: `Opened session for ${userId}` }),
+  openedSession: (email) => ({ title: `Opened session for ${email}` }),
 
   serverHint: () => ({
     title: 'Have you started the server?',

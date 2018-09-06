@@ -40,17 +40,17 @@ PODS:
     - PromiseKit/When
   - PromiseKit/When (1.7.7):
     - PromiseKit/Promise
-  - Tanker (1.7.0-beta10):
+  - Tanker (1.7.0):
     - PromiseKit/Promise (~> 1.7)
     - PromiseKit/When (~> 1.7)
-    - Tanker/libtanker (= 1.7.0-beta10)
-  - Tanker/libtanker (1.7.0-beta10):
+    - Tanker/libtanker (= 1.7.0)
+  - Tanker/libtanker (1.7.0):
     - PromiseKit/Promise (~> 1.7)
     - PromiseKit/When (~> 1.7)
 
 DEPENDENCIES:
   - PromiseKit (~> 1.7)
-  - Tanker (= 1.7.0-beta10)
+  - Tanker (= 1.7.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -62,8 +62,8 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   OMGHTTPURLRQ: 9ac96bdf5c90a33f75836630729ea1adc312a9ed
   PromiseKit: 9007df2f9e2ef725467084ab3880cf932ab935a4
-  Tanker: 5c91e97c1004dbbb246dad8e32b88e53e88c40d0
+  Tanker: b9687c3400b664cbc64833baba027e72122064df
 
-PODFILE CHECKSUM: 973f68ce458c6fe03af35b580fe9714708b7dfba
+PODFILE CHECKSUM: 0f769d203b3196fa7b2ce9421dc1c35ee4cd7e57
 
 COCOAPODS: 1.5.3

@@ -1,38 +1,51 @@
-const appServerUrl = "http://localhost:8080";
+const appServerUrl = "http://127.0.0.1:8080";
 
 export default class Api {
-  get userId() {
-    return this._userId;
+  get email() {
+    return this._email;
   }
 
   get password() {
     return this._password;
   }
 
-  setUserInfo(userId, password) {
-    this._userId = userId;
+  setUserInfo(email, password) {
+    this._email = email;
     this._password = password;
   }
 
   urlFor(path) {
     let queryString = '';
-    if (this.userId) {
-      const escapedUserId = encodeURIComponent(this.userId);
+    if (this.email) {
+      const escapedEmail = encodeURIComponent(this.email);
       const escapedPassword = encodeURIComponent(this.password);
-      queryString = `?userId=${escapedUserId}&password=${escapedPassword}`;
+      queryString = `?email=${escapedEmail}&password=${escapedPassword}`;
     }
     return `${appServerUrl}${path}${queryString}`;
   }
 
-  async doRequest(path, fetchOpts) {
-    const response = await this.doRequestUnchecked(path, fetchOpts);
+  async doRequest(path, requestOpts) {
+    const response = await this.doRequestUnchecked(path, requestOpts);
     if (!response.ok) {
-      this.onFailedRequest(response);
+      await this.onFailedRequest(response);
     }
     return response;
   }
 
-  async doRequestUnchecked(path, fetchOpts) {
+  async doRequestUnchecked(path, requestOpts) {
+    const fetchOpts = requestOpts;
+
+    if (requestOpts) {
+      const {raw , json} = requestOpts;
+
+      if (raw)
+        fetchOpts.body = raw;
+      else if (json) {
+        fetchOpts.body = JSON.stringify(json)
+        fetchOpts.headers = { "Content-Type": "application/json" };
+      }
+    }
+
     const response = await fetch(this.urlFor(path), fetchOpts);
     return response;
   }
@@ -66,10 +79,10 @@ export default class Api {
       );
     }
 
-    return this.doRequest("/data", { method: "PUT", body: content });
+    return this.doRequest("/data", { method: "PUT", raw: content });
   }
 
-  async get(userId) {
+  async getUserData(userId) {
     // this is allowed to return 404
     const response = await this.doRequestUnchecked(`/data/${userId}`);
     if (response.ok || response.status === 404) {
@@ -80,7 +93,7 @@ export default class Api {
     }
   }
 
-  async getMyData() {
+  async getMe() {
     const response = await this.doRequest("/me");
     return response.json();
   }
@@ -90,13 +103,33 @@ export default class Api {
     return response.json();
   }
 
-  async share(recipients) {
+  async share(from, recipients) {
     const data = {
-      from: this.userId,
+      from,
       to: recipients,
     };
-    const headers = { "Content-Type": "application/json" };
-    const body = JSON.stringify(data);
-    await this.doRequest("/share", { headers, body, method: "POST" });
+    await this.doRequest("/share", { json: data, method: "POST" });
+  }
+
+  async changeEmail(newEmail) {
+    const data = { email: newEmail };
+    await this.doRequest("/me/email", { json: data, method: "PUT" });
+    this._email = newEmail;
+  }
+
+  async changePassword(oldPassword, newPassword) {
+    const data = { oldPassword, newPassword };
+    await this.doRequest("/me/password", { json: data, method: "PUT" });
+    this._password = newPassword;
+  }
+
+  async resetPassword(passwordResetToken, newPassword) {
+    const data = { passwordResetToken, newPassword };
+    return this.doRequest("/resetPassword", { json: data, method: "POST" });
+  }
+
+  async requestResetPassword(email) {
+    const data = { email };
+    await this.doRequest("/requestResetPassword", { json: data, method: "POST" });
   }
 }

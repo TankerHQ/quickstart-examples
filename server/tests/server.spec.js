@@ -1,10 +1,12 @@
 const fs = require('fs');
+const sodium = require('libsodium-wrappers-sumo');
 const chai = require('chai');
 const fetch = require('node-fetch');
 const tmp = require('tmp');
 const querystring = require('querystring');
 
-const server = require('../src/server');
+const { app, setup } = require('../src/server');
+const auth = require('../src/middlewares/auth');
 
 const { expect } = chai;
 
@@ -15,7 +17,7 @@ const doRequest = async (testServer, request) => {
     verb, path, query, body, headers,
   } = request;
   const queryString = querystring.stringify(query);
-  const url = `http://localhost:${port}${path}?${queryString}`;
+  const url = `http://127.0.0.1:${port}${path}?${queryString}`;
   const fetchOpts = { headers, method: verb };
   if (body !== undefined) {
     fetchOpts.body = body;
@@ -38,29 +40,49 @@ const assertRequest = async (testServer, request, expectedResponse) => {
 
 describe('server', () => {
   let tempPath;
-  let app;
   let testServer;
 
   const trustchainId = '4bPbtrLr82kNDoaieRDMXIPycLrTynpL7hmIjPGXsWw=';
   const trustchainPrivateKey = '6+Z3FlkU8n1g27/aNF2+3DFOwOXYVZXqiDhuvmF5Lpj0myDj+nNAkKZZxaPE7luhcRMQzTItDyk/zBh21rTyHw==';
 
   const bobId = 'bob';
+  const bobEmail = 'bob@example.com';
   const bobPassword = 'p4ssw0rd';
+  const bobNewPassword = 'n3wp4ss';
+
   const bobPasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$88wT+5X56Ui7EAQMz/wIdw$37pEnuujONgGxa6FudmN9aa0K3TUQbL/tziT30PX7v4';
   const bobToken = 'bobToken';
 
   const aliceId = 'alice';
+  const aliceEmail = 'alice@example.com';
   const alicePassword = '4lic3';
   const alicePasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$UNqRSixl3aeit4F7mR+5pw$KKfiAWPyUaDkVefJ77w2XRdb8gafLpR1a2Uqd0zYnlY';
   const aliceToken = 'aliceToken';
 
   const signUpBob = () => {
-    const user = { id: bobId, hashed_password: bobPasswordHash, token: bobToken };
+    const user = {
+      id: bobId, email: bobEmail, hashed_password: bobPasswordHash, token: bobToken,
+    };
     app.storage.save(user);
   };
 
+
+  const requestResetBobPassword = () => {
+    const body = JSON.stringify({ email: bobEmail });
+    const headers = { 'Content-Type': 'application/json' };
+
+    return doRequest(
+      testServer,
+      {
+        verb: 'post', path: '/requestResetPassword', body, headers,
+      },
+    );
+  };
+
   const signUpAlice = () => {
-    const user = { id: aliceId, hashed_password: alicePasswordHash, token: aliceToken };
+    const user = {
+      id: aliceId, email: aliceEmail, hashed_password: alicePasswordHash, token: aliceToken,
+    };
     app.storage.save(user);
   };
 
@@ -71,12 +93,13 @@ describe('server', () => {
   };
 
 
-  beforeEach(() => {
+  beforeEach(async () => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
-    app = server.setup({
+    await setup({
       dataPath: tempPath.name,
       trustchainId,
       trustchainPrivateKey,
+      testMode: true,
     });
     testServer = app.listen(0);
   });
@@ -93,14 +116,14 @@ describe('server', () => {
   it('/config', async () => {
     const response = await assertRequest(testServer, { verb: 'get', path: '/config' }, { status: 200 });
     const json = await response.json();
-    expect(json).to.deep.equal({ trustchainId });
+    expect(json).to.deep.equal({ trustchainId, testMode: true });
   });
 
   describe('/signup', () => {
-    specify('signin up a new user', async () => {
-      const userId = 'user_42';
+    specify('sign up with an email', async () => {
+      const email = 'user42@example.com';
       const password = 'p4ssw0rd';
-      const query = { userId, password };
+      const query = { email, password };
 
       const response = await assertRequest(
         testServer,
@@ -108,11 +131,12 @@ describe('server', () => {
         { status: 201 },
       );
 
-      const token = await response.text();
+      const { id, token } = await response.json();
+      expect(id).to.be.a('string');
       expect(token).to.be.a('string');
     });
 
-    it('returns 400 if userId is missing', async () => {
+    it('returns 400 if email is missing', async () => {
       const invalidQuery = { password: 'secret' };
       await assertRequest(
         testServer,
@@ -121,8 +145,18 @@ describe('server', () => {
       );
     });
 
+    it('returns 400 if email is invalid', async () => {
+      const invalidQuery = { password: 'secret', email: 'not.an.email.address' };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/signup', query: invalidQuery },
+        { status: 400 },
+      );
+    });
+
     it('returns 400 if password is missing', async () => {
-      const invalidQuery = { userId: 'bob' };
+      const invalidQuery = { email: 'bob@example.com' };
+
       await assertRequest(
         testServer,
         { verb: 'get', path: '/signup', query: invalidQuery },
@@ -131,10 +165,10 @@ describe('server', () => {
     });
 
     it('refuses to sign up existing users', async () => {
-      const existingUser = { id: 'existing' };
+      const existingUser = { id: 'existing', email: 'existing@example.com' };
       app.storage.save(existingUser);
 
-      const query = { userId: 'existing' };
+      const query = { email: existingUser.email };
       await assertRequest(
         testServer,
         { verb: 'get', path: '/signup', query },
@@ -143,47 +177,124 @@ describe('server', () => {
     });
   });
 
-  describe('/password', () => {
-    specify('can change password', async () => {
-      const newPassword = 'n3wp4ss';
-      signUpBob();
-      const query = { userId: bobId, password: bobPassword, newPassword };
-      await assertRequest(
-        testServer,
-        { verb: 'put', path: '/password', query },
-        { status: 200 },
-      );
-
-      const newQuery = { userId: bobId, password: newPassword };
-      await assertRequest(
-        testServer,
-        { verb: 'get', path: '/login', query: newQuery },
-        { status: 200 },
-      );
-    });
-  });
-
   describe('/login', () => {
     specify('signed up users can log in', async () => {
       signUpBob();
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const response = await assertRequest(
         testServer,
         { verb: 'get', path: '/login', query },
         { status: 200 },
       );
-      const token = await response.text();
+      const { id, token } = await response.json();
+      expect(id).to.equal(bobId);
       expect(token).to.equal(bobToken);
     });
 
     it('refuses to log in with incorrect password', async () => {
       signUpBob();
       const incorrectPassword = 'letmein';
-      const query = { userId: bobId, password: incorrectPassword };
+      const query = { email: bobEmail, password: incorrectPassword };
       await assertRequest(
         testServer,
         { verb: 'get', path: '/login', query },
         { status: 401 },
+      );
+    });
+  });
+
+  describe('/me', () => {
+    it('gets the current user', async () => {
+      signUpBob();
+      const query = { email: bobEmail, password: bobPassword };
+      const response = await assertRequest(
+        testServer,
+        { verb: 'get', path: '/me', query },
+        { status: 200 },
+      );
+      const user = await response.json();
+      expect(user.id).to.equal(bobId);
+      expect(user.email).to.equal(bobEmail);
+      expect(user.token).to.be.undefined;
+    });
+
+    it('can change password', async () => {
+      signUpBob();
+      const newPassword = 'n3wp4ss';
+      const query = { email: bobEmail, password: bobPassword };
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ oldPassword: bobPassword, newPassword });
+
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/me/password', query, body, headers,
+        },
+        { status: 200 },
+      );
+
+      const newQuery = { email: bobEmail, password: newPassword };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/login', query: newQuery },
+        { status: 200 },
+      );
+    });
+
+    it('can change email', async () => {
+      signUpBob();
+      const newEmail = 'new.bob@example.com';
+      const query = { email: bobEmail, password: bobPassword };
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ email: newEmail });
+
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/me/email', query, body, headers,
+        },
+        { status: 200 },
+      );
+
+      const newQuery = { email: newEmail, password: bobPassword };
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/login', query: newQuery },
+        { status: 200 },
+      );
+    });
+
+    it('cannot change email if already taken', async () => {
+      signUpAlice();
+      signUpBob();
+      const newEmail = aliceEmail;
+      const query = { email: bobEmail, password: bobPassword };
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ email: newEmail });
+
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/me/email', query, body, headers,
+        },
+        { status: 409 },
+      );
+    });
+
+    it('cannot change email if given address is invalid', async () => {
+      signUpAlice();
+      signUpBob();
+      const newEmail = 'not.an.email.address';
+      const query = { email: bobEmail, password: bobPassword };
+      const headers = { 'Content-Type': 'application/json' };
+      const body = JSON.stringify({ email: newEmail });
+
+      await assertRequest(
+        testServer,
+        {
+          verb: 'put', path: '/me/email', query, body, headers,
+        },
+        { status: 400 },
       );
     });
   });
@@ -194,7 +305,7 @@ describe('server', () => {
 
       const bobNote = 'the note of bob';
 
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const body = bobNote;
       await assertRequest(
         testServer,
@@ -214,7 +325,7 @@ describe('server', () => {
       createBobNote('old note');
 
       const newNote = 'new note';
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const body = newNote;
       await assertRequest(
         testServer,
@@ -230,7 +341,7 @@ describe('server', () => {
 
     specify('delete', async () => {
       signUpBob();
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       await assertRequest(
         testServer,
         { verb: 'delete', path: '/data', query },
@@ -252,7 +363,7 @@ describe('server', () => {
       createBobNote('For Alice');
 
       // Post a share request
-      let query = { userId: bobId, password: bobPassword };
+      let query = { email: bobEmail, password: bobPassword };
       const headers = { 'Content-Type': 'application/json' };
       const body = JSON.stringify({ from: bobId, to: [aliceId] });
       await assertRequest(
@@ -264,31 +375,34 @@ describe('server', () => {
       );
 
       // Alice should have Bob in her accessibleNotes
-      query = { userId: aliceId, password: alicePassword };
+      query = { email: aliceEmail, password: alicePassword };
       let response = await doRequest(testServer, { verb: 'get', path: '/me', query });
       let actual = await response.json();
-      expect(actual.accessibleNotes).to.have.members(['bob']);
+      expect(actual.accessibleNotes.map(user => user.id)).to.have.members(['bob']);
 
       // Bob should have Alice in his recipients
-      query = { userId: bobId, password: bobPassword };
+      query = { email: bobEmail, password: bobPassword };
       response = await doRequest(testServer, { verb: 'get', path: '/me', query });
       actual = await response.json();
-      expect(actual.noteRecipients).to.have.members(['alice']);
+      expect(actual.noteRecipients.map(user => user.id)).to.have.members(['alice']);
     });
   });
 
   describe('/users', () => {
-    it('returns the list of all user ids', async () => {
+    it('returns the list of all users (id and email only)', async () => {
       signUpBob();
       signUpAlice();
 
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const response = await doRequest(
         testServer,
         { verb: 'get', path: '/users', query },
       );
       const res = await response.json();
-      expect(res).to.have.members([bobId, aliceId]);
+      expect(res).to.deep.equal([
+        { id: aliceId, email: aliceEmail },
+        { id: bobId, email: bobEmail },
+      ]);
     });
 
     it('does not crash if a json file is corrupted', async () => {
@@ -298,7 +412,7 @@ describe('server', () => {
       const alicePath = app.storage.dataFilePath(aliceId);
       fs.writeFileSync(alicePath, 'this is {not} valid json[]');
 
-      const query = { userId: bobId, password: bobPassword };
+      const query = { email: bobEmail, password: bobPassword };
       const response = await doRequest(
         testServer,
         { verb: 'get', path: '/users', query },
@@ -306,6 +420,138 @@ describe('server', () => {
       expect(response.status).to.eq(500);
       const details = await response.json();
       expect(details.error).to.contain(`${aliceId}.json`);
+    });
+  });
+
+  describe('forgot password', () => {
+    const msgInvalidToken = 'Invalid password reset token';
+    const msgInvalidNewPassword = 'Invalid new password';
+
+    it('calls trustchaind properly', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+      const actualRequest = app.trustchaindClient.sentRequest;
+      const actualEmail = actualRequest.email;
+      expect(actualEmail.to_email).to.eq(bobEmail);
+      expect(actualEmail.html).to.contains('TANKER_VERIFICATION_CODE');
+    });
+
+    const attemptResetPassword = async (passwordResetToken, newPassword) => {
+      const body = JSON.stringify({ passwordResetToken, newPassword });
+      const headers = { 'Content-Type': 'application/json' };
+      return doRequest(
+        testServer,
+        {
+          verb: 'post', path: '/resetPassword', body, headers,
+        },
+      );
+    };
+
+    const assertAttemptFail = async (passwordResetToken, newPassword, msgError) => {
+      const answer = await attemptResetPassword(passwordResetToken, newPassword);
+
+      expect(answer.status).to.eq(401);
+
+      const message = await answer.json();
+
+      expect(message).to.eq(msgError);
+    };
+
+    const retrieveResetPasswordToken = (userId) => {
+      const user = app.storage.get(userId);
+      const userResetSecret = sodium.from_base64(user.b64_password_reset_secret);
+      return auth.generatePasswordResetToken({
+        userId,
+        secret: userResetSecret,
+      });
+    };
+
+    it('can reset password with a token', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const passwordResetToken = retrieveResetPasswordToken(bobId);
+      const answer = await attemptResetPassword(passwordResetToken, bobNewPassword);
+      const { userId, email } = await answer.json();
+      expect(userId).to.eq(bobId);
+      expect(email).to.eq(bobEmail);
+    });
+
+    it('refuses to reset password if the password is emtpy', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const passwordResetToken = retrieveResetPasswordToken(bobId);
+
+      assertAttemptFail(passwordResetToken, '', msgInvalidNewPassword);
+    });
+
+    it('refuses to reset password if the passwordResetToken is empty', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      await assertAttemptFail('', bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses to reset password if passwordResetToken can not be parsed', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      await assertAttemptFail('an invalid token', bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses to reset password if the secret is invalid', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const invalidSecret = auth.generateSecret();
+      const invalidResetToken = auth.generatePasswordResetToken({
+        userId: bobId, secret: invalidSecret,
+      });
+
+      await assertAttemptFail(invalidResetToken, bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses to reset password if the userId is not found', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const secret = auth.generateSecret();
+      const noSuchUserId = 'no such userId';
+      const invalidResetToken = auth.generatePasswordResetToken({ userId: noSuchUserId, secret });
+
+      await assertAttemptFail(invalidResetToken, bobNewPassword, msgInvalidToken);
+    });
+
+    it('invalidates the secret after the first failure', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const firstPasswordResetToken = retrieveResetPasswordToken(bobId);
+
+      const invalidSecret = auth.generateSecret();
+      const invalidResetToken = auth.generatePasswordResetToken({
+        userId: bobId, secret: invalidSecret,
+      });
+
+      // First attempt
+      await attemptResetPassword(invalidResetToken, bobNewPassword);
+
+      // Second attempt should fail
+      await assertAttemptFail(firstPasswordResetToken, bobNewPassword, msgInvalidToken);
+    });
+
+    it('refuses resetPasswordToken reuse', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+
+      const firstPasswordResetToken = retrieveResetPasswordToken(bobId);
+
+      // First attempt
+      await attemptResetPassword(firstPasswordResetToken, bobNewPassword);
+
+      // Second attempt should fail
+      await assertAttemptFail(firstPasswordResetToken, bobNewPassword, msgInvalidToken);
     });
   });
 });

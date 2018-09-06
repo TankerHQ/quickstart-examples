@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Button, Col, ControlLabel, FormGroup, FormControl, Grid, InputGroup, PageHeader, Panel, Row } from 'react-bootstrap';
+import * as emailValidator from 'email-validator';
 import Tanker, { toBase64, fromBase64, errors } from '@tanker/client-browser';
 
 import { getEntry, LogPanel } from './log';
+
+const serverRoot = 'http://127.0.0.1:8080';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      userId: '',
+      email: '',
       clearText: '',
       encryptedText: '',
       shareWith: '',
@@ -20,7 +23,7 @@ class App extends Component {
 
   initTanker = async () => {
     try {
-      const res = await fetch(`http://localhost:8080/config`);
+      const res = await fetch(`${serverRoot}/config`);
       const config = await res.json();
       this.tanker = new Tanker(config);
       this.log('initialize', config.trustchainId);
@@ -41,8 +44,8 @@ class App extends Component {
     this.setState({ log: [entry, ...this.state.log] });
   }
 
-  onUserChange = (event) => {
-    this.setState({ userId: event.target.value });
+  onEmailChange = (event) => {
+    this.setState({ email: event.target.value });
   }
 
   onClearTextChange = (event) => {
@@ -60,7 +63,12 @@ class App extends Component {
   onEncrypt = async () => {
     try {
       const { clearText, shareWith } = this.state;
-      const options = shareWith ? { shareWith: [shareWith] } : {};
+
+      const options = {};
+      if (shareWith) {
+        const id = await this.getUserId(shareWith);
+        options.shareWith = [id];
+      }
 
       this.log('encryption', clearText, shareWith);
 
@@ -97,165 +105,183 @@ class App extends Component {
     }
   }
 
-  getToken = async (userId) => {
+  authenticate = async (email, password) => {
+    const eEmail = encodeURIComponent(email);
+    const ePassword = encodeURIComponent(password);
+
     // Authenticated request: always pass "Tanker" as password (mock auth)
-    let res = await fetch(`http://localhost:8080/login?userId=${encodeURIComponent(userId)}&password=Tanker`);
+    let res = await fetch(`${serverRoot}/login?email=${eEmail}&password=${ePassword}`);
 
     // User not found
     if (res.status === 404) {
-      res = await fetch(`http://localhost:8080/signup?userId=${encodeURIComponent(userId)}&password=Tanker`);
+      res = await fetch(`${serverRoot}/signup?email=${eEmail}&password=${ePassword}`);
     }
 
-    return res.text();
+    return res.json();
+  }
+
+  getUserId = async (email) => {
+    const password = 'Tanker';
+    const { id } = await this.authenticate(email, password);
+    return id;
   }
 
   onClose = async () => {
-    this.log('closingSession', this.state.userId);
+    this.log('closingSession', this.state.email);
 
     await this.tanker.close();
 
-    this.log('closedSession', this.state.userId);
+    this.log('closedSession', this.state.email);
   }
 
   onOpen = async (event) => {
     event.preventDefault();
-    const userId = this.state.userId;
 
-    this.log('openingSession', userId);
+    const email = this.state.email;
+    const password = 'Tanker'; // Note: this is for demo only
 
-    const userToken = await this.getToken(userId);
-    await this.tanker.open(userId, userToken);
+    this.log('openingSession', email, password);
 
-    this.log('openedSession', userId);
+    const user = await this.authenticate(email, password);
+    await this.tanker.open(user.id, user.token);
+
+    this.log('openedSession', email);
   }
 
-  render = () => (
-    <Grid>
-      <Row>
-        <Col lgOffset={1} md={12} lg={10}>
+  render = () => {
+    const { clearText, encryptedText, email, loading, log, shareWith } = this.state;
+    
+    const sessionButtonDisabled = email === '' || !emailValidator.validate(email);
+    const encryptButtonDisabled = clearText === '' || (shareWith && !emailValidator.validate(shareWith));
 
-          <PageHeader>Tanker API Observer</PageHeader>
+    return (
+      <Grid>
+        <Row>
+          <Col lgOffset={1} md={12} lg={10}>
 
-          <Row>
-            <Col md={6}>
-              <Panel bsStyle="primary">
-                <Panel.Heading><Panel.Title componentClass="h5">Application</Panel.Title></Panel.Heading>
-                <Panel.Body>
-                  <FormGroup>
-                    <ControlLabel>Session</ControlLabel>
-                    <InputGroup>
-                      <FormControl
-                        id="userId"
-                        placeholder={"User ID, e.g. \"alice-id\""}
-                        type="text"
-                        value={this.state.userId}
-                        onChange={this.onUserChange}
-                        onKeyPress={event => {
-                          if (event.key === "Enter" && this.state.userId) {
-                            if (this.tanker.status === this.tanker.CLOSED) {
-                              this.onOpen(event);
-                            } else {
-                              this.onClose();
+            <PageHeader>Tanker API Observer</PageHeader>
+
+            <Row>
+              <Col md={6}>
+                <Panel bsStyle="primary">
+                  <Panel.Heading><Panel.Title componentClass="h5">Application</Panel.Title></Panel.Heading>
+                  <Panel.Body>
+                    <FormGroup>
+                      <ControlLabel>Session</ControlLabel>
+                      <InputGroup>
+                        <FormControl
+                          id="email"
+                          placeholder={"Email address, e.g. \"alice@example.com\""}
+                          type="text"
+                          value={email}
+                          onChange={this.onEmailChange}
+                          onKeyPress={event => {
+                            if (event.key === "Enter" && email) {
+                              if (this.tanker.status === this.tanker.CLOSED) {
+                                this.onOpen(event);
+                              } else {
+                                this.onClose();
+                              }
                             }
-                          }
-                        }}
-                        disabled={this.state.loading || this.tanker.status !== this.tanker.CLOSED}
-                      />
-                      <InputGroup.Button>
-                        {(this.state.loading || this.tanker.status === this.tanker.CLOSED) && (
+                          }}
+                          disabled={loading || this.tanker.status !== this.tanker.CLOSED}
+                        />
+                        <InputGroup.Button>
+                          {(loading || this.tanker.status === this.tanker.CLOSED) && (
+                            <Button
+                              bsStyle="primary"
+                              onClick={this.onOpen}
+                              disabled={sessionButtonDisabled}
+                            >
+                              Open
+                            </Button>
+                          )}
+                          {!loading && this.tanker.status !== this.tanker.CLOSED && (
+                            <Button
+                              bsStyle="danger"
+                              onClick={this.onClose}
+                              disabled={sessionButtonDisabled}
+                            >
+                              Close
+                            </Button>
+                          )}
+                        </InputGroup.Button>
+                      </InputGroup>
+                    </FormGroup>
+                    <hr />
+                    <FormGroup>
+                      <ControlLabel>Encryption</ControlLabel>
+                      <InputGroup>
+                        <FormControl
+                          id="clearText"
+                          placeholder="Clear message to encrypt"
+                          value={clearText}
+                          onChange={this.onClearTextChange}
+                          onKeyPress={event => {
+                            if (event.key === "Enter" && clearText) {
+                              this.onEncrypt();
+                            }
+                          }}
+                        />
+                        <InputGroup.Button>
                           <Button
                             bsStyle="primary"
-                            onClick={this.onOpen}
-                            disabled={this.state.userId === ''}
+                            onClick={this.onEncrypt}
+                            disabled={encryptButtonDisabled}
                           >
-                            Open
+                            Encrypt
                           </Button>
-                        )}
-                        {!this.state.loading && this.tanker.status !== this.tanker.CLOSED && (
+                        </InputGroup.Button>
+                      </InputGroup>
+                      <InputGroup style={{ marginTop: '.5em' }}>
+                        <InputGroup.Addon>Share with:</InputGroup.Addon>
+                        <FormControl
+                          id="shareWith"
+                          name="shareWith"
+                          value={shareWith}
+                          onChange={this.onShareChange}
+                          placeholder="Email address of another user"
+                        />
+                      </InputGroup>
+                    </FormGroup>
+                    <hr />
+                    <FormGroup>
+                      <ControlLabel>Decryption</ControlLabel>
+                      <InputGroup>
+                        <FormControl
+                          id="encryptedText"
+                          placeholder="Encrypted message to decrypt"
+                          value={encryptedText}
+                          onChange={this.onEncryptedTextChange}
+                          onKeyPress={event => {
+                            if (event.key === "Enter" && encryptedText) {
+                              this.onDecrypt();
+                            }
+                          }}
+                        />
+                        <InputGroup.Button>
                           <Button
-                            bsStyle="danger"
-                            onClick={this.onClose}
-                            disabled={this.state.userId === ''}
+                            bsStyle="primary"
+                            onClick={this.onDecrypt}
+                            disabled={encryptedText === ''}
                           >
-                            Close
+                            Decrypt
                           </Button>
-                        )}
-                      </InputGroup.Button>
-                    </InputGroup>
-                  </FormGroup>
-                  <hr />
-                  <FormGroup>
-                    <ControlLabel>Encryption</ControlLabel>
-                    <InputGroup>
-                      <FormControl
-                        id="clearText"
-                        placeholder="Clear message to encrypt"
-                        value={this.state.clearText}
-                        onChange={this.onClearTextChange}
-                        onKeyPress={event => {
-                          if (event.key === "Enter" && this.state.clearText) {
-                            this.onEncrypt();
-                          }
-                        }}
-                      />
-                      <InputGroup.Button>
-                        <Button
-                          bsStyle="primary"
-                          onClick={this.onEncrypt}
-                          disabled={this.state.clearText === ''}
-                        >
-                          Encrypt
-                        </Button>
-                      </InputGroup.Button>
-                    </InputGroup>
-                    <InputGroup style={{ marginTop: '.5em' }}>
-                      <InputGroup.Addon>Share with:</InputGroup.Addon>
-                      <FormControl
-                        id="shareWith"
-                        name="shareWith"
-                        value={this.state.shareWith}
-                        onChange={this.onShareChange}
-                        placeholder="User ID of another user"
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                  <hr />
-                  <FormGroup>
-                    <ControlLabel>Decryption</ControlLabel>
-                    <InputGroup>
-                      <FormControl
-                        id="encryptedText"
-                        placeholder="Encrypted message to decrypt"
-                        value={this.state.encryptedText}
-                        onChange={this.onEncryptedTextChange}
-                        onKeyPress={event => {
-                          if (event.key === "Enter" && this.state.encryptedText) {
-                            this.onDecrypt();
-                          }
-                        }}
-                      />
-                      <InputGroup.Button>
-                        <Button
-                          bsStyle="primary"
-                          onClick={this.onDecrypt}
-                          disabled={this.state.encryptedText === ''}
-                        >
-                          Decrypt
-                        </Button>
-                      </InputGroup.Button>
-                    </InputGroup>
-                  </FormGroup>
-                </Panel.Body>
-              </Panel>
-            </Col>
-            <Col md={6}>
-              <LogPanel entries={this.state.log} />
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-    </Grid>
-  )
+                        </InputGroup.Button>
+                      </InputGroup>
+                    </FormGroup>
+                  </Panel.Body>
+                </Panel>
+              </Col>
+              <Col md={6}>
+                <LogPanel entries={log} />
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Grid>
+    );
+  }
 }
 
 export default App;

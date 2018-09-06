@@ -2,7 +2,7 @@
 
 In this tutorial we will demonstrate how to use the Tanker SDK inside an existing React JavaScript application.
 
-Your mission, if you accept it, is to follow the instructions below in order to implement end-to-end encryption.
+Your mission, should you decide to accept it, is to follow the instructions below in order to implement end-to-end encryption.
 
 Knowledge about UI frameworks such as React is not required. However, the functions and methods of the Tanker API are asynchronous, so to take out the most of this tutorial you should know about [async functions](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Instructions/async_function).
 
@@ -24,16 +24,16 @@ Each user has access to exactly one note.
 It implements the following features:
 
 * Signing up
-* Login
+* Logging in
 * Loading and saving the contents of the notes
 
 Here is the user experience flow:
 
-1. A user signs up and creates an account with an ID and password
+1. A user signs up and creates an account with an email and a password
 2. He logs in
 3. He is redirected to an edit form where he can type text, and save the contents by sending them to a remote server.
 
-The server handles signing up of the users by hashing their passwords, and can also store the user notes. The server is also able to send [user tokens](https://www.tanker.io/docs/latest/guide/server/?language=javascript#user_token) to authenticated users.
+The server handles signing up of the users by hashing their passwords, and can also store the user notes. The server is also able to send their [Tanker credentials](https://tanker.io/docs/latest/guide/server/?language=javascript#tanker_users) (ID and Token) to authenticated users.
 
 ### Run
 
@@ -49,19 +49,19 @@ The application should open in a new browser tab. If not, go to http://localhost
 
 Now that the application is up and running, please follow the steps below:
 
-1. Sign up with the user name `alice` and the password `p4ssw0rd`. (Actually, you can use any user name and password, but if you choose to use other authentication values, please note that the server does not implement a "Forgot my password" feature...)
+1. Sign up with an email and a password, e.g. `alice_at_example.com` and the password `p4ssw0rd`.
 
-1. Click on the "Edit your note" link, type some text in the notepad's input and save it.
+1. Click on the `Edit my note` link, type some text in the notepad's input and save it.
 
-1. Open a new tab and sign up a new user (for instance `bob` with the password `letmein`).
+1. Open a new tab and sign up a new user (for instance `bob_at_example.com` with the password `letmein`).
 
 1. Go back to the first tab, edit a new note (say `my message for Bob`) and click on the `share` button.
 
-1. A list of users pops up. Select `bob` and click on `share`.
+1. A list of users pops up. Select `bob_at_example.com` and click on `share`.
 
 1. Go back to the second tab, click on the `Refresh` button next to the `Notes shared with me` panel in the home page.
 
-1. You should see a `From alice` entry in the list. Click on it.
+1. You should see a `From alice_at_example.com` entry in the list. Click on it.
 
 1. The text `my message from Bob` should be displayed.
 
@@ -124,7 +124,7 @@ Now we need to handle the creation of a Tanker session, with the help of the [`t
 
 There are two cases here. Either the user just created an account, or he just logged in.
 
-In both cases, the server should have sent a user token, and we can call `open()` right away.
+In both cases, the server should have sent Tanker credentials (user ID and Token), and we can call `open()` right away.
 
 *Call `this.tanker.open()` in `Session.openSession()`*.
 <details>
@@ -164,6 +164,7 @@ isOpen(): bool {
 }
 
 async close(): Promise<void> {
+  // ...
 - this.opened = false;
 + await this.tanker.close();
 }
@@ -195,6 +196,7 @@ Don't forget to use [`toBase64()`](https://tanker.io/docs/latest/api/utilities/?
 ```diff
 async saveText(text: string) {
   const recipients = await this.getNoteRecipients();
+  const recipientIds = recipients.map(user => user.id);
 
   // use tanker to encrypt the text as binary data, then
   // encode the data and send it to the server
@@ -240,7 +242,7 @@ async loadTextFromUser(userId: string) {
 ### Checking it works
 
 Now the data on the server can no longer be used by the clients. So go ahead, and edit the
-`.json` files on the server to remove the data stored in plain text, keeping only the `id`, `hashed_password`, and `token` fields.
+`.json` files on the server to remove the data stored in plain text, keeping only the `id`, `email`, `hashed_password`, and `token` fields.
 
 Migrating existing data from plain text to encrypted text is of course possible, but this is beyond the scope of this tutorial.
 
@@ -267,7 +269,7 @@ We call each version of a note a *resource*. Each time the note changes, we must
 
 They are two places we need to do this:
 
-* In the `Session.saveText()` method, called when the user clicks on `save` on the "Edit your note" panel
+* In the `Session.saveText()` method, called when the user clicks on `save` on the "Edit my note" panel
 * In the `Session.share()` method, called when when the users clicks on `share` in the "Share" panel.
 
 Please read the [section about sharing in the documentation](https://tanker.io/docs/latest/guide/encryption/?language=javascript#sharing) first.
@@ -283,8 +285,9 @@ Also make sure to *get the resource ID matching the newly generated key by using
 ```diff
 async saveText(text: string) {
   const recipients = await this.getNoteRecipients();
+  const recipientIds = recipients.map(user => user.id);
 - const encryptedData = await this.tanker.encrypt(text);
-+ const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
++ const encryptedData = await this.tanker.encrypt(text, { shareWith: recipientIds });
   const encryptedText = toBase64(encryptedData);
 + this.resourceId = getResourceId(encryptedData);
   await this.serverApi.push(toBase64(encryptedText));
@@ -305,7 +308,7 @@ Next, in the `share` method:
 -   this.resourceId = this.userId;
     if (!this.resourceId) throw new Error("No resource id.");
 +   await this.tanker.share([this.resourceId], recipients);
-    await this.serverApi.share(recipients);
+    await this.serverApi.share(this.userId, recipients);
   }
 ```
 </details>
@@ -319,9 +322,15 @@ At this point, if you try to log in the same user either in private browsing mod
 
 That is because we did not take care of device management so far.
 
-You should now go read the [section about device management](https://tanker.io/docs/latest/guide/device-management/?language=javascript).
+You should now go read the [unlocking devices](https://tanker.io/docs/latest/guide/unlocking-devices/?language=javascript) section of the guide.
 
-Then *make sure to emit the `newDevice` event (using `this.emit()`), when the  `unlockRequired` event of the Tanker is received*.
+For the sake of simplicity, we will implement a password-only unlock mechanism in this tutorial.
+
+Note that this is not [the recommended option](https://tanker.io/docs/latest/guide/unlocking-devices/?language=javascript#why_we_dont_recommend_a_password-only_unlock_mechanism) and an unlock email address should be added to handle cases where a user no longer remembers their password. However it would require to set up email templates and email delegation, which are beyond the scope of this tutorial.
+
+That said, let's get back to coding.
+
+*Make sure to emit the `newDevice` event (using `this.emit()`), when the  `unlockRequired` event of the Tanker is received*.
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
@@ -363,9 +372,9 @@ At the end of the `Session.signUp()` method, *use the [`tanker.setupUnlock()`](h
 <summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
-async signUp(userId, password) {
+async signUp(email, password) {
   // ...
-  await this.openSession(userId, userToken);
+  await this.openSession(user.id, user.token);
 + await this.tanker.setupUnlock({ password });
 }
 ```
@@ -386,14 +395,15 @@ Now, you'll launch **a different browser** to emulate another device (technicall
 1. Upon entering the password, the second browser should display the same content that was saved in the first browser,
 1. You can then change the content on the second browser, click save, go back to the first browser, and load the new content.
 
-Note 1: instead of a second browser, you could also have used the first browser in private browsing mode to emulate a new device. Nevertheless, the browser won't persist Tanker data over private browsing sessions, so you would have to unlock the device every time you restart such a private browsing session.
+Notes:
 
-Note 2: of course, in applications with strong security needs, you should ask your users to set up a password different from the one used in authentication to unlock devices. The authentication scheme becomes a 2-Factor one, where the password to unlock devices is the second factor.
+* Instead of a second browser, you could also have used the first browser in private browsing mode to emulate a new device. Nevertheless, the browser won't persist Tanker data over private browsing sessions, so you would have to unlock the device every time you restart such a private browsing session.
 
-Note 3: Tanker staff is currently working on alternative second factors to achieve device unlocking:
+* Of course, in applications with strong security needs, you should ask your users to set up a password different from the one used in authentication to unlock devices. The authentication scheme becomes a 2-Factor one, where the password to unlock devices is the second factor.
 
-* By registering an email address or a phone number to which an unlocking code could be sent,
-* By generating a "passphrase" (a set of 6 to 10 words) that power users can either safely note somewhere, or store in a dedicated device for instance.
+* Tanker staff is currently working on alternative second factors to achieve device unlocking:
+    * By registering a phone number to which the verification code could be sent,
+    * By generating a "passphrase" (a set of 6 to 10 words) that power users can either safely note somewhere, or store in a dedicated device for instance.
 
 ## Conclusion
 

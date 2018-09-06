@@ -8,13 +8,11 @@ It allows each user to have exactly one note they can edit and share.
 
 Here is the list of features implemented:
 
-- signup
-- login
+- authenticated access (signup, login, password reset, account settings, logout)
 - send the note to a server to be saved
 - retrieve the note from the server
 - select a list of users to share the note with
 - list and view all notes shared with the user
-- logout
 
 All this features use the Tanker SDK, it implements:
 - open a session

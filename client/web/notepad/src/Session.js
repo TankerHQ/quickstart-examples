@@ -5,7 +5,11 @@ import ServerApi from "./ServerApi";
 export default class Session extends EventEmitter {
   constructor() {
     super();
+
     this.resourceId = null;
+    this.userId = null;
+    this.verificationCode = null;
+
     this.serverApi = new ServerApi();
   }
 
@@ -13,15 +17,19 @@ export default class Session extends EventEmitter {
     if (this.tanker) return;
     const config = await this.serverApi.tankerConfig();
     this.tanker = new Tanker(config);
-    this.tanker.on("unlockRequired", () => this.emit("newDevice"));
+    this.tanker.on("unlockRequired", () => {
+      if (this.verificationCode) {
+        this.tanker.unlockCurrentDevice({ verificationCode: this.verificationCode });
+        // prevent re-use
+        this.verificationCode = null;
+      } else {
+        this.emit('newDevice');
+      }
+    });
   }
 
-  get userId() {
-    return this.serverApi.userId;
-  }
-
-  get password() {
-    return this.serverApi.password;
+  get email() {
+    return this.serverApi.email;
   }
 
   isOpen() {
@@ -29,6 +37,8 @@ export default class Session extends EventEmitter {
   }
 
   async close() {
+    this.userId = null;
+    this.serverApi.setUserInfo(null, null);
     await this.tanker.close();
   }
 
@@ -36,24 +46,26 @@ export default class Session extends EventEmitter {
     await this.tanker.open(userId, userToken);
   }
 
-  async signUp(userId, password) {
+  async signUp(email, password) {
     await this.initTanker();
 
-    this.serverApi.setUserInfo(userId, password);
+    this.serverApi.setUserInfo(email, password);
     const response = await this.serverApi.signUp();
 
-    if (response.status === 409) throw new Error(`User '${userId}' already exists`);
+    if (response.status === 409) throw new Error(`Email '${email}' already taken`);
     if (!response.ok) throw new Error("Server error!");
 
-    const userToken = await response.text();
-    await this.openSession(userId, userToken);
-    await this.tanker.setupUnlock({ password });
+    const user = await response.json();
+    this.userId = user.id;
+
+    await this.openSession(user.id, user.token);
+    await this.tanker.setupUnlock({ password, email });
   }
 
-  async signIn(userId, password) {
+  async logIn(email, password) {
     await this.initTanker();
 
-    this.serverApi.setUserInfo(userId, password);
+    this.serverApi.setUserInfo(email, password);
     let response;
     try {
       response = await this.serverApi.login();
@@ -66,8 +78,10 @@ export default class Session extends EventEmitter {
     if (response.status === 401) throw new Error("Bad login or password");
     if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
-    const userToken = await response.text();
-    await this.openSession(userId, userToken);
+    const user = await response.json();
+    this.userId = user.id;
+
+    await this.openSession(user.id, user.token);
   }
 
   async unlockCurrentDevice(password) {
@@ -76,14 +90,15 @@ export default class Session extends EventEmitter {
 
   async saveText(text) {
     const recipients = await this.getNoteRecipients();
-    const encryptedData = await this.tanker.encrypt(text, { shareWith: recipients });
+    const recipientIds = recipients.map(user => user.id);
+    const encryptedData = await this.tanker.encrypt(text, { shareWith: recipientIds });
     const encryptedText = toBase64(encryptedData);
     this.resourceId = getResourceId(encryptedData);
     await this.serverApi.push(encryptedText);
   }
 
   async loadTextFromUser(userId) {
-    const response = await this.serverApi.get(userId);
+    const response = await this.serverApi.getUserData(userId);
 
     if (response.status === 404) return "";
 
@@ -94,24 +109,34 @@ export default class Session extends EventEmitter {
   }
 
   async getAccessibleNotes() {
-    return (await this.serverApi.getMyData()).accessibleNotes || [];
+    return (await this.serverApi.getMe()).accessibleNotes;
   }
 
   async getNoteRecipients() {
-    return (await this.serverApi.getMyData()).noteRecipients || [];
+    return (await this.serverApi.getMe()).noteRecipients;
   }
 
-  async getUsers() {
+  getUsers() {
     return this.serverApi.getUsers();
   }
 
   async share(recipients) {
     if (!this.resourceId) throw new Error("No resource id.");
     await this.tanker.share([this.resourceId], recipients);
-    await this.serverApi.share(recipients);
+    await this.serverApi.share(this.userId, recipients);
   }
 
-  async delete() {
+  delete() {
     return this.serverApi.delete();
+  }
+
+  async changeEmail(newEmail) {
+    await this.serverApi.changeEmail(newEmail);
+    await this.tanker.updateUnlock({ email: newEmail });
+  }
+
+  async changePassword(oldPassword, newPassword) {
+    await this.serverApi.changePassword(oldPassword, newPassword);
+    await this.tanker.updateUnlock({ password: newPassword });
   }
 }

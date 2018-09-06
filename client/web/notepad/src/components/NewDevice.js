@@ -31,7 +31,7 @@ class NewDevice extends React.Component {
       <Panel>
         <Panel.Heading id="new-device-heading">First connection on a new device</Panel.Heading>
         <Panel.Body>
-          <form className="form-signin">
+          <form className="form-login">
             {error && <Alert bsStyle="danger">{error}</Alert>}
             <FormGroup>
               <ControlLabel>Please enter your password</ControlLabel>

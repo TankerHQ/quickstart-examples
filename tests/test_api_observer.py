@@ -15,10 +15,10 @@ class Page:
     def wait_until_ready(self) -> None:
         self.wait_for_next_log("Initialize Tanker SDK")
 
-    def open(self, user_id: str) -> None:
-        user_id_input = self.browser.wait_for_element_presence(id="userId")
-        user_id_input.clear()
-        user_id_input.send_keys(user_id)
+    def open(self, email: str) -> None:
+        email_input = self.browser.wait_for_element_presence(id="email")
+        email_input.clear()
+        email_input.send_keys(email)
         open_button = self.browser.get_element(xpath='//button[.="Open"]')
         open_button.click()
         self.wait_for_next_log("Opened")
@@ -71,22 +71,22 @@ class Page:
 
 def test_open_close_reopen(browser: Browser) -> None:
     faker = Faker()
-    user_id = faker.email()
+    email = faker.email()
     page = Page(browser)
-    page.open(user_id)
+    page.open(email)
     page.close()
     latest_entry = page.get_latest_log_entry()
-    assert f"Closed session for {user_id}" in latest_entry
-    page.open(user_id)
+    assert f"Closed session for {email}" in latest_entry
+    page.open(email)
     latest_entry = page.get_latest_log_entry()
-    assert f"Opened session for {user_id}" in latest_entry
+    assert f"Opened session for {email}" in latest_entry
 
 
 def test_encrypt_decrypt(browser: Browser) -> None:
     faker = Faker()
-    user_id = faker.email()
+    email = faker.email()
     page = Page(browser)
-    page.open(user_id)
+    page.open(email)
     text = "my message"
     encrypted_text = page.encrypt(text)
     decrypted_text = page.decrypt(encrypted_text)
@@ -95,18 +95,18 @@ def test_encrypt_decrypt(browser: Browser) -> None:
 
 def test_share(browser: Browser) -> None:
     faker = Faker()
-    alice_id = faker.email()
-    bob_id = faker.email()
+    alice_email = faker.email()
+    bob_email = faker.email()
 
     page = Page(browser)
-    page.open(alice_id)
+    page.open(alice_email)
     page.close()
-    page.open(bob_id)
+    page.open(bob_email)
 
     message = "I love you"
-    encrypted_text = page.encrypt(message, share_with=alice_id)
+    encrypted_text = page.encrypt(message, share_with=alice_email)
     page.close()
 
-    page.open(alice_id)
+    page.open(alice_email)
     decrypted_text = page.decrypt(encrypted_text)
     assert decrypted_text == message

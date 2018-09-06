@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.tanker.thetankershow.MainActivity">
+    tools:context="io.tanker.notepad.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -24,17 +24,17 @@
                 android:layout_height="wrap_content"
                 android:text="Logout"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/main_update_password_button"
+                app:layout_constraintEnd_toStartOf="@+id/main_setting_button"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/main_update_password_button"
+                android:id="@+id/main_setting_button"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="117dp"
                 android:layout_height="wrap_content"
-                android:text="Update Password"
+                android:text="@string/settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/main_save_button"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -50,7 +50,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/main_update_password_button"
+                app:layout_constraintStart_toEndOf="@+id/main_setting_button"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>

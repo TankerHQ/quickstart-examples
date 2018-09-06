@@ -1,18 +1,18 @@
 import { Checkbox } from "react-bootstrap";
 import React from "react";
 
-export default function UserList({ onToggle, selected, users }) {
+export default function UserList({ onToggle, selectedUserIds, users }) {
   const renderRow = user => {
-    const active = selected.has(user);
+    const active = selectedUserIds.has(user.id);
     return (
       <Checkbox
-        key={user}
+        key={user.id}
         onChange={event => {
-          onToggle(user, event.target.checked);
+          onToggle(user.id, event.target.checked);
         }}
         checked={active}
       >
-        {user}
+        {user.email}
       </Checkbox>
     );
   };

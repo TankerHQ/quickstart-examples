@@ -8,14 +8,17 @@
 // @flow
 const bodyParser = require('body-parser');
 const express = require('express');
+const emailValidator = require('email-validator');
 const fs = require('fs');
 const morgan = require('morgan');
+const uuid = require('uuid/v4');
 const userToken = require('@tanker/user-token');
-const sodium = require('libsodium-wrappers-sumo');
 const debugMiddleware = require('debug-error-middleware').express;
+const sodium = require('libsodium-wrappers-sumo');
 
-const authMiddleware = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 const corsMiddleware = require('./middlewares/cors');
+const { FakeTrustchaindClient, TrustchaindClient } = require('./TrustchaindClient');
 
 const log = require('./log');
 const home = require('./home');
@@ -29,30 +32,41 @@ let serverConfig;
 let clientConfig;
 
 const makeClientConfig = (fullConfig) => {
-  const config = { ...fullConfig };
   // WARNING: the Trustchain private key MUST never be sent to the client
-  delete config.trustchainPrivateKey;
-  delete config.dataPath;
+  const { dataPath, trustchainPrivateKey, ...config } = fullConfig;
   return config;
 };
 
-const setup = (config) => {
+const setup = async (config) => {
   serverConfig = config;
   clientConfig = makeClientConfig(config);
 
-  const { dataPath, trustchainId } = config;
+  const {
+    dataPath, trustchainId, testMode, authToken,
+  } = config;
   if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath);
   }
   app.storage = new Storage(dataPath, trustchainId);
-  return app;
+
+
+  if (testMode) {
+    app.trustchaindClient = new FakeTrustchaindClient();
+  } else {
+    const trustchaindUrl = config.url || 'https://api.tanker.io';
+    app.trustchaindClient = new TrustchaindClient({ trustchaindUrl, authToken, trustchainId });
+  }
+
+  // Libsodium loads asynchronously (Wasm module)
+  await sodium.ready;
 };
 
-const hashPassword = password => sodium.crypto_pwhash_str(
-  password,
-  sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-  sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
-);
+const sanitizeUser = (user) => {
+  const { hashed_password, token, ...safeUser } = user; // eslint-disable-line camelcase
+  return safeUser;
+};
+
+const reviveUsers = ids => ids.map(id => sanitizeUser(app.storage.get(id)));
 
 app.use(corsMiddleware); // enable CORS
 app.use(bodyParser.text());
@@ -71,8 +85,8 @@ app.use(home);
 // Add middlewares to log requests on routes defined below
 app.use(morgan('dev'));
 app.use((req, res, next) => {
-  const { userId } = req.query;
-  const maybeFrom = userId ? ` from ${userId}:` : ':';
+  const { email } = req.query;
+  const maybeFrom = email ? ` from ${email}:` : ':';
   log(`New ${req.path} request${maybeFrom}`);
   next();
 });
@@ -86,27 +100,32 @@ app.get('/config', (req, res) => {
 
 // Add signup route (non authenticated)
 app.get('/signup', (req, res) => {
-  const { userId, password } = req.query;
+  const { email, password } = req.query;
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
-  if (!userId) {
-    res.status(400).send('missing userId');
+  if (!email || !emailValidator.validate(email)) {
+    res.status(400).send('Invalid email address');
     return;
   }
 
   if (!password) {
-    res.status(400).send('missing password');
+    res.status(400).send('Missing password');
     return;
   }
 
-  if (app.storage.exists(userId)) {
-    log(`User "${userId}" already exists`, 1);
-    res.sendStatus(409);
+  const existingUserId = app.storage.emailToId(email);
+
+  if (existingUserId) {
+    log(`Email ${email} already taken`, 1);
+    res.status(409).json({ error: 'Email already taken' });
     return;
   }
+
+
+  const userId = uuid();
 
   log('Hash the password', 1);
-  const hashedPassword = hashPassword(password);
+  const hashedPassword = auth.hashPassword(password);
 
   log('Generate a new user token', 1);
   const token = userToken.generateUserToken(
@@ -115,20 +134,115 @@ app.get('/signup', (req, res) => {
     userId,
   );
 
-  log('Save hashed password and token to storage', 1);
-  app.storage.save({ id: userId, hashed_password: hashedPassword, token });
+  log('Save the user to storage', 1);
+  const user = {
+    id: userId, email, hashed_password: hashedPassword, token,
+  };
+  app.storage.save(user);
 
-  log('Serve the token', 1);
-  res.set('Content-Type', 'text/plain');
-  res.status(201).send(token);
+  log('Return the user id and token', 1);
+  res.set('Content-Type', 'application/json');
+  res.status(201).json({ id: userId, token });
+});
+
+
+app.post('/requestResetPassword', async (req, res) => {
+  try {
+    const userEmail = req.body.email;
+    const userId = app.storage.emailToId(userEmail);
+    if (userId === null) {
+      res.status(404).json({ error: `no such email: ${userEmail}` });
+      return;
+    }
+
+    const secret = auth.generateSecret();
+    const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
+    app.storage.setPasswordResetSecret(userId, secret);
+
+    const confirmUrl = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}:TANKER_VERIFICATION_CODE`;
+
+    const email = {
+      subject: 'Password Reset',
+      html: `<p>Click <a href="${confirmUrl}">here</a> to reset your password</p>`,
+      from_email: 'noreply@tanker.io',
+      from_name: 'the friendly unlock server',
+      to_email: userEmail,
+    };
+
+    const response = await app.trustchaindClient.sendVerification({
+      userId,
+      email,
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      res.status(500).json(`sendVerification failed with status ${response.status}: ${JSON.stringify(error)}`);
+      return;
+    }
+    res.status(200).json('{}');
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.post('/resetPassword', (req, res) => {
+  const { newPassword, passwordResetToken } = req.body;
+
+  if (!newPassword) {
+    res.status(401).json('Invalid new password');
+    return;
+  }
+
+  if (!passwordResetToken) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  let userId;
+  let secret;
+  try {
+    ({ userId, secret } = auth.parsePasswordResetToken(passwordResetToken));
+  } catch (error) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  let user;
+  try {
+    user = app.storage.get(userId);
+  } catch (error) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  const b64Secret = user.b64_password_reset_secret;
+
+  if (!b64Secret) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  const storedSecret = sodium.from_base64(b64Secret);
+  if (sodium.compare(storedSecret, secret) !== 0) {
+    res.status(401).json('Invalid password reset token');
+    user.b64_password_reset_secret = undefined;
+    app.storage.save(user);
+    return;
+  }
+  user.b64_password_reset_secret = undefined;
+  user.hashed_password = auth.hashPassword(newPassword);
+  app.storage.save(user);
+
+  res.set('Content-Type', 'application/json');
+  res.status(200).json({ userId, email: user.email });
 });
 
 
 // Add authentication middleware for all routes below
-//   - check valid "userId" and "password" query params
+//   - check valid "email" and "password" query params
 //   - set res.locals.user for the request handlers
-const authFunc = authMiddleware(app);
-app.use(authFunc);
+const authMiddleware = auth.authMiddlewareBuilder(app);
+app.use(authMiddleware);
 
 
 // Add authenticated routes
@@ -137,20 +251,62 @@ app.get('/login', (req, res) => {
   const { user } = res.locals;
 
   log('Serve the token', 1);
-  res.set('Content-Type', 'text/plain');
-  res.send(user.token);
+  res.set('Content-Type', 'application/json');
+  res.json({ id: user.id, token: user.token });
 });
 
-app.put('/password', (req, res) => {
-  log('Change password', 1);
+app.get('/me', (req, res) => {
+  // res.locals.user is set by the auth middleware
+  const me = res.locals.user;
+  const safeMe = sanitizeUser(me);
+  safeMe.accessibleNotes = reviveUsers(safeMe.accessibleNotes || []);
+  safeMe.noteRecipients = reviveUsers(safeMe.noteRecipients || []);
+  res.json(safeMe);
+});
+
+app.put('/me/password', (req, res) => {
   const { user } = res.locals;
-  const { newPassword } = req.query;
-  if (!newPassword) {
-    log('newPassword not set', 1);
+  const { oldPassword, newPassword } = req.body;
+
+  if (!oldPassword || !newPassword) {
+    log('Invalid arguments', 1);
     res.sendStatus(400);
     return;
   }
-  user.hashed_password = hashPassword(newPassword);
+
+  log('Verify old password', 1);
+  const passwordOk = auth.verifyPassword(user, oldPassword);
+  if (!passwordOk) {
+    log('Wrong old password', 1);
+    res.sendStatus(400, 1);
+    return;
+  }
+
+  log('Change password', 1);
+  user.hashed_password = auth.hashPassword(newPassword);
+  app.storage.save(user);
+  res.sendStatus(200);
+});
+
+app.put('/me/email', async (req, res) => {
+  const { user } = res.locals;
+  const { email } = req.body;
+
+  if (!email || !emailValidator.validate(email)) {
+    log('Invalid new email address', 1);
+    res.sendStatus(400);
+    return;
+  }
+
+  const otherUser = app.storage.emailToId(email);
+  if (otherUser) {
+    log(`Email ${email} already taken`, 1);
+    res.status(409).json({ error: 'Email already taken' });
+    return;
+  }
+
+  log('Change email', 1);
+  user.email = email;
   app.storage.save(user);
   res.sendStatus(200);
 });
@@ -203,10 +359,11 @@ app.get('/data/:userId', (req, res) => {
 
 
 app.get('/users', (req, res) => {
-  const knownIds = app.storage.getAllIds();
+  const allUsers = app.storage.getAll();
+  const safeUsers = allUsers.map(sanitizeUser);
 
   res.set('Content-Type', 'application/json');
-  res.json(knownIds);
+  res.json(safeUsers);
 });
 
 // Register a new share
@@ -222,12 +379,6 @@ app.post('/share', (req, res) => {
   res.sendStatus('201');
 });
 
-app.get('/me', (req, res) => {
-  // res.locals.user is set by the auth middleware
-  const me = res.locals.user;
-  res.json(me);
-});
-
 // Return nice 500 message when an exception is thrown
 const errorHandler = (err, req, res, next) => { // eslint-disable-line  no-unused-vars
   res.status(500);
@@ -237,9 +388,7 @@ const errorHandler = (err, req, res, next) => { // eslint-disable-line  no-unuse
 app.use(errorHandler);
 
 
-const listen = port => app.listen(port);
-
 module.exports = {
-  listen,
   setup,
+  app,
 };

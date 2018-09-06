@@ -30,12 +30,12 @@ class ViewNote extends React.Component {
   }
 
   render() {
-    const { friendId } = this.props.match.params;
+    const { friendEmail } = this.props.match.params;
     const { text, error, isLoading } = this.state;
     return (
       <div>
         <Panel>
-          <Panel.Heading id="note-from-friend-heading">Note from {friendId}</Panel.Heading>
+          <Panel.Heading id="note-from-friend-heading">Note from {friendEmail}</Panel.Heading>
           <Panel.Body>
             {error && <Alert bsStyle="danger">{error}</Alert>}
             {isLoading && (
