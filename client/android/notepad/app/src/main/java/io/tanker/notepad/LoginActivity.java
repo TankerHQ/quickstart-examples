@@ -23,17 +23,15 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerConnection;
 import io.tanker.api.TankerOptions;
+import io.tanker.notepad.network.ApiClient;
+import okhttp3.Response;
 
 import static io.tanker.notepad.Utils.isEmailValid;
 import static io.tanker.notepad.Utils.isPasswordValid;
@@ -56,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private Tanker mTanker;
     private TankerConnection mEventConnection;
     private NotepadApplication mTankerApp;
+    private ApiClient mApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mTankerApp = (NotepadApplication) getApplicationContext();
+
+        mApiClient = ApiClient.getInstance();
 
         // Set up the login form.
         mEmailView = findViewById(R.id.email);
@@ -97,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             trustchainId = task.execute().get().getString("trustchainId");
+            Log.i("Notepad", "trustchainId = " + trustchainId);
         } catch (Throwable throwable) {
             Log.e("Notepad", getString(R.string.no_trustchain_config));
             throwable.printStackTrace();
@@ -129,16 +131,8 @@ public class LoginActivity extends AppCompatActivity {
     public class FetchTankerConfig extends AsyncTask<String, Void, JSONObject> {
         @Override
         protected JSONObject doInBackground(String... params) {
-
             try {
-                URL url = LoginActivity.this.mTankerApp.makeURL("/config");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(
-                                connection.getInputStream()));
-                return new JSONObject(in.readLine());
+                return mApiClient.getConfig();
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
                 return null;
@@ -313,27 +307,22 @@ public class LoginActivity extends AppCompatActivity {
             mError = 200;
         }
 
-        private String authenticate(String email, String password) throws IOException {
-            String endpoint = mSignUp ? "/signup" : "/login";
+        private String authenticate(String email, String password) throws IOException, JSONException {
+            Response res = mSignUp ?
+                    mApiClient.signup(email, password) :
+                    mApiClient.login(email, password);
 
-            URL url = LoginActivity.this.mTankerApp.makeURL(endpoint, email, password);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.connect();
+            mError = res.code();
 
-            mError = connection.getResponseCode();
-            if (mError < 200 || mError > 202)
-                throw new IOException("");
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(
-                            connection.getInputStream()));
+            if (!res.isSuccessful()) {
+                throw new Error("Failed to authenticate");
+            }
 
             String token = "";
             try {
-                JSONObject res = new JSONObject(in.readLine());
-                token = res.getString("token");
-                mUserId = res.getString("id");
+                JSONObject body = new JSONObject(res.body().string());
+                token = body.getString("token");
+                mUserId = body.getString("id");
             } catch (JSONException e) {
                 Log.e("Notepad", "JSON error", e);
                 return token;

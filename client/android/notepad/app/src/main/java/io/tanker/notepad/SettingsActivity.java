@@ -12,21 +12,19 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import io.tanker.api.Password;
 import io.tanker.api.Tanker;
+import io.tanker.notepad.network.ApiClient;
+import okhttp3.Response;
 
 import static io.tanker.notepad.Utils.isEmailValid;
 
 public class SettingsActivity extends AppCompatActivity {
     private View mProgressView;
     private NotepadApplication mTankerApp;
+    private ApiClient mApiClient;
     private EditText mNewEmailEdit;
 
     @Override
@@ -35,6 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
 
         mTankerApp = (NotepadApplication) getApplicationContext();
+        mApiClient = ApiClient.getInstance();
 
         mProgressView = findViewById(R.id.setting_progress_bar);
         mNewEmailEdit = findViewById(R.id.input_change_email);
@@ -47,20 +46,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void updateAppEmail(String newEmail) throws Throwable {
-        URL url = mTankerApp.makeURL("/me/email");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-        connection.setRequestMethod("PUT");
-        connection.setDoOutput(true);
+        Response res = mApiClient.updateEmail(newEmail);
 
-        JsonObject data = new JsonObject();
-        data.addProperty("email", newEmail);
-        Gson gson = new Gson();
-        String jsonText = gson.toJson(data);
+        int mError = res.code();
 
-        Log.i("Notepad", String.format("PUT: %s with data: %s", url, jsonText));
-        connection.getOutputStream().write(jsonText.getBytes());
-        int mError = connection.getResponseCode();
         if (mError == 200) {
             mTankerApp.setEmail(newEmail);
             runOnUiThread(() -> {
@@ -118,23 +107,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void updateAppPassword(String newPassword) throws Throwable {
-        URL url = mTankerApp.makeURL("/me/password");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-        connection.setRequestMethod("PUT");
-        connection.setDoOutput(true);
+        String oldPassword = mTankerApp.getPassword();
 
-        JsonObject data = new JsonObject();
-        data.addProperty("oldPassword", mTankerApp.getPassword());
-        data.addProperty("newPassword", newPassword);
-        Gson gson = new Gson();
-        String jsonText = gson.toJson(data);
+        Response res = mApiClient.updatePassword(oldPassword, newPassword);
 
-        Log.i("Notepad", jsonText);
-        connection.getOutputStream().write(jsonText.getBytes());
-        int mError = connection.getResponseCode();
-        if (mError < 200 || mError > 202)
-            throw new IOException("Update password failed with error code " + mError);
+        if (!res.isSuccessful())
+            throw new IOException("Update password failed with error code " + res.code());
     }
 
     private void changePassword() {

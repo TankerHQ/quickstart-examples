@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -15,116 +14,30 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerDecryptOptions;
+import io.tanker.notepad.network.ApiClient;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private String resourceId;
     private ArrayList<String> receivedNoteAuthors = new ArrayList<>();
     private ArrayList<String> receivedNoteContents = new ArrayList<>();
     private NotepadApplication mTankerApp;
-
-    private URL getNoteUrl(String friendId) throws Throwable {
-        if (friendId == null)
-            friendId = mTankerApp.getUserId();
-        return mTankerApp.makeURL("/data/" + friendId);
-    }
-
-    private URL putNoteUrl() throws Throwable {
-        return mTankerApp.makeURL("/data");
-    }
-
-    private URL shareNoteUrl() throws Throwable {
-        return mTankerApp.makeURL("/share");
-    }
-
-    private URL getMeUrl() throws Throwable {
-        return mTankerApp.makeURL("/me");
-    }
-
-    private URL getUsersURL() throws Throwable {
-        return mTankerApp.makeURL("/users");
-    }
+    private ApiClient mApiClient;
 
     private void showToast(String message) {
         runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
     }
 
-    private String getUserIdFromEmail(String email) throws Throwable {
-        URL url = getUsersURL();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(
-                        connection.getInputStream()));
-
-        JSONArray users = new JSONArray(in.readLine());
-        for (int i = 0; i < users.length(); i++) {
-            JSONObject user = users.getJSONObject(i);
-            if (user.has("email") && user.getString("email").equals(email))
-                return user.getString("id");
-        }
-        Log.i("Notepad", "User to share not found");
-        return null;
-    }
-
-    private void uploadToServer(byte[] encryptedData) throws Throwable {
-        URL url = putNoteUrl();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
-        connection.setRequestMethod("PUT");
-        connection.setDoOutput(true);
-
-        String base64 = Base64.encodeToString(encryptedData, Base64.NO_WRAP);
-        Log.i("Notepad", base64);
-        connection.getOutputStream().write(base64.getBytes());
-        connection.getInputStream();
-    }
-
-    private byte[] dataFromServer(String userId) throws Throwable {
-        URL url = getNoteUrl(userId);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(
-                        connection.getInputStream()));
-        String content = in.readLine();
-
-        if (content == null) {
-            return null;
-        }
-        return Base64.decode(content, Base64.DEFAULT);
-    }
-
     private void loadSharedWithMe() throws Throwable {
-        URL url = getMeUrl();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(
-                        connection.getInputStream()));
-        String data = in.readLine();
+        Response res = mApiClient.getMe();
 
         ObjectMapper jsonMapper = new ObjectMapper();
-        JsonNode json = jsonMapper.readTree(data);
+        JsonNode json = jsonMapper.readTree(res.body().string());
 
         if (json.has("accessibleNotes")) {
             JsonNode notes = json.get("accessibleNotes");
@@ -150,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         TankerDecryptOptions options = new TankerDecryptOptions();
 
         try {
-            byte[] data = dataFromServer(userId);
+            byte[] data = mApiClient.getData(userId);
             if (data == null) {
                 return null;
             }
@@ -165,42 +78,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerShareWithServer(String recipient) throws Throwable {
-        URL url = shareNoteUrl();
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
+        Response res = mApiClient.share(mTankerApp.getUserId(), recipient);
 
+        if (!res.isSuccessful()) {
+            throw new Error(res.message());
+        }
 
-        JsonObject data = new JsonObject();
-        JsonArray recipientArray = new JsonArray();
-        recipientArray.add(recipient);
-        data.addProperty("from", mTankerApp.getUserId());
-        data.add("to", recipientArray);
-        Gson gson = new Gson();
-        String jsonText = gson.toJson(data);
-
-        Log.i("Notepad", jsonText);
-        connection.getOutputStream().write(jsonText.getBytes());
-        connection.getInputStream();
-
-        int code = connection.getResponseCode();
-        if (code >= 200 && code < 300)
-            runOnUiThread(() -> {
-                showToast("Share successfully");
-            });
+        runOnUiThread(() -> {
+            showToast("Share successfully");
+        });
     }
 
     private void logout() {
-        Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
-        tanker.close().then((closeFuture) -> {
-            runOnUiThread(() -> {
-                // Redirect to the Login activity
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            });
-            return null;
-        });
+        LogoutTask task = new LogoutTask();
+        task.execute();
+        boolean ok = false;
+
+        try {
+            ok = task.get();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        if (!ok) {
+            showToast("Logout failed");
+        }
     }
 
     private void setting() {
@@ -249,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mTankerApp = (NotepadApplication) getApplicationContext();
+        mApiClient = ApiClient.getInstance();
 
         Button logoutButton = findViewById(R.id.main_logout_button);
         logoutButton.setOnClickListener((View v) -> logout());
@@ -266,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FetchDataTask backgroundTask = new FetchDataTask();
-        backgroundTask.execute((String) null);
+        backgroundTask.execute(mTankerApp.getUserId());
     }
 
     @Override
@@ -295,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class UploadDataTask extends AsyncTask<String, Void, Boolean> {
-
         @Override
         protected Boolean doInBackground(String... params) {
             String clearText = params[0];
@@ -305,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
                 byte[] encryptedData = tanker.encrypt(clearData, null).get();
                 resourceId = tanker.getResourceID(encryptedData);
-                uploadToServer(encryptedData);
+                mApiClient.putData(encryptedData);
             } catch (Throwable e) {
                 Log.e("Notepad", "Failed to upload data: " + e.getMessage());
                 return false;
@@ -315,12 +216,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class ShareDataTask extends AsyncTask<String, Void, Boolean> {
-
         @Override
         protected Boolean doInBackground(String... params) {
             String recipientEmail = params[0];
             try {
-                String recipientUserId = getUserIdFromEmail(recipientEmail);
+                String recipientUserId = mApiClient.getUserIdFromEmail(recipientEmail);
                 if (recipientUserId == null) {
                     Log.e("Notepad", "Failed to get the UserId from Email");
                     return false;
@@ -330,6 +230,28 @@ public class MainActivity extends AppCompatActivity {
                 registerShareWithServer(recipientUserId);
             } catch (Throwable e) {
                 Log.e("Notepad", "Failed to register share with server: " + e.getMessage());
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public class LogoutTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            try {
+                mApiClient.logout();
+
+                Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
+                tanker.close().get();
+
+                runOnUiThread(() -> {
+                    // Redirect to the Login activity
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                });
+            } catch (Throwable e) {
+                Log.e("Notepad", "Failed to logout");
                 return false;
             }
             return true;
