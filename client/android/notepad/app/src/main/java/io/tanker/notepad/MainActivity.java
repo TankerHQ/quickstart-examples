@@ -78,15 +78,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registerShareWithServer(String recipient) throws Throwable {
-        Response res = mApiClient.share(mTankerApp.getUserId(), recipient);
+        Response res = mApiClient.share(recipient);
 
         if (!res.isSuccessful()) {
             throw new Error(res.message());
         }
 
-        runOnUiThread(() -> {
-            showToast("Share successfully");
-        });
+        showToast("Share successfully");
     }
 
     private void logout() {
@@ -168,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FetchDataTask backgroundTask = new FetchDataTask();
-        backgroundTask.execute(mTankerApp.getUserId());
+        backgroundTask.execute(mApiClient.getCurrentUserId());
     }
 
     @Override
