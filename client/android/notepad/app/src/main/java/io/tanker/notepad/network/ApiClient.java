@@ -35,15 +35,20 @@ public class ApiClient {
 
     private HttpClient mHttpClient;
     private String mCurrentUserId;
+    private String mCurrentUserEmail;
 
     public String getCurrentUserId() {
         return mCurrentUserId;
+    }
+    public String getCurrentUserEmail() {
+        return mCurrentUserEmail;
     }
 
     public void logout() throws IOException {
         mHttpClient.getSync("/logout");
         mHttpClient.clearCookies();
         mCurrentUserId = null;
+        mCurrentUserEmail = null;
     }
 
     public Response authenticate(String path, String email, String password) throws IOException, JSONException {
@@ -63,6 +68,7 @@ public class ApiClient {
             String responseBodyString = buffer.clone().readString(Charset.forName("UTF-8"));
             JSONObject body = new JSONObject(responseBodyString);
             mCurrentUserId = body.getString("id");
+            mCurrentUserEmail = email;
         }
 
         return res;

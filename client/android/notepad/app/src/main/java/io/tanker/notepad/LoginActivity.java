@@ -120,7 +120,7 @@ public class LoginActivity extends BaseActivity {
                         showProgress(false);
                     });
                 } else {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, MyNoteActivity.class);
                     startActivity(intent);
                 }
                 return null;
@@ -288,10 +288,10 @@ public class LoginActivity extends BaseActivity {
             return token;
         }
 
-        private void goToMainActivity() {
+        private void goToDefaultActivity() {
             runOnUiThread(() -> {
-                // Redirect to the MainActivity
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                // Redirect to the MyNoteActivity
+                Intent intent = new Intent(LoginActivity.this, MyNoteActivity.class);
                 startActivity(intent);
                 // Finish current LoginActivity so that you can't navigate back once logged in
                 finish();
@@ -314,11 +314,11 @@ public class LoginActivity extends BaseActivity {
                     if (mSignUp) {
                         mTanker.setupUnlock(new Password(mPassword)).then((fut) -> {
                             Log.e("Notepad", "" + fut.getError());
-                            goToMainActivity();
+                            goToDefaultActivity();
                             return null;
                         });
                     } else {
-                        goToMainActivity();
+                        goToDefaultActivity();
                     }
                     return null;
                 });

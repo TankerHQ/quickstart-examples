@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_my_note"
+            android:title="@string/nav_my_note" />
+        <item
+            android:id="@+id/nav_shared_notes"
+            android:title="@string/nav_shared_notes" />
+        <item
+            android:id="@+id/nav_settings"
+            android:title="@string/nav_settings" />
+    </group>
+
+</menu>

@@ -1,57 +1,22 @@
 package io.tanker.notepad;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.ArrayList;
 
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerDecryptOptions;
-import io.tanker.notepad.network.ApiClient;
 import okhttp3.Response;
 
-public class MainActivity extends BaseActivity {
-    private ArrayList<String> receivedNoteAuthors = new ArrayList<>();
-    private ArrayList<String> receivedNoteContents = new ArrayList<>();
-    private ApiClient mApiClient;
+public class MyNoteActivity extends DrawerActivity {
     private EditText mNoteInput;
     private EditText mRecipientInput;
 
-    private void loadSharedWithMe() throws Throwable {
-        Response res = mApiClient.getMe();
-
-        ObjectMapper jsonMapper = new ObjectMapper();
-        JsonNode json = jsonMapper.readTree(res.body().string());
-
-        if (json.has("accessibleNotes")) {
-            JsonNode notes = json.get("accessibleNotes");
-            for (final JsonNode note : notes) {
-                String authorEmail = note.get("email").asText();
-                String authorUserId = note.get("id").asText();
-                receivedNoteAuthors.add(authorEmail);
-                receivedNoteContents.add(loadDataFromUser(authorUserId));
-            }
-
-            runOnUiThread(() -> {
-                ListView notesList = findViewById(R.id.notes_list);
-                notesList.setAdapter(new NoteListAdapter(this, R.layout.notes_list_item, receivedNoteAuthors, receivedNoteContents));
-                for (String note : receivedNoteContents) {
-                    //noinspection unchecked (this is fine)
-                    ((ArrayAdapter<String>) notesList.getAdapter()).add(note);
-                }
-            });
-        }
+    public int getContentResourceId() {
+        return R.layout.content_my_note;
     }
 
     private String loadDataFromUser(String userId) {
@@ -72,26 +37,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void logout() {
-        LogoutTask task = new LogoutTask();
-        task.execute();
-        boolean ok = false;
-
-        try {
-            ok = task.get();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        if (!ok) {
-            showToast("Logout failed");
-        }
-    }
-
-    private void setting() {
-        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
     private void saveData() {
         String clearText = mNoteInput.getText().toString();
         String recipientEmail = mRecipientInput.getText().toString();
@@ -110,18 +55,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        mApiClient = ApiClient.getInstance();
 
         mNoteInput = findViewById(R.id.note_input);
         mRecipientInput = findViewById(R.id.recipient_email_input);
-
-        Button logoutButton = findViewById(R.id.main_logout_button);
-        logoutButton.setOnClickListener((View v) -> logout());
-
-        Button settingButton = findViewById(R.id.main_setting_button);
-        settingButton.setOnClickListener((View v) -> setting());
 
         Button saveButton = findViewById(R.id.save_note_button);
         saveButton.setOnClickListener((View v) -> {
@@ -133,11 +69,6 @@ public class MainActivity extends BaseActivity {
         backgroundTask.execute(mApiClient.getCurrentUserId());
     }
 
-    @Override
-    public void onBackPressed() {
-        logout();
-    }
-
     public class FetchDataTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... params) {
@@ -147,14 +78,6 @@ public class MainActivity extends BaseActivity {
                 EditText contentEdit = findViewById(R.id.note_input);
                 contentEdit.setText(data);
             });
-
-            try {
-                loadSharedWithMe();
-            } catch (Throwable e) {
-                Log.e("Notepad", "Failed to fetch share data: " + e.getMessage());
-                return false;
-            }
-
             return true;
         }
     }
@@ -201,28 +124,6 @@ public class MainActivity extends BaseActivity {
                 Log.e("Notepad", "Failed to save data: " + e.getMessage());
                 return false;
             }
-        }
-    }
-
-    public class LogoutTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                mApiClient.logout();
-
-                Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
-                tanker.close().get();
-
-                runOnUiThread(() -> {
-                    // Redirect to the Login activity
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                });
-            } catch (Throwable e) {
-                Log.e("Notepad", "Failed to logout");
-                return false;
-            }
-            return true;
         }
     }
 }

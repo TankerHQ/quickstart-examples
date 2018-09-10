@@ -17,7 +17,7 @@ import okhttp3.Response;
 
 import static io.tanker.notepad.Utils.isEmailValid;
 
-public class SettingsActivity extends BaseActivity {
+public class SettingsActivity extends DrawerActivity {
     private View mProgressView;
     private ApiClient mApiClient;
     private EditText mChangeEmailInput;
@@ -25,9 +25,13 @@ public class SettingsActivity extends BaseActivity {
     private EditText mChangePasswordNewInput;
 
     @Override
+    public int getContentResourceId() {
+        return R.layout.content_settings;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
 
         mApiClient = ApiClient.getInstance();
 
