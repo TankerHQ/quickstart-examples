@@ -3,16 +3,12 @@ package io.tanker.notepad;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import java.io.IOException;
 
 import io.tanker.api.Password;
 import io.tanker.api.Tanker;
@@ -21,7 +17,7 @@ import okhttp3.Response;
 
 import static io.tanker.notepad.Utils.isEmailValid;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
     private View mProgressView;
     private ApiClient mApiClient;
     private EditText mChangeEmailInput;
@@ -172,12 +168,5 @@ public class SettingsActivity extends AppCompatActivity {
         Intent intent = new Intent();
         setResult(Activity.RESULT_OK, intent);
         super.onBackPressed();
-    }
-
-    private void showToast(String message) {
-        runOnUiThread(() -> {
-            Toast.makeText(this, message,
-                    Toast.LENGTH_LONG).show();
-        });
     }
 }

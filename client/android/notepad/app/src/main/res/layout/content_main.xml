@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="io.tanker.notepad.MainActivity"
     tools:showIn="@layout/activity_main">
@@ -12,9 +13,8 @@
         android:id="@+id/note_edit_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:focusable="auto"
+        android:focusableInTouchMode="false"
         android:text="Edit my note"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,8 +26,6 @@
         android:id="@+id/note_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Type your note here"
@@ -42,7 +40,7 @@
         android:id="@+id/recipient_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:text="Share with:"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
@@ -53,7 +51,6 @@
         android:id="@+id/recipient_email_input"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
@@ -67,7 +64,6 @@
         android:id="@+id/save_note_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Save note"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,8 +73,6 @@
         android:id="@+id/notes_shared_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:text="Notes shared with me"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
@@ -87,29 +81,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/save_note_button" />
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ListView
+        android:id="@+id/notes_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notes_shared_title">
 
-        <ListView
-            android:id="@+id/notes_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notes_shared_title" />
-    </ScrollView>
+    </ListView>
 
 </android.support.constraint.ConstraintLayout>

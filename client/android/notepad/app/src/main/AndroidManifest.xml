@@ -24,7 +24,9 @@
         <activity
             android:name="io.tanker.notepad.MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"
+            />
         <activity android:name="io.tanker.notepad.SettingsActivity" />
         <activity android:name="io.tanker.notepad.ForgotPasswordActivity"></activity>
     </application>

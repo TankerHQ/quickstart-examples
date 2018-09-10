@@ -3,14 +3,13 @@ package io.tanker.notepad;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,16 +21,12 @@ import io.tanker.api.TankerDecryptOptions;
 import io.tanker.notepad.network.ApiClient;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private ArrayList<String> receivedNoteAuthors = new ArrayList<>();
     private ArrayList<String> receivedNoteContents = new ArrayList<>();
     private ApiClient mApiClient;
     private EditText mNoteInput;
     private EditText mRecipientInput;
-
-    private void showToast(String message) {
-        runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
-    }
 
     private void loadSharedWithMe() throws Throwable {
         Response res = mApiClient.getMe();
@@ -109,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        if (!ok) {
-            showToast("Failed to save the note");
-        }
     }
 
 
@@ -132,7 +124,10 @@ public class MainActivity extends AppCompatActivity {
         settingButton.setOnClickListener((View v) -> setting());
 
         Button saveButton = findViewById(R.id.save_note_button);
-        saveButton.setOnClickListener((View v) -> saveData());
+        saveButton.setOnClickListener((View v) -> {
+            hideKeyboard();
+            saveData();
+        });
 
         FetchDataTask backgroundTask = new FetchDataTask();
         backgroundTask.execute(mApiClient.getCurrentUserId());
@@ -159,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Notepad", "Failed to fetch share data: " + e.getMessage());
                 return false;
             }
+
             return true;
         }
     }
@@ -176,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 if (sharing) {
                     recipientUserId = mApiClient.getUserIdFromEmail(recipientEmail);
                     if (recipientUserId == null) {
-                        Log.e("Notepad", "Failed to get the UserId from Email");
+                        showToast("Failed to get the UserId from Email");
                         return false;
                     }
                 }
