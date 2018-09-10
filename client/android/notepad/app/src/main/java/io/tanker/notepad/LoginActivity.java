@@ -53,15 +53,12 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
     private Tanker mTanker;
     private TankerConnection mEventConnection;
-    private NotepadApplication mTankerApp;
     private ApiClient mApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        mTankerApp = (NotepadApplication) getApplicationContext();
 
         mApiClient = ApiClient.getInstance();
 
@@ -327,10 +324,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e("Notepad", "JSON error", e);
                 return token;
             }
-
-            LoginActivity.this.mTankerApp.setEmail(mEmail);
-            LoginActivity.this.mTankerApp.setPassword(mPassword);
-            LoginActivity.this.mTankerApp.setUserId(mUserId);
 
             return token;
         }

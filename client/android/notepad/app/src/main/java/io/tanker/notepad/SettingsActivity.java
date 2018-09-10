@@ -23,7 +23,6 @@ import static io.tanker.notepad.Utils.isEmailValid;
 
 public class SettingsActivity extends AppCompatActivity {
     private View mProgressView;
-    private NotepadApplication mTankerApp;
     private ApiClient mApiClient;
     private EditText mChangeEmailInput;
     private EditText mChangePasswordOldInput;
@@ -34,7 +33,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        mTankerApp = (NotepadApplication) getApplicationContext();
         mApiClient = ApiClient.getInstance();
 
         mProgressView = findViewById(R.id.setting_progress_bar);
@@ -56,10 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
         int mError = res.code();
 
         if (mError == 200) {
-            mTankerApp.setEmail(newEmail);
-            runOnUiThread(() -> {
-                showToast(getString(R.string.change_email_success));
-            });
+            showToast(getString(R.string.change_email_success));
         } else if (mError == 409) {
             runOnUiThread(() -> {
                 mChangeEmailInput.setError(getString(R.string.email_exist));
@@ -160,8 +155,6 @@ public class SettingsActivity extends AppCompatActivity {
                 });
                 return null;
             }
-
-            mTankerApp.setPassword(newPassword);
 
             runOnUiThread(() -> {
                 mChangePasswordOldInput.setText("");

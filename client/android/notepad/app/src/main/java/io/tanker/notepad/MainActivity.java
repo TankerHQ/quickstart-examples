@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     private String resourceId;
     private ArrayList<String> receivedNoteAuthors = new ArrayList<>();
     private ArrayList<String> receivedNoteContents = new ArrayList<>();
-    private NotepadApplication mTankerApp;
     private ApiClient mApiClient;
 
     private void showToast(String message) {
@@ -147,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTankerApp = (NotepadApplication) getApplicationContext();
         mApiClient = ApiClient.getInstance();
 
         Button logoutButton = findViewById(R.id.main_logout_button);
