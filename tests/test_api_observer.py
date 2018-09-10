@@ -10,6 +10,7 @@ from helpers import Browser, DEFAULT_TIMEOUT
 class Page:
     def __init__(self, browser: Browser) -> None:
         self.browser = browser
+        self.browser.refresh()
         self.wait_until_ready()
 
     def wait_until_ready(self) -> None:
