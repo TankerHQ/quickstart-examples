@@ -23,10 +23,11 @@ import io.tanker.notepad.network.ApiClient;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private String resourceId;
     private ArrayList<String> receivedNoteAuthors = new ArrayList<>();
     private ArrayList<String> receivedNoteContents = new ArrayList<>();
     private ApiClient mApiClient;
+    private EditText mNoteInput;
+    private EditText mRecipientInput;
 
     private void showToast(String message) {
         runOnUiThread(() -> Toast.makeText(this, message, Toast.LENGTH_LONG).show());
@@ -76,16 +77,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void registerShareWithServer(String recipient) throws Throwable {
-        Response res = mApiClient.share(recipient);
-
-        if (!res.isSuccessful()) {
-            throw new Error(res.message());
-        }
-
-        showToast("Share successfully");
-    }
-
     private void logout() {
         LogoutTask task = new LogoutTask();
         task.execute();
@@ -106,29 +97,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void share() {
-        EditText recipientEdit = findViewById(R.id.recipient_name_edit);
-        String recipientEmail = recipientEdit.getText().toString();
-
-        ShareDataTask task = new ShareDataTask();
-        task.execute(recipientEmail);
-        boolean ok = false;
-
-        try {
-            ok = task.get();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        if (!ok) {
-            showToast("Share failed");
-        }
-    }
-
     private void saveData() {
-        EditText contentEdit = findViewById(R.id.main_content_edit);
-        String clearText = contentEdit.getText().toString();
-        UploadDataTask task = new UploadDataTask();
-        task.execute(clearText);
+        String clearText = mNoteInput.getText().toString();
+        String recipientEmail = mRecipientInput.getText().toString();
+
+        SaveNoteTask task = new SaveNoteTask();
+        task.execute(clearText, recipientEmail);
         boolean ok = false;
         try {
             ok = task.get();
@@ -136,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if (!ok) {
-            showToast("Upload failed");
+            showToast("Failed to save the note");
         }
     }
 
@@ -148,20 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
         mApiClient = ApiClient.getInstance();
 
+        mNoteInput = findViewById(R.id.note_input);
+        mRecipientInput = findViewById(R.id.recipient_email_input);
+
         Button logoutButton = findViewById(R.id.main_logout_button);
         logoutButton.setOnClickListener((View v) -> logout());
 
         Button settingButton = findViewById(R.id.main_setting_button);
         settingButton.setOnClickListener((View v) -> setting());
 
-        Button saveButton = findViewById(R.id.main_save_button);
+        Button saveButton = findViewById(R.id.save_note_button);
         saveButton.setOnClickListener((View v) -> saveData());
-
-        Button shareButton = findViewById(R.id.share_button);
-        shareButton.setOnClickListener((View v) -> {
-            saveData();
-            share();
-        });
 
         FetchDataTask backgroundTask = new FetchDataTask();
         backgroundTask.execute(mApiClient.getCurrentUserId());
@@ -178,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             String userId = params[0];
             String data = loadDataFromUser(userId);
             runOnUiThread(() -> {
-                EditText contentEdit = findViewById(R.id.main_content_edit);
+                EditText contentEdit = findViewById(R.id.note_input);
                 contentEdit.setText(data);
             });
 
@@ -192,43 +163,48 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class UploadDataTask extends AsyncTask<String, Void, Boolean> {
+    public class SaveNoteTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... params) {
             String clearText = params[0];
-            byte[] clearData;
-            try {
-                clearData = clearText.getBytes();
-                Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
-                byte[] encryptedData = tanker.encrypt(clearData, null).get();
-                resourceId = tanker.getResourceID(encryptedData);
-                mApiClient.putData(encryptedData);
-            } catch (Throwable e) {
-                Log.e("Notepad", "Failed to upload data: " + e.getMessage());
-                return false;
-            }
-            return true;
-        }
-    }
+            String recipientEmail = params[1];
 
-    public class ShareDataTask extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String recipientEmail = params[0];
             try {
-                String recipientUserId = mApiClient.getUserIdFromEmail(recipientEmail);
-                if (recipientUserId == null) {
-                    Log.e("Notepad", "Failed to get the UserId from Email");
-                    return false;
+                Boolean sharing = !recipientEmail.isEmpty();
+                String recipientUserId = null;
+
+                if (sharing) {
+                    recipientUserId = mApiClient.getUserIdFromEmail(recipientEmail);
+                    if (recipientUserId == null) {
+                        Log.e("Notepad", "Failed to get the UserId from Email");
+                        return false;
+                    }
                 }
+
                 Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
-                tanker.share(new String[]{resourceId}, new String[]{recipientUserId}).get();
-                registerShareWithServer(recipientUserId);
+
+                byte[] clearData = clearText.getBytes();
+                byte[] encryptedData = tanker.encrypt(clearData, null).get();
+
+                mApiClient.putData(encryptedData);
+
+                if (sharing) {
+                    String resourceId = tanker.getResourceID(encryptedData);
+                    tanker.share(new String[]{resourceId}, new String[]{recipientUserId}).get();
+                    Response res = mApiClient.share(recipientUserId);
+                    if (!res.isSuccessful()) {
+                        throw new Error(res.message());
+                    }
+                    showToast("Note successfully shared");
+                } else {
+                    showToast("Note successfully saved");
+                }
+
+                return true;
             } catch (Throwable e) {
-                Log.e("Notepad", "Failed to register share with server: " + e.getMessage());
+                Log.e("Notepad", "Failed to save data: " + e.getMessage());
                 return false;
             }
-            return true;
         }
     }
 
