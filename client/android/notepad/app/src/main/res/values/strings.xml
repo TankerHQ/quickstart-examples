@@ -10,8 +10,9 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="change_email_title">Enter your new email address:</string>
-    <string name="change_password_title">Enter your new password:</string>
+    <string name="change_email_label">Enter your new email address:</string>
+    <string name="change_password_old_label">Enter your old password:</string>
+    <string name="change_password_new_label">Enter your new password:</string>
     <string name="change_email_button">Change email</string>
     <string name="change_password_button">Change password</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
@@ -24,8 +25,8 @@
     <string name="email">Email</string>
     <string name="no_trustchain_config">Failed to fetch the Trustchain configuration from the server!\nPlease make sure the server is running and the Trustchain configuration file is added to the server."</string>
     <string name="recovery_email">A recovery email was sent to you</string>
-    <string name="change_email_success">Change email successfully</string>
-    <string name="change_password_success">Change password successfully</string>
+    <string name="change_email_success">Changed email successfully</string>
+    <string name="change_password_success">Changed password successfully</string>
     <string name="change_email_fail">Failed to change email</string>
     <string name="change_password_fail">Failed to change password</string>
     <string name="email_exist">Email already registered</string>

@@ -25,7 +25,9 @@ public class SettingsActivity extends AppCompatActivity {
     private View mProgressView;
     private NotepadApplication mTankerApp;
     private ApiClient mApiClient;
-    private EditText mNewEmailEdit;
+    private EditText mChangeEmailInput;
+    private EditText mChangePasswordOldInput;
+    private EditText mChangePasswordNewInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +38,16 @@ public class SettingsActivity extends AppCompatActivity {
         mApiClient = ApiClient.getInstance();
 
         mProgressView = findViewById(R.id.setting_progress_bar);
-        mNewEmailEdit = findViewById(R.id.input_change_email);
 
-        Button changeEmailButton = findViewById(R.id.button_change_email);
+        mChangeEmailInput = findViewById(R.id.change_email_input);
+        mChangePasswordOldInput = findViewById(R.id.change_password_old_input);
+        mChangePasswordNewInput = findViewById(R.id.change_password_new_input);
+
+        Button changeEmailButton = findViewById(R.id.change_email_button);
         changeEmailButton.setOnClickListener((View v) -> changeEmail());
 
-        Button unlockButton = findViewById(R.id.input_unlock_password_unlock_button);
-        unlockButton.setOnClickListener((View v) -> changePassword());
+        Button changePasswordButton = findViewById(R.id.change_password_button);
+        changePasswordButton.setOnClickListener((View v) -> changePassword());
     }
 
     private void updateAppEmail(String newEmail) throws Throwable {
@@ -57,22 +62,22 @@ public class SettingsActivity extends AppCompatActivity {
             });
         } else if (mError == 409) {
             runOnUiThread(() -> {
-                mNewEmailEdit.setError(getString(R.string.email_exist));
-                mNewEmailEdit.requestFocus();
+                mChangeEmailInput.setError(getString(R.string.email_exist));
+                mChangeEmailInput.requestFocus();
             });
         } else if (mError < 200 || mError > 202) {
             runOnUiThread(() -> {
-                mNewEmailEdit.setError(getString(R.string.change_email_fail));
-                mNewEmailEdit.requestFocus();
+                mChangeEmailInput.setError(getString(R.string.change_email_fail));
+                mChangeEmailInput.requestFocus();
             });
         }
     }
 
     private void changeEmail() {
-        String newEmail = mNewEmailEdit.getText().toString();
+        String newEmail = mChangeEmailInput.getText().toString();
         if (newEmail.isEmpty() || !isEmailValid(newEmail)) {
-            mNewEmailEdit.setError("Email invalid");
-            mNewEmailEdit.requestFocus();
+            mChangeEmailInput.setError("Email invalid");
+            mChangeEmailInput.requestFocus();
             return;
         }
 
@@ -106,21 +111,19 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private void updateAppPassword(String newPassword) throws Throwable {
-        String oldPassword = mTankerApp.getPassword();
-
-        Response res = mApiClient.updatePassword(oldPassword, newPassword);
-
-        if (!res.isSuccessful())
-            throw new IOException("Update password failed with error code " + res.code());
-    }
-
     private void changePassword() {
-        EditText unlockPasswordEdit = findViewById(R.id.input_unlock_password_edit);
-        String unlockPassword = unlockPasswordEdit.getText().toString();
-        if (unlockPassword.isEmpty()) {
-            unlockPasswordEdit.setError("Please input your new password");
-            unlockPasswordEdit.requestFocus();
+        String oldPassword = mChangePasswordOldInput.getText().toString();
+        String newPassword = mChangePasswordNewInput.getText().toString();
+
+        if (oldPassword.isEmpty()) {
+            mChangePasswordNewInput.setError("Please input your old password");
+            mChangePasswordNewInput.requestFocus();
+            return;
+        }
+
+        if (newPassword.isEmpty()) {
+            mChangePasswordNewInput.setError("Please input your new password");
+            mChangePasswordNewInput.requestFocus();
             return;
         }
 
@@ -133,32 +136,39 @@ public class SettingsActivity extends AppCompatActivity {
             throw new NullPointerException("Empty tanker instance");
         }
 
-
-        tanker.updateUnlockPassword(new Password(unlockPassword)).then((validateFuture) -> {
+        tanker.updateUnlockPassword(new Password(newPassword)).then((validateFuture) -> {
 
             if (validateFuture.getError() != null) {
                 Log.e("Notepad", validateFuture.getError().toString());
                 runOnUiThread(() -> {
-                    unlockPasswordEdit.setError("Error, couldn't update password!");
-                    unlockPasswordEdit.requestFocus();
+                    mChangePasswordNewInput.setError("Error, couldn't update unlock password!");
+                    mChangePasswordNewInput.requestFocus();
+                    mProgressView.setVisibility(ProgressBar.INVISIBLE);
                 });
-                mProgressView.setVisibility(ProgressBar.INVISIBLE);
                 return null;
             }
 
-            try {
-                updateAppPassword(unlockPassword);
-                mTankerApp.setPassword(unlockPassword);
-            } catch (Throwable throwable) {
+            Response res = mApiClient.updatePassword(oldPassword, newPassword);
+
+            if (!res.isSuccessful()) {
+                final String message = res.message();
+
                 runOnUiThread(() -> {
-                    unlockPasswordEdit.setError("Failed to update notepad server password. Please open a bug report.");
-                    unlockPasswordEdit.requestFocus();
-                    throwable.printStackTrace();
+                    mChangePasswordNewInput.setError(message);
+                    mChangePasswordNewInput.requestFocus();
+                    mProgressView.setVisibility(ProgressBar.INVISIBLE);
                 });
-                mProgressView.setVisibility(ProgressBar.INVISIBLE);
                 return null;
             }
-            mProgressView.setVisibility(ProgressBar.INVISIBLE);
+
+            mTankerApp.setPassword(newPassword);
+
+            runOnUiThread(() -> {
+                mChangePasswordOldInput.setText("");
+                mChangePasswordNewInput.setText("");
+                mProgressView.setVisibility(ProgressBar.INVISIBLE);
+            });
+
             showToast(getString(R.string.change_password_success));
             return null;
         });
