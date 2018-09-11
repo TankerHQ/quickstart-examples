@@ -103,7 +103,7 @@ class Client:
     def save_note(self) -> None:
         save_button = self.browser.get_element(id="save-button")
         save_button.click()
-        self.browser.wait_for_text_change(id="save-button")
+        self.browser.wait_for_element_absence(id="edit-spinner")
 
     def share_note_with(self, recipient: str) -> None:
         # Must be run from edit page
