@@ -14,7 +14,6 @@ public class ForgotPasswordActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-
         Button sendLinkButton = findViewById(R.id.send_link_button);
         sendLinkButton.setOnClickListener((View v) -> sendLink());
     }
@@ -28,6 +27,5 @@ public class ForgotPasswordActivity extends BaseActivity {
             emailView.setError("Invalid email");
             emailView.requestFocus();
         }
-
     }
 }

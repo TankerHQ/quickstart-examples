@@ -19,6 +19,23 @@ public class MyNoteActivity extends DrawerActivity {
         return R.layout.content_my_note;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mNoteInput = findViewById(R.id.note_input);
+        mRecipientInput = findViewById(R.id.recipient_email_input);
+
+        Button saveButton = findViewById(R.id.save_note_button);
+        saveButton.setOnClickListener((View v) -> {
+            hideKeyboard();
+            saveData();
+        });
+
+        FetchDataTask backgroundTask = new FetchDataTask();
+        backgroundTask.execute(mApiClient.getCurrentUserId());
+    }
+
     private String loadDataFromUser(String userId) {
         TankerDecryptOptions options = new TankerDecryptOptions();
 
@@ -49,24 +66,6 @@ public class MyNoteActivity extends DrawerActivity {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-    }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mNoteInput = findViewById(R.id.note_input);
-        mRecipientInput = findViewById(R.id.recipient_email_input);
-
-        Button saveButton = findViewById(R.id.save_note_button);
-        saveButton.setOnClickListener((View v) -> {
-            hideKeyboard();
-            saveData();
-        });
-
-        FetchDataTask backgroundTask = new FetchDataTask();
-        backgroundTask.execute(mApiClient.getCurrentUserId());
     }
 
     public class FetchDataTask extends AsyncTask<String, Void, Boolean> {

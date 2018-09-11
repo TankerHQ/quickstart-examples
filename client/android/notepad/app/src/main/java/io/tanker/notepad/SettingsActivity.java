@@ -166,11 +166,4 @@ public class SettingsActivity extends DrawerActivity {
             return null;
         });
     }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        setResult(Activity.RESULT_OK, intent);
-        super.onBackPressed();
-    }
 }

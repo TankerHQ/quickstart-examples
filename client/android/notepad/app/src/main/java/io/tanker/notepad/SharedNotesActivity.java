@@ -23,30 +23,36 @@ public class SharedNotesActivity extends DrawerActivity {
         return R.layout.content_shared_notes;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        FetchDataTask backgroundTask = new FetchDataTask();
+        backgroundTask.execute();
+    }
+
     private void loadSharedWithMe() throws Throwable {
         Response res = mApiClient.getMe();
 
         ObjectMapper jsonMapper = new ObjectMapper();
         JsonNode json = jsonMapper.readTree(res.body().string());
 
-        if (json.has("accessibleNotes")) {
-            JsonNode notes = json.get("accessibleNotes");
-            for (final JsonNode note : notes) {
-                String authorEmail = note.get("email").asText();
-                String authorUserId = note.get("id").asText();
-                receivedNoteAuthors.add(authorEmail);
-                receivedNoteContents.add(loadDataFromUser(authorUserId));
-            }
-
-            runOnUiThread(() -> {
-                ListView notesList = findViewById(R.id.notes_list);
-                notesList.setAdapter(new NoteListAdapter(this, R.layout.notes_list_item, receivedNoteAuthors, receivedNoteContents));
-                for (String note : receivedNoteContents) {
-                    //noinspection unchecked (this is fine)
-                    ((ArrayAdapter<String>) notesList.getAdapter()).add(note);
-                }
-            });
+        JsonNode notes = json.get("accessibleNotes");
+        for (final JsonNode note : notes) {
+            String authorEmail = note.get("email").asText();
+            String authorUserId = note.get("id").asText();
+            receivedNoteAuthors.add(authorEmail);
+            receivedNoteContents.add(loadDataFromUser(authorUserId));
         }
+
+        runOnUiThread(() -> {
+            ListView notesList = findViewById(R.id.notes_list);
+            notesList.setAdapter(new NoteListAdapter(this, R.layout.notes_list_item, receivedNoteAuthors, receivedNoteContents));
+            for (String note : receivedNoteContents) {
+                //noinspection unchecked (this is fine)
+                ((ArrayAdapter<String>) notesList.getAdapter()).add(note);
+            }
+        });
     }
 
     private String loadDataFromUser(String userId) {
@@ -65,14 +71,6 @@ public class SharedNotesActivity extends DrawerActivity {
             Log.e("Notepad", "loadDataError", e);
             return null;
         }
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        FetchDataTask backgroundTask = new FetchDataTask();
-        backgroundTask.execute();
     }
 
     public class FetchDataTask extends AsyncTask<Void, Void, Boolean> {
