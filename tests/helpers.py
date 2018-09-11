@@ -158,5 +158,8 @@ class Browser:
     def refresh(self) -> None:
         self.driver.refresh()
 
+    def delete_cookies(self) -> None:
+        self.driver.delete_all_cookies()
+
     def close(self) -> None:
         self.driver.quit()

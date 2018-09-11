@@ -8,6 +8,8 @@ from helpers import Browser
 class Client:
     def __init__(self, browser: Browser, email: str, password: str) -> None:
         self.browser = browser
+        self.browser.delete_cookies()
+        self.go_to_home()
         self.email = email
         self.password = password
         self.unlock_key: Optional[str] = None
@@ -27,6 +29,8 @@ class Client:
         topbar_dropdown.click()
         logout = self.browser.get_element(id="log-out-menu-item")
         logout.click()
+        # after logout, user is redirected to /login
+        self.browser.wait_for_element_presence(id="log-in-email")
 
     def sign_in(self) -> None:
         sign_in = self.browser.get_element(id="session_form_container-tab-login")
@@ -166,17 +170,6 @@ def test_sign_up_then_sign_out_then_sign_in(browser: Browser, new_client: Client
     new_client.wait_for_session_form()
     new_client.sign_in()
     new_client.wait_for_home()
-
-
-def test_sign_up_then_sign_in(browser: Browser, new_client: Client) -> None:
-    new_client.wait_for_session_form()
-    new_client.sign_up()
-    new_client.wait_for_home()
-
-    new_client.go_to_home()  # will actually re-direct to sign_in form
-    new_client.sign_in()
-    new_client.wait_for_home()
-    new_client.sign_out()
 
 
 @pytest.fixture
