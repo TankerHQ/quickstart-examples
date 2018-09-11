@@ -38,7 +38,7 @@ export default class Session extends EventEmitter {
 
   async close() {
     this.userId = null;
-    this.serverApi.setUserInfo(null, null);
+    this.serverApi.logout();
     await this.tanker.close();
   }
 
@@ -49,8 +49,7 @@ export default class Session extends EventEmitter {
   async signUp(email, password) {
     await this.initTanker();
 
-    this.serverApi.setUserInfo(email, password);
-    const response = await this.serverApi.signUp();
+    const response = await this.serverApi.signUp(email, password);
 
     if (response.status === 409) throw new Error(`Email '${email}' already taken`);
     if (!response.ok) throw new Error("Server error!");
@@ -65,10 +64,9 @@ export default class Session extends EventEmitter {
   async logIn(email, password) {
     await this.initTanker();
 
-    this.serverApi.setUserInfo(email, password);
     let response;
     try {
-      response = await this.serverApi.login();
+      response = await this.serverApi.login(email, password);
     } catch (e) {
       console.error(e);
       throw new Error("Cannot contact server");

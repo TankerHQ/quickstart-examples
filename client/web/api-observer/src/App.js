@@ -108,15 +108,16 @@ class App extends Component {
   }
 
   authenticate = async (email, password) => {
-    const eEmail = encodeURIComponent(email);
-    const ePassword = encodeURIComponent(password);
+    const body = JSON.stringify({ email, password });
+    const headers = { 'Content-Type': 'application/json' };
+    const method = 'post';
 
     // Authenticated request: always pass "Tanker" as password (mock auth)
-    let res = await doRequest(`${serverRoot}/login?email=${eEmail}&password=${ePassword}`);
+    let res = await doRequest(`${serverRoot}/login`, { body, headers, method });
 
     // User not found
     if (res.status === 404) {
-      res = await doRequest(`${serverRoot}/signup?email=${eEmail}&password=${ePassword}`);
+      res = await doRequest(`${serverRoot}/signup`, { body, headers, method });
     }
 
     return res.json();
@@ -132,6 +133,7 @@ class App extends Component {
     this.log('closingSession', this.state.email);
 
     await this.tanker.close();
+    await doRequest(`${serverRoot}/logout`);
 
     this.log('closedSession', this.state.email);
   }

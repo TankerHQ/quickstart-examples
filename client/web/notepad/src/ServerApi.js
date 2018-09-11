@@ -1,27 +1,8 @@
 const appServerUrl = "http://127.0.0.1:8080";
 
 export default class Api {
-  get email() {
-    return this._email;
-  }
-
-  get password() {
-    return this._password;
-  }
-
-  setUserInfo(email, password) {
-    this._email = email;
-    this._password = password;
-  }
-
   urlFor(path) {
-    let queryString = '';
-    if (this.email) {
-      const escapedEmail = encodeURIComponent(this.email);
-      const escapedPassword = encodeURIComponent(this.password);
-      queryString = `?email=${escapedEmail}&password=${escapedPassword}`;
-    }
-    return `${appServerUrl}${path}${queryString}`;
+    return `${appServerUrl}${path}`;
   }
 
   async doRequest(path, requestOpts = {}) {
@@ -58,12 +39,24 @@ export default class Api {
     return res.json();
   }
 
-  signUp() {
-    return this.doRequestUnchecked("/signup");
+  async authenticate(path, email, password) {
+    const response = await this.doRequestUnchecked(path, { method: "POST", json: { email, password } });
+    if (response.ok) { // HTTP code in 200-299: successful auth
+      this.email = email;
+    }
+    return response;
   }
 
-  login() {
-    return this.doRequestUnchecked("/login");
+  login(email, password) {
+    return this.authenticate('/login', email, password);
+  }
+
+  signUp(email, password) {
+    return this.authenticate('/signup', email, password);
+  }
+
+  logout() {
+    this.email = null;
   }
 
   delete() {
@@ -112,13 +105,12 @@ export default class Api {
   async changeEmail(newEmail) {
     const data = { email: newEmail };
     await this.doRequest("/me/email", { json: data, method: "PUT" });
-    this._email = newEmail;
+    this.email = newEmail;
   }
 
   async changePassword(oldPassword, newPassword) {
     const data = { oldPassword, newPassword };
     await this.doRequest("/me/password", { json: data, method: "PUT" });
-    this._password = newPassword;
   }
 
   async resetPassword(passwordResetToken, newPassword) {

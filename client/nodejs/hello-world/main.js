@@ -28,17 +28,18 @@ async function getTankerConfig() {
 
 async function authenticate(email) {
   let res;
-  const eEmail = encodeURIComponent(email);
-  const ePassword = encodeURIComponent('Tanker');
+  const body = JSON.stringify({ email, password: 'Tanker' });
+  const headers = { 'Content-Type': 'application/json' };
+  const method = 'post';
 
   // User known: log in
   if (emails.has(email)) {
-    res = await doRequest(`${serverRoot}/login?email=${eEmail}&password=${ePassword}`);
+    res = await doRequest(`${serverRoot}/login`, { body, headers, method });
 
     // User not known: sign up
   } else {
     // Always sign up with "Tanker" as password (mock auth)
-    res = await doRequest(`${serverRoot}/signup?email=${eEmail}&password=${ePassword}`);
+    res = await doRequest(`${serverRoot}/signup`, { body, headers, method });
     emails.add(email);
   }
 
