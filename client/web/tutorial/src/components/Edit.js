@@ -1,6 +1,18 @@
 import React from "react";
 import { Alert, Button, ButtonGroup, FormControl, FormGroup, Panel } from "react-bootstrap";
 
+import Spinner from './Spinner';
+
+const avoidFlickering = async (promise) => {
+  const minDelay = 500;
+  const results = await Promise.all([
+    promise,
+    new Promise(resolve => setTimeout(resolve, minDelay)),
+  ]);
+  return results[0];
+};
+
+
 class Edit extends React.Component {
   state = {
     text: "",
@@ -28,7 +40,7 @@ class Edit extends React.Component {
     const { session } = this.props;
     this.setState({ modified: false, isSaving: true });
     try {
-      await session.saveText(text);
+      await avoidFlickering(session.saveText(text));
       this.setState({ isSaving: false });
     } catch (err) {
       console.error(err);
@@ -47,7 +59,7 @@ class Edit extends React.Component {
 
     e.preventDefault();
     try {
-      await session.delete();
+      await avoidFlickering(session.delete());
       this.setState({ isDeleting: false, text: "" });
     } catch (err) {
       console.error(err);
@@ -75,6 +87,7 @@ class Edit extends React.Component {
 
   render() {
     const { error, isLoading, isLoaded, isSaving, isDeleting } = this.state;
+    const disabled = isLoading || !isLoaded || isSaving || isDeleting;
 
     return (
       <Panel>
@@ -86,11 +99,6 @@ class Edit extends React.Component {
                 {error}
               </Alert>
             )}
-            {/* {isLoading && (
-              <Alert id="edit-loading" bsStyle="info">
-                Loading...
-              </Alert>
-            )} */}
             <FormGroup id="edit">
               <FormControl
                 id="edit-textarea"
@@ -98,31 +106,39 @@ class Edit extends React.Component {
                 onChange={this.onChange}
                 value={isLoading ? "Loading..." : this.state.text}
                 rows="12"
-                disabled={isLoading}
+                disabled={disabled}
               />
             </FormGroup>
             {this.state.modified ? "*" : null}
-            <ButtonGroup className="pull-right">
-              <Button id="delete-button" bsStyle="danger" onClick={this.onDeleteClicked}>
-                {isDeleting ? "Deleting ..." : "Delete"}
-              </Button>
-              <Button
-                id="save-button"
-                bsStyle="success"
-                onClick={this.onSave}
-                disabled={isSaving || !isLoaded}
-              >
-                {isSaving ? "Saving..." : "Save"}
-              </Button>
-              <Button
-                id="go-to-share-button"
-                bsStyle="primary"
-                onClick={this.onShareClicked}
-                disabled={!isLoaded}
-              >
-                Share
-              </Button>
-            </ButtonGroup>
+            <div className="pull-right">
+              {disabled && <Spinner id="edit-spinner" />}
+              <ButtonGroup>
+                <Button
+                  id="delete-button"
+                  bsStyle="danger"
+                  onClick={this.onDeleteClicked}
+                  disabled={disabled}
+                >
+                  Delete
+                </Button>
+                <Button
+                  id="save-button"
+                  bsStyle="success"
+                  onClick={this.onSave}
+                  disabled={disabled}
+                >
+                  Save
+                </Button>
+                <Button
+                  id="go-to-share-button"
+                  bsStyle="primary"
+                  onClick={this.onShareClicked}
+                  disabled={disabled}
+                >
+                  Share
+                </Button>
+              </ButtonGroup>
+            </div>
           </form>
         </Panel.Body>
         <Panel.Footer>

@@ -9,41 +9,42 @@ import ServerApi from '../../ServerApi';
 import "./App.css";
 
 class App extends React.Component {
-  state = { status: "logIn" };
+  state = { status: "initializing" };
 
   componentWillMount() {
     const { session } = this.props;
-    session.on("newDevice", () => this.setState({ status: "validateDevice" }));
+    // App's status will always be synchronized with the session status
+    session.on("statusChange", ([, status]) => this.setState({ status }));
   }
 
   onLogIn = async (email, password) => {
     const { session } = this.props;
-    if (session.isOpen()) {
+    const { status } = this.state;
+    if (status === 'open') {
       console.warn(`Closing previous session opened by ${session.email}`);
       await session.close();
     }
 
     await session.logIn(email, password);
-    this.setState({ status: "ready" });
   };
 
   onSignUp = async (email, password) => {
     const { session } = this.props;
-    if (session.isOpen()) {
+    const { status } = this.state;
+    if (status === 'open') {
       console.warn(`Closing previous session opened by ${session.email}`);
       await session.close();
     }
 
     await session.signUp(email, password);
-    this.setState({ status: "ready" });
   };
 
   onLogOut = async () => {
     const { session } = this.props;
-    if (session.isOpen()) {
+    const { status } = this.state;
+    if (status === 'open') {
       await session.close();
     }
-    this.setState({ status: "logIn" });
   };
 
   onPasswordResetRequest = async (email) => {
@@ -52,13 +53,8 @@ class App extends React.Component {
   }
 
   onPasswordResetConfirm = async ({ newPassword, passwordResetToken, verificationCode }) => {
-    const serverApi = new ServerApi();
-    const answer = await serverApi.resetPassword(passwordResetToken, newPassword);
-    const jsonResponse = await answer.json();
-    const { email } = jsonResponse;
-    this.props.session.verificationCode = verificationCode;
-    await this.props.session.logIn(email, newPassword);
-    this.setState({ status: "ready" });
+    const { session } = this.props;
+    await session.resetPassword(newPassword, passwordResetToken, verificationCode);
   }
 
   onUnlockDevice = async password => {
@@ -71,9 +67,12 @@ class App extends React.Component {
 
     return (
       <div className="app">
-        <Topbar isOpen={session.isOpen()} email={session.email} onLogOut={this.onLogOut} />
+        <Topbar status={status} email={session.email} onLogOut={this.onLogOut} />
         <div className="container">
-          {status === "logIn" && (
+          {status === "initializing" && null}
+          {status === "open" && <Notepad session={session} />}
+          {status === "openingNewDevice" && <NewDevice onUnlockDevice={this.onUnlockDevice} />}
+          {status === "closed" && (
             <Authentication
               onLogIn={this.onLogIn}
               onSignUp={this.onSignUp}
@@ -81,8 +80,6 @@ class App extends React.Component {
               onPasswordResetConfirm={this.onPasswordResetConfirm}
             />
           )}
-          {status === "validateDevice" && <NewDevice onUnlockDevice={this.onUnlockDevice} />}
-          {status === "ready" && <Notepad session={session} />}
         </div>
       </div>
     );
