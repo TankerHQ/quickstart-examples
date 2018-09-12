@@ -16,9 +16,12 @@ const doRequest = async (testServer, request) => {
   const {
     verb, path, query, body, headers,
   } = request;
-  const queryString = querystring.stringify(query);
-  const url = `http://127.0.0.1:${port}${path}?${queryString}`;
-  const fetchOpts = { headers, method: verb };
+  let url = `http://127.0.0.1:${port}${path}`;
+  if (query) {
+    const queryString = querystring.stringify(query);
+    url = `${url}?${queryString}`;
+  }
+  const fetchOpts = { credentials: true, headers, method: verb };
   if (body !== undefined) {
     fetchOpts.body = body;
   }
@@ -59,6 +62,13 @@ describe('server', () => {
   const alicePasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$UNqRSixl3aeit4F7mR+5pw$KKfiAWPyUaDkVefJ77w2XRdb8gafLpR1a2Uqd0zYnlY';
   const aliceToken = 'aliceToken';
 
+  const signUpAlice = () => {
+    const user = {
+      id: aliceId, email: aliceEmail, hashed_password: alicePasswordHash, token: aliceToken,
+    };
+    app.storage.save(user);
+  };
+
   const signUpBob = () => {
     const user = {
       id: bobId, email: bobEmail, hashed_password: bobPasswordHash, token: bobToken,
@@ -66,6 +76,35 @@ describe('server', () => {
     app.storage.save(user);
   };
 
+  const logInAlice = async () => {
+    const headers = { 'Content-Type': 'application/json' };
+    const body = JSON.stringify({ email: aliceEmail, password: alicePassword });
+
+    const response = await doRequest(
+      testServer,
+      {
+        verb: 'post', path: '/login', body, headers,
+      },
+    );
+
+    const cookie = response.headers.get('set-cookie');
+    return cookie;
+  };
+
+  const logInBob = async () => {
+    const headers = { 'Content-Type': 'application/json' };
+    const body = JSON.stringify({ email: bobEmail, password: bobPassword });
+
+    const response = await doRequest(
+      testServer,
+      {
+        verb: 'post', path: '/login', body, headers,
+      },
+    );
+
+    const cookie = response.headers.get('set-cookie');
+    return cookie;
+  };
 
   const requestResetBobPassword = () => {
     const body = JSON.stringify({ email: bobEmail });
@@ -77,13 +116,6 @@ describe('server', () => {
         verb: 'post', path: '/requestResetPassword', body, headers,
       },
     );
-  };
-
-  const signUpAlice = () => {
-    const user = {
-      id: aliceId, email: aliceEmail, hashed_password: alicePasswordHash, token: aliceToken,
-    };
-    app.storage.save(user);
   };
 
   const createBobNote = async (contents) => {
@@ -120,14 +152,18 @@ describe('server', () => {
   });
 
   describe('/signup', () => {
+    const headers = { 'Content-Type': 'application/json' };
+
     specify('sign up with an email', async () => {
       const email = 'user42@example.com';
       const password = 'p4ssw0rd';
-      const query = { email, password };
+      const body = JSON.stringify({ email, password });
 
       const response = await assertRequest(
         testServer,
-        { verb: 'get', path: '/signup', query },
+        {
+          verb: 'post', path: '/signup', body, headers,
+        },
         { status: 201 },
       );
 
@@ -137,29 +173,35 @@ describe('server', () => {
     });
 
     it('returns 400 if email is missing', async () => {
-      const invalidQuery = { password: 'secret' };
+      const invalidBody = JSON.stringify({ password: 'secret' });
       await assertRequest(
         testServer,
-        { verb: 'get', path: '/signup', query: invalidQuery },
+        {
+          verb: 'post', path: '/signup', body: invalidBody, headers,
+        },
         { status: 400 },
       );
     });
 
     it('returns 400 if email is invalid', async () => {
-      const invalidQuery = { password: 'secret', email: 'not.an.email.address' };
+      const invalidBody = JSON.stringify({ password: 'secret', email: 'not.an.email.address' });
       await assertRequest(
         testServer,
-        { verb: 'get', path: '/signup', query: invalidQuery },
+        {
+          verb: 'post', path: '/signup', body: invalidBody, headers,
+        },
         { status: 400 },
       );
     });
 
     it('returns 400 if password is missing', async () => {
-      const invalidQuery = { email: 'bob@example.com' };
+      const invalidBody = JSON.stringify({ email: 'bob@example.com' });
 
       await assertRequest(
         testServer,
-        { verb: 'get', path: '/signup', query: invalidQuery },
+        {
+          verb: 'post', path: '/signup', body: invalidBody, headers,
+        },
         { status: 400 },
       );
     });
@@ -168,24 +210,32 @@ describe('server', () => {
       const existingUser = { id: 'existing', email: 'existing@example.com' };
       app.storage.save(existingUser);
 
-      const query = { email: existingUser.email };
+      const invalidBody = JSON.stringify({ email: existingUser.email, password: 'secret' });
       await assertRequest(
         testServer,
-        { verb: 'get', path: '/signup', query },
-        { status: 400 },
+        {
+          verb: 'post', path: '/signup', body: invalidBody, headers,
+        },
+        { status: 409 },
       );
     });
   });
 
   describe('/login', () => {
+    const headers = { 'Content-Type': 'application/json' };
+
     specify('signed up users can log in', async () => {
       signUpBob();
-      const query = { email: bobEmail, password: bobPassword };
+      const body = JSON.stringify({ email: bobEmail, password: bobPassword });
+
       const response = await assertRequest(
         testServer,
-        { verb: 'get', path: '/login', query },
+        {
+          verb: 'post', path: '/login', body, headers,
+        },
         { status: 200 },
       );
+
       const { id, token } = await response.json();
       expect(id).to.equal(bobId);
       expect(token).to.equal(bobToken);
@@ -194,10 +244,12 @@ describe('server', () => {
     it('refuses to log in with incorrect password', async () => {
       signUpBob();
       const incorrectPassword = 'letmein';
-      const query = { email: bobEmail, password: incorrectPassword };
+      const body = JSON.stringify({ email: bobEmail, password: incorrectPassword });
       await assertRequest(
         testServer,
-        { verb: 'get', path: '/login', query },
+        {
+          verb: 'post', path: '/login', body, headers,
+        },
         { status: 401 },
       );
     });
@@ -206,60 +258,67 @@ describe('server', () => {
   describe('/me', () => {
     it('gets the current user', async () => {
       signUpBob();
-      const query = { email: bobEmail, password: bobPassword };
+      const bobCookie = await logInBob();
       const response = await assertRequest(
         testServer,
-        { verb: 'get', path: '/me', query },
+        {
+          verb: 'get', path: '/me', headers: { Cookie: bobCookie },
+        },
         { status: 200 },
       );
       const user = await response.json();
       expect(user.id).to.equal(bobId);
       expect(user.email).to.equal(bobEmail);
-      expect(user.token).to.be.undefined;
     });
 
     it('can change password', async () => {
       signUpBob();
+      const bobCookie = await logInBob();
+
       const newPassword = 'n3wp4ss';
-      const query = { email: bobEmail, password: bobPassword };
-      const headers = { 'Content-Type': 'application/json' };
+      const headers = { 'Content-Type': 'application/json', Cookie: bobCookie };
       const body = JSON.stringify({ oldPassword: bobPassword, newPassword });
 
       await assertRequest(
         testServer,
         {
-          verb: 'put', path: '/me/password', query, body, headers,
+          verb: 'put', path: '/me/password', body, headers,
         },
         { status: 200 },
       );
 
-      const newQuery = { email: bobEmail, password: newPassword };
+      const newBody = JSON.stringify({ email: bobEmail, password: newPassword });
       await assertRequest(
         testServer,
-        { verb: 'get', path: '/login', query: newQuery },
+        {
+          verb: 'post', path: '/login', body: newBody, headers: { 'Content-Type': 'application/json' },
+        },
         { status: 200 },
       );
     });
 
     it('can change email', async () => {
       signUpBob();
+      const bobCookie = await logInBob();
+
       const newEmail = 'new.bob@example.com';
-      const query = { email: bobEmail, password: bobPassword };
-      const headers = { 'Content-Type': 'application/json' };
+      const headers = { 'Content-Type': 'application/json', Cookie: bobCookie };
       const body = JSON.stringify({ email: newEmail });
 
       await assertRequest(
         testServer,
         {
-          verb: 'put', path: '/me/email', query, body, headers,
+          verb: 'put', path: '/me/email', body, headers,
         },
         { status: 200 },
       );
 
-      const newQuery = { email: newEmail, password: bobPassword };
+      const newBody = JSON.stringify({ email: newEmail, password: bobPassword });
       await assertRequest(
         testServer,
-        { verb: 'get', path: '/login', query: newQuery },
+        {
+          verb: 'post', path: '/login', body: newBody, headers: { 'Content-Type': 'application/json' },
+        },
         { status: 200 },
       );
     });
@@ -267,32 +326,33 @@ describe('server', () => {
     it('cannot change email if already taken', async () => {
       signUpAlice();
       signUpBob();
+      const bobCookie = await logInBob();
+
       const newEmail = aliceEmail;
-      const query = { email: bobEmail, password: bobPassword };
-      const headers = { 'Content-Type': 'application/json' };
+      const headers = { 'Content-Type': 'application/json', Cookie: bobCookie };
       const body = JSON.stringify({ email: newEmail });
 
       await assertRequest(
         testServer,
         {
-          verb: 'put', path: '/me/email', query, body, headers,
+          verb: 'put', path: '/me/email', body, headers,
         },
         { status: 409 },
       );
     });
 
     it('cannot change email if given address is invalid', async () => {
-      signUpAlice();
       signUpBob();
+      const bobCookie = await logInBob();
+
       const newEmail = 'not.an.email.address';
-      const query = { email: bobEmail, password: bobPassword };
-      const headers = { 'Content-Type': 'application/json' };
+      const headers = { 'Content-Type': 'application/json', Cookie: bobCookie };
       const body = JSON.stringify({ email: newEmail });
 
       await assertRequest(
         testServer,
         {
-          verb: 'put', path: '/me/email', query, body, headers,
+          verb: 'put', path: '/me/email', body, headers,
         },
         { status: 400 },
       );
@@ -302,20 +362,20 @@ describe('server', () => {
   describe('/data', () => {
     specify('put and get', async () => {
       signUpBob();
+      const bobCookie = await logInBob();
 
       const bobNote = 'the note of bob';
 
-      const query = { email: bobEmail, password: bobPassword };
       const body = bobNote;
       await assertRequest(
         testServer,
         {
-          verb: 'put', path: '/data', query, body,
+          verb: 'put', path: '/data', body, headers: { Cookie: bobCookie },
         },
         { status: 200 },
       );
 
-      const response = await doRequest(testServer, { verb: 'get', path: `/data/${bobId}`, query });
+      const response = await doRequest(testServer, { verb: 'get', path: `/data/${bobId}`, headers: { Cookie: bobCookie } });
       const actualNote = await response.text();
       expect(actualNote).to.eq(bobNote);
     });
@@ -323,34 +383,35 @@ describe('server', () => {
     specify('update', async () => {
       signUpBob();
       createBobNote('old note');
+      const bobCookie = await logInBob();
 
       const newNote = 'new note';
-      const query = { email: bobEmail, password: bobPassword };
       const body = newNote;
       await assertRequest(
         testServer,
         {
-          verb: 'put', path: '/data', query, body,
+          verb: 'put', path: '/data', body, headers: { Cookie: bobCookie },
         },
         { status: 200 },
       );
-      const response = await doRequest(testServer, { verb: 'get', path: `/data/${bobId}`, query });
+      const response = await doRequest(testServer, { verb: 'get', path: `/data/${bobId}`, headers: { Cookie: bobCookie } });
       const actualNote = await response.text();
       expect(actualNote).to.eq(newNote);
     });
 
     specify('delete', async () => {
       signUpBob();
-      const query = { email: bobEmail, password: bobPassword };
+      const bobCookie = await logInBob();
+
       await assertRequest(
         testServer,
-        { verb: 'delete', path: '/data', query },
+        { verb: 'delete', path: '/data', headers: { Cookie: bobCookie } },
         { status: 200 },
       );
 
       await assertRequest(
         testServer,
-        { verb: 'get', path: `/data/${bobId}`, query },
+        { verb: 'get', path: `/data/${bobId}`, headers: { Cookie: bobCookie } },
         { status: 404 },
       );
     });
@@ -361,28 +422,27 @@ describe('server', () => {
       signUpBob();
       signUpAlice();
       createBobNote('For Alice');
+      const aliceCookie = await logInAlice();
+      const bobCookie = await logInBob();
 
       // Post a share request
-      let query = { email: bobEmail, password: bobPassword };
-      const headers = { 'Content-Type': 'application/json' };
+      const headers = { 'Content-Type': 'application/json', Cookie: bobCookie };
       const body = JSON.stringify({ from: bobId, to: [aliceId] });
       await assertRequest(
         testServer,
         {
-          verb: 'post', path: '/share', query, body, headers,
+          verb: 'post', path: '/share', body, headers,
         },
         { status: 201 },
       );
 
       // Alice should have Bob in her accessibleNotes
-      query = { email: aliceEmail, password: alicePassword };
-      let response = await doRequest(testServer, { verb: 'get', path: '/me', query });
+      let response = await doRequest(testServer, { verb: 'get', path: '/me', headers: { Cookie: aliceCookie } });
       let actual = await response.json();
       expect(actual.accessibleNotes.map(user => user.id)).to.have.members(['bob']);
 
       // Bob should have Alice in his recipients
-      query = { email: bobEmail, password: bobPassword };
-      response = await doRequest(testServer, { verb: 'get', path: '/me', query });
+      response = await doRequest(testServer, { verb: 'get', path: '/me', headers: { Cookie: bobCookie } });
       actual = await response.json();
       expect(actual.noteRecipients.map(user => user.id)).to.have.members(['alice']);
     });
@@ -392,11 +452,11 @@ describe('server', () => {
     it('returns the list of all users (id and email only)', async () => {
       signUpBob();
       signUpAlice();
+      const bobCookie = await logInBob();
 
-      const query = { email: bobEmail, password: bobPassword };
       const response = await doRequest(
         testServer,
-        { verb: 'get', path: '/users', query },
+        { verb: 'get', path: '/users', headers: { Cookie: bobCookie } },
       );
       const res = await response.json();
       expect(res).to.deep.equal([
@@ -408,14 +468,14 @@ describe('server', () => {
     it('does not crash if a json file is corrupted', async () => {
       signUpBob();
       signUpAlice();
+      const bobCookie = await logInBob();
 
       const alicePath = app.storage.dataFilePath(aliceId);
       fs.writeFileSync(alicePath, 'this is {not} valid json[]');
 
-      const query = { email: bobEmail, password: bobPassword };
       const response = await doRequest(
         testServer,
-        { verb: 'get', path: '/users', query },
+        { verb: 'get', path: '/users', headers: { Cookie: bobCookie } },
       );
       expect(response.status).to.eq(500);
       const details = await response.json();
@@ -552,6 +612,51 @@ describe('server', () => {
 
       // Second attempt should fail
       await assertAttemptFail(firstPasswordResetToken, bobNewPassword, msgInvalidToken);
+    });
+  });
+
+  describe('session', () => {
+    it('is not authenticated if unknown session id in cookie', async () => {
+      signUpBob();
+      const bobCookie = await logInBob();
+      const unknownSessionId = 's%3AGDrnlrxGCXbV2WpZu4Vlfd51MwMDyK2W.jdWRDhfiHdSJ0Uli9eD7pc2wQ4yYGp2ex0Uz1Qjewzw';
+      const invalidCookie = bobCookie.replace(/sessionId=([^;]+);/, `sessionId=${unknownSessionId};`);
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/me', headers: { Cookie: invalidCookie } },
+        { status: 401 },
+      );
+    });
+
+    it('is persisted between requests', async () => {
+      signUpBob();
+      const bobCookie = await logInBob();
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/me', headers: { Cookie: bobCookie } },
+        { status: 200 },
+      );
+      await new Promise(resolve => setTimeout(resolve, 100));
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/me', headers: { Cookie: bobCookie } },
+        { status: 200 },
+      );
+    });
+
+    it('is destroyed on logout', async () => {
+      signUpBob();
+      const bobCookie = await logInBob();
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/logout', headers: { Cookie: bobCookie } },
+        { status: 200 },
+      );
+      await assertRequest(
+        testServer,
+        { verb: 'get', path: '/me', headers: { Cookie: bobCookie } },
+        { status: 401 },
+      );
     });
   });
 });

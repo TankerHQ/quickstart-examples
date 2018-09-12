@@ -116,8 +116,6 @@ class Browser:
         driver_wait.until(elements_are_present)
 
     def wait_for_element_absence(self, *, id: str, timeout: int = DEFAULT_TIMEOUT) -> SeleniumElement:
-        element = self.find_element(id=id)
-        assert element
         driver_wait = WebDriverWait(self.driver, timeout)
 
         def element_is_absent(driver: SeleniumDriver) -> bool:
@@ -157,6 +155,9 @@ class Browser:
 
     def refresh(self) -> None:
         self.driver.refresh()
+
+    def delete_cookies(self) -> None:
+        self.driver.delete_all_cookies()
 
     def close(self) -> None:
         self.driver.quit()

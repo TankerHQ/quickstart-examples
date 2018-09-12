@@ -12,30 +12,18 @@ const verifyPassword = (user, password) => { // eslint-disable-line arrow-body-s
   return sodium.crypto_pwhash_str_verify(user.hashed_password, password);
 };
 
-const authMiddleware = (storage, req, res, next) => {
-  const { email, password } = req.query;
-
-  // Check valid auth credentials
-  log('Check authentication', 1);
-
-  if (!password || !email) {
-    log('Missing email or password', 1);
-    res.sendStatus(400);
-    return;
-  }
-
-  const userId = storage.emailToId(email);
+const middlewareHandler = (storage, req, res, next) => {
+  const { userId } = req.session;
   if (!userId) {
-    log(`Authentication error: ${email} not found`, 1);
-    res.sendStatus(404);
+    log('Unauthorized: not logged in or session expired', 1);
+    res.sendStatus(401);
     return;
   }
 
   const user = storage.get(userId);
-  const passwordOk = verifyPassword(user, password);
-  if (!passwordOk) {
-    log('Authentication error: invalid password', 1);
-    res.sendStatus(401);
+  if (!user) {
+    log(`Server error: ${userId} not found`, 1);
+    res.sendStatus(500);
     return;
   }
 
@@ -44,8 +32,8 @@ const authMiddleware = (storage, req, res, next) => {
   next();
 };
 
-const authMiddlewareBuilder = (app) => { // eslint-disable-line arrow-body-style
-  return (req, res, next) => authMiddleware(app.storage, req, res, next);
+const middleware = (app) => { // eslint-disable-line arrow-body-style
+  return (req, res, next) => middlewareHandler(app.storage, req, res, next);
 };
 
 const generateSecret = () => sodium.randombytes_buf(32);
@@ -56,7 +44,6 @@ const generatePasswordResetToken = ({ userId, secret }) => {
   const buf = sodium.from_string(asString);
   return sodium.to_base64(buf);
 };
-
 
 const parsePasswordResetToken = (b64token) => {
   const buf = sodium.from_base64(b64token);
@@ -70,7 +57,7 @@ const parsePasswordResetToken = (b64token) => {
 };
 
 module.exports = {
-  authMiddlewareBuilder,
+  middleware,
   hashPassword,
   verifyPassword,
   generateSecret,

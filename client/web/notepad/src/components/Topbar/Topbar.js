@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import Logo from "./Logo";
 import "./Topbar.css";
 
-const Topbar = ({ isOpen, email, onLogOut, history }) => (
+const Topbar = ({ status, email, onLogOut, history }) => (
   <Navbar staticTop>
     <Navbar.Header>
       <Navbar.Brand>
@@ -14,7 +14,7 @@ const Topbar = ({ isOpen, email, onLogOut, history }) => (
       <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
-      {isOpen && (
+      {status === "open" && (
         <Nav pullRight>
           <NavDropdown title={email} id="topbar_dropdown">
             <MenuItem id="settings-menu-item" onClick={() => history.push(`/settings`)} eventKey={1}>

@@ -6,7 +6,8 @@ const cors = require('cors');
 
 const allowedOrigins = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 
-const corsMiddleware = cors({
+module.exports = () => cors({
+  credentials: true, // adds header Access-Control-Allow-Credentials: true
   origin: (origin, callback) => {
     if (!origin || origin.match(allowedOrigins)) {
       callback(null, true);
@@ -15,5 +16,3 @@ const corsMiddleware = cors({
     }
   },
 });
-
-module.exports = corsMiddleware;

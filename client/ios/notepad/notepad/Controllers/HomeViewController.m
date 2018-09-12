@@ -10,7 +10,7 @@
 
 - (IBAction)triggerLogout:(UIButton*)sender
 {
-  [[Globals sharedInstance].tanker close].then(^{
+  [Globals logout].then(^{
     NSLog(@"Did log out");
     UIViewController* controller = [self.storyboard instantiateViewControllerWithIdentifier:@"home"];
     [self.navigationController pushViewController:controller animated:YES];
