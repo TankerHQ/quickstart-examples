@@ -164,4 +164,13 @@ export default class Session extends EventEmitter {
     await this.serverApi.changePassword(oldPassword, newPassword);
     await this.tanker.updateUnlock({ password: newPassword });
   }
+
+  async resetPassword(newPassword, passwordResetToken, verificationCode) {
+    const answer = await this.serverApi.resetPassword(newPassword, passwordResetToken);
+    const jsonResponse = await answer.json();
+    const { email } = jsonResponse;
+    this.verificationCode = verificationCode;
+    await this.logIn(email, newPassword);
+    await this.tanker.updateUnlock({ password: newPassword });
+  }
 }

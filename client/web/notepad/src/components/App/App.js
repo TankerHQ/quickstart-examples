@@ -53,12 +53,8 @@ class App extends React.Component {
   }
 
   onPasswordResetConfirm = async ({ newPassword, passwordResetToken, verificationCode }) => {
-    const serverApi = new ServerApi();
-    const answer = await serverApi.resetPassword(passwordResetToken, newPassword);
-    const jsonResponse = await answer.json();
-    const { email } = jsonResponse;
-    this.props.session.verificationCode = verificationCode;
-    await this.props.session.logIn(email, newPassword);
+    const { session } = this.props;
+    await session.resetPassword(newPassword, passwordResetToken, verificationCode);
   }
 
   onUnlockDevice = async password => {

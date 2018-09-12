@@ -122,7 +122,7 @@ export default class Api {
     await this.doRequest("/me/password", { json: data, method: "PUT" });
   }
 
-  async resetPassword(passwordResetToken, newPassword) {
+  async resetPassword(newPassword, passwordResetToken) {
     const data = { passwordResetToken, newPassword };
     return this.doRequest("/resetPassword", { json: data, method: "POST" });
   }
