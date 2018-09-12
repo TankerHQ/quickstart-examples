@@ -24,16 +24,18 @@ Each user has access to exactly one note.
 It implements the following features:
 
 * Signing up
-* Logging in
-* Loading and saving the contents of the notes
+* Logging in and out
+* Loading and saving a single note by sending it to the notepad server
+* Sharing the note with other users
+* Reading notes shared by other users
 
 Here is the user experience flow:
 
-1. A user signs up and creates an account with an email and a password
-2. He logs in
-3. He is redirected to an edit form where he can type text, and save the contents by sending them to a remote server.
+1. A new user signs up with an email address and a password
+2. A form field allows to edit, save and/or share a single note
+3. A list of shared notes is displayed below the edition field
 
-The server handles signing up of the users by hashing their passwords, and can also store the user notes. The server is also able to send their [Tanker credentials](https://tanker.io/docs/latest/guide/server/?language=javascript#tanker_users) (ID and Token) to authenticated users.
+The server handles user signup by hashing their password, and can also store the user's note. The server is also able to send their [Tanker credentials](https://tanker.io/docs/latest/guide/server/?language=javascript#tanker_users) (ID and Token) to authenticated users.
 
 ### Run
 
@@ -51,31 +53,31 @@ Now that the application is up and running, please follow the steps below:
 
 1. Sign up with an email and a password, e.g. `alice_at_example.com` and the password `p4ssw0rd`.
 
-1. Click on the `Edit my note` link, type some text in the notepad's input and save it.
+1. Click on the `Edit my note` link, type some text in the notepad's input and click on the `Save` button.
 
-1. Open a new tab and sign up a new user (for instance `bob_at_example.com` with the password `letmein`).
+1. Open another browser and sign up a new user, e.g. `bob_at_example.com` with the password `letmein`.
 
-1. Go back to the first tab, edit a new note (say `my message for Bob`) and click on the `share` button.
+1. Go back to the first browser, edit the note (say `Alice's message for Bob`) and click on the `Share` button.
 
-1. A list of users pops up. Select `bob_at_example.com` and click on `share`.
+1. A list of users pops up. Select `bob_at_example.com` and click on `Share`.
 
-1. Go back to the second tab, click on the `Refresh` button next to the `Notes shared with me` panel in the home page.
+1. Go back to the second browser, click on the `Refresh` link next to the `Notes shared with me` section in the home page.
 
 1. You should see a `From alice_at_example.com` entry in the list. Click on it.
 
-1. The text `my message from Bob` should be displayed.
+1. The text `Alice's message for Bob` should be displayed.
 
 OK, so far we have demonstrated how users can edit and share notes.
 
 
-If you have a look at the `server/data/` directory, you will see a directory named after the TrustChain ID with a couple of json files in it.
+If you have a look at the `./server/data/` directory, you will see a directory named after the TrustChain ID with a couple of json files in it.
 
 This represents the data the notepad server knows about.
 
-You can see that the contents of the notes we just created are stored in plain text.
+You can see that the note we just created and shared is stored in plain text.
 
 
-If someone were to attack the server, he would have access to all the notes of all the users!
+If someone were to attack the server, they would have access to all the notes of all the users!
 
 Let's try and fix this!
 
@@ -84,7 +86,7 @@ Data will be encrypted and decrypted client-side, and the notepad server will on
 
 ## Step by step tutorial
 
-Right now, we are going to make sure the data is stored encrypted on the server, while still allowing users transparent access to their resources.
+Right now, we are going to make sure the data is stored encrypted on the server, while still allowing users transparent access to their notes.
 
 As explained above, the server already contains the required modifications.
 
@@ -97,13 +99,13 @@ In order to help you we left some `FIXME` comments throughout the file.
 
 The goal here is to [open and close a tanker session](https://tanker.io/docs/latest/guide/open/?language=javascript).
 
-In the `./client/web/tutorial/src/Session.js` file, the Tanker `config` has already been fetched from the server for you in the `initTanker` method:
+In the `./client/web/tutorial/src/Session.js` file, the Tanker `config` has already been fetched from the server for you in the `initTanker()` method:
 ```javascript
 const config = await this.serverApi.tankerConfig();
 // e.g. { trustchainId: "..." };
 ```
 
-*Use this config to initialize a new Tanker instance in `Session.initTanker`.*
+*Use this config to initialize a new Tanker instance in `Session.initTanker()`.*
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
@@ -118,25 +120,44 @@ async initTanker() {
 </details>
 <br />
 
-Note that `this.opened` is just a placeholder attribute used throughout the file to materialize where Tanker session opening and closing will occur.
-
 Now we need to handle the creation of a Tanker session, with the help of the [`tanker.open()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#open) method.
 
-There are two cases here. Either the user just created an account, or he just logged in.
+There are 3 cases here:
 
-In both cases, the server should have sent Tanker credentials (user ID and Token), and we can call `open()` right away.
+* the user just signed up
+* the user just logged in
+* the user is already logged in on page load (e.g. browser refresh)
 
-*Call `this.tanker.open()` in `Session.openSession()`*.
+In all cases, there's already code in place to retrieve Tanker credentials (user ID and Token) from the server, and we can call `tanker.open()` right away.
+
+*Replace the 3 occurrences of the `// FIXME: open a tanker session` comment by an appropriate call to `this.tanker.open()`.*
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
-async openSession(userId: string, userToken: string) {
-- this.opened = true;
-+ await this.tanker.open(userId, userToken);
-+ console.log('Tanker session is now ready');
+async init() {
+  // ...
+  const user = await this.serverApi.getMe();
++ await this.tanker.open(user.id, user.token);
+  this.status = "open";
+  // ...
+}
+
+async signUp(email, password) {
+  // ...
+  const user = await response.json();
++ await this.tanker.open(user.id, user.token);
+  this.status = "open";
+}
+
+async logIn(email, password) {
+  // ...
+  const user = await response.json();
++ await this.tanker.open(user.id, user.token);
+  this.status = "open";
 }
 ```
+
 Note that we use `await` because opening a Tanker session is not instantaneous, and we do not want to block the application while Tanker is opening.
 </details>
 <br />
@@ -145,28 +166,18 @@ Note that `open()` will use the user token to:
 
 * register the user in the TrustChain if necessary,
 * register the device in the TrustChain if necessary,
-* fetch access keys to all the resources.
+* fetch encryption keys to access all the resources.
 
-Then you should *get rid of the `opened` attribute* and *fix the `Session.isOpen()` and `Session.close()` methods* using [`tanker.isOpen()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#isopen) and [`tanker.close()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#close).
+Then you should *close the Tanker session in the `Session.close()` method by using the [`tanker.close()`](https://www.tanker.io/docs/latest/api/tanker/?language=javascript#close) method*.
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
-constructor() {
-  // ...
-- this.opened = false;
-}
-
-isOpen(): bool {
-- return this.opened;
-+ return this.tanker && this.tanker.isOpen();
-}
-
 async close(): Promise<void> {
-  // ...
-- this.opened = false;
+  await this.serverApi.logout();
 + await this.tanker.close();
+  this.status = "closed";
 }
 ```
 </details>
@@ -174,14 +185,9 @@ async close(): Promise<void> {
 
 The `close()` method will be called when the user logs out. It's important to close the Tanker session too at this moment to make sure the encrypted data is safe at rest.
 
+At this point, nothing has changed in the application, we just made sure we could respectively open and close a Tanker session correctly when authenticating and logging out.
 
-
-
-At this point, nothing has changed in the application, we just made sure we could open and close a Tanker section correctly.
-
-You can check this by refreshing your browser, and log in. You should see the text you wrote in the previous step, and in the console log, the "Tanker session is ready" message you've just added.
-
-Now that we know how to open a Tanker session, it's time to [encrypt, decrypt and share](https://www.tanker.io/docs/latest/guide/encryption/?language=javascript) the notes!
+Now that we know how to open a Tanker session, let's use it to [encrypt, decrypt and share](https://www.tanker.io/docs/latest/guide/encryption/?language=javascript) the notes!
 
 ### Encrypting data
 
@@ -242,7 +248,7 @@ async loadTextFromUser(userId: string) {
 ### Checking it works
 
 Now the data on the server can no longer be used by the clients. So go ahead, and edit the
-`.json` files on the server to remove the data stored in plain text, keeping only the `id`, `email`, `hashed_password`, and `token` fields.
+`.json` files in the `./server/data/` directory to remove the data stored in plain text, by just deleting the `"data"` field.
 
 Migrating existing data from plain text to encrypted text is of course possible, but this is beyond the scope of this tutorial.
 
@@ -263,7 +269,7 @@ Indeed, the keys used to encrypt and decrypt notes never left the local storage 
 
 What we need to do is exchange keys from Alice to Bob.
 
-Note that each time we call `tanker.encrypt()` a new key is generated. This is done for security reasons.
+Note that each time we call `tanker.encrypt()` a new encryption key is generated. This transparent key rotation mechanism helps achieving a higher level of security.
 
 We call each version of a note a *resource*. Each time the note changes, we must get its resource ID and ask the Tanker SDK to share access to it.
 
@@ -318,7 +324,7 @@ You can now re-try sharing notes between Alice and Bob, the "share" functionalit
 
 ### Device management
 
-At this point, if you try to log in the same user either in private browsing mode, in any other browser, or in any other device, you will get an error message about a missing event handler.
+At this point, if you try to log in the same user in any other browser, or in any other device, you will get an error message about a missing event handler.
 
 That is because we did not take care of device management so far.
 
@@ -330,7 +336,9 @@ Note that this is not [the recommended option](https://tanker.io/docs/latest/gui
 
 That said, let's get back to coding.
 
-*Make sure to emit the `newDevice` event (using `this.emit()`), when the  `unlockRequired` event of the Tanker is received*.
+*At the end of the `Session.initTanker()` method, make sure to handle the `"unlockRequired"` event by registering an event handler with the `tanker.on()` method.*
+
+*Just set the `Session.status` property to `"openingNewDevice"` so that the notepad interface can react appropriately.*
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
@@ -339,7 +347,9 @@ That said, let's get back to coding.
 async initTanker() {
   // ...
   this.tanker = new Tanker(config);
-+ this.tanker.on('unlockRequired', () => this.emit('newDevice'));
++ this.tanker.on("unlockRequired", () => {
++   this.status = "openingNewDevice";
++ });
 }
 ```
 </details>
@@ -347,7 +357,7 @@ async initTanker() {
 
 That way, when the user needs to perform manual operations about its device, the UI will be notified.
 
-(The `newDevice` event is handled in the other React components of the application).
+(The `openingNewDevice` status is shared with other UI components of the application).
 
 Then *fill the code inside the `Session.unlockCurrentDevice()` method using [`tanker.unlockCurrentDevice()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#unlockcurrentdevice)*.
 
@@ -374,7 +384,7 @@ At the end of the `Session.signUp()` method, *use the [`tanker.setupUnlock()`](h
 ```diff
 async signUp(email, password) {
   // ...
-  await this.openSession(user.id, user.token);
+  await this.tanker.open(user.id, user.token);
 + await this.tanker.setupUnlock({ password });
 }
 ```
@@ -394,6 +404,26 @@ Now, you'll launch **a different browser** to emulate another device (technicall
 1. You should be prompted the password to unlock your new device,
 1. Upon entering the password, the second browser should display the same content that was saved in the first browser,
 1. You can then change the content on the second browser, click save, go back to the first browser, and load the new content.
+
+*Finally, you can also replace all remaining `// FIXME: update the unlock password` comments by calls to `tanker.updateUnlock()` to keep the password in sync between Tanker and the Notepad application.*
+
+<details>
+<summary><strong>Click here to see the solution</strong></summary>
+
+```diff
+  async changePassword(oldPassword, newPassword) {
+    await this.serverApi.changePassword(oldPassword, newPassword);
++   await this.tanker.updateUnlock({ password: newPassword });
+  }
+
+  async resetPassword(newPassword, passwordResetToken, verificationCode) {
+    // ...
+    await this.logIn(email, newPassword);
++   await this.tanker.updateUnlock({ password: newPassword });
+  }
+```
+</details>
+<br />
 
 Notes:
 

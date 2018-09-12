@@ -6,23 +6,24 @@ This is an example application server, built to be simple to read and to underst
 
 The provided implementation is not meant to be production ready and should be considered as an example of how to support Tanker user tokens in an authentication scheme.
 
-The minimalistic authentication system would need to be hardened to be ready for production, but this is beyond the scope of these examples.
-
 The following endpoints are implemented:
 
-| method | path          | description |
-|--------|---------------|-------------|
-| GET    | /config       | get the tanker config needed by the Tanker Client JS SDK |
-| GET    | /signup       | sign up a new user (returns id and user token) |
-| GET    | /login        | log in an existing user (returns id and user token) |
-| GET    | /me           | get the identity of the current user |
-| PUT    | /me/email     | change the email address of the current user |
-| PUT    | /me/password  | change the password of the current user |
-| GET    | /data/:userId | get the data of the specified user |
-| PUT    | /data         | store the data of the current user |
-| DELETE | /data         | clear the data of the current user |
-| POST   | /share        | share the data of the current user with a list of users |
-| GET    | /users        | get the identities of all the users |
+| method | path                  | description |
+|--------|-----------------------|-------------|
+| GET    | /config               | get the tanker config needed by the Tanker Client JS SDK |
+| POST   | /signup               | sign up a new user (returns id and user token) |
+| POST   | /login                | log in an existing user (returns id and user token) |
+| GET    | /logout               | log out the current user |
+| GET    | /me                   | get the identity of the current user |
+| PUT    | /me/email             | change the email address of the current user |
+| PUT    | /me/password          | change the password of the current user |
+| GET    | /data/:userId         | get the data of the specified user |
+| PUT    | /data                 | store the data of the current user |
+| DELETE | /data                 | clear the data of the current user |
+| POST   | /share                | share the data of the current user with a list of users |
+| GET    | /users                | get the identities of all the users |
+| POST   | /requestResetPassword | request an email with a link to reset password |
+| POST   | /resetPassword        | reset password given a new password and a reset token |
 
 The data is encrypted on the client side. The server stores the received data whether it is encrypted or not.
 

@@ -137,7 +137,7 @@ export default class Session extends EventEmitter {
   }
 
   async share(recipients) {
-    // FIXME: remove this line
+    // FIXME: remove the line below
     this.resourceId = this.userId;
     if (!this.resourceId) throw new Error("No resource id.");
     // FIXME: share [this.resourceId] with the recipients
