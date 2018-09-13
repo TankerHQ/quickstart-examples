@@ -78,31 +78,31 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@tanker/client-browser@^1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.7.1.tgz#36827cf8e1b3777384d8daf103c75b76b67d93e1"
+"@tanker/client-browser@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.8.0.tgz#a8b14126921661f8ca3fb54c9ab1737ae9c5c9a3"
   dependencies:
-    "@tanker/crypto" "1.7.1"
-    array.chunk "^1.1.0"
-    async-mutex "^0.1.2"
-    babel-runtime "^6.22.0"
-    dexie "^2.0.4"
-    engine.io-client "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
-    socket.io-client "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
-    varint "^5.0.0"
+    "@tanker/core" "1.8.0"
+    "@tanker/datastore-dexie-browser" "1.8.0"
 
-"@tanker/client-node@^1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.7.1.tgz#59626c22a1e80a9f2c6b2aca764ae3ceeaefac3d"
+"@tanker/client-node@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.8.0.tgz#c5af6ec8d2aed285573807c5e92a27ff266573f0"
   dependencies:
-    "@tanker/crypto" "1.7.1"
+    "@tanker/core" "1.8.0"
+    "@tanker/datastore-pouchdb-node" "1.8.0"
+
+"@tanker/core@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-1.8.0.tgz#ea87e0e4ee6d8d7c0ec129b57733549e3fdc04a5"
+  dependencies:
+    "@tanker/crypto" "1.8.0"
+    "@tanker/datastore-base" "1.8.0"
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
     babel-runtime "^6.22.0"
     engine.io-client "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
-    pouchdb-adapter-leveldb "^6.4.3"
-    pouchdb-core "^6.4.3"
-    pouchdb-find "^6.4.3"
+    lodash.uniqby "^4.7.0"
     socket.io-client "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
     varint "^5.0.0"
 
@@ -119,12 +119,47 @@
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
 
-"@tanker/crypto@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.7.1.tgz#c5fcb8f06b776a54e161879b0a9f4ce6dfe2610e"
+"@tanker/crypto@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.8.0.tgz#e91322c6ce948ec823099788eb0ba869a6c3b7b8"
   dependencies:
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
+
+"@tanker/datastore-base@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-1.8.0.tgz#87febbf42605f198ae720cb50ee0fe5cf6a52e95"
+  dependencies:
+    "@tanker/crypto" "1.8.0"
+
+"@tanker/datastore-dexie-base@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-base/-/datastore-dexie-base-1.8.0.tgz#13880040ef49bce8d32b0d894e1a17ef46d61ee5"
+  dependencies:
+    "@tanker/datastore-base" "1.8.0"
+
+"@tanker/datastore-dexie-browser@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-browser/-/datastore-dexie-browser-1.8.0.tgz#d922673bea52789d3e5fa0a0b5f637e4db2ce565"
+  dependencies:
+    "@tanker/crypto" "1.8.0"
+    "@tanker/datastore-dexie-base" "1.8.0"
+    dexie "^2.0.4"
+
+"@tanker/datastore-pouchdb-base@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-base/-/datastore-pouchdb-base-1.8.0.tgz#427b3e2bde1403fd0b360cab444ec61ff07387b6"
+  dependencies:
+    "@tanker/datastore-base" "1.8.0"
+
+"@tanker/datastore-pouchdb-node@1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-node/-/datastore-pouchdb-node-1.8.0.tgz#7286b56db76456e603dd02da5ddcbd60fd89682f"
+  dependencies:
+    "@tanker/datastore-pouchdb-base" "1.8.0"
+    pouchdb-adapter-leveldb "^6.4.3"
+    pouchdb-core "^6.4.3"
+    pouchdb-find "^6.4.3"
 
 "@tanker/user-token@1.4.1":
   version "1.4.1"
@@ -5284,6 +5319,10 @@ lodash.unescape@4.0.1:
 lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
+
+lodash.uniqby@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
 
 "lodash@>=3.5 <5", lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.10"

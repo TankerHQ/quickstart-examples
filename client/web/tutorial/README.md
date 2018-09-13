@@ -282,7 +282,7 @@ Please read the [section about sharing in the documentation](https://tanker.io/d
 
 Then, *use the `shareWith` option of `tanker.encrypt()` in `Session.saveText()`*.
 
-Also make sure to *get the resource ID matching the newly generated key by using the [`getResourceId()`](https://tanker.io/docs/latest/api/utilities/?language=javascript#getresourceid) helper function and update the `Session.resourceId` class member*
+Also make sure to *get the resource ID matching the newly generated key by using the [`tanker.getResourceId()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#getresourceid) method and update the `Session.resourceId` class member*
 
 
 <details>
@@ -295,7 +295,7 @@ async saveText(text: string) {
 - const encryptedData = await this.tanker.encrypt(text);
 + const encryptedData = await this.tanker.encrypt(text, { shareWith: recipientIds });
   const encryptedText = toBase64(encryptedData);
-+ this.resourceId = getResourceId(encryptedData);
++ this.resourceId = this.tanker.getResourceId(encryptedData);
   await this.serverApi.push(toBase64(encryptedText));
 ```
 </details>

@@ -13,7 +13,7 @@ const base64 = toBase64(binary);
 // const userId = getUserId(${quoteEllipsis(shareWithEmail)});
 // const clear = ${quoteEllipsis(text, 20)};
 // const binary = await tanker.encrypt(clear);
-// const resourceId = getResourceId(binary);
+// const resourceId = tanker.getResourceId(binary);
 // await tanker.share([resourceId], [userId]);
 `;
 

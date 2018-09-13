@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/client-browser";
+import Tanker, { toBase64, fromBase64 } from "@tanker/client-browser";
 import ServerApi from "./ServerApi";
 
 const STATUSES = [
