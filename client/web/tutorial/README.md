@@ -427,7 +427,7 @@ Now, you'll launch **a different browser** to emulate another device (technicall
 
 Notes:
 
-* Instead of a second browser, you could also have used the first browser in private browsing mode to emulate a new device. Nevertheless, the browser won't persist Tanker data over private browsing sessions, so you would have to unlock the device every time you restart such a private browsing session.
+* Using Tanker in private browsing mode is currently not working in most browsers.
 
 * Of course, in applications with strong security needs, you should ask your users to set up a password different from the one used in authentication to unlock devices. The authentication scheme becomes a 2-Factor one, where the password to unlock devices is the second factor.
 
