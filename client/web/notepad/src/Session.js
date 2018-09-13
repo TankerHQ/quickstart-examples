@@ -1,5 +1,5 @@
 import EventEmitter from "events";
-import Tanker, { toBase64, fromBase64, getResourceId } from "@tanker/client-browser";
+import Tanker, { toBase64, fromBase64 } from "@tanker/client-browser";
 import ServerApi from "./ServerApi";
 
 const STATUSES = [
@@ -118,7 +118,7 @@ export default class Session extends EventEmitter {
     const recipientIds = recipients.map(user => user.id);
     const encryptedData = await this.tanker.encrypt(text, { shareWith: recipientIds });
     const encryptedText = toBase64(encryptedData);
-    this.resourceId = getResourceId(encryptedData);
+    this.resourceId = this.tanker.getResourceId(encryptedData);
     await this.serverApi.push(encryptedText);
   }
 

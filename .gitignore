@@ -11,9 +11,6 @@
 /config/*
 !/config/.gitkeep
 
-# tutorial build
-/client/web/tutorial/**/*.orig
-
 # misc
 .DS_Store
 .env
