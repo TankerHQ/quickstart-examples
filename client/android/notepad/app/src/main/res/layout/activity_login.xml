@@ -68,6 +68,7 @@
                 android:id="@+id/forgot_password_button"
                 android:layout_width="154dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
                 android:background="@android:color/transparent"
                 android:text="@string/forgot_password_button"
                 android:textAlignment="viewStart"

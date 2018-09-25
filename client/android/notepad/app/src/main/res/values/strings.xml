@@ -26,12 +26,12 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="forgot_password_button">Forgot password</string>
-    <string name="send_link">Send link</string>
+    <string name="forgot_password_button">Forgot your password?</string>
+    <string name="send_link">Send me a reset link</string>
     <string name="email">Email</string>
     <string name="no_trustchain_config">Failed to fetch the Trustchain configuration from the server!\nPlease make sure the server is running and the Trustchain configuration file is added to the server."</string>
     <string name="tanker_init_error">An unexpected error occurred while initializing Tanker</string>
-    <string name="recovery_email">A recovery email was sent to you</string>
+    <string name="recovery_email">A recovery email has been sent to you</string>
     <string name="change_email_success">Changed email successfully</string>
     <string name="change_password_success">Changed password successfully</string>
     <string name="change_email_fail">Failed to change email</string>

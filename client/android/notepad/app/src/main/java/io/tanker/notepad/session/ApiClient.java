@@ -129,6 +129,15 @@ public class ApiClient {
         return null;
     }
 
+    public void requestResetPassword(String email) throws IOException, JSONException {
+        JSONObject data = new JSONObject();
+        data.put("email", email);
+        Response res = mHttpClient.postSync("/requestResetPassword", data.toString());
+        if (!res.isSuccessful()) {
+            throw new Error(res.body().string());
+        }
+    }
+
     public byte[] getData(String userId) throws IOException {
         Response res = mHttpClient.getSync("/data/" + userId);
         if (!res.isSuccessful()) {
