@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -9,29 +10,22 @@
         android:id="@+id/list_item_author"
         android:layout_width="match_parent"
         android:layout_height="34dp"
-        android:layout_above="@id/list_item_message"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
         android:layout_marginBottom="0dp"
         android:gravity="center_vertical"
-        android:text="Author"
+        android:inputType="none"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="Author" />
 
     <TextView
         android:id="@+id/list_item_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
         android:ellipsize="end"
-        android:inputType="textMultiLine"
-        android:password="false"
-        android:phoneNumber="false"
-        android:singleLine="true"
-        android:text="Note\ncontent"
-        android:textSize="14sp" />
+        android:inputType="none"
+        android:singleLine="false"
+        android:textSize="14sp"
+        tools:text="Note\ncontent" />
 
 </LinearLayout>
 
