@@ -60,13 +60,18 @@ public class Session {
             TankerOptions options = mTankerOptionsTask.get();
             Tanker tanker = new Tanker(options);
             tanker.connectUnlockRequiredHandler(() -> {
-                // TODO handle mTempUnlockCode
-                // Warning: due to a tconcurrent bug in SDK 1.7.3 and below, you can't .get() this Future synchronously
-                tanker.unlockCurrentDevice(new Password(mTempUnlockPassword)).then((validateFuture) -> {
-                    if (validateFuture.getError() != null) {
-                        Log.e("Session", "Device Unlock Error");
-                    }
-                });
+                if (mTempUnlockCode != null) {
+                    // TODO: handle unlock by verification code
+                    Log.e("Session", "Unlocking device by verification code NOT implemented");
+                } else {
+                    // Warning: due to a tconcurrent bug in SDK 1.7.3 and below, you can't .get() this Future synchronously
+                    tanker.unlockCurrentDevice(new Password(mTempUnlockPassword)).then((validateFuture) -> {
+                        if (validateFuture.getError() != null) {
+                            Log.e("Session", "Error when unlocking device by password");
+                            validateFuture.getError().printStackTrace();
+                        }
+                    });
+                }
             });
             return tanker;
         } catch (Throwable throwable) {
@@ -103,6 +108,14 @@ public class Session {
 
         getTanker().open(userId, userToken).get();
         getTanker().setupUnlock(new Password(password)).get();
+    }
+
+    public void resetPassword(String newPassword, String passwordResetToken, String verificationCode) throws ApiClient.AuthenticationError, IOException, JSONException {
+        String email = mApiClient.resetPassword(newPassword, passwordResetToken);
+        mTempUnlockCode = verificationCode;
+        logIn(email, newPassword);
+        mTempUnlockCode = null;
+        getTanker().updateUnlock(new Password(newPassword)).get();
     }
 
     public class TankerOptionsTask extends AsyncTask<String, Void, TankerOptions> {

@@ -23,6 +23,9 @@
     <string name="change_password_new_label">Enter your new password:</string>
     <string name="change_email_button">Change email</string>
     <string name="change_password_button">Change password</string>
+    <string name="reset_password_label">Enter your new password:</string>
+    <string name="reset_password_confirmation_label">Confirm your new password:</string>
+    <string name="reset_password_button">Reset password</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
@@ -31,7 +34,10 @@
     <string name="email">Email</string>
     <string name="no_trustchain_config">Failed to fetch the Trustchain configuration from the server!\nPlease make sure the server is running and the Trustchain configuration file is added to the server."</string>
     <string name="tanker_init_error">An unexpected error occurred while initializing Tanker</string>
-    <string name="recovery_email">A recovery email has been sent to you</string>
+    <string name="recovery_email_success">A recovery email has been sent to you</string>
+    <string name="recovery_email_fail">Failed to sent recovery email</string>
+    <string name="reset_password_success">"Successfully reset the password"</string>
+    <string name="reset_password_fail">"Failed to reset the password"</string>
     <string name="change_email_success">Changed email successfully</string>
     <string name="change_password_success">Changed password successfully</string>
     <string name="change_email_fail">Failed to change email</string>

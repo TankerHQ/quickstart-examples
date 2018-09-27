@@ -138,6 +138,20 @@ public class ApiClient {
         }
     }
 
+    public String resetPassword(String newPassword, String passwordResetToken) throws IOException, JSONException {
+        JSONObject data = new JSONObject();
+        data.put("newPassword", newPassword);
+        data.put("passwordResetToken", passwordResetToken);
+
+        Response res = mHttpClient.postSync("/resetPassword", data.toString());
+        if (!res.isSuccessful()) {
+            throw new Error(res.body().string());
+        }
+
+        JSONObject body = new JSONObject(res.body().string());
+        return body.getString("email");
+    }
+
     public byte[] getData(String userId) throws IOException {
         Response res = mHttpClient.getSync("/data/" + userId);
         if (!res.isSuccessful()) {
