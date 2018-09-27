@@ -1,5 +1,7 @@
 package io.tanker.notepad;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +19,12 @@ public class ForgotPasswordActivity extends BaseActivity {
 
         Button sendLinkButton = findViewById(R.id.send_link_button);
         sendLinkButton.setOnClickListener((View v) -> sendLink());
+
+        Intent intent = getIntent();
+        Uri data = intent.getData();
+        if (data != null) {
+            Log.e("Notepad", data.toString());
+        }
     }
 
     private void sendLink() {
