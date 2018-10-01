@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
+import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerOptions;
 import io.tanker.notepad.BuildConfig;
@@ -16,11 +18,12 @@ import io.tanker.notepad.R;
 // Singleton
 public class Session {
     private Context mAppContext;
-
     private ApiClient mApiClient;
 
     private Tanker mTanker;
     private TankerOptionsTask mTankerOptionsTask;
+    private String mTempUnlockPassword;
+    private String mTempUnlockCode;
 
     private static Session instance = null;
 
@@ -32,25 +35,6 @@ public class Session {
         return instance;
     }
 
-    public ApiClient getApiClient() {
-        return mApiClient;
-    }
-
-    public Tanker getTanker() {
-        if (mTanker == null) {
-            try {
-                TankerOptions options = mTankerOptionsTask.get();
-                mTanker = new Tanker(options);
-            } catch (Throwable throwable) {
-                Log.e("Notepad", mAppContext.getString(R.string.tanker_init_error));
-                throwable.printStackTrace();
-                return null;
-            }
-        }
-
-        return mTanker;
-    }
-
     // Private constructor: never call directly, use getInstance!
     private Session(Context context) {
         mAppContext = context;
@@ -59,10 +43,66 @@ public class Session {
         mTankerOptionsTask.execute();
     }
 
+    public ApiClient getApiClient() {
+        return mApiClient;
+    }
+
+    public Tanker getTanker() {
+        if (mTanker == null) {
+            mTanker = buildTanker();
+        }
+
+        return mTanker;
+    }
+
+    private Tanker buildTanker() {
+        try {
+            TankerOptions options = mTankerOptionsTask.get();
+            Tanker tanker = new Tanker(options);
+            tanker.connectUnlockRequiredHandler(() -> {
+                // TODO handle mTempUnlockCode
+                // Warning: due to a tconcurrent bug in SDK 1.7.3 and below, you can't .get() this Future synchronously
+                tanker.unlockCurrentDevice(new Password(mTempUnlockPassword)).then((validateFuture) -> {
+                    if (validateFuture.getError() != null) {
+                        Log.e("Session", "Device Unlock Error");
+                    }
+                });
+            });
+            return tanker;
+        } catch (Throwable throwable) {
+            Log.e("Session", mAppContext.getString(R.string.tanker_init_error));
+            throwable.printStackTrace();
+            return null;
+        }
+    }
+
     public void close() throws IOException {
         mApiClient.logout();
-        mTanker.close().get();
-        mTanker = null;
+        if (mTanker != null) {
+            mTanker.close().get();
+            mTanker = null;
+        }
+    }
+
+    public void logIn(String email, String password) throws ApiClient.AuthenticationError, IOException, JSONException {
+        JSONObject body = mApiClient.logIn(email, password);
+
+        String userId = body.getString("id");
+        String userToken = body.getString("token");
+
+        mTempUnlockPassword = password;
+        getTanker().open(userId, userToken).get();
+        mTempUnlockPassword = null;
+    }
+
+    public void signUp(String email, String password) throws ApiClient.AuthenticationError, IOException, JSONException {
+        JSONObject body = mApiClient.signUp(email, password);
+
+        String userId = body.getString("id");
+        String userToken = body.getString("token");
+
+        getTanker().open(userId, userToken).get();
+        getTanker().setupUnlock(new Password(password)).get();
     }
 
     public class TankerOptionsTask extends AsyncTask<String, Void, TankerOptions> {
@@ -84,7 +124,7 @@ public class Session {
                     options.setTrustchainUrl(url);
                 }
             } catch (Throwable throwable) {
-                Log.e("Notepad", mAppContext.getString(R.string.no_trustchain_config));
+                Log.e("Session", mAppContext.getString(R.string.no_trustchain_config));
                 throwable.printStackTrace();
                 return null;
             }

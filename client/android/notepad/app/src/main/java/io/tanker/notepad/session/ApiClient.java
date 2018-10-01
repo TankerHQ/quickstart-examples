@@ -7,12 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 import io.tanker.notepad.network.HttpClient;
 import okhttp3.Response;
-import okio.Buffer;
-import okio.BufferedSource;
 
 import static io.tanker.notepad.network.HttpClient.MEDIA_TYPE_PLAIN_TEXT;
 
@@ -32,42 +29,66 @@ public class ApiClient {
         return mCurrentUserEmail;
     }
 
-    public void logout() throws IOException {
-        mHttpClient.getSync("/logout");
-        mHttpClient.clearCookies();
-        mCurrentUserId = null;
-        mCurrentUserEmail = null;
+    public class AuthenticationError extends Exception {
+        public String mField;
+
+        public AuthenticationError(String message, String field) {
+            super(message);
+            mField = field;
+        }
     }
 
-    public Response authenticate(String path, String email, String password) throws IOException, JSONException {
+    public JSONObject authenticate(String path, String email, String password) throws AuthenticationError, IOException, JSONException {
         JSONObject data = new JSONObject();
         data.put("email", email);
         data.put("password", password);
         Response res = mHttpClient.postSync(path, data.toString());
 
-        // Extract current user id by reading the body, but don't prevent
-        // the caller of this method to read the body themselves.
-        // See: https://stackoverflow.com/a/33862068
-        if (res.isSuccessful()) {
-            BufferedSource source = res.body().source();
-            source.request(Long.MAX_VALUE); // request the entire body.
-            Buffer buffer = source.buffer();
-            // clone buffer before reading from it
-            String responseBodyString = buffer.clone().readString(Charset.forName("UTF-8"));
-            JSONObject body = new JSONObject(responseBodyString);
-            mCurrentUserId = body.getString("id");
-            mCurrentUserEmail = email;
+        if (!res.isSuccessful()) {
+            String message = "Unknown error";
+            String field = "unknown";
+
+            switch (res.code()) {
+                case 409:
+                    message = "Email already registered";
+                    field = "email";
+                    break;
+                case 401:
+                    message = "Wrong password";
+                    field = "password";
+                    break;
+                case 404:
+                    message = "Email not registered";
+                    field = "email";
+                    break;
+                case 503:
+                    message = "Could not contact the server, please try again later";
+                    break;
+            }
+
+            throw new AuthenticationError(message, field);
         }
 
-        return res;
+        JSONObject body = new JSONObject(res.body().string());
+        mCurrentUserId = body.getString("id");
+        mCurrentUserEmail = email;
+
+        return body;
     }
 
-    public Response login(String email, String password) throws IOException, JSONException {
+    public JSONObject logIn(String email, String password) throws AuthenticationError, IOException, JSONException {
         return authenticate("/login", email, password);
     }
 
-    public Response signup(String email, String password) throws IOException, JSONException {
+    public JSONObject signUp(String email, String password) throws AuthenticationError, IOException, JSONException {
         return authenticate("/signup", email, password);
+    }
+
+    public void logout() throws IOException {
+        mHttpClient.getSync("/logout");
+        mHttpClient.clearCookies();
+        mCurrentUserId = null;
+        mCurrentUserEmail = null;
     }
 
     public Response getMe() throws IOException {
