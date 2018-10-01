@@ -1,7 +1,5 @@
 package io.tanker.notepad;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,14 +10,12 @@ import android.widget.ProgressBar;
 
 import io.tanker.api.Password;
 import io.tanker.api.Tanker;
-import io.tanker.notepad.network.ApiClient;
 import okhttp3.Response;
 
 import static io.tanker.notepad.Utils.isEmailValid;
 
 public class SettingsActivity extends DrawerActivity {
     private View mProgressView;
-    private ApiClient mApiClient;
     private EditText mChangeEmailInput;
     private EditText mChangePasswordOldInput;
     private EditText mChangePasswordNewInput;
@@ -32,8 +28,6 @@ public class SettingsActivity extends DrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mApiClient = ApiClient.getInstance();
 
         mProgressView = findViewById(R.id.setting_progress_bar);
 

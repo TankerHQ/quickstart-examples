@@ -29,7 +29,6 @@ import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerConnection;
 import io.tanker.api.TankerOptions;
-import io.tanker.notepad.network.ApiClient;
 import okhttp3.Response;
 
 import static io.tanker.notepad.Utils.isEmailValid;
@@ -52,14 +51,11 @@ public class LoginActivity extends BaseActivity {
     private View mLoginFormView;
     private Tanker mTanker;
     private TankerConnection mEventConnection;
-    private ApiClient mApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        mApiClient = ApiClient.getInstance();
 
         // Set up the login form.
         mEmailView = findViewById(R.id.email);

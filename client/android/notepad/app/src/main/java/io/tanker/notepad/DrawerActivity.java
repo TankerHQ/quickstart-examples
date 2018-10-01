@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import io.tanker.api.Tanker;
-import io.tanker.notepad.network.ApiClient;
 
 /**
 
@@ -38,7 +37,6 @@ import io.tanker.notepad.network.ApiClient;
 public abstract class DrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    protected ApiClient mApiClient;
     protected Toolbar mToolbar;
 
     // This method needs to be overridden by child classes, e.g.:
@@ -51,8 +49,6 @@ public abstract class DrawerActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mApiClient = ApiClient.getInstance();
 
         setRealContentView();
 
