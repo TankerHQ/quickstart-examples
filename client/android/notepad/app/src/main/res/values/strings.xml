@@ -30,6 +30,7 @@
     <string name="send_link">Send link</string>
     <string name="email">Email</string>
     <string name="no_trustchain_config">Failed to fetch the Trustchain configuration from the server!\nPlease make sure the server is running and the Trustchain configuration file is added to the server."</string>
+    <string name="tanker_init_error">An unexpected error occurred while initializing Tanker</string>
     <string name="recovery_email">A recovery email was sent to you</string>
     <string name="change_email_success">Changed email successfully</string>
     <string name="change_password_success">Changed password successfully</string>

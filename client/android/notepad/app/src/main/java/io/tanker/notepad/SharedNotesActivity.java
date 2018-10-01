@@ -64,7 +64,7 @@ public class SharedNotesActivity extends DrawerActivity {
                 return null;
             }
 
-            Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
+            Tanker tanker = mSession.getTanker();
             byte[] clearData = tanker.decrypt(data, options).get();
             return new String(clearData, "UTF-8");
         } catch (Throwable e) {

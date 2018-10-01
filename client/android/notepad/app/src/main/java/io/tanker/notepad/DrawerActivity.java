@@ -155,10 +155,7 @@ public abstract class DrawerActivity extends BaseActivity
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mApiClient.logout();
-
-                Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
-                tanker.close().get();
+                mSession.close();
 
                 runOnUiThread(() -> {
                     // Redirect to the Login activity

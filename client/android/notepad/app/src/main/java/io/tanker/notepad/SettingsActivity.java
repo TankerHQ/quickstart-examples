@@ -118,7 +118,7 @@ public class SettingsActivity extends DrawerActivity {
 
         mProgressView.setVisibility(ProgressBar.VISIBLE);
 
-        Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
+        Tanker tanker = mSession.getTanker();
         if (tanker == null) {
             mProgressView.setVisibility(ProgressBar.INVISIBLE);
             Log.e("Notepad", "Empty tanker instance");

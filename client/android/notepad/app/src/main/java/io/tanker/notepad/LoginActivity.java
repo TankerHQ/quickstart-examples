@@ -26,9 +26,6 @@ import java.io.IOException;
 import java.net.ConnectException;
 
 import io.tanker.api.Password;
-import io.tanker.api.Tanker;
-import io.tanker.api.TankerConnection;
-import io.tanker.api.TankerOptions;
 import okhttp3.Response;
 
 import static io.tanker.notepad.Utils.isEmailValid;
@@ -38,10 +35,7 @@ import static io.tanker.notepad.Utils.isPasswordValid;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends BaseActivity {
-
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+    // Keep track of the login task to ensure we can cancel it if requested.
     private AuthenticationTask mAuthTask = null;
 
     // UI references.
@@ -49,8 +43,9 @@ public class LoginActivity extends BaseActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private Tanker mTanker;
-    private TankerConnection mEventConnection;
+
+    // Bind Tanker handler only when needed
+    private boolean mTankerBound = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,28 +82,12 @@ public class LoginActivity extends BaseActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
 
-        String writablePath = getApplicationContext().getFilesDir().getAbsolutePath();
-        TankerOptions options = new TankerOptions();
-
-        FetchTankerConfig task = new FetchTankerConfig();
-        String trustchainId = null;
-
-        try {
-            trustchainId = task.execute().get().getString("trustchainId");
-            Log.i("Notepad", "trustchainId = " + trustchainId);
-        } catch (Throwable throwable) {
-            Log.e("Notepad", getString(R.string.no_trustchain_config));
-            throwable.printStackTrace();
-        }
-
-        options.setTrustchainId(trustchainId).setWritablePath(writablePath);
-
-        mTanker = new Tanker(options);
-
-        mEventConnection = mTanker.connectUnlockRequiredHandler(() -> runOnUiThread(() -> {
+    private void bindTanker() {
+        mSession.getTanker().connectUnlockRequiredHandler(() -> runOnUiThread(() -> {
             String password = mPasswordView.getText().toString();
-            mTanker.unlockCurrentDevice(new Password(password)).then((validateFuture) -> {
+            mSession.getTanker().unlockCurrentDevice(new Password(password)).then((validateFuture) -> {
                 if (validateFuture.getError() != null) {
                     runOnUiThread(() -> {
                         mPasswordView.setError("Tanker: Wrong unlock password");
@@ -122,8 +101,6 @@ public class LoginActivity extends BaseActivity {
                 return null;
             });
         }));
-
-        ((NotepadApplication) this.getApplication()).setTankerInstance(mTanker);
     }
 
     @Override
@@ -131,19 +108,6 @@ public class LoginActivity extends BaseActivity {
         super.onRestart();
         mAuthTask = null;
         showProgress(false);
-    }
-
-
-    public class FetchTankerConfig extends AsyncTask<String, Void, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(String... params) {
-            try {
-                return mApiClient.getConfig();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-                return null;
-            }
-        }
     }
 
     private void forgotPassword() {
@@ -157,6 +121,11 @@ public class LoginActivity extends BaseActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void authenticate(Boolean isSignUp) {
+        if (!mTankerBound) {
+            bindTanker();
+            mTankerBound = true;
+        }
+
         if (mAuthTask != null) {
             return;
         }
@@ -300,7 +269,7 @@ public class LoginActivity extends BaseActivity {
             try {
                 String userToken = authenticate(mEmail, mPassword);
 
-                mTanker.open(mUserId, userToken).then((openFuture) -> {
+                mSession.getTanker().open(mUserId, userToken).then((openFuture) -> {
                     if (openFuture.getError() != null) {
                         Log.e("Notepad", "Error while opening Tanker session",
                                 openFuture.getError());
@@ -308,7 +277,7 @@ public class LoginActivity extends BaseActivity {
                     }
 
                     if (mSignUp) {
-                        mTanker.setupUnlock(new Password(mPassword)).then((fut) -> {
+                        mSession.getTanker().setupUnlock(new Password(mPassword)).then((fut) -> {
                             Log.e("Notepad", "" + fut.getError());
                             goToDefaultActivity();
                             return null;

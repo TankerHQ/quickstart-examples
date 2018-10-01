@@ -1,4 +1,4 @@
-package io.tanker.notepad.network;
+package io.tanker.notepad.session;
 
 import android.util.Base64;
 
@@ -9,28 +9,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import io.tanker.notepad.BuildConfig;
+import io.tanker.notepad.network.HttpClient;
 import okhttp3.Response;
 import okio.Buffer;
 import okio.BufferedSource;
 
 import static io.tanker.notepad.network.HttpClient.MEDIA_TYPE_PLAIN_TEXT;
 
-// Singleton
 public class ApiClient {
-    // Private constructor: never call directly, use getInstance!
-    private ApiClient() {
-        mHttpClient = new HttpClient(BuildConfig.API_ROOT);
-    }
-
-    private static ApiClient instance = null;
-
-    public static ApiClient getInstance() {
-        if (instance == null) {
-            instance = new ApiClient();
-        }
-
-        return instance;
+    public ApiClient(String root) {
+        mHttpClient = new HttpClient(root);
     }
 
     private HttpClient mHttpClient;
