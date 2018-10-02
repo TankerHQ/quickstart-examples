@@ -27,10 +27,9 @@ import io.tanker.api.Tanker;
 
  public class SpecificActivity extends DrawerActivity {
 
- public int getContentResourceId() {
- return R.layout.content_specific;
- }
-
+     public int getContentResourceId() {
+         return R.layout.content_specific;
+     }
  }
 
  */
@@ -137,18 +136,7 @@ public abstract class DrawerActivity extends BaseActivity
     }
 
     private void logout() {
-        LogoutTask task = new LogoutTask();
-        task.execute();
-        boolean ok = false;
-
-        try {
-            ok = task.get();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        if (!ok) {
-            showToast("Logout failed");
-        }
+        new LogoutTask().execute();
     }
 
     public class LogoutTask extends AsyncTask<Void, Void, Boolean> {
@@ -156,17 +144,21 @@ public abstract class DrawerActivity extends BaseActivity
         protected Boolean doInBackground(Void... params) {
             try {
                 mSession.close();
-
-                runOnUiThread(() -> {
-                    // Redirect to the Login activity
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(intent);
-                });
+                return true;
             } catch (Throwable e) {
                 Log.e("Notepad", "Failed to logout");
                 return false;
             }
-            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if (success) {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            } else {
+                showToast("Logout failed");
+            }
         }
     }
 
