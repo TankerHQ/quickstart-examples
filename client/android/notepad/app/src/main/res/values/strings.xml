@@ -36,8 +36,12 @@
     <string name="tanker_init_error">An unexpected error occurred while initializing Tanker</string>
     <string name="recovery_email_success">A recovery email has been sent to you</string>
     <string name="recovery_email_fail">Failed to sent recovery email</string>
-    <string name="reset_password_success">"Successfully reset the password"</string>
-    <string name="reset_password_fail">"Failed to reset the password"</string>
+    <string name="reset_password_link">Paste your reset link</string>
+    <string name="reset_password_link_button">Validate reset link</string>
+    <string name="reset_password_success">Successfully reset the password</string>
+    <string name="reset_password_fail">Failed to reset the password</string>
+    <string name="i_have_a_reset_link_button">I already received a reset link</string>
+    <string name="i_dont_have_a_reset_link_button">I don\'t have a reset link</string>
     <string name="change_email_success">Changed email successfully</string>
     <string name="change_password_success">Changed password successfully</string>
     <string name="change_email_fail">Failed to change email</string>

@@ -12,6 +12,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 
 import static io.tanker.notepad.Utils.isEmailValid;
+import static io.tanker.notepad.Utils.isURLValid;
 
 public class ForgotPasswordActivity extends BaseActivity {
     private static class ResetPasswordToken {
@@ -52,6 +53,29 @@ public class ForgotPasswordActivity extends BaseActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.forgot_password_fragment, newFragment);
         transaction.commit();
+    }
+
+    public void debugDisplayResetLinkForm(View button) {
+        displayFragment(new ResetPasswordLinkFragment());
+    }
+
+    public void debugDisplayRequestResetPassword(View button) {
+        displayFragment(new RequestResetPasswordFragment());
+    }
+
+    public void debugValidateResetLinkForm(View button) {
+        View fragmentView = findViewById(R.id.forgot_password_fragment);
+        EditText linkInput = fragmentView.findViewById(R.id.reset_password_link_input);
+        String link = linkInput.getText().toString();
+
+        if (!isURLValid(link)) {
+            linkInput.setError("Invalid link");
+            linkInput.requestFocus();
+            return;
+        }
+
+        mResetToken = ResetPasswordToken.fromLink(link);
+        displayFragment(new ResetPasswordFragment());
     }
 
     public void onRequestResetPassword(View button) {
