@@ -103,17 +103,32 @@ public class ApiClient {
         return new JSONObject(res.body().string());
     }
 
-    public Response updateEmail(String newEmail) throws IOException, JSONException {
+    public void changeEmail(String newEmail) throws IOException, JSONException {
         JSONObject data = new JSONObject();
         data.put("email", newEmail);
-        return mHttpClient.putSync("/me/email", data.toString());
+        Response res = mHttpClient.putSync("/me/email", data.toString());
+
+        if (res.isSuccessful()) {
+            mCurrentUserEmail = newEmail;
+        } else {
+            String message = "Failed to change email address";
+            if (res.code() == 409) {
+                message = "Email address not available";
+            }
+            throw new Error(message);
+        }
     }
 
-    public Response updatePassword(String oldPassword, String newPassword) throws IOException, JSONException {
+    public void changePassword(String oldPassword, String newPassword) throws IOException, JSONException {
         JSONObject data = new JSONObject();
         data.put("oldPassword", oldPassword);
         data.put("newPassword", newPassword);
-        return mHttpClient.putSync("/me/password", data.toString());
+        Response res = mHttpClient.putSync("/me/password", data.toString());
+
+        if (!res.isSuccessful()) {
+            String message = "Failed to change password";
+            throw new Error(message);
+        }
     }
 
     public String getUserIdFromEmail(String email) throws IOException, JSONException {

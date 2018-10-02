@@ -61,7 +61,7 @@ public class Session {
             Tanker tanker = new Tanker(options);
             tanker.connectUnlockRequiredHandler(() -> {
                 if (mTempUnlockCode != null) {
-                    // TODO: handle unlock by verification code
+                    // TODO: implement unlock by verification code
                     Log.e("Session", "Unlocking device by verification code NOT implemented");
                 } else {
                     // Warning: due to a tconcurrent bug in SDK 1.7.3 and below, you can't .get() this Future synchronously
@@ -107,6 +107,7 @@ public class Session {
         String userToken = body.getString("token");
 
         getTanker().open(userId, userToken).get();
+        // TODO: migrate to new unlock APIs
         getTanker().setupUnlock(new Password(password)).get();
     }
 
@@ -115,6 +116,18 @@ public class Session {
         mTempUnlockCode = verificationCode;
         logIn(email, newPassword);
         mTempUnlockCode = null;
+        // TODO: migrate to new unlock APIs
+        getTanker().updateUnlock(new Password(newPassword)).get();
+    }
+
+    public void changeEmail(String newEmail) throws IOException, JSONException {
+        mApiClient.changeEmail(newEmail);
+        // TODO: implement unlock email update
+    }
+
+    public void changePassword(String oldPassword, String newPassword) throws IOException, JSONException {
+        mApiClient.changePassword(oldPassword, newPassword);
+        // TODO: migrate unlock to new APIs
         getTanker().updateUnlock(new Password(newPassword)).get();
     }
 
