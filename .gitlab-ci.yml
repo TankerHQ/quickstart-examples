@@ -9,4 +9,4 @@ ci:
   script:
     - cd .ci
     - python3 -m pipenv install
-    - PYTHONPATH=. python3 -m pipenv run python ci/quickstart_examples.py
+    - PYTHONPATH=. python3 -m pipenv run python quickstart/quickstart_examples.py
