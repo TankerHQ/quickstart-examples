@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:labelFor="@+id/change_email_input"
             android:text="@string/change_email_label"
             android:textSize="18sp"
             tools:layout_editor_absoluteX="16dp"
@@ -72,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:labelFor="@+id/change_password_old_input"
             android:text="@string/change_password_old_label"
             android:textSize="18sp" />
 
@@ -87,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:labelFor="@+id/change_password_new_input"
             android:text="@string/change_password_new_label"
             android:textSize="18sp" />
 
@@ -110,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Change password"
+            android:text="@string/change_password_button"
             android:textStyle="bold" />
 
     </LinearLayout>

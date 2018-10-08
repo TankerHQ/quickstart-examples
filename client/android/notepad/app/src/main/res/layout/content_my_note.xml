@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:focusable="auto"
         android:focusableInTouchMode="false"
-        android:text="Edit my note"
+        android:text="@string/edit_my_note_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Type your note here"
+        android:hint="@string/edit_my_note_placeholder"
         android:inputType="textMultiLine"
         android:lineSpacingExtra="8sp"
         android:minLines="2"
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:text="Share with:"
+        android:text="@string/share_with_label"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recipient_email_input" />
@@ -53,8 +53,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Email (optional)"
-        android:inputType="textPersonName"
+        android:hint="@string/share_with_placeholder"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/recipient_name_label"
         app:layout_constraintTop_toBottomOf="@+id/note_input" />
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Save note"
+        android:text="@string/save_note_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recipient_email_input" />
 

@@ -45,7 +45,7 @@ public class MyNoteActivity extends DrawerActivity {
                 return null;
             }
 
-            Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
+            Tanker tanker = mSession.getTanker();
             byte[] clearData = tanker.decrypt(data, options).get();
             return new String(clearData, "UTF-8");
         } catch (Throwable e) {
@@ -99,7 +99,7 @@ public class MyNoteActivity extends DrawerActivity {
                     }
                 }
 
-                Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
+                Tanker tanker = mSession.getTanker();
 
                 byte[] clearData = clearText.getBytes();
                 byte[] encryptedData = tanker.encrypt(clearData, null).get();

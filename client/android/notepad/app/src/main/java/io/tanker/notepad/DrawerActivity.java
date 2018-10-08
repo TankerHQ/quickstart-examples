@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import io.tanker.api.Tanker;
-import io.tanker.notepad.network.ApiClient;
 
 /**
 
@@ -28,17 +27,15 @@ import io.tanker.notepad.network.ApiClient;
 
  public class SpecificActivity extends DrawerActivity {
 
- public int getContentResourceId() {
- return R.layout.content_specific;
- }
-
+     public int getContentResourceId() {
+         return R.layout.content_specific;
+     }
  }
 
  */
 public abstract class DrawerActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    protected ApiClient mApiClient;
     protected Toolbar mToolbar;
 
     // This method needs to be overridden by child classes, e.g.:
@@ -51,8 +48,6 @@ public abstract class DrawerActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mApiClient = ApiClient.getInstance();
 
         setRealContentView();
 
@@ -141,39 +136,29 @@ public abstract class DrawerActivity extends BaseActivity
     }
 
     private void logout() {
-        LogoutTask task = new LogoutTask();
-        task.execute();
-        boolean ok = false;
-
-        try {
-            ok = task.get();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-        if (!ok) {
-            showToast("Logout failed");
-        }
+        new LogoutTask().execute();
     }
 
     public class LogoutTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                mApiClient.logout();
-
-                Tanker tanker = ((NotepadApplication) getApplication()).getTankerInstance();
-                tanker.close().get();
-
-                runOnUiThread(() -> {
-                    // Redirect to the Login activity
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(intent);
-                });
+                mSession.close();
+                return true;
             } catch (Throwable e) {
                 Log.e("Notepad", "Failed to logout");
                 return false;
             }
-            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            if (success) {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            } else {
+                showToast("Logout failed");
+            }
         }
     }
 

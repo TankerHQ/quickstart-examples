@@ -213,12 +213,13 @@ app.post('/requestResetPassword', async (req, res) => {
     const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
     app.storage.setPasswordResetSecret(userId, secret);
 
+    const emailDomain = serverConfig.domain;
     const confirmUrl = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}:TANKER_VERIFICATION_CODE`;
 
     const email = {
       subject: 'Password Reset',
       html: `<p>Click <a href="${confirmUrl}">here</a> to reset your password</p>`,
-      from_email: 'noreply@tanker.io',
+      from_email: `noreply@${emailDomain}`,
       from_name: 'the friendly unlock server',
       to_email: userEmail,
     };

@@ -10,8 +10,8 @@
     <string name="nav_settings">Settings</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="email_placeholder">Email</string>
+    <string name="password_placeholder">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -23,17 +23,35 @@
     <string name="change_password_new_label">Enter your new password:</string>
     <string name="change_email_button">Change email</string>
     <string name="change_password_button">Change password</string>
+    <string name="reset_password_label">Enter your new password:</string>
+    <string name="reset_password_confirmation_label">Confirm your new password:</string>
+    <string name="reset_password_button">Reset password</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="forgot_password_button">Forgot password</string>
-    <string name="send_link">Send link</string>
+    <string name="forgot_password_button">Forgot your password?</string>
+    <string name="send_link">Send me a reset link</string>
     <string name="email">Email</string>
-    <string name="no_trustchain_config">Failed to fetch the Trustchain configuration from the server!\nPlease make sure the server is running and the Trustchain configuration file is added to the server."</string>
-    <string name="recovery_email">A recovery email was sent to you</string>
+    <string name="no_trustchain_config">Failed to fetch the Trustchain configuration from the server! Please make sure the server has been launched following instructions from the repository\'s README.</string>
+    <string name="tanker_init_error">An unexpected error occurred while initializing Tanker</string>
+    <string name="recovery_email_success">A recovery email has been sent to you</string>
+    <string name="recovery_email_fail">Failed to sent recovery email</string>
+    <string name="reset_password_link">Paste your reset link</string>
+    <string name="reset_password_link_button">Validate reset link</string>
+    <string name="reset_password_success">Successfully reset the password</string>
+    <string name="reset_password_fail">Failed to reset the password</string>
+    <string name="i_have_a_reset_link_button">I already received a reset link</string>
+    <string name="i_dont_have_a_reset_link_button">I don\'t have a reset link</string>
     <string name="change_email_success">Changed email successfully</string>
     <string name="change_password_success">Changed password successfully</string>
     <string name="change_email_fail">Failed to change email</string>
     <string name="change_password_fail">Failed to change password</string>
     <string name="email_exist">Email already registered</string>
+    <string name="edit_my_note_label">Edit my note</string>
+    <string name="edit_my_note_placeholder">Type your note here</string>
+    <string name="share_with_label">Share with:</string>
+    <string name="share_with_placeholder">Email (optional)</string>
+    <string name="save_note_button">Save note</string>
+    <string name="login_button">Log In</string>
+    <string name="signup_button">Sign up</string>
 </resources>

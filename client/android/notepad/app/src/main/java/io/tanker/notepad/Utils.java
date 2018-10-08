@@ -8,6 +8,10 @@ public class Utils {
         return (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches());
     }
 
+    public static boolean isURLValid(String url) {
+        return (!TextUtils.isEmpty(url) && Patterns.WEB_URL.matcher(url).matches());
+    }
+
     public static boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return true;
