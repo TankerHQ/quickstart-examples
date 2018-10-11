@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import io.tanker.api.Email;
 import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerOptions;
@@ -62,10 +63,13 @@ public class Session {
             Tanker tanker = new Tanker(options);
             tanker.connectUnlockRequiredHandler(() -> {
                 if (mTempUnlockCode != null) {
-                    // TODO: implement unlock by verification code
-                    Log.e("Session", "Unlocking device by verification code NOT implemented");
+                    mTanker.unlockCurrentDevice(new VerificationCode(mTempUnlockCode)).then((validateFuture) -> {
+                        if (validateFuture.getError() != null) {
+                            Log.e("Session", "Error when unlocking device by email verification code");
+                            validateFuture.getError().printStackTrace();
+                        }
+                    });
                 } else {
-                    // Warning: due to a tconcurrent bug in SDK 1.7.3 and below, you can't .get() this Future synchronously
                     tanker.unlockCurrentDevice(new Password(mTempUnlockPassword)).then((validateFuture) -> {
                         if (validateFuture.getError() != null) {
                             Log.e("Session", "Error when unlocking device by password");
@@ -108,7 +112,7 @@ public class Session {
         String userToken = body.getString("token");
 
         getTanker().open(userId, userToken).get();
-        getTanker().registerUnlock(null, new Password(password)).get();
+        getTanker().registerUnlock(new Email(email), new Password(password)).get();
     }
 
     public void resetPassword(String newPassword, String passwordResetToken, String verificationCode) throws ApiClient.AuthenticationError, IOException, JSONException {
@@ -121,7 +125,7 @@ public class Session {
 
     public void changeEmail(String newEmail) throws IOException, JSONException {
         mApiClient.changeEmail(newEmail);
-        // TODO: implement unlock email update
+        getTanker().registerUnlock(new Email(newEmail), null).get();
     }
 
     public void changePassword(String oldPassword, String newPassword) throws IOException, JSONException {
