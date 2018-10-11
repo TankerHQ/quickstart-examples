@@ -12,6 +12,7 @@ import java.io.IOException;
 import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerOptions;
+import io.tanker.api.VerificationCode;
 import io.tanker.notepad.BuildConfig;
 import io.tanker.notepad.R;
 
@@ -107,8 +108,7 @@ public class Session {
         String userToken = body.getString("token");
 
         getTanker().open(userId, userToken).get();
-        // TODO: migrate to new unlock APIs
-        getTanker().setupUnlock(new Password(password)).get();
+        getTanker().registerUnlock(null, new Password(password)).get();
     }
 
     public void resetPassword(String newPassword, String passwordResetToken, String verificationCode) throws ApiClient.AuthenticationError, IOException, JSONException {
@@ -116,8 +116,7 @@ public class Session {
         mTempUnlockCode = verificationCode;
         logIn(email, newPassword);
         mTempUnlockCode = null;
-        // TODO: migrate to new unlock APIs
-        getTanker().updateUnlock(new Password(newPassword)).get();
+        getTanker().registerUnlock(null, new Password(newPassword)).get();
     }
 
     public void changeEmail(String newEmail) throws IOException, JSONException {
@@ -127,8 +126,7 @@ public class Session {
 
     public void changePassword(String oldPassword, String newPassword) throws IOException, JSONException {
         mApiClient.changePassword(oldPassword, newPassword);
-        // TODO: migrate unlock to new APIs
-        getTanker().updateUnlock(new Password(newPassword)).get();
+        getTanker().registerUnlock(null, new Password(newPassword)).get();
     }
 
     public class TankerOptionsTask extends AsyncTask<String, Void, TankerOptions> {
