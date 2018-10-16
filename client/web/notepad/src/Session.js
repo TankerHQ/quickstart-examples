@@ -39,9 +39,14 @@ export default class Session extends EventEmitter {
     if (this.tanker) return;
     const config = await this.serverApi.tankerConfig();
     this.tanker = new Tanker(config);
-    this.tanker.on("unlockRequired", () => {
+    this.tanker.on("unlockRequired", async () => {
       if (this.verificationCode) {
-        this.tanker.unlockCurrentDevice({ verificationCode: this.verificationCode });
+        try {
+          await this.tanker.unlockCurrentDevice({ verificationCode: this.verificationCode });
+        } catch (e) {
+          console.error(e); // most likely, the verification code is invalid
+          await this.close();
+        }
         // prevent re-use
         this.verificationCode = null;
       } else {
