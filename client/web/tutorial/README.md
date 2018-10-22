@@ -376,7 +376,7 @@ Thus, when the user needs to unlock a new device, the web application will end u
 
 Finally, we need to set up the password used to unlock new devices. For the sake of simplicity, we will reuse the password defined at signup in this tutorial.
 
-At the end of the `Session.signUp()` method, *use the [`tanker.setupUnlock()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#setupunlock) method to register the password given at user sign up*.
+At the end of the `Session.signUp()` method, *use the [`tanker.registerUnlock()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#registerunlock) method to register the password and email given at user sign up*.
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
@@ -385,7 +385,7 @@ At the end of the `Session.signUp()` method, *use the [`tanker.setupUnlock()`](h
 async signUp(email, password) {
   // ...
   await this.tanker.open(user.id, user.token);
-+ await this.tanker.setupUnlock({ password });
++ await this.tanker.registerUnlock({ password, email });
 }
 ```
 </details>
@@ -405,21 +405,26 @@ Now, you'll launch **a different browser** to emulate another device (technicall
 1. Upon entering the password, the second browser should display the same content that was saved in the first browser,
 1. You can then change the content on the second browser, click save, go back to the first browser, and load the new content.
 
-*Finally, you can also replace all remaining `// FIXME: update the unlock password` comments by calls to `tanker.updateUnlock()` to keep the password in sync between Tanker and the Notepad application.*
+*Finally, you can also replace all remaining `// FIXME: update the unlock...` comments by calls to `tanker.registerUnlock()` to keep the password and email in sync between Tanker and the Notepad application.*
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
 
 ```diff
+  async changeEmail(newEmail) {
+    await this.serverApi.changeEmail(newEmail);
++   await this.tanker.registerUnlock({ email: newEmail });
+  }
+
   async changePassword(oldPassword, newPassword) {
     await this.serverApi.changePassword(oldPassword, newPassword);
-+   await this.tanker.updateUnlock({ password: newPassword });
++   await this.tanker.registerUnlock({ password: newPassword });
   }
 
   async resetPassword(newPassword, passwordResetToken, verificationCode) {
     // ...
     await this.logIn(email, newPassword);
-+   await this.tanker.updateUnlock({ password: newPassword });
++   await this.tanker.registerUnlock({ password: newPassword });
   }
 ```
 </details>
