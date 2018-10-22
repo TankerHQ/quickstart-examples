@@ -89,7 +89,7 @@ export default class Session extends EventEmitter {
     const user = await response.json();
 
     await this.tanker.open(user.id, user.token);
-    await this.tanker.setupUnlock({ password, email });
+    await this.tanker.registerUnlock({ password, email });
 
     this.status = "open";
   }
@@ -162,12 +162,12 @@ export default class Session extends EventEmitter {
 
   async changeEmail(newEmail) {
     await this.serverApi.changeEmail(newEmail);
-    await this.tanker.updateUnlock({ email: newEmail });
+    await this.tanker.registerUnlock({ email: newEmail });
   }
 
   async changePassword(oldPassword, newPassword) {
     await this.serverApi.changePassword(oldPassword, newPassword);
-    await this.tanker.updateUnlock({ password: newPassword });
+    await this.tanker.registerUnlock({ password: newPassword });
   }
 
   async resetPassword(newPassword, passwordResetToken, verificationCode) {
@@ -176,6 +176,6 @@ export default class Session extends EventEmitter {
     const { email } = jsonResponse;
     this.verificationCode = verificationCode;
     await this.logIn(email, newPassword);
-    await this.tanker.updateUnlock({ password: newPassword });
+    await this.tanker.registerUnlock({ password: newPassword });
   }
 }
