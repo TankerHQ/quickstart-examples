@@ -71,16 +71,16 @@
                   NSLog(@"Tanker is open");
                 return [[Globals sharedInstance].tanker setupUnlockWithPassword:password];
               }).then(^{
-                    [_activityIndicator stopAnimating];
+                    [self.activityIndicator stopAnimating];
                     HomeViewController* controller =
                         [self.storyboard instantiateViewControllerWithIdentifier:@"HomeViewController"];
                     [self.navigationController pushViewController:controller animated:YES];
               })
               .catch(^(NSError* err) {
-                [_activityIndicator stopAnimating];
+                [self.activityIndicator stopAnimating];
                 NSString* message = @"Error during signup";
                 NSLog(@"%@: %@", message, [err localizedDescription]);
-                _errorLabel.text = message;
+                self.errorLabel.text = message;
               });
 }
 

@@ -6,7 +6,7 @@
 @interface EditNoteViewController ()
 @property UIActivityIndicatorView* activityIndicator;
 
-@property(weak, nonatomic) IBOutlet UITextView* SecretNotesField;
+@property(weak, nonatomic) IBOutlet UITextView* secretNotesField;
 @property(weak, nonatomic) IBOutlet UITextField* shareWithField;
 @property(weak, nonatomic) IBOutlet UILabel* errorLabel;
 
@@ -31,14 +31,14 @@
         return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData];
       })
       .then(^(NSString* clearText) {
-        _SecretNotesField.text = clearText;
-        [_activityIndicator stopAnimating];
+        self.secretNotesField.text = clearText;
+        [self.activityIndicator stopAnimating];
       })
       .catch(^(NSError* error) {
-        [_activityIndicator stopAnimating];
+        [self.activityIndicator stopAnimating];
         // TODO constant
         if ([error.domain isEqualToString:@"io.notepad"] && error.code == 404)
-          _SecretNotesField.text = @"";
+          self.secretNotesField.text = @"";
       });
 }
 
@@ -93,7 +93,7 @@
       [_shareWithField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
   [_activityIndicator startAnimating];
-  NSString* text = _SecretNotesField.text;
+  NSString* text = self.secretNotesField.text;
 
   [self buildEncryptOptions:recipientUserEmail]
     .then(^(TKREncryptionOptions* opts) {
@@ -101,12 +101,12 @@
     }).then(^(NSData* encryptedData) {
       NSString* b64EncryptedData = [encryptedData base64EncodedStringWithOptions:0];
       [Globals uploadToServer:b64EncryptedData].then(^{
-        [_activityIndicator stopAnimating];
+        [self.activityIndicator stopAnimating];
         NSLog(@"Data sent to server");
       });
     })
     .catch(^(NSError* error) {
-      [_activityIndicator stopAnimating];
+      [self.activityIndicator stopAnimating];
       NSLog(@"Could not encrypt and send data to server: %@", [error localizedDescription]);
     });
 }
@@ -141,11 +141,11 @@
       });
     })
     .then(^{
-      [_activityIndicator stopAnimating];
+      [self.activityIndicator stopAnimating];
       NSLog(@"Data shared with user: %@", recipientUserId);
     })
     .catch(^(NSError* error) {
-      [_activityIndicator stopAnimating];
+      [self.activityIndicator stopAnimating];
       NSLog(@"Could not encrypt & share and send data to server: %@", [error localizedDescription]);
     });
 }
@@ -168,12 +168,12 @@
     .then(^(NSString* b64EncryptedData) {
       NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
       return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData].then(^(NSString* clearText) {
-        _SecretNotesField.text = clearText;
-        [_activityIndicator stopAnimating];
+        self.secretNotesField.text = clearText;
+        [self.activityIndicator stopAnimating];
       });
     })
     .catch(^(NSError* error) {
-      [_activityIndicator stopAnimating];
+      [self.activityIndicator stopAnimating];
       NSLog(@"Could notload data from server: %@", [error localizedDescription]);
     });
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hWE-Yk-UHV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="hWE-Yk-UHV">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -253,8 +253,8 @@
                         <viewLayoutGuide key="safeArea" id="DLG-nJ-qsp"/>
                     </view>
                     <connections>
-                        <outlet property="SecretNotesField" destination="0nX-mQ-bE8" id="aa8-Au-KJy"/>
                         <outlet property="errorLabel" destination="jxb-xk-YpN" id="h5T-nY-doj"/>
+                        <outlet property="secretNotesField" destination="0nX-mQ-bE8" id="aa8-Au-KJy"/>
                         <outlet property="shareWithField" destination="cHU-Jd-npe" id="Wwu-m1-vIe"/>
                     </connections>
                 </viewController>
@@ -552,6 +552,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="Oy3-kR-A20"/>
-        <segue reference="pVh-AI-9Bk"/>
+        <segue reference="xr9-3h-QrL"/>
     </inferredMetricsTieBreakers>
 </document>
