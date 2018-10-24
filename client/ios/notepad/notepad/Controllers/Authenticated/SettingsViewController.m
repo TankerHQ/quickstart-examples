@@ -1,6 +1,5 @@
 #import "SettingsViewController.h"
 #import "Globals.h"
-#import "HomeViewController.h"
 
 @import PromiseKit;
 
@@ -16,6 +15,13 @@
 @end
 
 @implementation SettingsViewController
+
+- (void)viewDidLoad
+{
+  self.navbarTitle = @"Settings";
+  [super viewDidLoad];
+}
+
 - (IBAction)changePasswordAction:(UIButton *)sender {
   _errorLabel.text = @"";
 
@@ -48,10 +54,11 @@
   [Globals changePasswordFrom:theOldPassword to:theNewPassword].then(^{
     [[Globals sharedInstance].tanker updateUnlockPassword:theNewPassword].then(
         ^{
-          HomeViewController *controller = [self.storyboard
-              instantiateViewControllerWithIdentifier:@"HomeViewController"];
-          [self.navigationController pushViewController:controller
-                                               animated:YES];
+          self.theOldPasswordField.text = @"";
+          self.theNewPasswordField.text = @"";
+          self.thePasswordConfirmationField.text = @"";
+
+          [self.tabBarController setSelectedIndex:(0)];
         });
   });
 }
@@ -70,15 +77,9 @@
   }
 
   [Globals changeEmail:email].then(^{
-    HomeViewController *controller = [self.storyboard
-        instantiateViewControllerWithIdentifier:@"HomeViewController"];
-    [self.navigationController pushViewController:controller animated:YES];
+    self.emailField.text = @"";
+    [self.tabBarController setSelectedIndex:(0)];
   });
-}
-
-- (void)viewDidLoad {
-  [super viewDidLoad];
-  // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)didReceiveMemoryWarning {

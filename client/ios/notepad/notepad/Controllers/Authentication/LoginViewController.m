@@ -1,6 +1,5 @@
 #import "LoginViewController.h"
 #import "Globals.h"
-#import "HomeViewController.h"
 @import PromiseKit;
 
 @interface LoginViewController ()
@@ -86,8 +85,8 @@
       })
       .then(^{
         [self.activityIndicator stopAnimating];
-        HomeViewController *controller = [self.storyboard
-            instantiateViewControllerWithIdentifier:@"HomeViewController"];
+        UITabBarController *controller = [self.storyboard
+            instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
         [self.navigationController pushViewController:controller animated:YES];
       })
       .catch(^(NSError *error) {

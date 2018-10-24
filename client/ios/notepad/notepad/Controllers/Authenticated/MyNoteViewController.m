@@ -1,9 +1,9 @@
-#import "EditNoteViewController.h"
+#import "MyNoteViewController.h"
 #import "Globals.h"
 
 @import PromiseKit;
 
-@interface EditNoteViewController ()
+@interface MyNoteViewController ()
 @property UIActivityIndicatorView* activityIndicator;
 
 @property(weak, nonatomic) IBOutlet UITextView* secretNotesField;
@@ -12,12 +12,13 @@
 
 @end
 
-@implementation EditNoteViewController
+@implementation MyNoteViewController
 
 - (void)viewDidLoad
 {
+  self.navbarTitle = @"Edit my note";
+
   [super viewDidLoad];
-  // Do any additional setup after loading the view.
 
   _activityIndicator = [[UIActivityIndicatorView alloc]
       initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25, self.view.bounds.size.height / 2 - 25, 50, 50)];
