@@ -8,7 +8,7 @@ Example applications using the Tanker SDK in JavaScript, iOS and Android.
 
 Clone this repository:
 ```bash
-git clone https://github.com/SuperTanker/quickstart-examples.git
+git clone https://github.com/TankerHQ/quickstart-examples.git
 ```
 
 Install [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install), or upgrade if needed:

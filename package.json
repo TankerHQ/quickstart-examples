@@ -5,7 +5,7 @@
   "description": "Example applications for Tanker.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SuperTanker/quickstart-examples.git"
+    "url": "https://github.com/TankerHQ/quickstart-examples.git"
   },
   "author": "Tanker Team",
   "license": "MIT",

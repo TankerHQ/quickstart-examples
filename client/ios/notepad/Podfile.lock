@@ -56,7 +56,7 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - OMGHTTPURLRQ
     - PromiseKit
-  https://github.com/SuperTanker/PodSpecs.git:
+  https://github.com/TankerHQ/PodSpecs.git:
     - Tanker
 
 SPEC CHECKSUMS:

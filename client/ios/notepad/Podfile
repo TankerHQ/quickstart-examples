@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-source 'https://github.com/SuperTanker/PodSpecs.git'
+source 'https://github.com/TankerHQ/PodSpecs.git'
 
 target 'notepad' do
   use_frameworks!

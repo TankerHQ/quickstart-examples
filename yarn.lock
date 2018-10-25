@@ -101,9 +101,9 @@
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
     babel-runtime "^6.22.0"
-    engine.io-client "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
+    engine.io-client "git+https://github.com/TankerHQ/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
     lodash.uniqby "^4.7.0"
-    socket.io-client "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
+    socket.io-client "git+https://github.com/TankerHQ/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
     varint "^5.0.0"
 
 "@tanker/crypto@1.4.0":
@@ -2686,9 +2686,9 @@ end-stream@~0.1.0:
   dependencies:
     write-stream "~0.4.3"
 
-"engine.io-client@git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67":
+"engine.io-client@git+https://github.com/TankerHQ/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67":
   version "3.1.0"
-  resolved "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
+  resolved "git+https://github.com/TankerHQ/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
   dependencies:
     component-emitter "1.2.1"
     component-inherit "0.0.3"
@@ -7910,16 +7910,16 @@ sntp@2.x.x:
   dependencies:
     hoek "4.x.x"
 
-"socket.io-client@git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da":
+"socket.io-client@git+https://github.com/TankerHQ/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da":
   version "2.0.3"
-  resolved "git+https://github.com/SuperTanker/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
+  resolved "git+https://github.com/TankerHQ/socket.io-client.git#310afdafadb4cc97ca36c0b7b5c4bc39a1c859da"
   dependencies:
     backo2 "1.0.2"
     base64-arraybuffer "0.1.5"
     component-bind "1.0.0"
     component-emitter "1.2.1"
     debug "~2.6.4"
-    engine.io-client "git+https://github.com/SuperTanker/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
+    engine.io-client "git+https://github.com/TankerHQ/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
     has-cors "1.1.0"
     indexof "0.0.1"
     object-component "0.0.3"
