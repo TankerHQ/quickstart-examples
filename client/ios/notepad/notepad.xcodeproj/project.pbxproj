@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		5001EF422181FA3D004393F7 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5001EF412181FA3D004393F7 /* BaseViewController.m */; };
+		5022DFC52183151A007B3418 /* NoteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5022DFC32183151A007B3418 /* NoteTableViewCell.m */; };
+		5022DFC9218316FA007B3418 /* NoteTableViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5022DFC8218316FA007B3418 /* NoteTableViewItem.m */; };
+		504F88F82183674C0039E9D1 /* SharedNoteDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 504F88F72183674C0039E9D1 /* SharedNoteDetailsViewController.m */; };
 		50A99F3D2181ECAE006BBA4D /* AuthenticatedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */; };
 		6BC58E12FBCAEBC9E7E78970 /* Pods_notepad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63880F6E7BCD4AB2182D2B47 /* Pods_notepad.framework */; };
 		EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB141893207F919800A69EDA /* MyNoteViewController.m */; };
@@ -36,6 +39,12 @@
 /* Begin PBXFileReference section */
 		5001EF402181FA1D004393F7 /* BaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
 		5001EF412181FA3D004393F7 /* BaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
+		5022DFC22183151A007B3418 /* NoteTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoteTableViewCell.h; sourceTree = "<group>"; };
+		5022DFC32183151A007B3418 /* NoteTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NoteTableViewCell.m; sourceTree = "<group>"; };
+		5022DFC7218316FA007B3418 /* NoteTableViewItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoteTableViewItem.h; sourceTree = "<group>"; };
+		5022DFC8218316FA007B3418 /* NoteTableViewItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NoteTableViewItem.m; sourceTree = "<group>"; };
+		504F88F62183674C0039E9D1 /* SharedNoteDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedNoteDetailsViewController.h; sourceTree = "<group>"; };
+		504F88F72183674C0039E9D1 /* SharedNoteDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedNoteDetailsViewController.m; sourceTree = "<group>"; };
 		50A99F382181EC0E006BBA4D /* AuthenticatedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthenticatedViewController.h; sourceTree = "<group>"; };
 		50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthenticatedViewController.m; sourceTree = "<group>"; };
 		63880F6E7BCD4AB2182D2B47 /* Pods_notepad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_notepad.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,6 +108,8 @@
 				EB141893207F919800A69EDA /* MyNoteViewController.m */,
 				EB84AE5F20F3BA2F0045CA98 /* SharedNotesViewController.h */,
 				EB84AE5D20F3BA150045CA98 /* SharedNotesViewController.m */,
+				504F88F62183674C0039E9D1 /* SharedNoteDetailsViewController.h */,
+				504F88F72183674C0039E9D1 /* SharedNoteDetailsViewController.m */,
 				EB9215ED20F3C36400677596 /* SettingsViewController.h */,
 				EB9215EE20F3C36400677596 /* SettingsViewController.m */,
 			);
@@ -114,6 +125,24 @@
 				EB1A5D0E207BB739007A269F /* SignUpViewController.m */,
 			);
 			path = Authentication;
+			sourceTree = "<group>";
+		};
+		5022DFC02183142F007B3418 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5022DFC22183151A007B3418 /* NoteTableViewCell.h */,
+				5022DFC32183151A007B3418 /* NoteTableViewCell.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		5022DFC6218316AE007B3418 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5022DFC7218316FA007B3418 /* NoteTableViewItem.h */,
+				5022DFC8218316FA007B3418 /* NoteTableViewItem.m */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		6EC1AC38EFE582457FAB70EC /* Pods */ = {
@@ -148,7 +177,9 @@
 		EB261724207B8D8C00FCB028 /* notepad */ = {
 			isa = PBXGroup;
 			children = (
+				5022DFC6218316AE007B3418 /* Models */,
 				EB7C684C20863218000C037B /* Controllers */,
+				5022DFC02183142F007B3418 /* Views */,
 				EB261725207B8D8C00FCB028 /* AppDelegate.h */,
 				EB261726207B8D8C00FCB028 /* AppDelegate.m */,
 				EB26172B207B8D8C00FCB028 /* Main.storyboard */,
@@ -331,12 +362,15 @@
 			files = (
 				EB9852AE207B9C210008C567 /* Globals.m in Sources */,
 				5001EF422181FA3D004393F7 /* BaseViewController.m in Sources */,
+				504F88F82183674C0039E9D1 /* SharedNoteDetailsViewController.m in Sources */,
 				EB9215F120F3C36400677596 /* SettingsViewController.m in Sources */,
 				50A99F3D2181ECAE006BBA4D /* AuthenticatedViewController.m in Sources */,
+				5022DFC52183151A007B3418 /* NoteTableViewCell.m in Sources */,
 				EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */,
 				EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */,
 				EB261735207B8D8C00FCB028 /* main.m in Sources */,
 				EB261727207B8D8C00FCB028 /* AppDelegate.m in Sources */,
+				5022DFC9218316FA007B3418 /* NoteTableViewItem.m in Sources */,
 				EB84AE5E20F3BA150045CA98 /* SharedNotesViewController.m in Sources */,
 				EB1A5D0C207BB721007A269F /* LoginViewController.m in Sources */,
 			);

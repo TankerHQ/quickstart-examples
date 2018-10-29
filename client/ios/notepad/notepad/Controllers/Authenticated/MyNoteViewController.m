@@ -16,9 +16,11 @@
 
 - (void)viewDidLoad
 {
-  self.navbarTitle = @"Edit my note";
+  self.navbarTitle = @"My note";
 
   [super viewDidLoad];
+  
+  self.secretNotesField.textContainer.maximumNumberOfLines = 15;
 
   _activityIndicator = [[UIActivityIndicatorView alloc]
       initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25, self.view.bounds.size.height / 2 - 25, 50, 50)];
@@ -90,92 +92,43 @@
 
 - (IBAction)saveNotes:(UIButton*)sender
 {
+  [_activityIndicator startAnimating];
+
   NSString* recipientUserEmail =
       [_shareWithField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-  [_activityIndicator startAnimating];
   NSString* text = self.secretNotesField.text;
+
+  __block TKREncryptionOptions *encryptionOptions;
 
   [self buildEncryptOptions:recipientUserEmail]
     .then(^(TKREncryptionOptions* opts) {
+      encryptionOptions = opts;
       return [[Globals sharedInstance].tanker encryptDataFromString:text options:opts];
+
     }).then(^(NSData* encryptedData) {
       NSString* b64EncryptedData = [encryptedData base64EncodedStringWithOptions:0];
-      [Globals uploadToServer:b64EncryptedData].then(^{
-        [self.activityIndicator stopAnimating];
-        NSLog(@"Data sent to server");
-      });
+      return [Globals uploadToServer:b64EncryptedData];
+
+    }).then(^{
+      NSLog(@"Data sent to server");
+
+      if (encryptionOptions.shareWith != nil && encryptionOptions.shareWith.count > 0) {
+        NSString* recipientUserId = encryptionOptions.shareWith[0];
+        NSString *currentUserId = [Globals sharedInstance].userId;
+        NSLog(@"Sharing data with %@", recipientUserId);
+        return [Globals shareNoteFrom:currentUserId to:@[ recipientUserId ]];
+      } else {
+        return [PMKPromise promiseWithValue:nil];
+      }
+
+    }).then(^{
+      [self.activityIndicator stopAnimating];
+
     })
     .catch(^(NSError* error) {
       [self.activityIndicator stopAnimating];
       NSLog(@"Could not encrypt and send data to server: %@", [error localizedDescription]);
-    });
-}
-
-- (IBAction)shareWith:(UIButton*)sender
-{
-  NSString* recipientUserEmail = _shareWithField.text;
-
-  if ([recipientUserEmail stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
-  {
-    _errorLabel.text = @"Recipient is empty or filled with blanks";
-    return;
-  }
-  [_activityIndicator startAnimating];
-
-  __block NSString* recipientUserId = nil;
-
-  [self getUserIdFromEmail:recipientUserEmail]
-    .then(^(NSString* userId) {
-      recipientUserId = userId;
-      return [Globals dataFromServer];
-    })
-    .then(^(NSString* b64EncryptedData) {
-      NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
-      NSError* err = nil;
-      NSString* resourceId = [[Globals sharedInstance].tanker resourceIDOfEncryptedData:encryptedData error:&err];
-      if (err)
-        return [PMKPromise promiseWithValue:err];
-      return [[Globals sharedInstance].tanker shareResourceIDs:@[ resourceId ] toUserIDs:@[ recipientUserId ]].then(^{
-        NSString *userId = [Globals sharedInstance].userId;
-        return [Globals shareNoteFrom:userId to:@[ recipientUserId ]];
-      });
-    })
-    .then(^{
-      [self.activityIndicator stopAnimating];
-      NSLog(@"Data shared with user: %@", recipientUserId);
-    })
-    .catch(^(NSError* error) {
-      [self.activityIndicator stopAnimating];
-      NSLog(@"Could not encrypt & share and send data to server: %@", [error localizedDescription]);
-    });
-}
-
-- (IBAction)loadFrom:(UIButton*)sender
-{
-  NSString* senderUserEmail = _shareWithField.text;
-
-  if ([senderUserEmail stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
-  {
-    _errorLabel.text = @"Sender is empty or filled with blanks";
-    return;
-  }
-  [_activityIndicator startAnimating];
-
-  [self getUserIdFromEmail:senderUserEmail]
-    .then(^(NSString* senderUserId) {
-      return [Globals getDataFromUser:senderUserId];
-    })
-    .then(^(NSString* b64EncryptedData) {
-      NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
-      return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData].then(^(NSString* clearText) {
-        self.secretNotesField.text = clearText;
-        [self.activityIndicator stopAnimating];
-      });
-    })
-    .catch(^(NSError* error) {
-      [self.activityIndicator stopAnimating];
-      NSLog(@"Could notload data from server: %@", [error localizedDescription]);
     });
 }
 
