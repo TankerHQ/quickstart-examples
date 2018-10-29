@@ -20,7 +20,7 @@
 
   _noteTitle.text = [NSString stringWithFormat :@"Note from %@", _note.authorEmail];
   
-  [Globals getDataFromUser:_note.authorId].then(^(NSString* b64EncryptedData) {
+  [[Globals sharedInstance] getDataFromUser:_note.authorId].then(^(NSString* b64EncryptedData) {
     NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
     return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData].then(^(NSString* clearText) {
       self.noteBody.text = clearText;

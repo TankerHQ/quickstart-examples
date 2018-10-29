@@ -9,27 +9,25 @@ NS_ASSUME_NONNULL_BEGIN
 + (Globals *)sharedInstance;
 
 - (PMKPromise *)buildTanker;
-+ (PMKPromise<NSString *> *)signupWithEmail:(NSString *)email
+
+- (PMKPromise<NSString *> *)signUpWithEmail:(NSString *)email
                                    password:(NSString *)password;
-+ (PMKPromise<NSString *> *)loginWithEmail:(NSString *)email
+- (PMKPromise<NSString *> *)logInWithEmail:(NSString *)email
                                   password:(NSString *)password;
-+ (PMKPromise *)logout;
-+ (PMKPromise *)uploadToServer:(NSString *)data;
-+ (PMKPromise<NSString *> *)dataFromServer;
-+ (PMKPromise *)changeEmail:(NSString *)newEmail;
-+ (PMKPromise *)changePasswordFrom:(NSString *)oldPassword
+- (PMKPromise *)changeEmail:(NSString *)newEmail;
+- (PMKPromise *)changePasswordFrom:(NSString *)oldPassword
                                 to:(NSString *)newPassword;
-+ (PMKPromise *)shareNoteFrom:(NSString *)userId
-                           to:(NSArray<NSString *> *)recipients;
-+ (PMKPromise<NSString *> *)getDataFromUser:(NSString *)userIdFrom;
-+ (PMKPromise<NSArray<id> *> *)getUsers;
-+ (PMKPromise<NSDictionary *> *)getMe;
+- (PMKPromise *)logout;
 
+- (PMKPromise<NSDictionary *> *)getMe;
+- (PMKPromise<NSArray*> *)getUsers;
+- (PMKPromise<NSString *> *)getData;
+- (PMKPromise<NSString *> *)getDataFromUser:(NSString *)userIdFrom;
+- (PMKPromise *)putData:(NSString *)data;
+- (PMKPromise *)shareTo:(NSArray<NSString *> *)recipients;
 
-@property NSString *serverAddress;
 @property TKRTanker *tanker;
 @property NSString *email;
-@property NSString *trustchainId;
 @property NSString *userId;
 
 @end

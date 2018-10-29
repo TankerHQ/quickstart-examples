@@ -33,7 +33,7 @@
 - (void)refreshSharedNotes {
   self.notes = [NSMutableArray new];
 
-  [Globals getMe].then(^(NSDictionary *me) {
+  [[Globals sharedInstance] getMe].then(^(NSDictionary *me) {
     NSArray *accessibleNotes = [me valueForKey:@"accessibleNotes"];
 
     for (NSDictionary *note in accessibleNotes) {

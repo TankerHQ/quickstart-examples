@@ -28,7 +28,7 @@
   [_activityIndicator setColor:[UIColor blueColor]];
   [self.view addSubview:_activityIndicator];
   [_activityIndicator startAnimating];
-  [Globals dataFromServer]
+  [[Globals sharedInstance] getData]
       .then(^(NSString* b64EncryptedData) {
         NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
         return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData];
@@ -55,7 +55,7 @@
 {
   if (email.length != 0)
   {
-    return [Globals getUsers]
+    return [[Globals sharedInstance] getUsers]
     .then(^(NSArray<id>* users) {
       NSPredicate *predicate = [NSPredicate predicateWithFormat:@"email==%@", email];
       NSArray *results = [users filteredArrayUsingPredicate:predicate];
@@ -100,27 +100,27 @@
   NSString* text = self.secretNotesField.text;
 
   __block TKREncryptionOptions *encryptionOptions;
+  __block Globals *inst = [Globals sharedInstance];
 
   [self buildEncryptOptions:recipientUserEmail]
     .then(^(TKREncryptionOptions* opts) {
       encryptionOptions = opts;
-      return [[Globals sharedInstance].tanker encryptDataFromString:text options:opts];
+      return [inst.tanker encryptDataFromString:text options:opts];
 
     }).then(^(NSData* encryptedData) {
       NSString* b64EncryptedData = [encryptedData base64EncodedStringWithOptions:0];
-      return [Globals uploadToServer:b64EncryptedData];
+      return [inst putData:b64EncryptedData];
 
     }).then(^{
       NSLog(@"Data sent to server");
 
-      if (encryptionOptions.shareWith != nil && encryptionOptions.shareWith.count > 0) {
-        NSString* recipientUserId = encryptionOptions.shareWith[0];
-        NSString *currentUserId = [Globals sharedInstance].userId;
-        NSLog(@"Sharing data with %@", recipientUserId);
-        return [Globals shareNoteFrom:currentUserId to:@[ recipientUserId ]];
-      } else {
-        return [PMKPromise promiseWithValue:nil];
+      if (!encryptionOptions.shareWith || encryptionOptions.shareWith.count == 0) {
+        return [inst shareTo:@[]]; // "unshare" previous share if any
       }
+
+      NSString* recipientUserId = encryptionOptions.shareWith[0];
+      NSLog(@"Sharing data with %@", recipientUserId);
+      return [inst shareTo:@[ recipientUserId ]];
 
     }).then(^{
       [self.activityIndicator stopAnimating];

@@ -57,30 +57,29 @@
   }
 
   __block NSString *userToken;
+  __block Globals *inst = [Globals sharedInstance];
+
   [_activityIndicator startAnimating];
-  [Globals loginWithEmail:email password:password]
+  [inst logInWithEmail:email password:password]
       .then(^(NSString *token) {
         userToken = token;
-        return [[Globals sharedInstance] buildTanker];
+        return [inst buildTanker];
       })
       .then(^() {
-        [[Globals sharedInstance].tanker connectUnlockRequiredHandler:^{
-          [[Globals sharedInstance].tanker
-              unlockCurrentDeviceWithPassword:password];
+        [inst.tanker connectUnlockRequiredHandler:^{
+          [inst.tanker unlockCurrentDeviceWithPassword:password];
         }];
 
-        NSString *userId = [Globals sharedInstance].userId;
+        NSString *userId = inst.userId;
 
-        return [[Globals sharedInstance].tanker openWithUserID:userId
-                                                     userToken:userToken];
+        return [inst.tanker openWithUserID:userId userToken:userToken];
       })
       .then(^{
-        return [[Globals sharedInstance].tanker isUnlockAlreadySetUp];
+        return [inst.tanker isUnlockAlreadySetUp];
       })
       .then(^(NSNumber *setUp) {
         if ([setUp isEqualToNumber:@NO])
-          return [[Globals sharedInstance].tanker
-              setupUnlockWithPassword:password];
+          return [inst.tanker setupUnlockWithPassword:password];
         return [PMKPromise promiseWithValue:nil];
       })
       .then(^{

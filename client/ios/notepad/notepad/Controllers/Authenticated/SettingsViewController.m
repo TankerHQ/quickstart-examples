@@ -51,7 +51,7 @@
   }
 
   // FIXME if an error occurs in the middle of password change, it will break!
-  [Globals changePasswordFrom:theOldPassword to:theNewPassword].then(^{
+  [[Globals sharedInstance] changePasswordFrom:theOldPassword to:theNewPassword].then(^{
     [[Globals sharedInstance].tanker updateUnlockPassword:theNewPassword].then(
         ^{
           self.theOldPasswordField.text = @"";
@@ -76,7 +76,7 @@
     return;
   }
 
-  [Globals changeEmail:email].then(^{
+  [[Globals sharedInstance] changeEmail:email].then(^{
     self.emailField.text = @"";
     [self.tabBarController setSelectedIndex:(0)];
   });

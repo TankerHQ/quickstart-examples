@@ -58,29 +58,30 @@
   [_activityIndicator startAnimating];
 
   __block NSString *userToken;
+  __block Globals *inst = [Globals sharedInstance];
 
-  [Globals signupWithEmail:email password:password].then(^(NSString *token) {
+  [inst signUpWithEmail:email password:password].then(^(NSString *token) {
     userToken = token;
-    return [[Globals sharedInstance] buildTanker];
+    return [inst buildTanker];
   }).then(^() {
-                NSString *userId = [Globals sharedInstance].userId;
+    NSString *userId = inst.userId;
 
-                return [[Globals sharedInstance].tanker openWithUserID:userId userToken:userToken];
-              }).then(^{
-                  NSLog(@"Tanker is open");
-                return [[Globals sharedInstance].tanker setupUnlockWithPassword:password];
-              }).then(^{
-                [self.activityIndicator stopAnimating];
-                UITabBarController *controller = [self.storyboard
-                                                  instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
-                [self.navigationController pushViewController:controller animated:YES];
-              })
-              .catch(^(NSError* err) {
-                [self.activityIndicator stopAnimating];
-                NSString* message = @"Error during signup";
-                NSLog(@"%@: %@", message, [err localizedDescription]);
-                self.errorLabel.text = message;
-              });
+    return [inst.tanker openWithUserID:userId userToken:userToken];
+  }).then(^{
+      NSLog(@"Tanker is open");
+    return [inst.tanker setupUnlockWithPassword:password];
+  }).then(^{
+    [self.activityIndicator stopAnimating];
+    UITabBarController *controller = [self.storyboard
+                                      instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
+    [self.navigationController pushViewController:controller animated:YES];
+  })
+  .catch(^(NSError* err) {
+    [self.activityIndicator stopAnimating];
+    NSString* message = @"Error during signup";
+    NSLog(@"%@: %@", message, [err localizedDescription]);
+    self.errorLabel.text = message;
+  });
 }
 
 - (IBAction)signUpButton:(UIButton*)sender

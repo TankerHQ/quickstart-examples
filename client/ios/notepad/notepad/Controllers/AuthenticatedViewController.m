@@ -66,7 +66,7 @@
 
 - (void)triggerLogout:(UIBarButtonItem*)sender
 {
-  [Globals logout].then(^{
+  [[Globals sharedInstance] logout].then(^{
     NSLog(@"Did log out");
     UIViewController* controller = [self.storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
     [self.navigationController pushViewController:controller animated:YES];
