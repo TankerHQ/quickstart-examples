@@ -9,9 +9,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nullable) NSString *currentUserId;
 @property (readonly, nullable) NSString *currentUserEmail;
 
-- (PMKPromise<NSDictionary *> *)authenticateWithPath:(NSString *)path
-                                               email:(NSString *)email
-                                            password:(NSString *)password;
+- (PMKPromise<NSDictionary *> *)logInWithEmail:(NSString *)email
+                                      password:(NSString *)password;
+- (PMKPromise<NSDictionary *> *)signUpWithEmail:(NSString *)email
+                                       password:(NSString *)password;
 - (PMKPromise *)changeEmail:(NSString *)newEmail;
 - (PMKPromise *)changePasswordFrom:(NSString *)oldPassword
                                 to:(NSString *)newPassword;
@@ -21,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (PMKPromise<NSArray*>*)getUsers;
 - (PMKPromise<NSString*>*)getDataFromUser:(NSString*)userId;
 - (PMKPromise *)putData:(NSString*)data;
-- (PMKPromise *)shareTo:(NSArray<NSString *> *)recipients;
+- (PMKPromise *)shareWith:(NSArray<NSString *> *)recipients;
 
 @end
 

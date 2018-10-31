@@ -13,6 +13,7 @@
 		504695FD218755F8008BEE58 /* ApiClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 504695FC218755F8008BEE58 /* ApiClient.m */; };
 		5046960021876073008BEE58 /* HttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 504695FF21876073008BEE58 /* HttpClient.m */; };
 		504F88F82183674C0039E9D1 /* SharedNoteDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 504F88F72183674C0039E9D1 /* SharedNoteDetailsViewController.m */; };
+		506DFFF12189A886006936E4 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 506DFFF02189A886006936E4 /* Session.m */; };
 		50A99F3D2181ECAE006BBA4D /* AuthenticatedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */; };
 		6BC58E12FBCAEBC9E7E78970 /* Pods_notepad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63880F6E7BCD4AB2182D2B47 /* Pods_notepad.framework */; };
 		EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB141893207F919800A69EDA /* MyNoteViewController.m */; };
@@ -25,7 +26,6 @@
 		EB26173F207B8D8C00FCB028 /* notepadUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = EB26173E207B8D8C00FCB028 /* notepadUITests.m */; };
 		EB84AE5E20F3BA150045CA98 /* SharedNotesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB84AE5D20F3BA150045CA98 /* SharedNotesViewController.m */; };
 		EB9215F120F3C36400677596 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9215EE20F3C36400677596 /* SettingsViewController.m */; };
-		EB9852AE207B9C210008C567 /* Globals.m in Sources */ = {isa = PBXBuildFile; fileRef = EB9852AD207B9C210008C567 /* Globals.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +51,8 @@
 		504695FF21876073008BEE58 /* HttpClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HttpClient.m; sourceTree = "<group>"; };
 		504F88F62183674C0039E9D1 /* SharedNoteDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedNoteDetailsViewController.h; sourceTree = "<group>"; };
 		504F88F72183674C0039E9D1 /* SharedNoteDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedNoteDetailsViewController.m; sourceTree = "<group>"; };
+		506DFFEF2189A886006936E4 /* Session.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
+		506DFFF02189A886006936E4 /* Session.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
 		50A99F382181EC0E006BBA4D /* AuthenticatedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthenticatedViewController.h; sourceTree = "<group>"; };
 		50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthenticatedViewController.m; sourceTree = "<group>"; };
 		63880F6E7BCD4AB2182D2B47 /* Pods_notepad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_notepad.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,8 +77,6 @@
 		EB84AE5F20F3BA2F0045CA98 /* SharedNotesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedNotesViewController.h; sourceTree = "<group>"; };
 		EB9215ED20F3C36400677596 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		EB9215EE20F3C36400677596 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		EB9852AC207B9BB70008C567 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
-		EB9852AD207B9C210008C567 /* Globals.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Globals.m; sourceTree = "<group>"; };
 		FF6A99A3E6ACCE3F2B329C7C /* Pods-notepad.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.debug.xcconfig"; path = "Pods/Target Support Files/Pods-notepad/Pods-notepad.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -158,9 +158,10 @@
 				504695FC218755F8008BEE58 /* ApiClient.m */,
 				504695FE21876073008BEE58 /* HttpClient.h */,
 				504695FF21876073008BEE58 /* HttpClient.m */,
+				506DFFEF2189A886006936E4 /* Session.h */,
+				506DFFF02189A886006936E4 /* Session.m */,
 			);
-			name = Session;
-			path = "Session";
+			path = Session;
 			sourceTree = "<group>";
 		};
 		6EC1AC38EFE582457FAB70EC /* Pods */ = {
@@ -205,8 +206,6 @@
 				EB26172E207B8D8C00FCB028 /* Assets.xcassets */,
 				EB261733207B8D8C00FCB028 /* Info.plist */,
 				EB261734207B8D8C00FCB028 /* main.m */,
-				EB9852AC207B9BB70008C567 /* Globals.h */,
-				EB9852AD207B9C210008C567 /* Globals.m */,
 			);
 			path = notepad;
 			sourceTree = "<group>";
@@ -379,7 +378,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EB9852AE207B9C210008C567 /* Globals.m in Sources */,
 				5001EF422181FA3D004393F7 /* BaseViewController.m in Sources */,
 				504F88F82183674C0039E9D1 /* SharedNoteDetailsViewController.m in Sources */,
 				EB9215F120F3C36400677596 /* SettingsViewController.m in Sources */,
@@ -387,6 +385,7 @@
 				5022DFC52183151A007B3418 /* NoteTableViewCell.m in Sources */,
 				EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */,
 				EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */,
+				506DFFF12189A886006936E4 /* Session.m in Sources */,
 				5046960021876073008BEE58 /* HttpClient.m in Sources */,
 				EB261735207B8D8C00FCB028 /* main.m in Sources */,
 				EB261727207B8D8C00FCB028 /* AppDelegate.m in Sources */,

@@ -1,5 +1,4 @@
 #import "SettingsViewController.h"
-#import "Globals.h"
 
 @import PromiseKit;
 
@@ -51,15 +50,12 @@
   }
 
   // FIXME if an error occurs in the middle of password change, it will break!
-  [[Globals sharedInstance] changePasswordFrom:theOldPassword to:theNewPassword].then(^{
-    [[Globals sharedInstance].tanker updateUnlockPassword:theNewPassword].then(
-        ^{
-          self.theOldPasswordField.text = @"";
-          self.theNewPasswordField.text = @"";
-          self.thePasswordConfirmationField.text = @"";
+  [[self session] changePasswordFrom:theOldPassword to:theNewPassword].then(^{
+    self.theOldPasswordField.text = @"";
+    self.theNewPasswordField.text = @"";
+    self.thePasswordConfirmationField.text = @"";
 
-          [self.tabBarController setSelectedIndex:(0)];
-        });
+    [self.tabBarController setSelectedIndex:(0)];
   });
 }
 
@@ -76,7 +72,7 @@
     return;
   }
 
-  [[Globals sharedInstance] changeEmail:email].then(^{
+  [[self session] changeEmail:email].then(^{
     self.emailField.text = @"";
     [self.tabBarController setSelectedIndex:(0)];
   });

@@ -77,6 +77,16 @@ PMKPromise<NSData*>* (^dictToJson)(NSDictionary*) = ^(NSDictionary *data) {
     });
 }
 
+- (PMKPromise<NSDictionary *> *)logInWithEmail:(NSString *)email
+                                      password:(NSString *)password {
+  return [self authenticateWithPath:@"login" email:email password:password];
+}
+
+- (PMKPromise<NSDictionary *> *)signUpWithEmail:(NSString *)email
+                                       password:(NSString *)password {
+  return [self authenticateWithPath:@"signup" email:email password:password];
+}
+
 - (PMKPromise *)changeEmail:(NSString *)newEmail {
   return dictToJson(@{@"email": newEmail})
     .then(^(NSData *jsonBody) {
@@ -123,7 +133,7 @@ PMKPromise<NSData*>* (^dictToJson)(NSDictionary*) = ^(NSDictionary *data) {
   return [self.httpClient putWithPath:@"data" body:body contentType:@"text/plain"];
 }
 
-- (PMKPromise *)shareTo:(NSArray<NSString *> *)recipients {
+- (PMKPromise *)shareWith:(NSArray<NSString *> *)recipients {
   return dictToJson(@{@"from": self.currentUserId, @"to": recipients})
     .then(^(NSData *jsonBody) {
       return [self.httpClient postWithPath:@"share" body:jsonBody contentType:@"application/json"];

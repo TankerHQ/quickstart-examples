@@ -1,5 +1,5 @@
 #import "SignUpViewController.h"
-#import "Globals.h"
+
 @import PromiseKit;
 
 @interface SignUpViewController ()
@@ -57,29 +57,16 @@
 
   [_activityIndicator startAnimating];
 
-  __block NSString *userToken;
-  __block Globals *inst = [Globals sharedInstance];
-
-  [inst signUpWithEmail:email password:password].then(^(NSString *token) {
-    userToken = token;
-    return [inst buildTanker];
-  }).then(^() {
-    NSString *userId = inst.userId;
-
-    return [inst.tanker openWithUserID:userId userToken:userToken];
-  }).then(^{
-      NSLog(@"Tanker is open");
-    return [inst.tanker setupUnlockWithPassword:password];
-  }).then(^{
+  [[self session] signUpWithEmail:email password:password].then(^{
     [self.activityIndicator stopAnimating];
     UITabBarController *controller = [self.storyboard
                                       instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
     [self.navigationController pushViewController:controller animated:YES];
   })
-  .catch(^(NSError* err) {
+  .catch(^(NSError *error) {
     [self.activityIndicator stopAnimating];
-    NSString* message = @"Error during signup";
-    NSLog(@"%@: %@", message, [err localizedDescription]);
+    NSString *message = @"Error during signup";
+    NSLog(@"%@: %@", message, [error localizedDescription]);
     self.errorLabel.text = message;
   });
 }

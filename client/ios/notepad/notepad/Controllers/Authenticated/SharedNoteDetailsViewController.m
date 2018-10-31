@@ -1,5 +1,4 @@
 #import "SharedNoteDetailsViewController.h"
-#import "Globals.h"
 
 @import PromiseKit;
 
@@ -20,13 +19,9 @@
 
   _noteTitle.text = [NSString stringWithFormat :@"Note from %@", _note.authorEmail];
   
-  [[Globals sharedInstance] getDataFromUser:_note.authorId].then(^(NSString* b64EncryptedData) {
-    NSData* encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
-    return [[Globals sharedInstance].tanker decryptStringFromData:encryptedData].then(^(NSString* clearText) {
-      self.noteBody.text = clearText;
-    });
-  })
-  .catch(^(NSError* error) {
+  [[self session] getDataFromUser:_note.authorId].then(^(NSString* clearText) {
+    self.noteBody.text = clearText;
+  }).catch(^(NSError* error) {
     NSLog(@"Could not load data from server: %@", [error localizedDescription]);
   });
 }
