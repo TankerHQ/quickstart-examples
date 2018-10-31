@@ -174,6 +174,24 @@ NSString *getWritablePath() {
   return instance;
 }
 
++ (PMKPromise<NSDictionary *> *)getMe {
+  return
+  [Globals
+   requestToServerWithMethod:@"GET"
+   path:@"me"
+   queryArgs:@{}
+   body:nil]
+  .then(^(NSData *jsonMe) {
+    // Get JSON data into a Foundation object
+    NSError *error = nil;
+    NSDictionary *me = [NSJSONSerialization
+                          JSONObjectWithData:jsonMe
+                          options:NSJSONReadingAllowFragments
+                          error:&error];
+    return me;
+  });
+}
+
 + (PMKPromise<NSString *> *)dataFromServer {
   NSString *userId = [Globals sharedInstance] -> _userId;
 

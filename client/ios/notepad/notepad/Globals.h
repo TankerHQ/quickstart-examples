@@ -1,7 +1,8 @@
-
 #import "fwd.h"
 #import <Foundation/Foundation.h>
 @import Tanker;
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface Globals : NSObject
 
@@ -22,6 +23,8 @@
                            to:(NSArray<NSString *> *)recipients;
 + (PMKPromise<NSString *> *)getDataFromUser:(NSString *)userIdFrom;
 + (PMKPromise<NSArray<id> *> *)getUsers;
++ (PMKPromise<NSDictionary *> *)getMe;
+
 
 @property NSString *serverAddress;
 @property TKRTanker *tanker;
@@ -30,3 +33,5 @@
 @property NSString *userId;
 
 @end
+
+NS_ASSUME_NONNULL_END

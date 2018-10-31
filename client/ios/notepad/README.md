@@ -10,3 +10,8 @@ open notepad.xcworkspace/
 ```
 
 Then build and run as usual.
+
+## Credits
+
+Icons from: https://icons8.com/
+

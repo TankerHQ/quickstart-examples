@@ -1,6 +1,5 @@
 #import "LoginViewController.h"
 #import "Globals.h"
-#import "HomeViewController.h"
 @import PromiseKit;
 
 @interface LoginViewController ()
@@ -85,16 +84,16 @@
         return [PMKPromise promiseWithValue:nil];
       })
       .then(^{
-        [_activityIndicator stopAnimating];
-        HomeViewController *controller = [self.storyboard
-            instantiateViewControllerWithIdentifier:@"HomeViewController"];
+        [self.activityIndicator stopAnimating];
+        UITabBarController *controller = [self.storyboard
+            instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
         [self.navigationController pushViewController:controller animated:YES];
       })
       .catch(^(NSError *error) {
         // TODO check error domain to show app errors
-        [_activityIndicator stopAnimating];
+        [self.activityIndicator stopAnimating];
         NSLog(@"Could not open session: %@", [error localizedDescription]);
-        _errorLabel.text = @"Could not open session";
+        self.errorLabel.text = @"Could not open session";
       });
 }
 
