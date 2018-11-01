@@ -13,6 +13,7 @@ NSString *getWritablePath() {
 @property (readwrite) TKRTanker *tanker;
 @property (readonly) PMKPromise<TKRTanker *> *tankerReadyPromise;
 @property (nullable) NSString *tempUnlockPassword;
+@property (nullable) NSString *tempUnlockVerificationCode;
 
 @end
 
@@ -42,9 +43,19 @@ NSString *getWritablePath() {
 
       [tanker connectUnlockRequiredHandler:^{
         NSLog(@"Tanker device unlock required");
-        if (self.tempUnlockPassword) {
+        if (self.tempUnlockVerificationCode) {
+          NSLog(@"Tanker device unlock with verification code");
+          // TODO: unlock with verification code
+          // [tanker unlockCurrentDeviceWithVerificationCode:self.tempUnlockVerificationCode].then(^{
+          //   NSLog(@"Tanker device unlock with verficiation code success");
+          //   self.tempUnlockVerificationCode = nil;
+          // });
+        } else if (self.tempUnlockPassword) {
           NSLog(@"Tanker device unlock with password");
-          [tanker unlockCurrentDeviceWithPassword:self.tempUnlockPassword];
+          [tanker unlockCurrentDeviceWithPassword:self.tempUnlockPassword].then(^{
+            NSLog(@"Tanker device unlock with password success");
+            self.tempUnlockPassword = nil;
+          });
         }
       }];
 
@@ -79,6 +90,7 @@ NSString *getWritablePath() {
   }).then(^(NSDictionary *user) {
     return [self.tanker openWithUserID:user[@"id"] userToken:user[@"token"]];
   }).then(^{
+    // TODO: setup unlock with email too
     return [self.tanker setupUnlockWithPassword:password];
   }).then(^{
     self.tempUnlockPassword = nil;
@@ -98,6 +110,7 @@ NSString *getWritablePath() {
     return [self.tanker isUnlockAlreadySetUp];
   }).then(^(NSNumber *setUp) {
     if ([setUp isEqualToNumber:@NO]) {
+      // TODO: setup unlock with email too
       return [self.tanker setupUnlockWithPassword:password];
     }
     return [PMKPromise promiseWithValue:nil];;
@@ -108,6 +121,7 @@ NSString *getWritablePath() {
 }
 
 - (PMKPromise *)changeEmail:(NSString *)newEmail {
+  // TODO: update unlock with email
   return [self.apiClient changeEmail:newEmail];
 }
 
@@ -117,6 +131,21 @@ NSString *getWritablePath() {
     return [self tankerReady];
   }).then(^() {
     return [self.tanker updateUnlockPassword:newPassword];
+  });
+}
+
+- (PMKPromise *)resetPasswordTo:(NSString *)newPassword
+                      withToken:(NSString *)resetToken
+               verificationCode:(NSString *)verificationCode {
+  self.tempUnlockVerificationCode = verificationCode;
+
+  return [self.apiClient resetPasswordTo:newPassword withToken:resetToken].then(^(NSString *email) {
+    return [self logInWithEmail:email password:newPassword];
+  }).then(^{
+    self.tempUnlockVerificationCode = nil;
+    return [self getTanker];
+  }).then(^(TKRTanker *tanker) {
+    return [tanker updateUnlockPassword:newPassword];
   });
 }
 

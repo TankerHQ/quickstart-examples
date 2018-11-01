@@ -104,6 +104,25 @@ PMKPromise<NSData*>* (^dictToJson)(NSDictionary*) = ^(NSDictionary *data) {
     });
 }
 
+- (PMKPromise<NSString *> *)resetPasswordTo:(NSString *)newPassword
+                                  withToken:(NSString *)resetToken {
+  return dictToJson(@{@"newPassword": newPassword, @"passwordResetToken": resetToken})
+    .then(^(NSData *jsonBody) {
+      return [self.httpClient postWithPath:@"resetPassword" body:jsonBody contentType:@"application/json"];
+    })
+    .then(jsonToDict)
+    .then(^(NSDictionary* user) {
+      return user[@"email"];
+    });
+}
+
+- (PMKPromise *)requestResetPassword:(NSString *)email {
+  return dictToJson(@{@"email": email})
+    .then(^(NSData *jsonBody) {
+      return [self.httpClient postWithPath:@"requestResetPassword" body:jsonBody contentType:@"application/json"];
+    });
+}
+
 - (PMKPromise*)logout {
   return [self.httpClient getWithPath:@"logout"].then(^{
     self.currentUserId = nil;
