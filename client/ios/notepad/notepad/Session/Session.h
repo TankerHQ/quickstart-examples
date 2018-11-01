@@ -8,6 +8,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Session : NSObject
 
+@property (readonly) ApiClient *apiClient;
+
 + (Session *)sharedSession;
 
 - (PMKPromise<TKRTanker *> *)tankerReady;

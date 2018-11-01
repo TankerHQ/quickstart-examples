@@ -9,7 +9,6 @@ NSString *getWritablePath() {
 
 @interface Session ()
 
-@property (readonly) ApiClient *apiClient;
 @property (readwrite) TKRTanker *tanker;
 @property (readonly) PMKPromise<TKRTanker *> *tankerReadyPromise;
 @property (nullable) NSString *tempUnlockPassword;
