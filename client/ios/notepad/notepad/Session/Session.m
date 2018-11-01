@@ -33,6 +33,11 @@ NSString *getWritablePath() {
       opts.trustchainID = trustchainId;
       opts.writablePath = getWritablePath();
 
+      NSString *url = config[@"url"];
+      if (url && url.length > 0) {
+        opts.trustchainURL = url;
+      }
+
       TKRTanker *tanker = [TKRTanker tankerWithOptions:opts];
 
       [tanker connectUnlockRequiredHandler:^{
