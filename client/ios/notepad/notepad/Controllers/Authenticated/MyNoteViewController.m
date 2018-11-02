@@ -22,13 +22,13 @@
 
   self.secretNotesField.textContainer.maximumNumberOfLines = 15;
 
-  _activityIndicator = [[UIActivityIndicatorView alloc]
+  self.activityIndicator = [[UIActivityIndicatorView alloc]
       initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25, self.view.bounds.size.height / 2 - 25, 50, 50)];
-  [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
-  [_activityIndicator setColor:[UIColor blueColor]];
-  [self.view addSubview:_activityIndicator];
+  [self.activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
+  [self.activityIndicator setColor:[UIColor blueColor]];
+  [self.view addSubview:self.activityIndicator];
 
-  [_activityIndicator startAnimating];
+  [self.activityIndicator startAnimating];
 
   [[self session] getData].then(^(NSString* clearText) {
     self.secretNotesField.text = clearText;
@@ -44,9 +44,9 @@
 
 - (IBAction)saveNotes:(UIButton*)sender
 {
-  [_activityIndicator startAnimating];
+  [self.activityIndicator startAnimating];
 
-  NSString* recipientEmail = [StringValidator trim:_shareWithField.text];
+  NSString* recipientEmail = [StringValidator trim:self.shareWithField.text];
 
   NSMutableArray<NSString *> *recipientEmails = [NSMutableArray new];
   if (recipientEmail.length > 0) {

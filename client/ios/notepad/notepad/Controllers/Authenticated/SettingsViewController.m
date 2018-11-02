@@ -27,9 +27,9 @@
 - (IBAction)changePasswordAction:(UIButton *)sender {
   self.passwordErrorLabel.text = @" ";
 
-  NSString *currentPassword = _currentPasswordField.text;
-  NSString *nextPassword = _nextPasswordField.text;
-  NSString *nextPasswordConfirmation = _nextPasswordConfirmationField.text;
+  NSString *currentPassword = self.currentPasswordField.text;
+  NSString *nextPassword = self.nextPasswordField.text;
+  NSString *nextPasswordConfirmation = self.nextPasswordConfirmationField.text;
 
   if ([StringValidator isBlank:currentPassword]) {
     self.passwordErrorLabel.text = @"Current password is empty or filled with blanks";
@@ -59,7 +59,7 @@
 - (IBAction)changeEmailAction:(UIButton *)sender {
   self.emailErrorLabel.text = @" ";
 
-  NSString *email = _emailField.text;
+  NSString *email = self.emailField.text;
 
   if (![StringValidator isEmail:email]) {
     self.emailErrorLabel.text = @"Invalid email address";

@@ -18,35 +18,35 @@
   [super viewDidLoad];
   // Do any additional setup after loading the view.
 
-  _emailField.returnKeyType = UIReturnKeyNext;
-  _emailField.delegate = self;
-  _passwordField.returnKeyType = UIReturnKeyNext;
-  _passwordField.delegate = self;
+  self.emailField.returnKeyType = UIReturnKeyNext;
+  self.emailField.delegate = self;
+  self.passwordField.returnKeyType = UIReturnKeyNext;
+  self.passwordField.delegate = self;
 
-  _activityIndicator = [[UIActivityIndicatorView alloc]
+  self.activityIndicator = [[UIActivityIndicatorView alloc]
       initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25, self.view.bounds.size.height / 2 - 25, 50, 50)];
-  [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
-  [_activityIndicator setColor:[UIColor blueColor]];
-  [self.view addSubview:_activityIndicator];
+  [self.activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
+  [self.activityIndicator setColor:[UIColor blueColor]];
+  [self.view addSubview:self.activityIndicator];
 }
 
 - (void)signUpAction
 {
-  _errorLabel.text = @" ";
+  self.errorLabel.text = @" ";
 
-  NSString* email = _emailField.text;
-  NSString* password = _passwordField.text;
+  NSString* email = self.emailField.text;
+  NSString* password = self.passwordField.text;
 
   if (![StringValidator isEmail:email]) {
-    _errorLabel.text = @"Invalid email address";
+    self.errorLabel.text = @"Invalid email address";
     return;
   }
   if ([StringValidator isBlank:password]) {
-    _errorLabel.text = @"Password is empty or filled with blanks";
+    self.errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }
 
-  [_activityIndicator startAnimating];
+  [self.activityIndicator startAnimating];
 
   [[self session] signUpWithEmail:email password:password].then(^{
     [self.activityIndicator stopAnimating];

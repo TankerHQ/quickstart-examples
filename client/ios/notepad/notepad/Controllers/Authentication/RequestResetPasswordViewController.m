@@ -16,12 +16,12 @@
 }
 
 - (IBAction)requestResetLink:(id)sender {
-  _errorLabel.text = @" ";
+  self.errorLabel.text = @" ";
 
-  NSString *email = _emailField.text;
+  NSString *email = self.emailField.text;
 
   if (![StringValidator isEmail:email]) {
-    _errorLabel.text = @"Invalid email address";
+    self.errorLabel.text = @"Invalid email address";
     return;
   }
 

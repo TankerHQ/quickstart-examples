@@ -18,12 +18,12 @@
 }
 
 - (IBAction)submitLink:(id)sender {
-  _errorLabel.text = @" ";
+  self.errorLabel.text = @" ";
 
-  NSString* link = _linkField.text;
+  NSString* link = self.linkField.text;
 
   if (![StringValidator isURL:link]) {
-    _errorLabel.text = @"Given link is not valid";
+    self.errorLabel.text = @"Given link is not valid";
     return;
   }
 

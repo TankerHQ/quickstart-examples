@@ -18,18 +18,18 @@
 }
 
 - (IBAction)resetPassword:(id)sender {
-  _errorLabel.text = @" ";
+  self.errorLabel.text = @" ";
 
-  NSString *password = _passwordField.text;
-  NSString *passwordConfirmation = _passwordConfirmationField.text;
+  NSString *password = self.passwordField.text;
+  NSString *passwordConfirmation = self.passwordConfirmationField.text;
 
   if ([StringValidator isBlank:password]) {
-    _errorLabel.text = @"Password is empty or filled with blanks";
+    self.errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }
 
   if (![passwordConfirmation isEqualToString:password]) {
-    _errorLabel.text = @"Password and confirmation are not equal";
+    self.errorLabel.text = @"Password and confirmation are not equal";
     return;
   }
 

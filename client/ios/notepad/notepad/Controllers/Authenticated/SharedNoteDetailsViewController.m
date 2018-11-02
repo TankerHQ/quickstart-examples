@@ -17,9 +17,9 @@
 
   [super viewDidLoad];
 
-  _noteTitle.text = [NSString stringWithFormat :@"Note from %@", _note.authorEmail];
+  self.noteTitle.text = [NSString stringWithFormat :@"Note from %@", self.note.authorEmail];
   
-  [[self session] getDataFromUser:_note.authorId].then(^(NSString* clearText) {
+  [[self session] getDataFromUser:self.note.authorId].then(^(NSString* clearText) {
     self.noteBody.text = clearText;
   }).catch(^(NSError* error) {
     NSLog(@"Could not load data from server: %@", [error localizedDescription]);

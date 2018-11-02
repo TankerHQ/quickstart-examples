@@ -77,7 +77,7 @@ NSString *getWritablePath() {
 }
 
 - (PMKPromise<TKRTanker *> *)tankerReady {
-  return _tankerReadyPromise;
+  return self.tankerReadyPromise;
 }
 
 - (PMKPromise *)signUpWithEmail:(NSString *)email
@@ -142,9 +142,9 @@ NSString *getWritablePath() {
     return [self logInWithEmail:email password:newPassword];
   }).then(^{
     self.tempUnlockVerificationCode = nil;
-    return [self getTanker];
-  }).then(^(TKRTanker *tanker) {
-    return [tanker updateUnlockPassword:newPassword];
+    return [self tankerReady];
+  }).then(^() {
+    return [self.tanker updateUnlockPassword:newPassword];
   });
 }
 
