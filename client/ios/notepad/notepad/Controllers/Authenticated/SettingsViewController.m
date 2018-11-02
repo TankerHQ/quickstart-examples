@@ -3,9 +3,9 @@
 @import PromiseKit;
 
 @interface SettingsViewController ()
-@property(weak, nonatomic) IBOutlet UITextField *theOldPasswordField;
-@property(weak, nonatomic) IBOutlet UITextField *theNewPasswordField;
-@property(weak, nonatomic) IBOutlet UITextField *thePasswordConfirmationField;
+@property(weak, nonatomic) IBOutlet UITextField *currentPasswordField;
+@property(weak, nonatomic) IBOutlet UITextField *nextPasswordField;
+@property(weak, nonatomic) IBOutlet UITextField *nextPasswordConfirmationField;
 @property(weak, nonatomic) IBOutlet UIButton *changePasswordButton;
 @property(weak, nonatomic) IBOutlet UILabel *errorLabel;
 @property(weak, nonatomic) IBOutlet UITextField *emailField;
@@ -24,11 +24,11 @@
 - (IBAction)changePasswordAction:(UIButton *)sender {
   _errorLabel.text = @"";
 
-  NSString *theOldPassword = _theOldPasswordField.text;
-  NSString *theNewPassword = _theNewPasswordField.text;
-  NSString *thePasswordConfirmation = _thePasswordConfirmationField.text;
+  NSString *currentPassword = _currentPasswordField.text;
+  NSString *nextPassword = _nextPasswordField.text;
+  NSString *nextPasswordConfirmation = _nextPasswordConfirmationField.text;
 
-  if ([theOldPassword
+  if ([currentPassword
           stringByTrimmingCharactersInSet:[NSCharacterSet
                                               whitespaceAndNewlineCharacterSet]]
           .length == 0) {
@@ -36,7 +36,7 @@
     return;
   }
 
-  if ([theNewPassword
+  if ([nextPassword
           stringByTrimmingCharactersInSet:[NSCharacterSet
                                               whitespaceAndNewlineCharacterSet]]
           .length == 0) {
@@ -44,16 +44,16 @@
     return;
   }
 
-  if (![thePasswordConfirmation isEqualToString:theNewPassword]) {
+  if (![nextPasswordConfirmation isEqualToString:nextPassword]) {
     _errorLabel.text = @"New password and confirmation are not equal";
     return;
   }
 
   // FIXME if an error occurs in the middle of password change, it will break!
-  [[self session] changePasswordFrom:theOldPassword to:theNewPassword].then(^{
-    self.theOldPasswordField.text = @"";
-    self.theNewPasswordField.text = @"";
-    self.thePasswordConfirmationField.text = @"";
+  [[self session] changePasswordFrom:currentPassword to:nextPassword].then(^{
+    self.currentPasswordField.text = @"";
+    self.nextPasswordField.text = @"";
+    self.nextPasswordConfirmationField.text = @"";
 
     [self.tabBarController setSelectedIndex:(0)];
   });
