@@ -1,4 +1,5 @@
 #import "SignUpViewController.h"
+#import "StringValidator.h"
 
 @import PromiseKit;
 
@@ -44,13 +45,11 @@
   NSString* email = _emailField.text;
   NSString* password = _passwordField.text;
 
-  if ([email stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
-  {
-    _errorLabel.text = @"Email is empty or filled with blanks";
+  if (![StringValidator isEmail:email]) {
+    _errorLabel.text = @"Invalid email address";
     return;
   }
-  if ([password stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length == 0)
-  {
+  if ([StringValidator isBlank:password]) {
     _errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }

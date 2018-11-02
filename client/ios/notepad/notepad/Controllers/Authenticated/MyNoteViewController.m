@@ -1,4 +1,5 @@
 #import "MyNoteViewController.h"
+#import "StringValidator.h"
 
 @import PromiseKit;
 
@@ -51,8 +52,7 @@
 {
   [_activityIndicator startAnimating];
 
-  NSString* recipientEmail =
-      [_shareWithField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  NSString* recipientEmail = [StringValidator trim:_shareWithField.text];
 
   NSMutableArray<NSString *> *recipientEmails = [NSMutableArray new];
   if (recipientEmail.length > 0) {

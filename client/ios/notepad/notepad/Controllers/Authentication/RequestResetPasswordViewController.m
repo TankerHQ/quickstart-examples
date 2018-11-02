@@ -1,4 +1,5 @@
 #import "RequestResetPasswordViewController.h"
+#import "StringValidator.h"
 
 @interface RequestResetPasswordViewController ()
 
@@ -18,9 +19,9 @@
   _errorLabel.text = @"";
 
   NSString *email = _emailField.text;
-  NSCharacterSet *cs = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-  if ([email stringByTrimmingCharactersInSet:cs].length == 0) {
-    _errorLabel.text = @"Email is empty or filled with blanks";
+
+  if (![StringValidator isEmail:email]) {
+    _errorLabel.text = @"Invalid email address";
     return;
   }
 

@@ -19,6 +19,7 @@
 		50E1031C218AEC1E00EA92FF /* ResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E1031B218AEC1E00EA92FF /* ResetPasswordViewController.m */; };
 		50E1031F218AF12D00EA92FF /* ResetPasswordLinkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E1031E218AF12D00EA92FF /* ResetPasswordLinkViewController.m */; };
 		50E10322218B044C00EA92FF /* ResetPasswordToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E10321218B044C00EA92FF /* ResetPasswordToken.m */; };
+		50E10327218C8D9000EA92FF /* StringValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E10326218C8D9000EA92FF /* StringValidator.m */; };
 		6BC58E12FBCAEBC9E7E78970 /* Pods_notepad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63880F6E7BCD4AB2182D2B47 /* Pods_notepad.framework */; };
 		EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB141893207F919800A69EDA /* MyNoteViewController.m */; };
 		EB1A5D0C207BB721007A269F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB1A5D0B207BB721007A269F /* LoginViewController.m */; };
@@ -67,6 +68,8 @@
 		50E1031E218AF12D00EA92FF /* ResetPasswordLinkViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResetPasswordLinkViewController.m; sourceTree = "<group>"; };
 		50E10320218B044C00EA92FF /* ResetPasswordToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResetPasswordToken.h; sourceTree = "<group>"; };
 		50E10321218B044C00EA92FF /* ResetPasswordToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResetPasswordToken.m; sourceTree = "<group>"; };
+		50E10325218C8D9000EA92FF /* StringValidator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringValidator.h; sourceTree = "<group>"; };
+		50E10326218C8D9000EA92FF /* StringValidator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StringValidator.m; sourceTree = "<group>"; };
 		63880F6E7BCD4AB2182D2B47 /* Pods_notepad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_notepad.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		99FA34511BC095E89FEC4058 /* Pods-notepad.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.release.xcconfig"; path = "Pods/Target Support Files/Pods-notepad/Pods-notepad.release.xcconfig"; sourceTree = "<group>"; };
 		EB141892207F919800A69EDA /* MyNoteViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyNoteViewController.h; sourceTree = "<group>"; };
@@ -167,6 +170,8 @@
 				5022DFC8218316FA007B3418 /* NoteTableViewItem.m */,
 				50E10320218B044C00EA92FF /* ResetPasswordToken.h */,
 				50E10321218B044C00EA92FF /* ResetPasswordToken.m */,
+				50E10325218C8D9000EA92FF /* StringValidator.h */,
+				50E10326218C8D9000EA92FF /* StringValidator.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -407,6 +412,7 @@
 				EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */,
 				EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */,
 				50E1031F218AF12D00EA92FF /* ResetPasswordLinkViewController.m in Sources */,
+				50E10327218C8D9000EA92FF /* StringValidator.m in Sources */,
 				50E1031C218AEC1E00EA92FF /* ResetPasswordViewController.m in Sources */,
 				506DFFF12189A886006936E4 /* Session.m in Sources */,
 				5046960021876073008BEE58 /* HttpClient.m in Sources */,

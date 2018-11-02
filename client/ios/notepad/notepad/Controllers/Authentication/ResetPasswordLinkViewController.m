@@ -1,6 +1,7 @@
 #import "ResetPasswordLinkViewController.h"
 #import "ResetPasswordViewController.h"
 #import "ResetPasswordToken.h"
+#import "StringValidator.h"
 
 @interface ResetPasswordLinkViewController ()
 
@@ -20,9 +21,9 @@
   _errorLabel.text = @"";
 
   NSString* link = _linkField.text;
-  NSCharacterSet *cs = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-  if ([link stringByTrimmingCharactersInSet:cs].length == 0) {
-    _errorLabel.text = @"Link is empty or filled with blanks";
+
+  if (![StringValidator isURL:link]) {
+    _errorLabel.text = @"Given link is not valid";
     return;
   }
 

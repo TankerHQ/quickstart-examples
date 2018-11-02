@@ -1,4 +1,5 @@
 #import "SettingsViewController.h"
+#import "StringValidator.h"
 
 @import PromiseKit;
 
@@ -28,24 +29,18 @@
   NSString *nextPassword = _nextPasswordField.text;
   NSString *nextPasswordConfirmation = _nextPasswordConfirmationField.text;
 
-  if ([currentPassword
-          stringByTrimmingCharactersInSet:[NSCharacterSet
-                                              whitespaceAndNewlineCharacterSet]]
-          .length == 0) {
+  if ([StringValidator isBlank:currentPassword]) {
     _errorLabel.text = @"Current password is empty or filled with blanks";
     return;
   }
 
-  if ([nextPassword
-          stringByTrimmingCharactersInSet:[NSCharacterSet
-                                              whitespaceAndNewlineCharacterSet]]
-          .length == 0) {
+  if ([StringValidator isBlank:nextPassword]) {
     _errorLabel.text = @"New password is empty or filled with blanks";
     return;
   }
 
   if (![nextPasswordConfirmation isEqualToString:nextPassword]) {
-    _errorLabel.text = @"New password and confirmation are not equal";
+    _errorLabel.text = @"Password and confirmation are not equal";
     return;
   }
 
@@ -64,11 +59,8 @@
 
   NSString *email = _emailField.text;
 
-  if ([email
-          stringByTrimmingCharactersInSet:[NSCharacterSet
-                                              whitespaceAndNewlineCharacterSet]]
-          .length == 0) {
-    _errorLabel.text = @"New email is empty or filled with blanks";
+  if (![StringValidator isEmail:email]) {
+    _errorLabel.text = @"Invalid email address";
     return;
   }
 

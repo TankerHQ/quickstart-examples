@@ -1,4 +1,5 @@
 #import "ResetPasswordViewController.h"
+#import "StringValidator.h"
 
 @interface ResetPasswordViewController ()
 
@@ -22,14 +23,13 @@
   NSString *password = _passwordField.text;
   NSString *passwordConfirmation = _passwordConfirmationField.text;
 
-  NSCharacterSet *cs = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-  if ([password stringByTrimmingCharactersInSet:cs].length == 0) {
+  if ([StringValidator isBlank:password]) {
     _errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }
 
   if (![passwordConfirmation isEqualToString:password]) {
-    _errorLabel.text = @"New password and confirmation are not equal";
+    _errorLabel.text = @"Password and confirmation are not equal";
     return;
   }
 
