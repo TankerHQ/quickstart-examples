@@ -4,13 +4,15 @@
 @import PromiseKit;
 
 @interface SettingsViewController ()
+
+@property(weak, nonatomic) IBOutlet UITextField *emailField;
+@property(weak, nonatomic) IBOutlet UIButton *changeEmailButton;
+@property (weak, nonatomic) IBOutlet UILabel *emailErrorLabel;
 @property(weak, nonatomic) IBOutlet UITextField *currentPasswordField;
 @property(weak, nonatomic) IBOutlet UITextField *nextPasswordField;
 @property(weak, nonatomic) IBOutlet UITextField *nextPasswordConfirmationField;
 @property(weak, nonatomic) IBOutlet UIButton *changePasswordButton;
-@property(weak, nonatomic) IBOutlet UILabel *errorLabel;
-@property(weak, nonatomic) IBOutlet UITextField *emailField;
-@property(weak, nonatomic) IBOutlet UIButton *changeEmailButton;
+@property (weak, nonatomic) IBOutlet UILabel *passwordErrorLabel;
 
 @end
 
@@ -23,24 +25,24 @@
 }
 
 - (IBAction)changePasswordAction:(UIButton *)sender {
-  _errorLabel.text = @"";
+  self.passwordErrorLabel.text = @" ";
 
   NSString *currentPassword = _currentPasswordField.text;
   NSString *nextPassword = _nextPasswordField.text;
   NSString *nextPasswordConfirmation = _nextPasswordConfirmationField.text;
 
   if ([StringValidator isBlank:currentPassword]) {
-    _errorLabel.text = @"Current password is empty or filled with blanks";
+    self.passwordErrorLabel.text = @"Current password is empty or filled with blanks";
     return;
   }
 
   if ([StringValidator isBlank:nextPassword]) {
-    _errorLabel.text = @"New password is empty or filled with blanks";
+    self.passwordErrorLabel.text = @"New password is empty or filled with blanks";
     return;
   }
 
   if (![nextPasswordConfirmation isEqualToString:nextPassword]) {
-    _errorLabel.text = @"Password and confirmation are not equal";
+    self.passwordErrorLabel.text = @"Password and confirmation are not equal";
     return;
   }
 
@@ -55,12 +57,12 @@
 }
 
 - (IBAction)changeEmailAction:(UIButton *)sender {
-  _errorLabel.text = @"";
+  self.emailErrorLabel.text = @" ";
 
   NSString *email = _emailField.text;
 
   if (![StringValidator isEmail:email]) {
-    _errorLabel.text = @"Invalid email address";
+    self.emailErrorLabel.text = @"Invalid email address";
     return;
   }
 

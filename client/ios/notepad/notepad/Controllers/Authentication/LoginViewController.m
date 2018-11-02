@@ -32,7 +32,7 @@
 }
 
 - (void)loginAction {
-  _errorLabel.text = @"";
+  _errorLabel.text = @" ";
 
   NSString *email = _emailField.text;
   NSString *password = _passwordField.text;

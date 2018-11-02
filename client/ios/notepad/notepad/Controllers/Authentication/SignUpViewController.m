@@ -28,13 +28,11 @@
   [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
   [_activityIndicator setColor:[UIColor blueColor]];
   [self.view addSubview:_activityIndicator];
-
-  _errorLabel.textColor = [UIColor redColor];
 }
 
 - (void)signUpAction
 {
-  _errorLabel.text = @"";
+  _errorLabel.text = @" ";
 
   NSString* email = _emailField.text;
   NSString* password = _passwordField.text;

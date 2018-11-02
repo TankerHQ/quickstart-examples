@@ -16,7 +16,7 @@
 }
 
 - (IBAction)requestResetLink:(id)sender {
-  _errorLabel.text = @"";
+  _errorLabel.text = @" ";
 
   NSString *email = _emailField.text;
 

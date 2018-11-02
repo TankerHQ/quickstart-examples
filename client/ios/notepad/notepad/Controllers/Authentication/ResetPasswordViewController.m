@@ -18,7 +18,7 @@
 }
 
 - (IBAction)resetPassword:(id)sender {
-  _errorLabel.text = @"";
+  _errorLabel.text = @" ";
 
   NSString *password = _passwordField.text;
   NSString *passwordConfirmation = _passwordConfirmationField.text;

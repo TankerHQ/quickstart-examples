@@ -18,7 +18,7 @@
 }
 
 - (IBAction)submitLink:(id)sender {
-  _errorLabel.text = @"";
+  _errorLabel.text = @" ";
 
   NSString* link = _linkField.text;
 
