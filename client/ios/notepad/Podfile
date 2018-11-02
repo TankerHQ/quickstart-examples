@@ -4,5 +4,6 @@ source 'https://github.com/TankerHQ/PodSpecs.git'
 target 'notepad' do
   use_frameworks!
   pod 'PromiseKit', '~> 1.7'
+  pod 'SVProgressHUD', '~> 2.2'
   pod 'Tanker', '1.7.0'
 end

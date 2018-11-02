@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 @import Tanker;
+@import SVProgressHUD;
 
 @interface AppDelegate ()
 @end
@@ -11,6 +12,11 @@
   // Override point for customization after application launch.
   NSString* tankerVersion = [TKRTanker versionString];
   NSLog(@"Using Tanker SDK version %@", tankerVersion);
+
+  [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+  [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeClear];
+  [SVProgressHUD setMinimumDismissTimeInterval:CGFLOAT_MAX];
+
   return YES;
 }
 

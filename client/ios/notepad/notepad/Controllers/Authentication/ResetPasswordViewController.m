@@ -33,10 +33,19 @@
     return;
   }
 
+  [SVProgressHUD show];
+
   [[self session] resetPasswordTo:password withToken:self.token.appToken verificationCode:self.token.tankerToken].then(^{
     UITabBarController *controller = [self.storyboard
                                       instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
     [self.navigationController pushViewController:controller animated:YES];
+
+    [SVProgressHUD dismiss];
+  }).catch(^(NSError *error) {
+    [SVProgressHUD dismiss];
+
+    NSLog(@"Failed to reset password: %@", [error localizedDescription]);
+    self.errorLabel.text = @"Failed to reset password";
   });
 }
 

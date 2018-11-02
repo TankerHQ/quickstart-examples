@@ -25,8 +25,16 @@
     return;
   }
 
+  [SVProgressHUD show];
+
   [[self session].apiClient requestResetPassword:email].then(^{
-    NSLog(@"Email sent");
+    [SVProgressHUD showSuccessWithStatus:@"Email sent. Please check your inbox!"];
+    [SVProgressHUD dismissWithDelay:5.0];
+  }).catch(^(NSError *error) {
+    [SVProgressHUD dismiss];
+
+    NSLog(@"Failed to request reset password link: %@", [error localizedDescription]);
+    self.errorLabel.text = @"Failed to request a link";
   });
 }
 

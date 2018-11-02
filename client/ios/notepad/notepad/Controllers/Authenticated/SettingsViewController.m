@@ -46,13 +46,16 @@
     return;
   }
 
+  [SVProgressHUD showWithStatus:@"Saving..."];
+
   // FIXME if an error occurs in the middle of password change, it will break!
   [[self session] changePasswordFrom:currentPassword to:nextPassword].then(^{
     self.currentPasswordField.text = @"";
     self.nextPasswordField.text = @"";
     self.nextPasswordConfirmationField.text = @"";
 
-    [self.tabBarController setSelectedIndex:(0)];
+    [SVProgressHUD showSuccessWithStatus:@"Password changed"];
+    [SVProgressHUD dismissWithDelay:2.0];
   });
 }
 
@@ -68,7 +71,9 @@
 
   [[self session] changeEmail:email].then(^{
     self.emailField.text = @"";
-    [self.tabBarController setSelectedIndex:(0)];
+
+    [SVProgressHUD showSuccessWithStatus:@"Email address changed"];
+    [SVProgressHUD dismissWithDelay:2.0];
   });
 }
 

@@ -383,12 +383,14 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-notepad/Pods-notepad-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/OMGHTTPURLRQ/OMGHTTPURLRQ.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/Tanker/Tanker.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OMGHTTPURLRQ.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Tanker.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

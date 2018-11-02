@@ -4,7 +4,6 @@
 @import PromiseKit;
 
 @interface LoginViewController ()
-@property UIActivityIndicatorView *activityIndicator;
 @property(weak, nonatomic) IBOutlet UITextField *emailField;
 @property(weak, nonatomic) IBOutlet UITextField *passwordField;
 @property(weak, nonatomic) IBOutlet UILabel *errorLabel;
@@ -21,14 +20,6 @@
   self.emailField.delegate = self;
   self.passwordField.returnKeyType = UIReturnKeyNext;
   self.passwordField.delegate = self;
-
-  self.activityIndicator = [[UIActivityIndicatorView alloc]
-      initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25,
-                               self.view.bounds.size.height / 2 - 25, 50, 50)];
-  [self.activityIndicator
-      setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
-  [self.activityIndicator setColor:[UIColor blueColor]];
-  [self.view addSubview:self.activityIndicator];
 }
 
 - (void)loginAction {
@@ -46,16 +37,19 @@
     return;
   }
 
-  [self.activityIndicator startAnimating];
+  [SVProgressHUD showWithStatus: @"Connecting..."];
+
   [[self session] logInWithEmail:email password:password].then(^{
-    [self.activityIndicator stopAnimating];
     UITabBarController *controller = [self.storyboard
         instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
     [self.navigationController pushViewController:controller animated:YES];
+
+    [SVProgressHUD dismiss];
   })
   .catch(^(NSError *error) {
+    [SVProgressHUD dismiss];
+
     // TODO check error domain to show app errors
-    [self.activityIndicator stopAnimating];
     NSLog(@"Could not open session: %@", [error localizedDescription]);
     self.errorLabel.text = @"Could not open session";
   });
