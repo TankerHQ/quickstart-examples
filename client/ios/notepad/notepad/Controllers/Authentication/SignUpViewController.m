@@ -32,12 +32,6 @@
   _errorLabel.textColor = [UIColor redColor];
 }
 
-- (void)didReceiveMemoryWarning
-{
-  [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
-}
-
 - (void)signUpAction
 {
   _errorLabel.text = @"";

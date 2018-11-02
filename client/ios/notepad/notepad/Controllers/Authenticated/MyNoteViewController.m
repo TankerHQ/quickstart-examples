@@ -42,12 +42,6 @@
   });
 }
 
-- (void)didReceiveMemoryWarning
-{
-  [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
-}
-
 - (IBAction)saveNotes:(UIButton*)sender
 {
   [_activityIndicator startAnimating];
