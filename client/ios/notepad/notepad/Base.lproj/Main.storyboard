@@ -384,19 +384,19 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Current password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PS6-cx-0ZB" userLabel="theOldPasswordField">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Current password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PS6-cx-0ZB" userLabel="currentPasswordField">
                                         <rect key="frame" x="0.0" y="185.5" width="343" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" enablesReturnKeyAutomatically="YES" secureTextEntry="YES" textContentType="password"/>
                                     </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ixo-kG-Dbu" userLabel="theNewPasswordField">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ixo-kG-Dbu" userLabel="nextPasswordField">
                                         <rect key="frame" x="0.0" y="223.5" width="343" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" enablesReturnKeyAutomatically="YES" secureTextEntry="YES" textContentType="password"/>
                                     </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New password confirmation" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hNV-KL-LCA" userLabel="thePasswordConfirmationField">
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="New password confirmation" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hNV-KL-LCA" userLabel="nextPasswordConfirmationField">
                                         <rect key="frame" x="0.0" y="261.5" width="343" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -427,11 +427,11 @@
                     <connections>
                         <outlet property="changeEmailButton" destination="NMg-mp-2Qk" id="c2R-w1-Vl0"/>
                         <outlet property="changePasswordButton" destination="ghT-sN-IXO" id="Bjq-iJ-o9T"/>
+                        <outlet property="currentPasswordField" destination="PS6-cx-0ZB" id="08z-cs-tLD"/>
                         <outlet property="emailField" destination="b0V-ZH-taI" id="OOs-tI-0GZ"/>
                         <outlet property="errorLabel" destination="bAO-JE-JbZ" id="LbG-PX-EiC"/>
-                        <outlet property="theNewPasswordField" destination="ixo-kG-Dbu" id="fEA-wr-QGk"/>
-                        <outlet property="theOldPasswordField" destination="PS6-cx-0ZB" id="08z-cs-tLD"/>
-                        <outlet property="thePasswordConfirmationField" destination="hNV-KL-LCA" id="hRQ-ZX-av1"/>
+                        <outlet property="nextPasswordConfirmationField" destination="hNV-KL-LCA" id="hRQ-ZX-av1"/>
+                        <outlet property="nextPasswordField" destination="ixo-kG-Dbu" id="fEA-wr-QGk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lqc-dd-4w6" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -2,7 +2,6 @@
 #import "SharedNoteDetailsViewController.h"
 #import "NoteTableViewItem.h"
 #import "NoteTableViewCell.h"
-#import "Globals.h"
 
 @import PromiseKit;
 
@@ -33,8 +32,8 @@
 - (void)refreshSharedNotes {
   self.notes = [NSMutableArray new];
 
-  [Globals getMe].then(^(NSDictionary *me) {
-    NSArray *accessibleNotes = [me valueForKey:@"accessibleNotes"];
+  [[self session] getMe].then(^(NSDictionary *me) {
+    NSArray *accessibleNotes = me[@"accessibleNotes"];
 
     for (NSDictionary *note in accessibleNotes) {
       NoteTableViewItem *item = [[NoteTableViewItem alloc] init:note];

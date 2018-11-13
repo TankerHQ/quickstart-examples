@@ -1,5 +1,5 @@
 #import "LoginViewController.h"
-#import "Globals.h"
+
 @import PromiseKit;
 
 @interface LoginViewController ()
@@ -56,45 +56,19 @@
     return;
   }
 
-  __block NSString *userToken;
   [_activityIndicator startAnimating];
-  [Globals loginWithEmail:email password:password]
-      .then(^(NSString *token) {
-        userToken = token;
-        return [[Globals sharedInstance] buildTanker];
-      })
-      .then(^() {
-        [[Globals sharedInstance].tanker connectUnlockRequiredHandler:^{
-          [[Globals sharedInstance].tanker
-              unlockCurrentDeviceWithPassword:password];
-        }];
-
-        NSString *userId = [Globals sharedInstance].userId;
-
-        return [[Globals sharedInstance].tanker openWithUserID:userId
-                                                     userToken:userToken];
-      })
-      .then(^{
-        return [[Globals sharedInstance].tanker isUnlockAlreadySetUp];
-      })
-      .then(^(NSNumber *setUp) {
-        if ([setUp isEqualToNumber:@NO])
-          return [[Globals sharedInstance].tanker
-              setupUnlockWithPassword:password];
-        return [PMKPromise promiseWithValue:nil];
-      })
-      .then(^{
-        [self.activityIndicator stopAnimating];
-        UITabBarController *controller = [self.storyboard
-            instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
-        [self.navigationController pushViewController:controller animated:YES];
-      })
-      .catch(^(NSError *error) {
-        // TODO check error domain to show app errors
-        [self.activityIndicator stopAnimating];
-        NSLog(@"Could not open session: %@", [error localizedDescription]);
-        self.errorLabel.text = @"Could not open session";
-      });
+  [[self session] logInWithEmail:email password:password].then(^{
+    [self.activityIndicator stopAnimating];
+    UITabBarController *controller = [self.storyboard
+        instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
+    [self.navigationController pushViewController:controller animated:YES];
+  })
+  .catch(^(NSError *error) {
+    // TODO check error domain to show app errors
+    [self.activityIndicator stopAnimating];
+    NSLog(@"Could not open session: %@", [error localizedDescription]);
+    self.errorLabel.text = @"Could not open session";
+  });
 }
 
 - (IBAction)triggerLogin:(UIButton *)sender {
