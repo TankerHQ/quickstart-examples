@@ -280,7 +280,7 @@ They are two places we need to do this:
 
 Please read the [section about sharing in the documentation](https://tanker.io/docs/latest/guide/encryption/?language=javascript#sharing) first.
 
-Then, *use the `shareWith` option of `tanker.encrypt()` in `Session.saveText()`*.
+Then, *use the `shareWithUsers` option of `tanker.encrypt()` in `Session.saveText()`*.
 
 Also make sure to *get the resource ID matching the newly generated key by using the [`tanker.getResourceId()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#getresourceid) method and update the `Session.resourceId` class member*
 
@@ -293,7 +293,7 @@ async saveText(text: string) {
   const recipients = await this.getNoteRecipients();
   const recipientIds = recipients.map(user => user.id);
 - const encryptedData = await this.tanker.encrypt(text);
-+ const encryptedData = await this.tanker.encrypt(text, { shareWith: recipientIds });
++ const encryptedData = await this.tanker.encrypt(text, { shareWithUsers: recipientIds });
   const encryptedText = toBase64(encryptedData);
 + this.resourceId = this.tanker.getResourceId(encryptedData);
   await this.serverApi.push(toBase64(encryptedText));
@@ -304,7 +304,7 @@ async saveText(text: string) {
 Next, in the `share` method:
 
 * *Remove the line `this.resourceId = this.userId` since notes no longer are identified by their creator*.
-* *Call [`tanker.share()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#share) with a list containing the current `resourceId` and the list of recipients*.
+* *Call [`tanker.share()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#share) with a list containing the current `resourceId` as its first argument. The second argument should be an options object with a `shareWithUsers` property containing the list of recipients*.
 
 <details>
 <summary><strong>Click here to see the solution</strong></summary>
@@ -313,7 +313,7 @@ Next, in the `share` method:
   async share(recipients: string[]) {
 -   this.resourceId = this.userId;
     if (!this.resourceId) throw new Error("No resource id.");
-+   await this.tanker.share([this.resourceId], recipients);
++   await this.tanker.share([this.resourceId], { shareWithUsers: recipients });
     await this.serverApi.share(this.userId, recipients);
   }
 ```

@@ -121,7 +121,7 @@ export default class Session extends EventEmitter {
   async saveText(text) {
     const recipients = await this.getNoteRecipients();
     const recipientIds = recipients.map(user => user.id);
-    const encryptedData = await this.tanker.encrypt(text, { shareWith: recipientIds });
+    const encryptedData = await this.tanker.encrypt(text, { shareWithUsers: recipientIds });
     const encryptedText = toBase64(encryptedData);
     this.resourceId = this.tanker.getResourceId(encryptedData);
     await this.serverApi.push(encryptedText);
@@ -152,7 +152,7 @@ export default class Session extends EventEmitter {
 
   async share(recipients) {
     if (!this.resourceId) throw new Error("No resource id.");
-    await this.tanker.share([this.resourceId], recipients);
+    await this.tanker.share([this.resourceId], { shareWithUsers: recipients });
     await this.serverApi.share(this.userId, recipients);
   }
 

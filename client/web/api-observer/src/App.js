@@ -69,7 +69,7 @@ class App extends Component {
       const options = {};
       if (shareWith) {
         const id = await this.getUserId(shareWith);
-        options.shareWith = [id];
+        options.shareWithUsers = [id];
       }
 
       this.log('encryption', clearText, shareWith);
