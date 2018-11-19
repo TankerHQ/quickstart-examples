@@ -15,6 +15,7 @@ import java.io.IOException;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerDecryptOptions;
 import io.tanker.api.TankerOptions;
+import io.tanker.api.TankerShareOptions;
 import io.tanker.api.TankerUnlockOptions;
 import io.tanker.notepad.BuildConfig;
 import io.tanker.notepad.R;
@@ -226,10 +227,13 @@ public class Session {
 
         if (sharing) {
             String resourceId = tanker.getResourceID(encryptedData);
-            String[] recipientUserIds = emailsToUserIds(recipientEmails);
             String[] resourceIds = new String[]{resourceId};
+            String[] recipientUserIds = emailsToUserIds(recipientEmails);
 
-            tanker.share(resourceIds, recipientUserIds).get();
+            TankerShareOptions shareOptions = new TankerShareOptions();
+            shareOptions.shareWithUsers(recipientUserIds);
+
+            tanker.share(resourceIds, shareOptions).get();
 
             Response res = mApiClient.share(recipientUserIds);
             if (!res.isSuccessful()) {
