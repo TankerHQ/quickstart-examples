@@ -1,4 +1,5 @@
 #import "AppDelegate.h"
+#import "RootViewController.h"
 @import Tanker;
 @import SVProgressHUD;
 

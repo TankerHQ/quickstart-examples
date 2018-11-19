@@ -14,6 +14,7 @@
 		5046960021876073008BEE58 /* HttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 504695FF21876073008BEE58 /* HttpClient.m */; };
 		504F88F82183674C0039E9D1 /* SharedNoteDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 504F88F72183674C0039E9D1 /* SharedNoteDetailsViewController.m */; };
 		506DFFF12189A886006936E4 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 506DFFF02189A886006936E4 /* Session.m */; };
+		508C57EF21A31305000C8937 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 508C57EE21A31305000C8937 /* RootViewController.m */; };
 		50A99F3D2181ECAE006BBA4D /* AuthenticatedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */; };
 		50E10319218AE26000EA92FF /* RequestResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E10318218AE26000EA92FF /* RequestResetPasswordViewController.m */; };
 		50E1031C218AEC1E00EA92FF /* ResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E1031B218AEC1E00EA92FF /* ResetPasswordViewController.m */; };
@@ -58,6 +59,8 @@
 		504F88F72183674C0039E9D1 /* SharedNoteDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedNoteDetailsViewController.m; sourceTree = "<group>"; };
 		506DFFEF2189A886006936E4 /* Session.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
 		506DFFF02189A886006936E4 /* Session.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
+		508C57ED21A31305000C8937 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		508C57EE21A31305000C8937 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		50A99F382181EC0E006BBA4D /* AuthenticatedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthenticatedViewController.h; sourceTree = "<group>"; };
 		50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthenticatedViewController.m; sourceTree = "<group>"; };
 		50E10317218AE26000EA92FF /* RequestResetPasswordViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RequestResetPasswordViewController.h; sourceTree = "<group>"; };
@@ -253,6 +256,8 @@
 				50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */,
 				5001EF402181FA1D004393F7 /* BaseViewController.h */,
 				5001EF412181FA3D004393F7 /* BaseViewController.m */,
+				508C57ED21A31305000C8937 /* RootViewController.h */,
+				508C57EE21A31305000C8937 /* RootViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -413,6 +418,7 @@
 				5022DFC52183151A007B3418 /* NoteTableViewCell.m in Sources */,
 				EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */,
 				EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */,
+				508C57EF21A31305000C8937 /* RootViewController.m in Sources */,
 				50E1031F218AF12D00EA92FF /* ResetPasswordLinkViewController.m in Sources */,
 				50E10327218C8D9000EA92FF /* StringValidator.m in Sources */,
 				50E1031C218AEC1E00EA92FF /* ResetPasswordViewController.m in Sources */,

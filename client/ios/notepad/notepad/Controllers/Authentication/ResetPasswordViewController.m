@@ -36,10 +36,7 @@
   [SVProgressHUD show];
 
   [[self session] resetPasswordTo:password withToken:self.token.appToken verificationCode:self.token.tankerToken].then(^{
-    UITabBarController *controller = [self.storyboard
-                                      instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
-    [self.navigationController pushViewController:controller animated:YES];
-
+    [[self rootViewController] displayTabBarScreen];
     [SVProgressHUD dismiss];
   }).catch(^(NSError *error) {
     [SVProgressHUD dismiss];

@@ -40,10 +40,7 @@
   [SVProgressHUD showWithStatus: @"Connecting..."];
 
   [[self session] logInWithEmail:email password:password].then(^{
-    UITabBarController *controller = [self.storyboard
-        instantiateViewControllerWithIdentifier:@"LoggedInTabBarController"];
-    [self.navigationController pushViewController:controller animated:YES];
-
+    [[self rootViewController] displayTabBarScreen];
     [SVProgressHUD dismiss];
   })
   .catch(^(NSError *error) {
