@@ -9,7 +9,7 @@
 
 @implementation HttpClient
 
-- (id)initWithRoot:(NSString* )root {
+- (instancetype)initWithRoot:(NSString* )root {
   self = [super init];
 
   if (self) {

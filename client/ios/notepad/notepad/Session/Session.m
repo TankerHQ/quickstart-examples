@@ -18,7 +18,7 @@ NSString *getWritablePath() {
 
 @implementation Session
 
-- (id)init {
+- (instancetype)init {
   self = [super init];
 
   if (self) {

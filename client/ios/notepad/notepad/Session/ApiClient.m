@@ -49,7 +49,7 @@ PMKPromise<NSData*>* (^dictToJson)(NSDictionary*) = ^(NSDictionary *data) {
 
 @implementation ApiClient
 
-- (id)init {
+- (instancetype)init {
   self = [super init];
 
   if (self) {
