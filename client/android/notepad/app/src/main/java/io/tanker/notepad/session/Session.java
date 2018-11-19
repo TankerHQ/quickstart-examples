@@ -86,41 +86,25 @@ public class Session {
         }
     }
 
-    public void close() throws IOException {
-        mApiClient.logout();
-        if (mTanker != null) {
-            mTanker.close().get();
-            mTanker = null;
-        }
-    }
-
-    public void logIn(String email, String password) throws ApiClient.AuthenticationError, IOException, JSONException {
-        JSONObject body = mApiClient.logIn(email, password);
-
-        String userId = body.getString("id");
-        String userToken = body.getString("token");
-
-        mTempUnlockPassword = password;
-        getTanker().open(userId, userToken).get();
-        mTempUnlockPassword = null;
-    }
-
     public void signUp(String email, String password) throws ApiClient.AuthenticationError, IOException, JSONException {
-        JSONObject body = mApiClient.signUp(email, password);
+        JSONObject user = mApiClient.signUp(email, password);
 
-        String userId = body.getString("id");
-        String userToken = body.getString("token");
+        String userId = user.getString("id");
+        String userToken = user.getString("token");
 
         getTanker().open(userId, userToken).get();
         getTanker().registerUnlock(new Email(email), new Password(password)).get();
     }
 
-    public void resetPassword(String newPassword, String passwordResetToken, String verificationCode) throws ApiClient.AuthenticationError, IOException, JSONException {
-        String email = mApiClient.resetPassword(newPassword, passwordResetToken);
-        mTempUnlockCode = verificationCode;
-        logIn(email, newPassword);
-        mTempUnlockCode = null;
-        getTanker().registerUnlock(null, new Password(newPassword)).get();
+    public void logIn(String email, String password) throws ApiClient.AuthenticationError, IOException, JSONException {
+        JSONObject user = mApiClient.logIn(email, password);
+
+        String userId = user.getString("id");
+        String userToken = user.getString("token");
+
+        mTempUnlockPassword = password;
+        getTanker().open(userId, userToken).get();
+        mTempUnlockPassword = null;
     }
 
     public void changeEmail(String newEmail) throws IOException, JSONException {
@@ -131,6 +115,22 @@ public class Session {
     public void changePassword(String oldPassword, String newPassword) throws IOException, JSONException {
         mApiClient.changePassword(oldPassword, newPassword);
         getTanker().registerUnlock(null, new Password(newPassword)).get();
+    }
+
+    public void resetPassword(String newPassword, String passwordResetToken, String verificationCode) throws ApiClient.AuthenticationError, IOException, JSONException {
+        String email = mApiClient.resetPassword(newPassword, passwordResetToken);
+        mTempUnlockCode = verificationCode;
+        logIn(email, newPassword);
+        mTempUnlockCode = null;
+        getTanker().registerUnlock(null, new Password(newPassword)).get();
+    }
+
+    public void close() throws IOException {
+        mApiClient.logout();
+        if (mTanker != null) {
+            mTanker.close().get();
+            mTanker = null;
+        }
     }
 
     public class TankerOptionsTask extends AsyncTask<String, Void, TankerOptions> {
