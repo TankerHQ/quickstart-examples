@@ -7,10 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import io.tanker.api.Tanker;
-import io.tanker.api.TankerDecryptOptions;
-import okhttp3.Response;
-
 public class MyNoteActivity extends DrawerActivity {
     private EditText mNoteInput;
     private EditText mRecipientInput;
@@ -29,40 +25,21 @@ public class MyNoteActivity extends DrawerActivity {
         Button saveButton = findViewById(R.id.save_note_button);
         saveButton.setOnClickListener((View v) -> {
             hideKeyboard();
-            saveData();
+            saveNote();
         });
 
         FetchDataTask backgroundTask = new FetchDataTask();
-        backgroundTask.execute(mApiClient.getCurrentUserId());
+        backgroundTask.execute(mSession.getCurrentUserId());
     }
 
-    private String loadDataFromUser(String userId) {
-        TankerDecryptOptions options = new TankerDecryptOptions();
-
-        try {
-            byte[] data = mApiClient.getData(userId);
-            if (data == null) {
-                return null;
-            }
-
-            Tanker tanker = mSession.getTanker();
-            byte[] clearData = tanker.decrypt(data, options).get();
-            return new String(clearData, "UTF-8");
-        } catch (Throwable e) {
-            Log.e("Notepad", "loadDataError", e);
-            return null;
-        }
-    }
-
-    private void saveData() {
+    private void saveNote() {
         String clearText = mNoteInput.getText().toString();
         String recipientEmail = mRecipientInput.getText().toString();
 
         SaveNoteTask task = new SaveNoteTask();
         task.execute(clearText, recipientEmail);
-        boolean ok = false;
         try {
-            ok = task.get();
+            task.get();
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -72,7 +49,7 @@ public class MyNoteActivity extends DrawerActivity {
         @Override
         protected Boolean doInBackground(String... params) {
             String userId = params[0];
-            String data = loadDataFromUser(userId);
+            String data = mSession.getData(userId);
             runOnUiThread(() -> {
                 EditText contentEdit = findViewById(R.id.note_input);
                 contentEdit.setText(data);
@@ -86,43 +63,19 @@ public class MyNoteActivity extends DrawerActivity {
         protected Boolean doInBackground(String... params) {
             String clearText = params[0];
             String recipientEmail = params[1];
+            String[] recipientEmails = recipientEmail.isEmpty() ? new String[]{} : new String[]{recipientEmail};
 
             try {
-                Boolean sharing = !recipientEmail.isEmpty();
-                String recipientUserId = null;
-
-                if (sharing) {
-                    recipientUserId = mApiClient.getUserIdFromEmail(recipientEmail);
-                    if (recipientUserId == null) {
-                        showToast("Failed to get the UserId from Email");
-                        return false;
-                    }
-                }
-
-                Tanker tanker = mSession.getTanker();
-
-                byte[] clearData = clearText.getBytes();
-                byte[] encryptedData = tanker.encrypt(clearData, null).get();
-
-                mApiClient.putData(encryptedData);
-
-                if (sharing) {
-                    String resourceId = tanker.getResourceID(encryptedData);
-                    tanker.share(new String[]{resourceId}, new String[]{recipientUserId}).get();
-                    Response res = mApiClient.share(recipientUserId);
-                    if (!res.isSuccessful()) {
-                        throw new Error(res.message());
-                    }
-                    showToast("Note successfully shared");
-                } else {
-                    showToast("Note successfully saved");
-                }
-
-                return true;
+                mSession.putData(clearText, recipientEmails);
             } catch (Throwable e) {
+                showToast(e.getMessage());
                 Log.e("Notepad", "Failed to save data: " + e.getMessage());
                 return false;
             }
+
+            String successMessage = "Note successfully " + (recipientEmails.length > 0 ? "shared" : "saved");
+            showToast(successMessage);
+            return true;
         }
     }
 }
