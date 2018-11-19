@@ -12,12 +12,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import io.tanker.api.Email;
-import io.tanker.api.Password;
 import io.tanker.api.Tanker;
 import io.tanker.api.TankerDecryptOptions;
 import io.tanker.api.TankerOptions;
-import io.tanker.api.VerificationCode;
+import io.tanker.api.TankerUnlockOptions;
 import io.tanker.notepad.BuildConfig;
 import io.tanker.notepad.R;
 import okhttp3.Response;
@@ -72,7 +70,7 @@ public class Session {
                 if (mTempUnlockCode != null) {
                     Log.w("Session", "Tanker device unlock with verification code");
 
-                    mTanker.unlockCurrentDevice(new VerificationCode(mTempUnlockCode)).then((validateFuture) -> {
+                    tanker.unlockCurrentDeviceWithVerificationCode(mTempUnlockCode).then((validateFuture) -> {
                         if (validateFuture.getError() != null) {
                             Log.e("Session", "Error when unlocking device with verification code");
                             validateFuture.getError().printStackTrace();
@@ -83,7 +81,7 @@ public class Session {
                 } else {
                     Log.w("Session", "Tanker device unlock with password");
 
-                    tanker.unlockCurrentDevice(new Password(mTempUnlockPassword)).then((validateFuture) -> {
+                    tanker.unlockCurrentDeviceWithPassword(mTempUnlockPassword).then((validateFuture) -> {
                         if (validateFuture.getError() != null) {
                             Log.e("Session", "Error when unlocking device with password");
                             validateFuture.getError().printStackTrace();
@@ -117,7 +115,12 @@ public class Session {
         String userToken = user.getString("token");
 
         getTanker().open(userId, userToken).get();
-        getTanker().registerUnlock(new Email(email), new Password(password)).get();
+
+        TankerUnlockOptions unlockOptions = new TankerUnlockOptions();
+        unlockOptions.setEmail(email);
+        unlockOptions.setPassword(password);
+
+        getTanker().registerUnlock(unlockOptions).get();
     }
 
     public void logIn(String email, String password) throws ApiClient.AuthenticationError, IOException, JSONException {
@@ -133,12 +136,20 @@ public class Session {
 
     public void changeEmail(String newEmail) throws IOException, JSONException {
         mApiClient.changeEmail(newEmail);
-        getTanker().registerUnlock(new Email(newEmail), null).get();
+
+        TankerUnlockOptions unlockOptions = new TankerUnlockOptions();
+        unlockOptions.setEmail(newEmail);
+
+        getTanker().registerUnlock(unlockOptions).get();
     }
 
     public void changePassword(String oldPassword, String newPassword) throws IOException, JSONException {
         mApiClient.changePassword(oldPassword, newPassword);
-        getTanker().registerUnlock(null, new Password(newPassword)).get();
+
+        TankerUnlockOptions unlockOptions = new TankerUnlockOptions();
+        unlockOptions.setPassword(newPassword);
+
+        getTanker().registerUnlock(unlockOptions).get();
     }
 
     public void resetPassword(String newPassword, String passwordResetToken, String verificationCode) throws ApiClient.AuthenticationError, IOException, JSONException {
@@ -146,7 +157,11 @@ public class Session {
         mTempUnlockCode = verificationCode;
         logIn(email, newPassword);
         mTempUnlockCode = null;
-        getTanker().registerUnlock(null, new Password(newPassword)).get();
+
+        TankerUnlockOptions unlockOptions = new TankerUnlockOptions();
+        unlockOptions.setPassword(newPassword);
+
+        getTanker().registerUnlock(unlockOptions).get();
     }
 
     public void close() throws IOException {
