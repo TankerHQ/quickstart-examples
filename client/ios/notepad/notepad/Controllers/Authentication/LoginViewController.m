@@ -56,6 +56,8 @@
   [self loginAction];
 }
 
+- (IBAction)unwindSegueToLogin:(UIStoryboardSegue *)segue {}
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
   if (textField == self.emailField) {
     [self.passwordField becomeFirstResponder];

@@ -10,9 +10,10 @@
   [super viewDidLoad];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
-}
+//- (void)viewWillAppear:(BOOL)animated {
+//  [super viewWillAppear:animated];
+//  NSLog(@"Debug navigation stack: %@", self.navigationController.viewControllers);
+//}
 
 - (RootViewController *)rootViewController {
   return (RootViewController *)UIApplication.sharedApplication.delegate.window.rootViewController;

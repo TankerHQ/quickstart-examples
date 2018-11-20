@@ -240,7 +240,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <state key="normal" title="Forgot your password?"/>
                                         <connections>
-                                            <segue destination="kIG-ci-acf" kind="showDetail" id="12a-WP-7Kh"/>
+                                            <segue destination="kIG-ci-acf" kind="show" id="12a-WP-7Kh"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJS-8B-at0" userLabel="errorLabel">
@@ -253,7 +253,7 @@
                                         <rect key="frame" x="0.0" y="233" width="343" height="30"/>
                                         <state key="normal" title="Create an account"/>
                                         <connections>
-                                            <segue destination="aLR-dQ-HNO" kind="showDetail" id="KqF-84-3qX"/>
+                                            <segue destination="aLR-dQ-HNO" kind="show" id="KqF-84-3qX"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -335,7 +335,7 @@
                                         <rect key="frame" x="0.0" y="197" width="343" height="30"/>
                                         <state key="normal" title="Back to login"/>
                                         <connections>
-                                            <segue destination="NXi-Se-x0t" kind="showDetail" id="8uY-GF-vMY"/>
+                                            <segue destination="cZj-N6-VOx" kind="unwind" unwindAction="unwindSegueToLogin:" id="hVR-K3-n92"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -357,6 +357,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U4I-wY-CWY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="cZj-N6-VOx" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="484" y="1590"/>
         </scene>
@@ -565,7 +566,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <state key="normal" title="Already got a link?"/>
                                         <connections>
-                                            <segue destination="8g3-b0-64g" kind="showDetail" id="aax-mx-bEl"/>
+                                            <segue destination="8g3-b0-64g" kind="show" id="aax-mx-bEl"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bfF-0b-MaV" userLabel="errorLabel">
@@ -578,7 +579,7 @@
                                         <rect key="frame" x="0.0" y="195" width="343" height="30"/>
                                         <state key="normal" title="Back to login"/>
                                         <connections>
-                                            <segue destination="NXi-Se-x0t" kind="showDetail" id="1hr-RQ-EC1"/>
+                                            <segue destination="sGv-XM-HnJ" kind="unwind" unwindAction="unwindSegueToLogin:" id="nBX-RB-dn9"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -599,6 +600,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZRv-6U-a3K" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="sGv-XM-HnJ" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1423" y="811"/>
         </scene>
@@ -721,7 +723,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <state key="normal" title="Don't have a reset link?"/>
                                         <connections>
-                                            <segue destination="kIG-ci-acf" kind="showDetail" id="osS-81-voj"/>
+                                            <segue destination="w4d-II-DQD" kind="unwind" unwindAction="unwindSegueToRequestLink:" id="20f-1i-oLR"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e28-4M-Ae9" userLabel="errorLabel">
@@ -745,10 +747,11 @@
                     <connections>
                         <outlet property="errorLabel" destination="e28-4M-Ae9" id="oPH-oM-x2d"/>
                         <outlet property="linkField" destination="BjM-9g-MTU" id="j0f-IQ-xVH"/>
-                        <segue destination="7Ul-eT-T8f" kind="showDetail" identifier="resetPasswordSegue" id="84Y-dX-J1f"/>
+                        <segue destination="7Ul-eT-T8f" kind="show" identifier="resetPasswordSegue" id="84Y-dX-J1f"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xC0-tg-vFg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="w4d-II-DQD" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1422" y="1590"/>
         </scene>
@@ -811,8 +814,4 @@
         <image name="Settings" width="37.5" height="37.5"/>
         <image name="SharedNotes" width="37.5" height="37.5"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="osS-81-voj"/>
-        <segue reference="8uY-GF-vMY"/>
-    </inferredMetricsTieBreakers>
 </document>
