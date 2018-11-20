@@ -156,7 +156,7 @@ class App extends Component {
     const { clearText, encryptedText, email, loading, log, shareWith } = this.state;
     
     const sessionButtonDisabled = email === '' || !emailValidator.validate(email);
-    const encryptButtonDisabled = clearText === '' || (shareWith && !emailValidator.validate(shareWith));
+    const encryptButtonDisabled = clearText === '' || (!!shareWith && !emailValidator.validate(shareWith));
 
     return (
       <Grid>
