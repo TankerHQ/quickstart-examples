@@ -15,8 +15,6 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.TextView;
 
-import io.tanker.api.Tanker;
-
 /**
 
  DrawerActivity should be extended by any activity that:
@@ -82,7 +80,7 @@ public abstract class DrawerActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = navigationView.getHeaderView(0);
-        String emailAddress = mApiClient.getCurrentUserEmail();
+        String emailAddress = mSession.getCurrentUserEmail();
 
         TextView email = headerView.findViewById(R.id.menu_header_email);
         email.setText(emailAddress);

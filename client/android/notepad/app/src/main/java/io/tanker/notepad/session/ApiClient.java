@@ -2,6 +2,9 @@ package io.tanker.notepad.session;
 
 import android.util.Base64;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,8 +94,11 @@ public class ApiClient {
         mCurrentUserEmail = null;
     }
 
-    public Response getMe() throws IOException {
-        return mHttpClient.getSync("/me");
+    public JsonNode getMe() throws IOException {
+        Response res = mHttpClient.getSync("/me");
+        ObjectMapper jsonMapper = new ObjectMapper();
+        JsonNode me = jsonMapper.readTree(res.body().string());
+        return me;
     }
 
     public JSONObject getConfig() throws IOException, JSONException {
@@ -101,6 +107,11 @@ public class ApiClient {
             throw new Error("Couldn't get the Tanker config, did you start the server?");
         }
         return new JSONObject(res.body().string());
+    }
+
+    public JSONArray getUsers() throws IOException, JSONException {
+        Response res = mHttpClient.getSync("/users");
+        return new JSONArray(res.body().string());
     }
 
     public void changeEmail(String newEmail) throws IOException, JSONException {
@@ -129,19 +140,6 @@ public class ApiClient {
             String message = "Failed to change password";
             throw new Error(message);
         }
-    }
-
-    public String getUserIdFromEmail(String email) throws IOException, JSONException {
-        Response res = mHttpClient.getSync("/users");
-        JSONArray users = new JSONArray(res.body().string());
-
-        for (int i = 0; i < users.length(); i++) {
-            JSONObject user = users.getJSONObject(i);
-            if (user.has("email") && user.getString("email").equals(email)) {
-                return user.getString("id");
-            }
-        }
-        return null;
     }
 
     public void requestResetPassword(String email) throws IOException, JSONException {
@@ -189,13 +187,15 @@ public class ApiClient {
         }
     }
 
-    public Response share(String to) throws IOException, JSONException {
-        JSONArray recipients = new JSONArray();
-        recipients.put(to);
+    public Response share(String[] recipients) throws IOException, JSONException {
+        JSONArray to = new JSONArray();
+        for (int i = 0; i < recipients.length; i++) {
+            to.put(recipients[i]);
+        }
 
         JSONObject data = new JSONObject();
         data.put("from", mCurrentUserId);
-        data.put("to", recipients);
+        data.put("to", to);
 
         return mHttpClient.postSync("/share", data.toString());
     }
