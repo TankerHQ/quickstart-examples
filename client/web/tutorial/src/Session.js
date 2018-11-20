@@ -76,7 +76,7 @@ export default class Session extends EventEmitter {
     const user = await response.json();
 
     // FIXME: open a tanker session
-    // FIXME: setup the email and password to unlock additional devices
+    // FIXME: register the email and password to unlock additional devices
 
     this.status = "open";
   }
