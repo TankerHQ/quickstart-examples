@@ -45,10 +45,10 @@ NSString *getWritablePath() {
         if (self.tempUnlockVerificationCode) {
           NSLog(@"Tanker device unlock with verification code");
           // TODO: unlock with verification code
-          // [tanker unlockCurrentDeviceWithVerificationCode:self.tempUnlockVerificationCode].then(^{
-          //   NSLog(@"Tanker device unlock with verficiation code success");
-          //   self.tempUnlockVerificationCode = nil;
-          // });
+           [self.tanker unlockCurrentDeviceWithVerificationCode:self.tempUnlockVerificationCode].then(^{
+             NSLog(@"Tanker device unlock with verification code success");
+             self.tempUnlockVerificationCode = nil;
+           });
         } else if (self.tempUnlockPassword) {
           NSLog(@"Tanker device unlock with password");
           [tanker unlockCurrentDeviceWithPassword:self.tempUnlockPassword].then(^{
@@ -89,8 +89,10 @@ NSString *getWritablePath() {
   }).then(^(NSDictionary *user) {
     return [self.tanker openWithUserID:user[@"id"] userToken:user[@"token"]];
   }).then(^{
-    // TODO: setup unlock with email too
-    return [self.tanker setupUnlockWithPassword:password];
+    TKRUnlockOptions *unlockOpts = [TKRUnlockOptions defaultOptions];
+    unlockOpts.password = password;
+    unlockOpts.email = email;
+    return [self.tanker registerUnlock:unlockOpts];
   }).then(^{
     self.tempUnlockPassword = nil;
     NSLog(@"Tanker is open");
@@ -109,8 +111,10 @@ NSString *getWritablePath() {
     return [self.tanker isUnlockAlreadySetUp];
   }).then(^(NSNumber *setUp) {
     if ([setUp isEqualToNumber:@NO]) {
-      // TODO: setup unlock with email too
-      return [self.tanker setupUnlockWithPassword:password];
+      TKRUnlockOptions *unlockOpts = [TKRUnlockOptions defaultOptions];
+      unlockOpts.password = password;
+      unlockOpts.email = email;
+      return [self.tanker registerUnlock:unlockOpts];
     }
     return [PMKPromise promiseWithValue:nil];;
   }).then(^{
@@ -120,8 +124,11 @@ NSString *getWritablePath() {
 }
 
 - (PMKPromise *)changeEmail:(NSString *)newEmail {
-  // TODO: update unlock with email
-  return [self.apiClient changeEmail:newEmail];
+  return [self.apiClient changeEmail:newEmail].then(^{
+    TKRUnlockOptions *unlockOpts = [TKRUnlockOptions defaultOptions];
+    unlockOpts.email = newEmail;
+    return [self.tanker registerUnlock:unlockOpts];
+  });
 }
 
 - (PMKPromise *)changePasswordFrom:(NSString *)oldPassword
@@ -129,7 +136,9 @@ NSString *getWritablePath() {
   return [self.apiClient changePasswordFrom:oldPassword to:newPassword].then(^{
     return [self tankerReady];
   }).then(^() {
-    return [self.tanker updateUnlockPassword:newPassword];
+    TKRUnlockOptions *unlockOpts = [TKRUnlockOptions defaultOptions];
+    unlockOpts.password = newPassword;
+    return [self.tanker registerUnlock:unlockOpts];
   });
 }
 
@@ -144,7 +153,9 @@ NSString *getWritablePath() {
     self.tempUnlockVerificationCode = nil;
     return [self tankerReady];
   }).then(^() {
-    return [self.tanker updateUnlockPassword:newPassword];
+    TKRUnlockOptions *unlockOpts = [TKRUnlockOptions defaultOptions];
+    unlockOpts.password = newPassword;
+    return [self.tanker registerUnlock:unlockOpts];
   });
 }
 
@@ -209,7 +220,7 @@ NSString *getWritablePath() {
 - (TKREncryptionOptions*)buildEncryptOptions:(NSArray<NSString *> *)recipientIds
 {
   TKREncryptionOptions *opts = [TKREncryptionOptions defaultOptions];
-  opts.shareWith = recipientIds;
+  opts.shareWithUsers = recipientIds;
   return opts;
 }
 
