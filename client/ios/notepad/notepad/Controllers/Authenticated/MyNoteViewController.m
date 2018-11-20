@@ -25,8 +25,7 @@
     self.secretNotesField.text = clearText;
   })
   .catch(^(NSError* error) {
-    // TODO constant
-    if ([error.domain isEqualToString:@"io.notepad"] && error.code == 404) {
+    if ([error.domain isEqualToString:@"io.tanker.notepad"] && error.code == 404) {
       self.secretNotesField.text = @"";
       return;
     }
