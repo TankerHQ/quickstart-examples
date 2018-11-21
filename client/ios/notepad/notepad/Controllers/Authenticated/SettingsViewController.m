@@ -1,15 +1,18 @@
 #import "SettingsViewController.h"
+#import "StringValidator.h"
 
 @import PromiseKit;
 
 @interface SettingsViewController ()
+
+@property(weak, nonatomic) IBOutlet UITextField *emailField;
+@property(weak, nonatomic) IBOutlet UIButton *changeEmailButton;
+@property (weak, nonatomic) IBOutlet UILabel *emailErrorLabel;
 @property(weak, nonatomic) IBOutlet UITextField *currentPasswordField;
 @property(weak, nonatomic) IBOutlet UITextField *nextPasswordField;
 @property(weak, nonatomic) IBOutlet UITextField *nextPasswordConfirmationField;
 @property(weak, nonatomic) IBOutlet UIButton *changePasswordButton;
-@property(weak, nonatomic) IBOutlet UILabel *errorLabel;
-@property(weak, nonatomic) IBOutlet UITextField *emailField;
-@property(weak, nonatomic) IBOutlet UIButton *changeEmailButton;
+@property (weak, nonatomic) IBOutlet UILabel *passwordErrorLabel;
 
 @end
 
@@ -22,32 +25,28 @@
 }
 
 - (IBAction)changePasswordAction:(UIButton *)sender {
-  _errorLabel.text = @"";
+  self.passwordErrorLabel.text = @" ";
 
-  NSString *currentPassword = _currentPasswordField.text;
-  NSString *nextPassword = _nextPasswordField.text;
-  NSString *nextPasswordConfirmation = _nextPasswordConfirmationField.text;
+  NSString *currentPassword = self.currentPasswordField.text;
+  NSString *nextPassword = self.nextPasswordField.text;
+  NSString *nextPasswordConfirmation = self.nextPasswordConfirmationField.text;
 
-  if ([currentPassword
-          stringByTrimmingCharactersInSet:[NSCharacterSet
-                                              whitespaceAndNewlineCharacterSet]]
-          .length == 0) {
-    _errorLabel.text = @"Current password is empty or filled with blanks";
+  if ([StringValidator isBlank:currentPassword]) {
+    self.passwordErrorLabel.text = @"Current password is empty or filled with blanks";
     return;
   }
 
-  if ([nextPassword
-          stringByTrimmingCharactersInSet:[NSCharacterSet
-                                              whitespaceAndNewlineCharacterSet]]
-          .length == 0) {
-    _errorLabel.text = @"New password is empty or filled with blanks";
+  if ([StringValidator isBlank:nextPassword]) {
+    self.passwordErrorLabel.text = @"New password is empty or filled with blanks";
     return;
   }
 
   if (![nextPasswordConfirmation isEqualToString:nextPassword]) {
-    _errorLabel.text = @"New password and confirmation are not equal";
+    self.passwordErrorLabel.text = @"Password and confirmation are not equal";
     return;
   }
+
+  [SVProgressHUD showWithStatus:@"Saving..."];
 
   // FIXME if an error occurs in the middle of password change, it will break!
   [[self session] changePasswordFrom:currentPassword to:nextPassword].then(^{
@@ -55,32 +54,27 @@
     self.nextPasswordField.text = @"";
     self.nextPasswordConfirmationField.text = @"";
 
-    [self.tabBarController setSelectedIndex:(0)];
+    [SVProgressHUD showSuccessWithStatus:@"Password changed"];
+    [SVProgressHUD dismissWithDelay:2.0];
   });
 }
 
 - (IBAction)changeEmailAction:(UIButton *)sender {
-  _errorLabel.text = @"";
+  self.emailErrorLabel.text = @" ";
 
-  NSString *email = _emailField.text;
+  NSString *email = self.emailField.text;
 
-  if ([email
-          stringByTrimmingCharactersInSet:[NSCharacterSet
-                                              whitespaceAndNewlineCharacterSet]]
-          .length == 0) {
-    _errorLabel.text = @"New email is empty or filled with blanks";
+  if (![StringValidator isEmail:email]) {
+    self.emailErrorLabel.text = @"Invalid email address";
     return;
   }
 
   [[self session] changeEmail:email].then(^{
     self.emailField.text = @"";
-    [self.tabBarController setSelectedIndex:(0)];
-  });
-}
 
-- (void)didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
+    [SVProgressHUD showSuccessWithStatus:@"Email address changed"];
+    [SVProgressHUD dismissWithDelay:2.0];
+  });
 }
 
 @end
