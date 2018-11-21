@@ -3,7 +3,7 @@
   "version": "1.6.1",
   "private": true,
   "dependencies": {
-    "@tanker/client-browser": "1.9.0-beta3",
+    "@tanker/client-browser": "1.9.0",
     "@tanker/user-token": "^1.4.0",
     "babel-polyfill": "^6.26.0",
     "email-validator": "^2.0.4",
