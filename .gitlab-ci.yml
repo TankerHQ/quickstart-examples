@@ -1,12 +1,8 @@
-variables:
-  GIT_SUBMODULE_STRATEGY: recursive
-
 stages:
   - ci
 
 ci:
   stage: ci
   script:
-    - cd .ci
-    - python3 -m pipenv install
-    - PYTHONPATH=. python3 -m pipenv run python quickstart/quickstart_examples.py
+    - dmenv install
+    - dmenv run -- python run-ci.py
