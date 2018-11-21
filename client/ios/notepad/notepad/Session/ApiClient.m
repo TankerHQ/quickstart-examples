@@ -49,7 +49,7 @@ PMKPromise<NSData*>* (^dictToJson)(NSDictionary*) = ^(NSDictionary *data) {
 
 @implementation ApiClient
 
-- (id)init {
+- (instancetype)init {
   self = [super init];
 
   if (self) {
@@ -101,6 +101,25 @@ PMKPromise<NSData*>* (^dictToJson)(NSDictionary*) = ^(NSDictionary *data) {
   return dictToJson(@{@"oldPassword": oldPassword, @"newPassword": newPassword})
     .then(^(NSData *jsonBody) {
       return [self.httpClient putWithPath:@"me/password" body:jsonBody contentType:@"application/json"];
+    });
+}
+
+- (PMKPromise<NSString *> *)resetPasswordTo:(NSString *)newPassword
+                                  withToken:(NSString *)resetToken {
+  return dictToJson(@{@"newPassword": newPassword, @"passwordResetToken": resetToken})
+    .then(^(NSData *jsonBody) {
+      return [self.httpClient postWithPath:@"resetPassword" body:jsonBody contentType:@"application/json"];
+    })
+    .then(jsonToDict)
+    .then(^(NSDictionary* user) {
+      return user[@"email"];
+    });
+}
+
+- (PMKPromise *)requestResetPassword:(NSString *)email {
+  return dictToJson(@{@"email": email})
+    .then(^(NSData *jsonBody) {
+      return [self.httpClient postWithPath:@"requestResetPassword" body:jsonBody contentType:@"application/json"];
     });
 }
 

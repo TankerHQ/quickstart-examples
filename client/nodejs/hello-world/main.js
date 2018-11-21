@@ -81,7 +81,7 @@ async function main () {
 
   console.log('Encrypting message for Bob');
   const clearData = 'This is a secret message';
-  const encryptedData = await tanker.encrypt(clearData, { shareWith: [bobId] });
+  const encryptedData = await tanker.encrypt(clearData, { shareWithUsers: [bobId] });
   await tanker.close();
 
   // Open Bob's session

@@ -8,6 +8,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface Session : NSObject
 
+@property (readonly) ApiClient *apiClient;
+
 + (Session *)sharedSession;
 
 - (PMKPromise<TKRTanker *> *)tankerReady;
@@ -19,6 +21,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (PMKPromise *)changeEmail:(NSString *)newEmail;
 - (PMKPromise *)changePasswordFrom:(NSString *)oldPassword
                                 to:(NSString *)newPassword;
+- (PMKPromise *)resetPasswordTo:(NSString *)newPassword
+                      withToken:(NSString *)resetToken
+               verificationCode:(NSString *)verificationCode;
 - (PMKPromise *)logout;
 
 - (PMKPromise<NSDictionary *> *)getMe;

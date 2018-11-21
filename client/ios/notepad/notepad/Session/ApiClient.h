@@ -16,6 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (PMKPromise *)changeEmail:(NSString *)newEmail;
 - (PMKPromise *)changePasswordFrom:(NSString *)oldPassword
                                 to:(NSString *)newPassword;
+- (PMKPromise<NSString *> *)resetPasswordTo:(NSString *)newPassword
+                                  withToken:(NSString *)resetToken;
+- (PMKPromise *)requestResetPassword:(NSString *)email;
 - (PMKPromise*)logout;
 - (PMKPromise<NSDictionary*>*)getConfig;
 - (PMKPromise<NSDictionary*>*)getMe;

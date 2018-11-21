@@ -1,9 +1,9 @@
 #import "MyNoteViewController.h"
+#import "StringValidator.h"
 
 @import PromiseKit;
 
 @interface MyNoteViewController ()
-@property UIActivityIndicatorView* activityIndicator;
 
 @property(weak, nonatomic) IBOutlet UITextView* secretNotesField;
 @property(weak, nonatomic) IBOutlet UITextField* shareWithField;
@@ -21,38 +21,25 @@
 
   self.secretNotesField.textContainer.maximumNumberOfLines = 15;
 
-  _activityIndicator = [[UIActivityIndicatorView alloc]
-      initWithFrame:CGRectMake(self.view.bounds.size.width / 2 - 25, self.view.bounds.size.height / 2 - 25, 50, 50)];
-  [_activityIndicator setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleWhiteLarge];
-  [_activityIndicator setColor:[UIColor blueColor]];
-  [self.view addSubview:_activityIndicator];
-
-  [_activityIndicator startAnimating];
-
   [[self session] getData].then(^(NSString* clearText) {
     self.secretNotesField.text = clearText;
-    [self.activityIndicator stopAnimating];
   })
   .catch(^(NSError* error) {
-    [self.activityIndicator stopAnimating];
-    // TODO constant
-    if ([error.domain isEqualToString:@"io.notepad"] && error.code == 404)
+    if ([error.domain isEqualToString:@"io.tanker.notepad"] && error.code == 404) {
       self.secretNotesField.text = @"";
-  });
-}
+      return;
+    }
 
-- (void)didReceiveMemoryWarning
-{
-  [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
+    [SVProgressHUD showErrorWithStatus:@"Failed to load or decrypt your note"];
+    [SVProgressHUD dismissWithDelay:5.0];
+  });
 }
 
 - (IBAction)saveNotes:(UIButton*)sender
 {
-  [_activityIndicator startAnimating];
+  [SVProgressHUD showWithStatus: @"Saving note..."];
 
-  NSString* recipientEmail =
-      [_shareWithField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+  NSString* recipientEmail = [StringValidator trim:self.shareWithField.text];
 
   NSMutableArray<NSString *> *recipientEmails = [NSMutableArray new];
   if (recipientEmail.length > 0) {
@@ -62,10 +49,12 @@
   NSString *text = self.secretNotesField.text;
 
   [[self session] putData:text shareWith:recipientEmails].then(^{
-    [self.activityIndicator stopAnimating];
+    [SVProgressHUD showSuccessWithStatus:@"Note saved"];
+    [SVProgressHUD dismissWithDelay:2.0];
   })
   .catch(^(NSError* error) {
-    [self.activityIndicator stopAnimating];
+    [SVProgressHUD showErrorWithStatus:@"Failed to encrypt or send data to server"];
+    [SVProgressHUD dismissWithDelay:2.0];
     NSLog(@"Failed to encrypt or send data to server: %@", [error localizedDescription]);
   });
 }

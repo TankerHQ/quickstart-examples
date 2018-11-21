@@ -161,6 +161,11 @@ public class ForgotPasswordActivity extends BaseActivity {
         protected void onPostExecute(final Boolean success) {
             if (success) {
                 showToast(getString(R.string.reset_password_success));
+                // Redirect to the MyNoteActivity
+                Intent intent = new Intent(ForgotPasswordActivity.this, MyNoteActivity.class);
+                startActivity(intent);
+                // Finish current LoginActivity so that you can't navigate back once logged in
+                finish();
             } else {
                 showToast(getString(R.string.reset_password_fail));
             }

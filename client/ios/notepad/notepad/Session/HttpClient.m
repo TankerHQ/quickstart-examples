@@ -9,7 +9,7 @@
 
 @implementation HttpClient
 
-- (id)initWithRoot:(NSString* )root {
+- (instancetype)initWithRoot:(NSString* )root {
   self = [super init];
 
   if (self) {
@@ -28,7 +28,7 @@
                              body:(NSData * _Nullable)body
                       contentType:(NSString *)contentType {
 
-  NSString *url = [NSString stringWithFormat:@"%@%@", _root, path];
+  NSString *url = [NSString stringWithFormat:@"%@%@", self.root, path];
   NSString *contentLength = [NSString stringWithFormat:@"%lu", body.length];
 
   NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
