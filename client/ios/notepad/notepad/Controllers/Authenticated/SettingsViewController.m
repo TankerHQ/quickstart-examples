@@ -56,6 +56,14 @@
 
     [SVProgressHUD showSuccessWithStatus:@"Password changed"];
     [SVProgressHUD dismissWithDelay:2.0];
+  }).catch(^(NSError* err){
+    NSLog(@"Error on password reset: %@", [err localizedDescription]);
+    self.currentPasswordField.text = @"";
+    self.nextPasswordField.text = @"";
+    self.nextPasswordConfirmationField.text = @"";
+    
+    [SVProgressHUD showErrorWithStatus:@"Password change failed"];
+    [SVProgressHUD dismissWithDelay:2.0];
   });
 }
 
