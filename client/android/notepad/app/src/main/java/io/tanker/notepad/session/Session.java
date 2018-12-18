@@ -92,6 +92,9 @@ public class Session {
                     });
                 }
             });
+            tanker.connectDeviceRevokedHandler(() -> {
+                Log.w("Session", "Tanker device has been revoked");
+            });
 
             Log.w("Session", "Tanker initialized");
             return tanker;
