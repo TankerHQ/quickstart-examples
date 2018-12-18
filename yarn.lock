@@ -111,6 +111,14 @@
     "@tanker/core" "1.9.0"
     "@tanker/datastore-dexie-browser" "1.9.0"
 
+"@tanker/client-browser@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.9.3.tgz#420856618cd359abf25d7d167a1904dcdac9db00"
+  integrity sha512-UovmUC4X6ZDswHUCj58kbsCM/aQGT4oyxAx0lVMi1JPvyTXyymoecDUcqZ/o0OGkii689bCapRT6tEfAKbqDzQ==
+  dependencies:
+    "@tanker/core" "1.9.3"
+    "@tanker/datastore-dexie-browser" "1.9.3"
+
 "@tanker/client-node@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.9.0.tgz#a62cc45529b829c89b2be187d5fbf3aaf11a85da"
@@ -128,6 +136,22 @@
     "@tanker/crypto" "1.9.0"
     "@tanker/datastore-base" "1.9.0"
     "@tanker/datastore-pouchdb-memory" "1.9.0"
+    array-find "^1.0.0"
+    array.chunk "^1.1.0"
+    async-mutex "^0.1.2"
+    engine.io-client "git+https://github.com/TankerHQ/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
+    lodash.uniqby "^4.7.0"
+    socket.io-client "git+https://github.com/TankerHQ/socket.io-client.git#d09a5b73b6075b88b6722575bc5e24e9f7d4eb1d"
+    varint "^5.0.0"
+
+"@tanker/core@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-1.9.3.tgz#c59d450cdbd13abf7112a69c064f958ed1b14b98"
+  integrity sha512-mh8Pewq5yXMDagNzFPLubuBOGOxLZgNgJAMqpiVpLC6chUDpB2Fd74yB8EICyD85XIDNUypTf0B1Dwvzk5p/bg==
+  dependencies:
+    "@babel/runtime-corejs2" "7.0.0"
+    "@tanker/crypto" "1.9.3"
+    "@tanker/datastore-base" "1.9.3"
     array-find "^1.0.0"
     array.chunk "^1.1.0"
     async-mutex "^0.1.2"
@@ -159,6 +183,14 @@
     "@babel/runtime-corejs2" "7.0.0"
     libsodium-wrappers "^0.5.1"
 
+"@tanker/crypto@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.9.3.tgz#0a626bf2822a90a2f6a14444330cc588f295c43d"
+  integrity sha512-s9AIjtEM0vhPmwyh5/1CeL5qWQpLlGWID3vHHu6O+E724y04D34A/cWm6U5FGDj8FOJExc8l4oKOZs016iIOnw==
+  dependencies:
+    "@babel/runtime-corejs2" "7.0.0"
+    libsodium-wrappers "^0.5.1"
+
 "@tanker/datastore-base@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-1.9.0.tgz#84926ad239623ca837e1e7b2b96717ea0f099083"
@@ -166,12 +198,27 @@
   dependencies:
     "@tanker/crypto" "1.9.0"
 
+"@tanker/datastore-base@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-1.9.3.tgz#248bbbe0c50f95b2377b83d474d0cab7574b4b56"
+  integrity sha512-DMBGu+hVRIVU3RAgPrQxoYdf97PVdYrXE1EffsI6y9Bj1UPfbqXgMDO5NXDu3MI4W3Xqae3mEJ4j1Qtgs8TUvg==
+  dependencies:
+    "@tanker/crypto" "1.9.3"
+
 "@tanker/datastore-dexie-browser@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-browser/-/datastore-dexie-browser-1.9.0.tgz#b87f134f3cac4c4bf3e9eedc637d72b9ba641653"
   integrity sha512-H/UKoIh9u3zJQiEnKWMzsGSvthPgQaA0pQZ6vBwfJ2G5gHTLH7K9grbohVpD1mfx5hxSf2F0u+msUoPbJQ0M4w==
   dependencies:
     "@tanker/crypto" "1.9.0"
+    dexie "^2.0.4"
+
+"@tanker/datastore-dexie-browser@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-browser/-/datastore-dexie-browser-1.9.3.tgz#c97694caa6ff06d603ee109b8bc80b6f685179e1"
+  integrity sha512-Cq9xrkEAEVJg68uxrFgvX/emjp0b8Nad3VgwSk3ocKyhUTaTLkZGUH9lRe8o1RmedcUU7qRJasKYJnwmMLUvIQ==
+  dependencies:
+    "@tanker/crypto" "1.9.3"
     dexie "^2.0.4"
 
 "@tanker/datastore-pouchdb-base@1.9.0":
@@ -206,6 +253,13 @@
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@tanker/user-token/-/user-token-1.4.1.tgz#2fee8d4f36ee8eb0b70e50c411eaf494d4ee300e"
   integrity sha512-uzAI8pQ2aPVjv6hiIg6KcSPo5F6VpWmfVYc/OSfyOfqbpZ95hC1wN+VMKMTf0o3hlJC9DbGQSBZKwxenva+2BQ==
+  dependencies:
+    "@tanker/crypto" "1.6.2"
+
+"@tanker/user-token@1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@tanker/user-token/-/user-token-1.4.2.tgz#78fb1011df2c53ea39b18748f3d12d0c53b2b23d"
+  integrity sha512-ib7CVZVemvF8aknFlqCRbPlEFdWRulX2DLASbOIvPxmO8DB0nHP0QGG38Lww4jN5r1zx8kF40W0ngsM9pQUo5g==
   dependencies:
     "@tanker/crypto" "1.6.2"
 

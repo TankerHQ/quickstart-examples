@@ -5,5 +5,5 @@ target 'notepad' do
   use_frameworks!
   pod 'PromiseKit', '~> 1.7'
   pod 'SVProgressHUD', '~> 2.2'
-  pod 'Tanker', '1.9.0'
+  pod 'Tanker', '1.9.3'
 end
