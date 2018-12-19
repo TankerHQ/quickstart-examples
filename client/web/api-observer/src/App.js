@@ -175,12 +175,12 @@ class App extends Component {
                       <InputGroup>
                         <FormControl
                           id="email"
-                          placeholder={"Email address, e.g. \"alice@example.com\""}
+                          placeholder={'Email address, e.g. "alice@example.com"'}
                           type="text"
                           value={email}
                           onChange={this.onEmailChange}
                           onKeyPress={event => {
-                            if (event.key === "Enter" && email) {
+                            if (event.key === 'Enter' && email) {
                               if (this.tanker.status === this.tanker.CLOSED) {
                                 this.onOpen(event);
                               } else {

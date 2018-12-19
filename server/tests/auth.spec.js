@@ -1,6 +1,7 @@
-const auth = require('../src/middlewares/auth');
 const chai = require('chai');
 const sodium = require('libsodium-wrappers-sumo');
+
+const auth = require('../src/middlewares/auth');
 
 const { expect } = chai;
 

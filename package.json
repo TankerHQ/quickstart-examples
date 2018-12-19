@@ -30,12 +30,18 @@
     "start:web:notepad": "cd client/web/notepad && yarn start",
     "start:web:tutorial": "cd client/web/tutorial && yarn start"
   },
+  "bin": {
+    "eslint": "./node_modules/.bin/eslint"
+  },
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-config-react-app": "^2.1.0",
-    "eslint-plugin-chai-expect": "^1.1.1",
+    "babel-eslint": "7.2.3",
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-chai-expect": "^2.0.1",
     "eslint-plugin-chai-friendly": "^0.4.1",
-    "fs-extra": "^6.0.1"
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-mocha-no-only": "^1.0.0",
+    "eslint-plugin-react": "^7.11.1"
   }
 }
