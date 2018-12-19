@@ -103,14 +103,6 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@tanker/client-browser@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.9.0.tgz#a5d2417d0b108f1d154d95d9d7a6f51144c46310"
-  integrity sha512-swdl3oouqW3RUNrHd5XIr1r4g7nOcfX+nFS5XAFmeEUmLz5TnQb5Fv90wIrnaJ+5Z+D3/G3E2jj0Yv9CnzYCLA==
-  dependencies:
-    "@tanker/core" "1.9.0"
-    "@tanker/datastore-dexie-browser" "1.9.0"
-
 "@tanker/client-browser@1.9.3":
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.9.3.tgz#420856618cd359abf25d7d167a1904dcdac9db00"
@@ -119,30 +111,13 @@
     "@tanker/core" "1.9.3"
     "@tanker/datastore-dexie-browser" "1.9.3"
 
-"@tanker/client-node@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.9.0.tgz#a62cc45529b829c89b2be187d5fbf3aaf11a85da"
-  integrity sha512-nP7yvVKmvUdKehx00dJOBR56+5UQNsPH6yYrugeRIJJm8NDl74pAvrSk08rtilMAjXUg63JUIUXCTqzbd5cVwg==
+"@tanker/client-node@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.9.3.tgz#a808205e98c026e8b5e37052475e0e78cb896197"
+  integrity sha512-hsyXnQcMI/Yuy+2rfSB1ln0D3iHywqQNaD8XEZEMUXr1ENNBte6Ae7gaqVM8nEFl9fyOQAbOgtYILvZmxYAHUw==
   dependencies:
-    "@tanker/core" "1.9.0"
-    "@tanker/datastore-pouchdb-node" "1.9.0"
-
-"@tanker/core@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-1.9.0.tgz#8035f1a669cf50b688bc569325e534abe31d2344"
-  integrity sha512-O2eRkgOTE5e46LfMuvfkyJMGFMNHyQ/h7oJc9jq99uO3/PbFd5p6rmVEVIsCygsmQ5lmpwR6/buKvImBzyTNOg==
-  dependencies:
-    "@babel/runtime-corejs2" "7.0.0"
-    "@tanker/crypto" "1.9.0"
-    "@tanker/datastore-base" "1.9.0"
-    "@tanker/datastore-pouchdb-memory" "1.9.0"
-    array-find "^1.0.0"
-    array.chunk "^1.1.0"
-    async-mutex "^0.1.2"
-    engine.io-client "git+https://github.com/TankerHQ/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
-    lodash.uniqby "^4.7.0"
-    socket.io-client "git+https://github.com/TankerHQ/socket.io-client.git#d09a5b73b6075b88b6722575bc5e24e9f7d4eb1d"
-    varint "^5.0.0"
+    "@tanker/core" "1.9.3"
+    "@tanker/datastore-pouchdb-node" "1.9.3"
 
 "@tanker/core@1.9.3":
   version "1.9.3"
@@ -175,14 +150,6 @@
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
 
-"@tanker/crypto@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.9.0.tgz#dfb9416acfc78a359ef8253f631583736eb4a5b6"
-  integrity sha512-1TNTgidUO5WTZj4P4M2nKhsufqewvdnCGfjTAQWFK4wr02OjToHCBBbDooIBHt3VAcI7tNUgzYfaEDTg0GiWtA==
-  dependencies:
-    "@babel/runtime-corejs2" "7.0.0"
-    libsodium-wrappers "^0.5.1"
-
 "@tanker/crypto@1.9.3":
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.9.3.tgz#0a626bf2822a90a2f6a14444330cc588f295c43d"
@@ -191,27 +158,12 @@
     "@babel/runtime-corejs2" "7.0.0"
     libsodium-wrappers "^0.5.1"
 
-"@tanker/datastore-base@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-1.9.0.tgz#84926ad239623ca837e1e7b2b96717ea0f099083"
-  integrity sha512-J7t01DP8hm3ULgAnhUxmVUJ2L6R12SIn+B/Ip451jPqxjxi+/cNS3oUHHbd4PP/B28+aPjrTRuPJDUcIxDvXGw==
-  dependencies:
-    "@tanker/crypto" "1.9.0"
-
 "@tanker/datastore-base@1.9.3":
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-1.9.3.tgz#248bbbe0c50f95b2377b83d474d0cab7574b4b56"
   integrity sha512-DMBGu+hVRIVU3RAgPrQxoYdf97PVdYrXE1EffsI6y9Bj1UPfbqXgMDO5NXDu3MI4W3Xqae3mEJ4j1Qtgs8TUvg==
   dependencies:
     "@tanker/crypto" "1.9.3"
-
-"@tanker/datastore-dexie-browser@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-browser/-/datastore-dexie-browser-1.9.0.tgz#b87f134f3cac4c4bf3e9eedc637d72b9ba641653"
-  integrity sha512-H/UKoIh9u3zJQiEnKWMzsGSvthPgQaA0pQZ6vBwfJ2G5gHTLH7K9grbohVpD1mfx5hxSf2F0u+msUoPbJQ0M4w==
-  dependencies:
-    "@tanker/crypto" "1.9.0"
-    dexie "^2.0.4"
 
 "@tanker/datastore-dexie-browser@1.9.3":
   version "1.9.3"
@@ -221,30 +173,19 @@
     "@tanker/crypto" "1.9.3"
     dexie "^2.0.4"
 
-"@tanker/datastore-pouchdb-base@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-base/-/datastore-pouchdb-base-1.9.0.tgz#fcc476a4c09473fe079f58b268a20ba442fa6233"
-  integrity sha512-EZ5cIv2Ti7c29CN8eVMzWot6/gnL8qXy22MRqB2udbyfBgGaKAkAX/vc9cEWNmT5aNEoV/S26R0M2udwe1ntaA==
+"@tanker/datastore-pouchdb-base@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-base/-/datastore-pouchdb-base-1.9.3.tgz#aa6108b956e67abe44fc2ade9c7660694fdb4131"
+  integrity sha512-y3vEn+JMxlWEHUVmqRWsXvCOXzDVK3aDCYfLlOOCtQtih87WwSO1i7jYUWfeIABQPFttcoc3ABKLoIyDEz2aRQ==
   dependencies:
-    "@tanker/datastore-base" "1.9.0"
+    "@tanker/datastore-base" "1.9.3"
 
-"@tanker/datastore-pouchdb-memory@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-memory/-/datastore-pouchdb-memory-1.9.0.tgz#165214380a189abf7c054397d449be871d50fb44"
-  integrity sha512-3GZcl9OnZtdpd8azxacpXO9Wsgu/SAzwE3Np/zUVIcDESL9lgKQNxH+n3nLi0lHuWt0mKIAsln8Ir+16+hjzow==
+"@tanker/datastore-pouchdb-node@1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-node/-/datastore-pouchdb-node-1.9.3.tgz#7c3e7130dc3ddf1402538bf22915f0fcc686555d"
+  integrity sha512-QcT9yMKp/tpxBHH62U7gOxiYG3tC9H4Y9+P7F5fa0AJ22CzgskjeXiEYSoQhJ95Mpy810OgwA74evM15uBhcMA==
   dependencies:
-    "@tanker/datastore-pouchdb-base" "1.9.0"
-    pouchdb-adapter-leveldb "^6.4.3"
-    pouchdb-adapter-memory "^6.4.3"
-    pouchdb-core "^6.4.3"
-    pouchdb-find "^6.4.3"
-
-"@tanker/datastore-pouchdb-node@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-node/-/datastore-pouchdb-node-1.9.0.tgz#33d1a5b4f61d7d2210e21f1766655ead0a8f8380"
-  integrity sha512-+Tfn4jppYGodiP6UeokRfSCB/Fk71CFN8j3mzAH+GcWDM0/YJ0UH4kkz6dbGHtrbcQxwkt4joz29kH3Hx+6S9Q==
-  dependencies:
-    "@tanker/datastore-pouchdb-base" "1.9.0"
+    "@tanker/datastore-pouchdb-base" "1.9.3"
     pouchdb-adapter-leveldb "^6.4.3"
     pouchdb-core "^6.4.3"
     pouchdb-find "^6.4.3"
@@ -279,13 +220,6 @@ abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
-
-abstract-leveldown@2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/abstract-leveldown/-/abstract-leveldown-2.4.1.tgz#b3bfedb884eb693a12775f0c55e9f0a420ccee64"
-  integrity sha1-s7/tuITraToSd18MVenwpCDM7mQ=
-  dependencies:
-    xtend "~4.0.0"
 
 abstract-leveldown@^4.0.0, abstract-leveldown@~4.0.0:
   version "4.0.3"
@@ -4779,11 +4713,6 @@ immediate@3.0.6, immediate@~3.0.5:
   resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
   integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
 
-immediate@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.2.3.tgz#d140fa8f614659bd6541233097ddaac25cdd991c"
-  integrity sha1-0UD6j2FGWb1lQSMwl92qwlzdmRw=
-
 import-lazy@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/import-lazy/-/import-lazy-2.1.0.tgz#05698e3d45c88e8d7e9d92cb0584e77f096f3e43"
@@ -6301,11 +6230,6 @@ ltgt@2.2.0:
   resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.2.0.tgz#b65ba5fcb349a29924c8e333f7c6a5562f2e4842"
   integrity sha1-tlul/LNJopkkyOMz98alVi8uSEI=
 
-ltgt@~2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/ltgt/-/ltgt-2.1.3.tgz#10851a06d9964b971178441c23c9e52698eece34"
-  integrity sha1-EIUaBtmWS5cReEQcI8nlJpjuzjQ=
-
 macaddress@^0.2.8:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/macaddress/-/macaddress-0.2.8.tgz#5904dc537c39ec6dbefeae902327135fa8511f12"
@@ -6419,17 +6343,6 @@ mem@^1.1.0:
   integrity sha1-Xt1StIXKHZAP5kiVUFOZoN+kX3Y=
   dependencies:
     mimic-fn "^1.0.0"
-
-memdown@1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/memdown/-/memdown-1.2.4.tgz#cd9a34aaf074d53445a271108eb4b8dd4ec0f27f"
-  integrity sha1-zZo0qvB01TRFonEQjrS43U7A8n8=
-  dependencies:
-    abstract-leveldown "2.4.1"
-    functional-red-black-tree "^1.0.1"
-    immediate "^3.2.3"
-    inherits "~2.0.1"
-    ltgt "~2.1.3"
 
 memory-fs@^0.4.0, memory-fs@~0.4.1:
   version "0.4.1"
@@ -7825,15 +7738,6 @@ pouchdb-adapter-leveldb@^6.4.3:
     pouchdb-merge "6.4.3"
     pouchdb-utils "6.4.3"
     through2 "2.0.3"
-
-pouchdb-adapter-memory@^6.4.3:
-  version "6.4.3"
-  resolved "https://registry.yarnpkg.com/pouchdb-adapter-memory/-/pouchdb-adapter-memory-6.4.3.tgz#06edb687be9d063b27e9b58ca30ea1a08a9b94f4"
-  integrity sha512-ALgFKU1YSWnnaKw3jSnPxMvlT4a4qBZV3tNEQUdet8btgL+FELdgXn6Gzom6wYI6WJ4bT7PHr9leeDy/KyIz9A==
-  dependencies:
-    memdown "1.2.4"
-    pouchdb-adapter-leveldb-core "6.4.3"
-    pouchdb-utils "6.4.3"
 
 pouchdb-adapter-utils@6.4.3:
   version "6.4.3"
