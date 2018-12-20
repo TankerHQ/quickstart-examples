@@ -1,12 +1,22 @@
 // running the eslint from the root directory, see: https://github.com/eslint/eslint/issues/10125
+env:
+  browser: true
 
 extends:
-  - react-app
   - airbnb
   - eslint:recommended
 
+parser: babel-eslint
+
+parserOptions:
+  ecmaVersion: 7
+  ecmaFeatures:
+    experimentalObjectRestSpread: true
+
 rules:
   react/jsx-filename-extension: 0
+  react/jsx-one-expression-per-line: 0
+  react/destructuring-assignment: 0
   // The best way to declare react prop types is to use something like flow
   // In order for the code of Notepad to be beginner-friendly, we chose to
   // not use flow at all.

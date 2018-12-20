@@ -7,8 +7,8 @@
     "start": "node main.js"
   },
   "dependencies": {
-    "@tanker/client-node": "1.9.0",
-    "fetch": "^1.1.0",
-    "uuid": "^3.2.1"
+    "@tanker/client-node": "1.9.3",
+    "node-fetch": "^2.3.0",
+    "uuid": "^3.3.2"
   }
 }

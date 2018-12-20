@@ -1,5 +1,5 @@
-import 'babel-polyfill';
-import 'babel-core/register';
+import '@babel/polyfill';
+import '@babel/register';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
