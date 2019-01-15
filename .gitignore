@@ -3,6 +3,9 @@
 # dependencies
 /**/node_modules
 
+.venv/
+quickstart.egg-info/
+
 # tmp data
 **/data/*
 !**/data/.gitkeep
