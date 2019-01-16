@@ -4,7 +4,7 @@
 // @flow
 const cors = require('cors');
 
-const allowedOrigins = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+const allowedOrigins = /^http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?$/;
 
 module.exports = () => cors({
   credentials: true, // adds header Access-Control-Allow-Credentials: true
