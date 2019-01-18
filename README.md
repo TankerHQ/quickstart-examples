@@ -26,11 +26,11 @@ cd quickstart-examples && yarn
 
 ### Create a Trustchain
 
-In short, your Trustchain is the structure in which the cryptographic operations will be stored when you run the examples.
+In short, your Trustchain is the structure on which the cryptographic operations will be stored when you run the examples. It only contains data that is either public or encrypted, and is hosted by Tanker.
 
-If you don't have a Trustchain yet, use the [Tanker dashboard](https://dashboard.tanker.io) to create a Trustchain, and store the configuration file safely.
+To create a Trustchain, create a free account on the [Tanker dashboard](https://dashboard.tanker.io/signup) and follow the instructions. Make sure you store the configuration file safely, as you'll need it later.
 
-Note: if you need to request access to the Tanker dashboard, please contact us at [contact@tanker.io](mailto:contact@tanker.io).
+Once you start building real private apps, you can just create other Trustchains.
 
 ### Configure
 
