@@ -11,8 +11,8 @@ The following endpoints are implemented:
 | method | path                  | description |
 |--------|-----------------------|-------------|
 | GET    | /config               | get the tanker config needed by the Tanker Client JS SDK |
-| POST   | /signup               | sign up a new user (returns id and user token) |
-| POST   | /login                | log in an existing user (returns id and user token) |
+| POST   | /signup               | sign up a new user (returns a complete user) |
+| POST   | /login                | log in an existing user (returns a complete user) |
 | GET    | /logout               | log out the current user |
 | GET    | /me                   | get the identity of the current user |
 | PUT    | /me/email             | change the email address of the current user |
