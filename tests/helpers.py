@@ -73,7 +73,7 @@ class Browser:
             options.add_argument("--disable-translate")
         # note: does not seem to work on tiling Window Managers
         options.add_argument("window-size=1200x600")
-        self.driver = selenium.webdriver.Chrome(chrome_options=options)
+        self.driver = selenium.webdriver.Chrome(options=options)
         self.get("/")
 
     def find_element(self, **kwargs: str) -> Optional[SeleniumElement]:
