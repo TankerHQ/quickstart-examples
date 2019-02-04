@@ -4,12 +4,7 @@ Example applications using the Tanker SDK in JavaScript, iOS and Android.
 
 ## Prerequisites
 
-### Setup
-
-Clone this repository:
-```bash
-git clone https://github.com/TankerHQ/quickstart-examples.git
-```
+### Setup on Linux and MacOS
 
 Install [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install), or upgrade if needed:
 ```bash
@@ -18,6 +13,49 @@ yarn -v  # >= 1.0  (workspaces support)
 ```
 
 We recommend using `yarn` rather than `npm`, as it will manage the dependencies of all the applications for you from the root of the repository.
+
+### Setup on Windows
+
+On Windows 10 version 1607 or later, the easiest way to run the quickstart examples is by installing the [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/about).
+
+Although it is possible to set up a Node.js stack on older Windows versions, the amount of work required is out of the scope of this guide.
+
+Once you have enabled [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/about), open a new Command Prompt instance and type the following:
+
+```bash
+bash
+```
+
+Your Command Prompt instance should now be a Bash instance. Let's update the repo lists and packages:
+
+```bash
+sudo apt update -y && sudo apt upgrade -y
+```
+
+Install Node.js:
+
+```
+sudo apt install nodejs
+```
+
+Install Yarn by [following the Ubuntu instructions](https://yarnpkg.com/en/docs/install#debian-stable) on yarnpkg.com.
+
+We recommend using `yarn` rather than `npm`, as it will manage the dependencies of all the applications for you from the root of the repository.
+
+Finally, verify that your setup is up to date:
+```bash
+node -v  # >= 8    (async/await support)
+yarn -v  # >= 1.0  (workspaces support)
+```
+
+For the record, you can access your Windows C:\ drive at anytime under `/mnt/c`.
+
+### Install the project
+
+Clone this repository:
+```bash
+git clone https://github.com/TankerHQ/quickstart-examples.git
+```
 
 Install all dependencies at once:
 ```bash
@@ -48,7 +86,7 @@ Note that the JSON configuration file can have any name ending with the `.json` 
 
 That's all you need to start the server and applications!
 
-### Start the example server
+## Start the example server
 
 Start the example server in a terminal with:
 
@@ -67,7 +105,7 @@ You may also provide the path of a config file explicitely:
 yarn start:server --config <path>
 ```
 
-### Run example applications
+## Run example applications
 
 Note: before running any of the example applications, don't forget to always start the server first!
 
