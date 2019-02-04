@@ -67,6 +67,10 @@ class Browser:
         self.base_url = "http://127.0.0.1:3000"
         options = ChromeOptions()
         options.headless = headless
+        if headless:
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-extensions")
+            options.add_argument("--disable-translate")
         # note: does not seem to work on tiling Window Managers
         options.add_argument("window-size=1200x600")
         self.driver = selenium.webdriver.Chrome(chrome_options=options)
