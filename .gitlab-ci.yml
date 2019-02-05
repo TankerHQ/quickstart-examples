@@ -1,4 +1,4 @@
-image: 10.100.0.1:5000/ci-js:4
+image: 10.100.0.1:5000/ci-js:latest
 
 stages:
   - ci
