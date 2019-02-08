@@ -1,5 +1,5 @@
 # Generated with dmenv 0.5.0, python 3.6.7, on Linux
--e git+ssh://git@10.100.0.1/Tanker/ci@90cdd4539e1350affff679aeaba721e3c584d786#egg=ci
+-e git+ssh://git@tanker.gitlab.local/Tanker/ci@90cdd4539e1350affff679aeaba721e3c584d786#egg=ci
 atomicwrites==1.2.1
 attrs==18.2.0
 Faker==1.0.0
