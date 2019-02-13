@@ -14,7 +14,7 @@ const base64 = toBase64(binary);
 // const opts = { shareWithUsers: [userId] };
 // const clear = ${quoteEllipsis(text, 20)};
 // const binary = await tanker.encrypt(clear);
-// const resourceId = tanker.getResourceId(binary);
+// const resourceId = await tanker.getResourceId(binary);
 // await tanker.share([resourceId], opts);
 `;
 

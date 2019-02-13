@@ -123,7 +123,7 @@ export default class Session extends EventEmitter {
     const recipientIds = recipients.map(user => user.id);
     const encryptedData = await this.tanker.encrypt(text, { shareWithUsers: recipientIds });
     const encryptedText = toBase64(encryptedData);
-    this.resourceId = this.tanker.getResourceId(encryptedData);
+    this.resourceId = await this.tanker.getResourceId(encryptedData);
     await this.serverApi.push(encryptedText);
   }
 

@@ -295,7 +295,7 @@ async saveText(text: string) {
 - const encryptedData = await this.tanker.encrypt(text);
 + const encryptedData = await this.tanker.encrypt(text, { shareWithUsers: recipientIds });
   const encryptedText = toBase64(encryptedData);
-+ this.resourceId = this.tanker.getResourceId(encryptedData);
++ this.resourceId = await this.tanker.getResourceId(encryptedData);
   await this.serverApi.push(toBase64(encryptedText));
 ```
 </details>
