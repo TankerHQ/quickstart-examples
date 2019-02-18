@@ -156,35 +156,49 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@tanker/client-browser@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.9.4.tgz#ea94833973df0ad36f978cc5d564501cbfd4e6a8"
-  integrity sha512-/lcHaDYHDpc+RfzFUhs4O8ZIhGAoIBADvScaM9En/iPp/zL5QFp9Hy1G5PxCTfZPaGKlJk/JSMRFFzQRtcoIIA==
+"@tanker/client-browser@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-1.10.0.tgz#8011971871553c967db378b9a2c2d5a933703dc2"
+  integrity sha512-N+ZD0Tsd2eYcaJ4oJf95gXjs4P/dUTkEOj4PIAG0GxVJ71DLQzURD8RuxPvAUIi18jP+RVagAFruFua/caHk0w==
   dependencies:
-    "@tanker/core" "1.9.4"
-    "@tanker/datastore-dexie-browser" "1.9.4"
+    "@tanker/core" "1.10.0"
+    "@tanker/datastore-dexie-browser" "1.10.0"
+    "@tanker/file-ponyfill" "1.10.0"
+    "@tanker/file-reader" "1.10.0"
+    "@tanker/stream-browser" "1.10.0"
 
-"@tanker/client-node@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.9.4.tgz#8b2757491f1e2534d9a1e4f61e7eaa5f8e16f767"
-  integrity sha512-edeURzrl37HHe6t7YqCotK79G7gdjA8GCzFOtTGVpu1qMedJNEhX9GLJ+nj+yAA5/y/FJJxeuL3WfC1pEa+dAQ==
+"@tanker/client-node@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-1.10.0.tgz#938be69632daa8bed8999861235607c1fb853ce8"
+  integrity sha512-8O0OccIm3oWQ52ofFdobsrTzoH7O0Dpi8Qw7OF8xsyITPhfcabxjdylwff2rMo7rgCSZj9Rm1iL6k2Tlkc53rw==
   dependencies:
-    "@tanker/core" "1.9.4"
-    "@tanker/datastore-pouchdb-node" "1.9.4"
+    "@tanker/core" "1.10.0"
+    "@tanker/datastore-pouchdb-node" "1.10.0"
+    "@tanker/stream-node" "1.10.0"
 
-"@tanker/core@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-1.9.4.tgz#c259badc03b6c94fcc53e041372e056aa33bf436"
-  integrity sha512-VfRRuw82MZJb6s57iQI23ue+ZCzg5oEp2O3X0QD6Q60JY7Q92ZoxMx3CSxOTKJ7bzlyUUYP7UDZ9qfxjgGDP+g==
+"@tanker/core@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-1.10.0.tgz#e396cc4369d8d412b03d5daacf61b75472ac2ab5"
+  integrity sha512-MNxN+3IwR//pmFPJbnCRH6VEse/ubJJZq1V0RJUP2im+mEG5Xe+wNwYrBA7zNS5MiVTgrX8lJvuGLEMxDVO7bA==
   dependencies:
     "@babel/runtime-corejs2" "7.0.0"
-    "@tanker/crypto" "1.9.4"
-    "@tanker/datastore-base" "1.9.4"
+    "@tanker/crypto" "1.10.0"
+    "@tanker/datastore-base" "1.10.0"
+    "@tanker/errors" "1.10.0"
+    "@tanker/stream-base" "1.10.0"
     array-find "^1.0.0"
     array.chunk "^1.1.0"
     engine.io-client "git+https://github.com/TankerHQ/engine.io-client.git#cfb6fa113fb5dc22e08777bd8fc6b6701f00ba67"
     socket.io-client "git+https://github.com/TankerHQ/socket.io-client.git#d09a5b73b6075b88b6722575bc5e24e9f7d4eb1d"
     varint "^5.0.0"
+
+"@tanker/crypto@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.10.0.tgz#cec6441815a8dbe4806c6f20e30d55c527e90764"
+  integrity sha512-aOXsKofck8n1zGKWtaPIJSSoKcYJ209QGDvGbfI4hVFXezwCkVDWi4i1tMH6QVKLryyc6VZdXli89bC14I4mCQ==
+  dependencies:
+    "@babel/runtime-corejs2" "7.0.0"
+    libsodium-wrappers "^0.5.1"
 
 "@tanker/crypto@1.6.2":
   version "1.6.2"
@@ -194,45 +208,78 @@
     babel-runtime "^6.22.0"
     libsodium-wrappers "^0.5.1"
 
-"@tanker/crypto@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-1.9.4.tgz#19b2488292b19f7ef42a69c22b6dee185a26294c"
-  integrity sha512-tgl5kO/B/nHeqzAjxp2J3LuJoTtJ73XKyDBBN6fYngkRvx2FHxC1v1lpCmfslM42ZyScYOOd3+XEI7ym7N4YKg==
+"@tanker/datastore-base@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-1.10.0.tgz#36555bacc5ad949035e065c4d5e6ee691eeb95f1"
+  integrity sha512-+dI76pjepZNcepyX91Q4w9qFYUuS0XkhwggoAU+IFQDx1xZ2egWVNnbyByRc+pstLi+mRjr2lCfcjB8taBHmow==
   dependencies:
-    "@babel/runtime-corejs2" "7.0.0"
-    libsodium-wrappers "^0.5.1"
+    "@tanker/crypto" "1.10.0"
 
-"@tanker/datastore-base@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-1.9.4.tgz#a7a959c63de25cf706f7df572147cada5e7add05"
-  integrity sha512-Q2j+phJioIOW/HRzyzwfctPAFgPAt6wpWh1hg4NOhfjrPulcuqT/65SAD18BhhtdPRk+DwyJ7yUD2X70EwZPMw==
+"@tanker/datastore-dexie-browser@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-browser/-/datastore-dexie-browser-1.10.0.tgz#5ad16d33fe52dbda7bc0fd3c77e256ad90f854fd"
+  integrity sha512-wHAK+Hc9M/xNModoCoNYyKZI6LOw5M1Ptqbew6Oz7SrUBNxw1sTD6fmyY3WjzV4diFwWXU5jDjjVBz9iNRdnsA==
   dependencies:
-    "@tanker/crypto" "1.9.4"
-
-"@tanker/datastore-dexie-browser@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-browser/-/datastore-dexie-browser-1.9.4.tgz#6d768db51c60735e70d1a0d36f8d1b1befb8f27f"
-  integrity sha512-Vh4YKy0DOHOsjMzcoa7owHM6Q05fS2qDPwcmm7V/+3OZjqYlkHG5pHOgqLhGndck+EArVe3eT9Jz8uJaUfaS5A==
-  dependencies:
-    "@tanker/crypto" "1.9.4"
+    "@tanker/crypto" "1.10.0"
     dexie "^2.0.4"
 
-"@tanker/datastore-pouchdb-base@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-base/-/datastore-pouchdb-base-1.9.4.tgz#9ac0dd4a233a4a9f7e24e0150b57b485d56de070"
-  integrity sha512-ODid8VnhLvNJmyuz5ikT3t9ehbrwAZEV7Ko31tKPlme4hv1N/BYAabuFIeN52UwYh66KhbVoJIHXYwfxXXiSmQ==
+"@tanker/datastore-pouchdb-base@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-base/-/datastore-pouchdb-base-1.10.0.tgz#94610f2aaa98bb8cb786a168035c882895023ca6"
+  integrity sha512-E+65r92UKVlpTzpkBN2RtbiVD7C3SkWZn/qFKX49UrM72xx0UW4osavHLFHN/bcs4yKHPcoZkw0S0EukNWMNNQ==
   dependencies:
-    "@tanker/datastore-base" "1.9.4"
+    "@tanker/datastore-base" "1.10.0"
 
-"@tanker/datastore-pouchdb-node@1.9.4":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-node/-/datastore-pouchdb-node-1.9.4.tgz#3b03b521685a2b6e9aabc45ec5066b9050a3b99f"
-  integrity sha512-CXzA+mPVtqcjkYw9XiGGgcRHxDZoKp7v2Q0CmhhoFfbTbW56hMuovovouNzFjP47trfu0/1FCEU4hJt2UzcN9Q==
+"@tanker/datastore-pouchdb-node@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-node/-/datastore-pouchdb-node-1.10.0.tgz#05c056b32da52defb872821622ff76f178cdf9f5"
+  integrity sha512-n8SR0qyaiTXPtqI1V2JqVilLNnyuK/Q9pxRL3kzA6ccJQ93KFR5nu0KXLShBFcya842cCv+6conKTQ+iRWJf2Q==
   dependencies:
-    "@tanker/datastore-pouchdb-base" "1.9.4"
+    "@tanker/datastore-pouchdb-base" "1.10.0"
     pouchdb-adapter-leveldb "^6.4.3"
     pouchdb-core "^6.4.3"
     pouchdb-find "^6.4.3"
+
+"@tanker/errors@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/errors/-/errors-1.10.0.tgz#6802efffd21c510fdacf2a3644b659aed89c9e27"
+  integrity sha512-mhlKt+9gjTIeDfwDW+zz9QXLhdD/Xs+WgoGZWPMSla4ZedfelvziNmTTrlovrQydPDtG6Eu0zj+PeGip2YrcrQ==
+
+"@tanker/file-ponyfill@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/file-ponyfill/-/file-ponyfill-1.10.0.tgz#34207e8fa602d4afc80e21590cffac91c1ca5c3f"
+  integrity sha512-PHh+S8qI3xdESPVmn2J3d3chazNGieXzaV4KHwolWuK1AZwi3MMFXOUORqoyKLu7bSP73kHhrqzHdYQV2OjiFA==
+
+"@tanker/file-reader@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/file-reader/-/file-reader-1.10.0.tgz#23faccf951f07687e724d4e06470ce89ffb5b6e8"
+  integrity sha512-YdmFTO0RGzCQoojE7YYydhhx5Owg1jM+8JqKmR4GdNNwxbiigyH+1kPJABn+i/NsplMfM2MG+Vf9sk6z1E2hNQ==
+
+"@tanker/stream-base@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/stream-base/-/stream-base-1.10.0.tgz#43d99ece9255a87ffd3efc5e3d2b971240d0e995"
+  integrity sha512-aHZplvGpYAKWan1UjttwJcz/h6sx0dS9wfeK/HnHxisjIhlG+XSNkC8PCSlpm4rZeukka020y0q4vgEgiXZRTQ==
+  dependencies:
+    "@tanker/errors" "1.10.0"
+    readable-stream "^3.1.1"
+
+"@tanker/stream-browser@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/stream-browser/-/stream-browser-1.10.0.tgz#db8cbf803e02876e249e95c345c657d82b643207"
+  integrity sha512-djePc8LrRhoXeuK6fCuColamV9Do8/nwiDm9BMa2NwdA9al5VFnu41f79HeInJlPMhsazrUjqyduc5pPfy6ilg==
+  dependencies:
+    "@tanker/errors" "1.10.0"
+    "@tanker/file-ponyfill" "1.10.0"
+    "@tanker/file-reader" "1.10.0"
+    "@tanker/stream-base" "1.10.0"
+
+"@tanker/stream-node@1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@tanker/stream-node/-/stream-node-1.10.0.tgz#fcdd1f84922bb3d18edfa11d4804dfaabea37602"
+  integrity sha512-xICJQvm8pta4uYh57r5ZiKQibLliBQe5UZ34P8f8KkfiJW0tIrwuU4QxGUan0PJxIeXYC1eaf1VL43XotL5gag==
+  dependencies:
+    "@tanker/errors" "1.10.0"
+    "@tanker/stream-base" "1.10.0"
 
 "@tanker/user-token@1.4.2":
   version "1.4.2"
@@ -8515,6 +8562,15 @@ readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.5, readable
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
+readable-stream@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.1.1.tgz#ed6bbc6c5ba58b090039ff18ce670515795aeb06"
+  integrity sha512-DkN66hPyqDhnIQ6Jcsvx9bFjhw214O4poMBcIMgPVpQvNy9a0e0Uhg5SqySyDKAmUlwt8LonTBz1ezOnM8pUdA==
+  dependencies:
+    inherits "^2.0.3"
+    string_decoder "^1.1.1"
+    util-deprecate "^1.0.1"
+
 readable-stream@~0.0.2:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-0.0.4.tgz#f32d76e3fb863344a548d79923007173665b3b8d"
@@ -9459,6 +9515,13 @@ string_decoder@^1.0.0, string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
+string_decoder@^1.1.1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.2.0.tgz#fe86e738b19544afe70469243b2a1ee9240eae8d"
+  integrity sha512-6YqyX6ZWEYguAxgZzHGL7SsCeGx3V2TtOTqZz1xSTSWnqsbWwbptafNyvf/ACquZUXV3DANr5BDIwNYe1mN42w==
+  dependencies:
+    safe-buffer "~5.1.0"
+
 string_decoder@~0.10.x:
   version "0.10.31"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
@@ -10188,7 +10251,7 @@ use@^3.1.0:
   dependencies:
     kind-of "^6.0.2"
 
-util-deprecate@~1.0.1:
+util-deprecate@^1.0.1, util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
