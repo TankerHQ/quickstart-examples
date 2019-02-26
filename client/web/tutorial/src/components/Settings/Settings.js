@@ -88,7 +88,7 @@ class Settings extends React.Component {
     if (!emailValidator.validate(newEmail)) {
       return [false, "Invalid email address"];
     }
-    if (newEmail === session.email) {
+    if (newEmail === session.user.email) {
       return [false, "This is already your current email address"];
     }
     return [true, null];
@@ -165,7 +165,7 @@ class Settings extends React.Component {
             )}
             {editMode !== "email" && (
               <FormGroup>
-                <span>{session.email} &mdash; </span>
+                <span>{session.user.email} &mdash; </span>
                 <Button
                   id="edit-email-button"
                   className="edit-link"

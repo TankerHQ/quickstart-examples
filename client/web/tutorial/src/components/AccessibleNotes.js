@@ -16,6 +16,7 @@ class AccessibleNotes extends React.Component {
   load = async () => {
     this.setState({ isLoading: true });
     try {
+      await this.props.session.refreshMe();
       const accessibleNotes = await this.props.session.getAccessibleNotes();
       this.setState({ accessibleNotes, error: null, isLoading: false });
     } catch (err) {
