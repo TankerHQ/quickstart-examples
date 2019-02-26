@@ -74,10 +74,10 @@ class Edit extends React.Component {
 
   async load() {
     const { session } = this.props;
-    const { userId } = session;
+    const { user } = session;
     this.setState({ isLoading: true });
     try {
-      const text = await session.loadTextFromUser(userId);
+      const text = await session.loadTextFromUser(user.id);
       this.setState({ text, isLoading: false, isLoaded: true });
     } catch (e) {
       console.error(e);

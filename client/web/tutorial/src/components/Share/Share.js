@@ -24,8 +24,8 @@ class Share extends React.Component {
       this.setState({
         isLoading: false,
         isLoaded: true,
-        users: withoutMe(session.userId, users),
-        selectedUserIds: new Set(withoutMe(session.userId, recipients).map(user => user.id)),
+        users: withoutMe(session.user.id, users),
+        selectedUserIds: new Set(withoutMe(session.user.id, recipients).map(user => user.id)),
         error: null,
       });
     } catch (err) {

@@ -15,6 +15,7 @@ export default class Session extends EventEmitter {
 
     this.resourceId = null;
     this.verificationCode = null;
+    this._user = null;
 
     this.serverApi = new ServerApi();
 
@@ -27,12 +28,18 @@ export default class Session extends EventEmitter {
 
     // If existing session found (e.g. page reload), open Tanker now
     try {
-      const user = await this.serverApi.getMe();
-      await this.tanker.open(user.id, user.token);
-      this.status = "open";
+      if (!this.user) {
+        await this.refreshMe();
+      }
+      if (this.user) {
+        await this.tanker.open(this.user.id, this.user.token);
+        this.status = "open";
+        return;
+      }
     } catch (e) {
-      this.status = "closed";
+      console.error(e);
     }
+    this.status = "closed";
   }
 
   async initTanker() {
@@ -66,17 +73,14 @@ export default class Session extends EventEmitter {
     this.emit("statusChange", [prevStatus, newStatus]);
   }
 
-  get email() {
-    return this.serverApi.email;
-  }
-
-  get userId() {
-    return this.serverApi.userId;
+  get user() {
+    return this._user;
   }
 
   async close() {
     await this.serverApi.logout();
     await this.tanker.close();
+    this._user = null;
     this.status = "closed";
   }
 
@@ -86,9 +90,8 @@ export default class Session extends EventEmitter {
     if (response.status === 409) throw new Error(`Email '${email}' already taken`);
     if (!response.ok) throw new Error("Server error!");
 
-    const user = await response.json();
-
-    await this.tanker.open(user.id, user.token);
+    this._user = await response.json();
+    await this.tanker.open(this.user.id, this.user.token);
     await this.tanker.registerUnlock({ password, email });
 
     this.status = "open";
@@ -103,13 +106,13 @@ export default class Session extends EventEmitter {
       throw new Error("Cannot contact server");
     }
 
+
     if (response.status === 404) throw new Error("User never registered");
     if (response.status === 401) throw new Error("Bad login or password");
     if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
-    const user = await response.json();
-
-    await this.tanker.open(user.id, user.token);
+    this._user = await response.json();
+    await this.tanker.open(this.user.id, this.user.token);
 
     this.status = "open";
   }
@@ -139,21 +142,26 @@ export default class Session extends EventEmitter {
   }
 
   async getAccessibleNotes() {
-    return (await this.serverApi.getMe()).accessibleNotes;
+    return this.user.accessibleNotes;
   }
 
   async getNoteRecipients() {
-    return (await this.serverApi.getMe()).noteRecipients;
+    return this.user.noteRecipients;
   }
 
   getUsers() {
     return this.serverApi.getUsers();
   }
 
+  async refreshMe() {
+    this._user = await this.serverApi.getMe();
+  }
+
   async share(recipients) {
     if (!this.resourceId) throw new Error("No resource id.");
     await this.tanker.share([this.resourceId], { shareWithUsers: recipients });
-    await this.serverApi.share(this.userId, recipients);
+    await this.serverApi.share(this.user.id, recipients);
+    await this.refreshMe();
   }
 
   delete() {
@@ -163,6 +171,7 @@ export default class Session extends EventEmitter {
   async changeEmail(newEmail) {
     await this.serverApi.changeEmail(newEmail);
     await this.tanker.registerUnlock({ email: newEmail });
+    await this.refreshMe();
   }
 
   async changePassword(oldPassword, newPassword) {

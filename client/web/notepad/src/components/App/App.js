@@ -21,7 +21,7 @@ class App extends React.Component {
     const { session } = this.props;
     const { status } = this.state;
     if (status === 'open') {
-      console.warn(`Closing previous session opened by ${session.email}`);
+      console.warn(`Closing previous session opened by ${session.user.email}`);
       await session.close();
     }
 
@@ -32,7 +32,7 @@ class App extends React.Component {
     const { session } = this.props;
     const { status } = this.state;
     if (status === 'open') {
-      console.warn(`Closing previous session opened by ${session.email}`);
+      console.warn(`Closing previous session opened by ${session.user.email}`);
       await session.close();
     }
 
@@ -67,7 +67,7 @@ class App extends React.Component {
 
     return (
       <div className="app">
-        <Topbar status={status} email={session.email} onLogOut={this.onLogOut} />
+        <Topbar status={status} email={session.user && session.user.email} onLogOut={this.onLogOut} />
         <div className="container">
           {status === "initializing" && null}
           {status === "open" && <Notepad session={session} />}

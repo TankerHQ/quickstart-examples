@@ -303,7 +303,7 @@ async saveText(text: string) {
 
 Next, in the `share` method:
 
-* *Remove the line `this.resourceId = this.userId` since notes no longer are identified by their creator*.
+* *Remove the line `this.resourceId = this.user.id` since notes no longer are identified by their creator*.
 * *Call [`tanker.share()`](https://tanker.io/docs/latest/api/tanker/?language=javascript#share) with a list containing the current `resourceId` as its first argument. The second argument should be an options object with a `shareWithUsers` property containing the list of recipients*.
 
 <details>
@@ -311,10 +311,10 @@ Next, in the `share` method:
 
 ```diff
   async share(recipients: string[]) {
--   this.resourceId = this.userId;
+-   this.resourceId = this.user.id;
     if (!this.resourceId) throw new Error("No resource id.");
 +   await this.tanker.share([this.resourceId], { shareWithUsers: recipients });
-    await this.serverApi.share(this.userId, recipients);
+    await this.serverApi.share(this.user.id, recipients);
   }
 ```
 </details>

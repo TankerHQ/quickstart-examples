@@ -64,12 +64,19 @@ const setup = async (config) => {
   await sodium.ready;
 };
 
-const sanitizeUser = (user) => {
+const sanitizePublicUser = (user) => {
   const { hashed_password, token, ...safeUser } = user; // eslint-disable-line camelcase
   return safeUser;
 };
 
-const reviveUsers = ids => ids.map(id => sanitizeUser(app.storage.get(id)));
+const reviveUsers = ids => ids.map(id => sanitizePublicUser(app.storage.get(id)));
+
+const sanitizeUser = (user) => {
+  const { hashed_password, ...safeUser } = user; // eslint-disable-line camelcase
+  safeUser.accessibleNotes = reviveUsers(safeUser.accessibleNotes || []);
+  safeUser.noteRecipients = reviveUsers(safeUser.noteRecipients || []);
+  return safeUser;
+};
 
 app.use(corsMiddleware()); // enable CORS
 app.use(bodyParser.text());
@@ -161,7 +168,7 @@ app.post('/signup', async (req, res) => {
 
   log('Return the user id and token', 1);
   res.set('Content-Type', 'application/json');
-  res.status(201).json({ id: userId, token });
+  res.status(201).json(sanitizeUser(user));
 });
 
 // Add login route (non authenticated)
@@ -197,7 +204,7 @@ app.post('/login', async (req, res) => {
 
   log('Serve the token', 1);
   res.set('Content-Type', 'application/json');
-  res.json({ id: user.id, token: user.token });
+  res.json(sanitizeUser(user));
 });
 
 app.post('/requestResetPassword', async (req, res) => {
@@ -298,15 +305,10 @@ app.post('/resetPassword', (req, res) => {
 //   - set res.locals.user for the request handlers
 app.use(auth.middleware(app));
 
-
 // Add authenticated routes
 app.get('/me', (req, res) => {
   // res.locals.user is set by the auth middleware
-  const me = res.locals.user;
-  const safeMe = sanitizeUser(me);
-  safeMe.token = me.token; // re-add Tanker user token
-  safeMe.accessibleNotes = reviveUsers(safeMe.accessibleNotes || []);
-  safeMe.noteRecipients = reviveUsers(safeMe.noteRecipients || []);
+  const safeMe = sanitizeUser(res.locals.user);
   res.json(safeMe);
 });
 
@@ -406,7 +408,7 @@ app.get('/data/:userId', (req, res) => {
 
 app.get('/users', (req, res) => {
   const allUsers = app.storage.getAll();
-  const safeUsers = allUsers.map(sanitizeUser);
+  const safeUsers = allUsers.map(sanitizePublicUser);
 
   res.set('Content-Type', 'application/json');
   res.json(safeUsers);
@@ -427,6 +429,7 @@ app.post('/share', (req, res) => {
 
 // Return nice 500 message when an exception is thrown
 const errorHandler = (err, req, res, next) => { // eslint-disable-line  no-unused-vars
+  console.error(err);
   res.status(500);
   res.json({ error: err.message });
   // Note: we don't call next() because we don't want the request to continue

@@ -15,6 +15,7 @@ export default class Session extends EventEmitter {
 
     this.resourceId = null;
     this.verificationCode = null;
+    this._user = null;
 
     this.serverApi = new ServerApi();
 
@@ -27,12 +28,18 @@ export default class Session extends EventEmitter {
 
     // If existing session found (e.g. page reload), open Tanker now
     try {
-      const user = await this.serverApi.getMe();
-      // FIXME: open a tanker session
-      this.status = "open";
+      if (!this.user) {
+        await this.refreshMe();
+      }
+      if (this.user) {
+        // FIXME: open a tanker session
+        this.status = "open";
+        return;
+      }
     } catch (e) {
-      this.status = "closed";
+      console.error(e);
     }
+    this.status = "closed";
   }
 
   async initTanker() {
@@ -53,18 +60,15 @@ export default class Session extends EventEmitter {
     this.emit("statusChange", [prevStatus, newStatus]);
   }
 
-  get email() {
-    return this.serverApi.email;
-  }
-
-  get userId() {
-    return this.serverApi.userId;
+  get user() {
+    return this._user;
   }
 
   async close() {
     await this.serverApi.logout();
     // FIXME: close tanker session
     this.status = "closed";
+    this._user = null;
   }
 
   async signUp(email, password) {
@@ -73,11 +77,9 @@ export default class Session extends EventEmitter {
     if (response.status === 409) throw new Error(`Email '${email}' already taken`);
     if (!response.ok) throw new Error("Server error!");
 
-    const user = await response.json();
+    this._user = await response.json();
 
     // FIXME: open a tanker session
-    // FIXME: register the email and password to unlock additional devices
-
     this.status = "open";
   }
 
@@ -90,13 +92,15 @@ export default class Session extends EventEmitter {
       throw new Error("Cannot contact server");
     }
 
+
     if (response.status === 404) throw new Error("User never registered");
     if (response.status === 401) throw new Error("Bad login or password");
     if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
-    const user = await response.json();
+    this._user = await response.json();
 
     // FIXME: open a tanker session
+    // FIXME: register the email and password to unlock additional devices
 
     this.status = "open";
   }
@@ -125,23 +129,28 @@ export default class Session extends EventEmitter {
   }
 
   async getAccessibleNotes() {
-    return (await this.serverApi.getMe()).accessibleNotes;
+    return this.user.accessibleNotes;
   }
 
   async getNoteRecipients() {
-    return (await this.serverApi.getMe()).noteRecipients;
+    return this.user.noteRecipients;
   }
 
   getUsers() {
     return this.serverApi.getUsers();
   }
 
+  async refreshMe() {
+    this._user = await this.serverApi.getMe();
+  }
+
   async share(recipients) {
     // FIXME: remove the line below
-    this.resourceId = this.userId;
+    this.resourceId = this.user.id;
     if (!this.resourceId) throw new Error("No resource id.");
     // FIXME: share [this.resourceId] with the recipients
-    await this.serverApi.share(this.userId, recipients);
+    await this.serverApi.share(this.user.id, recipients);
+    await this.refreshMe();
   }
 
   delete() {
@@ -151,6 +160,7 @@ export default class Session extends EventEmitter {
   async changeEmail(newEmail) {
     await this.serverApi.changeEmail(newEmail);
     // FIXME: update the unlock email
+    await this.refreshMe();
   }
 
   async changePassword(oldPassword, newPassword) {
