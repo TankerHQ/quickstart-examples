@@ -4,7 +4,7 @@ import React from "react";
 class ViewNote extends React.Component {
   state = { text: "", error: null, isLoading: true };
 
-  componentWillMount() {
+  componentDidMount() {
     // FIXME: need to abort if onBackClicked is fired before
     // load is done
     this.load();

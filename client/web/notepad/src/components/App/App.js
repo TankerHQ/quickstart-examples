@@ -11,7 +11,7 @@ import "./App.css";
 class App extends React.Component {
   state = { status: "initializing" };
 
-  componentWillMount() {
+  componentDidMount() {
     const { session } = this.props;
     // App's status will always be synchronized with the session status
     session.on("statusChange", ([, status]) => this.setState({ status }));
