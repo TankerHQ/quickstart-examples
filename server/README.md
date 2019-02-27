@@ -4,7 +4,7 @@
 
 This is an example application server, built to be simple to read and to understand.
 
-The provided implementation is not meant to be production ready and should be considered as an example of how to support Tanker user tokens in an authentication scheme.
+The provided implementation is not meant to be production ready and should be considered as an example of how to support Tanker identities in an authentication scheme.
 
 The following endpoints are implemented:
 
@@ -27,6 +27,6 @@ The following endpoints are implemented:
 
 The data is encrypted on the client side. The server stores the received data whether it is encrypted or not.
 
-The server uses the `@tanker/user-token` npm library to generate and serve a user token for each user. This user token is unique to each user, and is sent at login/signup to the client application so that it can open a Tanker session with it.
+The server uses the `@tanker/identity` npm library to generate and serve a Tanker identity for each user. This identity is unique to each user, and is sent at login/signup to the client application so that it can open a Tanker session with it.
 
-Note: in a real world application, you must plug in your secure auth system, and store user tokens alongside your user records in a secure database.
+Note: in a real world application, you must plug in your secure auth system, and store Tanker identites alongside your user records in a secure database.

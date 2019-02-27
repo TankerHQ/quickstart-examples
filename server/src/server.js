@@ -6,6 +6,7 @@
 // backend server to the demo applications using the Tanker SDK.
 
 // @flow
+const { createIdentity, getPublicIdentity, upgradeUserToken } = require('@tanker/identity');
 const bodyParser = require('body-parser');
 const debugMiddleware = require('debug-error-middleware').express;
 const express = require('express');
@@ -14,7 +15,6 @@ const fs = require('fs');
 const morgan = require('morgan');
 const sodium = require('libsodium-wrappers-sumo');
 const uuid = require('uuid/v4');
-const userToken = require('@tanker/user-token');
 
 const auth = require('./auth');
 const cors = require('./cors');
@@ -62,17 +62,21 @@ const setup = async (config) => {
   await sodium.ready;
 };
 
-const sanitizePublicUser = (user) => {
-  const { hashed_password, token, ...safeUser } = user; // eslint-disable-line camelcase
-  return safeUser;
+const sanitizePublicUser = async (user) => {
+  const { hashed_password, identity, ...otherAttributes } = user; // eslint-disable-line camelcase
+  const publicIdentity = await getPublicIdentity(identity);
+  return { ...otherAttributes, publicIdentity };
 };
 
-const reviveUsers = ids => ids.map(id => sanitizePublicUser(app.storage.get(id)));
+const reviveUsers = async ids => Promise.all(
+  ids.map(id => sanitizePublicUser(app.storage.get(id))),
+);
 
-const sanitizeUser = (user) => {
+const sanitizeUser = async (user) => {
   const { hashed_password, ...safeUser } = user; // eslint-disable-line camelcase
-  safeUser.accessibleNotes = reviveUsers(safeUser.accessibleNotes || []);
-  safeUser.noteRecipients = reviveUsers(safeUser.noteRecipients || []);
+  safeUser.accessibleNotes = await reviveUsers(safeUser.accessibleNotes || []);
+  safeUser.noteRecipients = await reviveUsers(safeUser.noteRecipients || []);
+  safeUser.publicIdentity = await getPublicIdentity(safeUser.identity);
   return safeUser;
 };
 
@@ -147,8 +151,8 @@ app.post('/signup', async (req, res) => {
   log('Hash the password', 1);
   const hashedPassword = auth.hashPassword(password);
 
-  log('Generate a new user token', 1);
-  const token = userToken.generateUserToken(
+  log('Generate a new Tanker identity', 1);
+  const identity = await createIdentity(
     trustchainId,
     trustchainPrivateKey,
     userId,
@@ -156,7 +160,7 @@ app.post('/signup', async (req, res) => {
 
   log('Save the user to storage', 1);
   const user = {
-    id: userId, email, hashed_password: hashedPassword, token,
+    id: userId, email, hashed_password: hashedPassword, identity,
   };
   app.storage.save(user);
 
@@ -164,14 +168,15 @@ app.post('/signup', async (req, res) => {
   await session.regenerate(req);
   req.session.userId = userId;
 
-  log('Return the user id and token', 1);
+  log('Return the user', 1);
   res.set('Content-Type', 'application/json');
-  res.status(201).json(sanitizeUser(user));
+  res.status(201).json(await sanitizeUser(user));
 });
 
 // Add login route (non authenticated)
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  const { trustchainId } = serverConfig;
 
   log('Check login credentials', 1);
 
@@ -196,13 +201,22 @@ app.post('/login', async (req, res) => {
     return;
   }
 
+  if (user.token && !user.identity) {
+    log('Upgrade user token to identity', 1);
+    const identity = await upgradeUserToken(trustchainId, userId, user.token);
+    // TODO when debugging is over:
+    // delete user.token;
+    user.identity = identity;
+    app.storage.save(user);
+  }
+
   log('Save the userId in the session', 1);
   await session.regenerate(req);
   req.session.userId = userId;
 
   log('Serve the token', 1);
   res.set('Content-Type', 'application/json');
-  res.json(sanitizeUser(user));
+  res.json(await sanitizeUser(user));
 });
 
 app.post('/requestResetPassword', async (req, res) => {
@@ -322,7 +336,7 @@ app.post('/requestVerificationCode', async (req, res) => {
   }
 });
 
-app.post('/resetPassword', (req, res) => {
+app.post('/resetPassword', async (req, res) => {
   const { newPassword, passwordResetToken } = req.body;
 
   if (!newPassword) {
@@ -352,7 +366,7 @@ app.post('/resetPassword', (req, res) => {
   app.storage.save(user);
 
   res.set('Content-Type', 'application/json');
-  res.status(201).json(sanitizeUser(user));
+  res.status(201).json(await sanitizeUser(user));
 });
 
 // Add authentication middleware for all routes below
@@ -361,9 +375,9 @@ app.post('/resetPassword', (req, res) => {
 app.use(auth.middleware(app));
 
 // Add authenticated routes
-app.get('/me', (req, res) => {
+app.get('/me', async (req, res) => {
   // res.locals.user is set by the auth middleware
-  const safeMe = sanitizeUser(res.locals.user);
+  const safeMe = await sanitizeUser(res.locals.user);
   res.json(safeMe);
 });
 
@@ -461,9 +475,9 @@ app.get('/data/:userId', (req, res) => {
 });
 
 
-app.get('/users', (req, res) => {
+app.get('/users', async (req, res) => {
   const allUsers = app.storage.getAll();
-  const safeUsers = allUsers.map(sanitizePublicUser);
+  const safeUsers = await Promise.all(allUsers.map(sanitizePublicUser));
 
   res.set('Content-Type', 'application/json');
   res.json(safeUsers);

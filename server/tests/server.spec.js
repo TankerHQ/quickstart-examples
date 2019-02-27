@@ -3,6 +3,7 @@ const chai = require('chai');
 const fetch = require('node-fetch');
 const tmp = require('tmp');
 const querystring = require('querystring');
+const { createIdentity, getPublicIdentity } = require('@tanker/identity');
 
 const { app, setup } = require('../src/server');
 const auth = require('../src/auth');
@@ -53,24 +54,26 @@ describe('server', () => {
   const bobNewPassword = 'n3wp4ss';
 
   const bobPasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$88wT+5X56Ui7EAQMz/wIdw$37pEnuujONgGxa6FudmN9aa0K3TUQbL/tziT30PX7v4';
-  const bobToken = 'bobToken';
+  let bobIdentity;
+  let bobPublicIdentity;
 
   const aliceId = 'alice';
   const aliceEmail = 'alice@example.com';
   const alicePassword = '4lic3';
   const alicePasswordHash = '$argon2id$v=19$m=65536,t=2,p=1$UNqRSixl3aeit4F7mR+5pw$KKfiAWPyUaDkVefJ77w2XRdb8gafLpR1a2Uqd0zYnlY';
-  const aliceToken = 'aliceToken';
+  let aliceIdentity;
+  let alicePublicIdentity;
 
   const signUpAlice = () => {
     const user = {
-      id: aliceId, email: aliceEmail, hashed_password: alicePasswordHash, token: aliceToken,
+      id: aliceId, email: aliceEmail, hashed_password: alicePasswordHash, identity: aliceIdentity,
     };
     app.storage.save(user);
   };
 
   const signUpBob = () => {
     const user = {
-      id: bobId, email: bobEmail, hashed_password: bobPasswordHash, token: bobToken,
+      id: bobId, email: bobEmail, hashed_password: bobPasswordHash, identity: bobIdentity,
     };
     app.storage.save(user);
   };
@@ -135,6 +138,13 @@ describe('server', () => {
     app.storage.save(user);
   };
 
+  before(async () => {
+    aliceIdentity = await createIdentity(trustchainId, trustchainPrivateKey, aliceId);
+    alicePublicIdentity = await getPublicIdentity(aliceIdentity);
+    bobIdentity = await createIdentity(trustchainId, trustchainPrivateKey, bobId);
+    bobPublicIdentity = await getPublicIdentity(bobIdentity);
+  });
+
   beforeEach(async () => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
     await setup({
@@ -177,9 +187,9 @@ describe('server', () => {
         { status: 201 },
       );
 
-      const { id, token } = await response.json();
+      const { id, identity } = await response.json();
       expect(id).to.be.a('string');
-      expect(token).to.be.a('string');
+      expect(identity).to.be.a('string');
     });
 
     it('returns 400 if email is missing', async () => {
@@ -246,9 +256,9 @@ describe('server', () => {
         { status: 200 },
       );
 
-      const { id, token } = await response.json();
+      const { id, identity } = await response.json();
       expect(id).to.equal(bobId);
-      expect(token).to.equal(bobToken);
+      expect(identity).to.equal(bobIdentity);
     });
 
     it('refuses to log in with incorrect password', async () => {
@@ -470,8 +480,8 @@ describe('server', () => {
       );
       const res = await response.json();
       expect(res).to.deep.equal([
-        { id: aliceId, email: aliceEmail },
-        { id: bobId, email: bobEmail },
+        { id: aliceId, email: aliceEmail, publicIdentity: alicePublicIdentity },
+        { id: bobId, email: bobEmail, publicIdentity: bobPublicIdentity },
       ]);
     });
 
