@@ -14,7 +14,7 @@ class Share extends React.Component {
     error: null,
   };
 
-  componentWillMount = async () => {
+  componentDidMount = async () => {
     const { session } = this.props;
     try {
       const [users, recipients] = await Promise.all([

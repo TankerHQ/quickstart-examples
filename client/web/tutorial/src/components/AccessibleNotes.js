@@ -9,7 +9,7 @@ class AccessibleNotes extends React.Component {
     error: null,
   };
 
-  async componentWillMount() {
+  async componentDidMount() {
     await this.load();
   }
 
