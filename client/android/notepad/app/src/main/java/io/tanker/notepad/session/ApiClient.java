@@ -32,7 +32,7 @@ public class ApiClient {
         return mCurrentUserEmail;
     }
 
-    public class AuthenticationError extends Exception {
+    static public class AuthenticationError extends Exception {
         public String mField;
 
         public AuthenticationError(String message, String field) {
