@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "private": true,
   "scripts": {
-    "start": "react-scripts start"
+    "start": "HOST=127.0.0.1 react-scripts start"
   },
   "dependencies": {
     "@tanker/client-browser": "1.10.1",

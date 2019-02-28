@@ -35,4 +35,4 @@ In a new terminal, run:
 yarn start:web:notepad
 ```
 
-The application should open in a new browser tab. If not, go to http://localhost:3000/ manually.
+The application should open in a new browser tab. If not, go to http://127.0.0.1:3000/ manually.
