@@ -117,12 +117,23 @@ describe('server', () => {
     );
   };
 
+  const requestBobVerificationCode = (passwordResetToken) => {
+    const body = JSON.stringify({ passwordResetToken });
+    const headers = { 'Content-Type': 'application/json' };
+
+    return doRequest(
+      testServer,
+      {
+        verb: 'post', path: '/requestVerificationCode', body, headers,
+      },
+    );
+  };
+
   const createBobNote = async (contents) => {
     const user = app.storage.get(bobId);
     user.data = contents;
     app.storage.save(user);
   };
-
 
   beforeEach(async () => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
@@ -486,15 +497,6 @@ describe('server', () => {
     const msgInvalidToken = 'Invalid password reset token';
     const msgInvalidNewPassword = 'Invalid new password';
 
-    it('calls trustchaind properly', async () => {
-      signUpBob();
-      await requestResetBobPassword();
-      const actualRequest = app.trustchaindClient.sentRequest;
-      const actualEmail = actualRequest.email;
-      expect(actualEmail.to_email).to.eq(bobEmail);
-      expect(actualEmail.html).to.contains('TANKER_VERIFICATION_CODE');
-    });
-
     const attemptResetPassword = async (passwordResetToken, newPassword) => {
       const body = JSON.stringify({ passwordResetToken, newPassword });
       const headers = { 'Content-Type': 'application/json' };
@@ -524,14 +526,25 @@ describe('server', () => {
       });
     };
 
+    it('calls trustchaind properly when requesting verification code', async () => {
+      signUpBob();
+      await requestResetBobPassword();
+      const passwordResetToken = retrieveResetPasswordToken(bobId);
+      await requestBobVerificationCode(passwordResetToken);
+      const actualRequest = app.trustchaindClient.sentRequest;
+      const actualEmail = actualRequest.email;
+      expect(actualEmail.to_email).to.eq(bobEmail);
+      expect(actualEmail.html).to.contains('TANKER_VERIFICATION_CODE');
+    });
+
     it('can reset password with a token', async () => {
       signUpBob();
       await requestResetBobPassword();
 
       const passwordResetToken = retrieveResetPasswordToken(bobId);
       const answer = await attemptResetPassword(passwordResetToken, bobNewPassword);
-      const { userId, email } = await answer.json();
-      expect(userId).to.eq(bobId);
+      const { id, email } = await answer.json();
+      expect(id).to.eq(bobId);
       expect(email).to.eq(bobEmail);
     });
 
