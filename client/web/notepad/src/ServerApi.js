@@ -118,4 +118,9 @@ export default class Api {
     const data = { email };
     await this.doRequest("/requestResetPassword", { json: data, method: "POST" });
   }
+
+  async requestVerificationCode(passwordResetToken) {
+    const data = { passwordResetToken };
+    await this.doRequest("/requestVerificationCode", { json: data, method: "POST" });
+  }
 }

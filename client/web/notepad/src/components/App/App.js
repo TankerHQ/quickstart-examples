@@ -52,6 +52,11 @@ class App extends React.Component {
     await serverApi.requestResetPassword(email);
   }
 
+  onVerificationCodeRequest = async (passwordResetToken) => {
+    const serverApi = new ServerApi();
+    await serverApi.requestVerificationCode(passwordResetToken);
+  }
+
   onPasswordResetConfirm = async ({ newPassword, passwordResetToken, verificationCode }) => {
     const { session } = this.props;
     await session.resetPassword(newPassword, passwordResetToken, verificationCode);
@@ -78,6 +83,7 @@ class App extends React.Component {
               onSignUp={this.onSignUp}
               onPasswordResetRequest={this.onPasswordResetRequest}
               onPasswordResetConfirm={this.onPasswordResetConfirm}
+              onVerificationCodeRequest={this.onVerificationCodeRequest}
             />
           )}
         </div>
