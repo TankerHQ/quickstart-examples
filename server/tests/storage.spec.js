@@ -1,5 +1,4 @@
 const { expect } = require('chai');
-const sodium = require('libsodium-wrappers-sumo');
 const tmp = require('tmp');
 
 const auth = require('../src/auth');
@@ -111,8 +110,6 @@ describe('Storage', () => {
     storage.setPasswordResetSecret(bobId, secret);
 
     const storedBob = storage.get(bobId);
-    const actualSecret = storedBob.b64_password_reset_secret;
-    const expectedSecret = sodium.to_base64(secret);
-    expect(actualSecret).to.eq(expectedSecret);
+    expect(storedBob.password_reset_secret).to.eq(secret);
   });
 });

@@ -1,5 +1,4 @@
 const fs = require('fs');
-const sodium = require('libsodium-wrappers-sumo');
 const chai = require('chai');
 const fetch = require('node-fetch');
 const tmp = require('tmp');
@@ -519,10 +518,9 @@ describe('server', () => {
 
     const retrieveResetPasswordToken = (userId) => {
       const user = app.storage.get(userId);
-      const userResetSecret = sodium.from_base64(user.b64_password_reset_secret);
       return auth.generatePasswordResetToken({
         userId,
-        secret: userResetSecret,
+        secret: user.password_reset_secret,
       });
     };
 
