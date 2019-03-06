@@ -12,7 +12,9 @@ import {
 class PasswordResetConfirm extends React.Component {
   state = {
     passwordResetToken: null,
-    verificationCode: null,
+    verificationCode: "",
+    verificationCodeSent: false,
+    verificationCodeSubmitted: false,
     newPassword: "",
     newPasswordConfirmation: "",
     errorMessage: null,
@@ -20,9 +22,21 @@ class PasswordResetConfirm extends React.Component {
     formDisabled: false,
   }
 
-  componentDidMount = () => {
-    const { passwordResetToken, verificationCode } = this.parseUrl();
-    this.setState({ passwordResetToken, verificationCode });
+  componentDidMount = async () => {
+    // Extract app reset token from URL hash
+    const passwordResetToken = window.location.hash.substr(1);
+    this.setState({ passwordResetToken });
+    await this.props.onVerificationCodeRequest(passwordResetToken);
+    this.setState({ verificationCodeSent: true });
+  };
+
+  onVerificationCodeSubmit = async (event) => {
+    event.preventDefault();
+    this.setState({ verificationCodeSubmitted: true });
+  }
+
+  onVerificationCodeChange = (changes) => {
+    this.setState({ ...changes });
   };
 
   onSubmit = async (event) => {
@@ -60,18 +74,49 @@ class PasswordResetConfirm extends React.Component {
     return newPassword === newPasswordConfirmation;
   };
 
-  parseUrl = () => {
-    const [passwordResetToken, verificationCode] = window.location.hash.substr(1).split(':');
-    return {
-      passwordResetToken: decodeURIComponent(passwordResetToken),
-      verificationCode: decodeURIComponent(verificationCode),
-    };
-  };
-
   render() {
-    const { newPassword, newPasswordConfirmation, errorMessage, formDisabled, successMessage } = this.state;
+    const {
+      newPassword, newPasswordConfirmation,
+      errorMessage, formDisabled, successMessage,
+      verificationCode, verificationCodeSent, verificationCodeSubmitted
+    } = this.state;
     const passwordEmpty = !newPassword || !newPasswordConfirmation;
     const passwordValid = this.validatePassword();
+
+    if (!verificationCodeSubmitted) {
+      return (
+        <form>
+          {errorMessage && <Alert bsStyle="danger">{errorMessage}</Alert>}
+          {successMessage && <Alert bsStyle="success">{successMessage} Please <a href="/login">log in again</a>.</Alert>}
+          {
+            verificationCodeSent
+              ? <Alert bsStyle="warning">To unlock your account, please enter the verification code we’ve sent you by email.</Alert>
+              : <Alert bsStyle="warning">Verification code sending in progress...</Alert>
+          }
+          <ControlLabel>Verification code</ControlLabel>
+          <FormGroup validationState={passwordValid ? null : "error"}>
+            <FormControl
+              type="text"
+              value={verificationCode}
+              placeholder="Enter your verification code"
+              onChange={event => this.onVerificationCodeChange({ verificationCode: event.target.value })}
+              disabled={!verificationCodeSent}
+              required
+              autoFocus
+            />
+          </FormGroup>
+          <Button
+            id="submit-verification-code"
+            type="submit"
+            bsStyle="primary"
+            onClick={this.onVerificationCodeSubmit}
+            disabled={!verificationCodeSent || !verificationCode}
+          >
+            Submit
+          </Button>
+        </form>
+      )
+    }
 
     return (
       <form>
