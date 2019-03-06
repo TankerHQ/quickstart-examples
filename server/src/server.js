@@ -7,24 +7,22 @@
 
 // @flow
 const bodyParser = require('body-parser');
+const debugMiddleware = require('debug-error-middleware').express;
 const express = require('express');
 const emailValidator = require('email-validator');
 const fs = require('fs');
 const morgan = require('morgan');
+const sodium = require('libsodium-wrappers-sumo');
 const uuid = require('uuid/v4');
 const userToken = require('@tanker/user-token');
-const debugMiddleware = require('debug-error-middleware').express;
-const sodium = require('libsodium-wrappers-sumo');
 
-const auth = require('./middlewares/auth');
-const corsMiddleware = require('./middlewares/cors');
-const session = require('./middlewares/session');
-
-const { FakeTrustchaindClient, TrustchaindClient } = require('./TrustchaindClient');
-
+const auth = require('./auth');
+const cors = require('./cors');
 const log = require('./log');
 const home = require('./home');
+const session = require('./session');
 const Storage = require('./storage');
+const { FakeTrustchaindClient, TrustchaindClient } = require('./TrustchaindClient');
 
 // Build express application
 const app = express();
@@ -78,10 +76,10 @@ const sanitizeUser = (user) => {
   return safeUser;
 };
 
-app.use(corsMiddleware()); // enable CORS
+app.use(cors.middleware()); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
-app.options('*', corsMiddleware()); // enable pre-flight CORS requests
+app.options('*', cors.middleware()); // enable pre-flight CORS requests
 
 // Show helpful error messages. In a production server,
 // remove this as it could leak sensitive information.

@@ -1,6 +1,6 @@
 // @flow
-const log = require('../log');
 const sodium = require('libsodium-wrappers-sumo');
+const log = require('./log');
 
 const hashPassword = password => sodium.crypto_pwhash_str(
   password,

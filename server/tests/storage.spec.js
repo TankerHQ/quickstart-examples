@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const sodium = require('libsodium-wrappers-sumo');
 const tmp = require('tmp');
 
-const auth = require('../src/middlewares/auth');
+const auth = require('../src/auth');
 const Storage = require('../src/storage');
 
 describe('Storage', () => {

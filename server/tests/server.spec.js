@@ -6,7 +6,7 @@ const tmp = require('tmp');
 const querystring = require('querystring');
 
 const { app, setup } = require('../src/server');
-const auth = require('../src/middlewares/auth');
+const auth = require('../src/auth');
 
 const { expect } = chai;
 
