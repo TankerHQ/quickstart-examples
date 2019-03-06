@@ -7,6 +7,7 @@
 @property(weak, nonatomic) IBOutlet UITextField *emailField;
 @property(weak, nonatomic) IBOutlet UITextField *passwordField;
 @property(weak, nonatomic) IBOutlet UILabel *errorLabel;
+@property (weak, nonatomic) IBOutlet UIButton *forgotPasswordButton;
 
 @end
 
@@ -20,6 +21,9 @@
   self.emailField.delegate = self;
   self.passwordField.returnKeyType = UIReturnKeyNext;
   self.passwordField.delegate = self;
+
+  // TEMPORARY: hide until 2-step account recovery implemented
+  self.forgotPasswordButton.hidden = YES;
 }
 
 - (void)loginAction {
