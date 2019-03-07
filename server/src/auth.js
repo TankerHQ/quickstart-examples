@@ -1,6 +1,6 @@
 // @flow
-const log = require('../log');
 const sodium = require('libsodium-wrappers-sumo');
+const log = require('./log');
 
 const hashPassword = password => sodium.crypto_pwhash_str(
   password,
@@ -36,11 +36,10 @@ const middleware = (app) => { // eslint-disable-line arrow-body-style
   return (req, res, next) => middlewareHandler(app.storage, req, res, next);
 };
 
-const generateSecret = () => sodium.randombytes_buf(32);
+const generateSecret = () => sodium.to_base64(sodium.randombytes_buf(32));
 
 const generatePasswordResetToken = ({ userId, secret }) => {
-  const b64secret = sodium.to_base64(secret);
-  const asString = JSON.stringify({ userId, secret: b64secret });
+  const asString = JSON.stringify({ userId, secret });
   const buf = sodium.from_string(asString);
   return sodium.to_base64(buf);
 };
@@ -48,12 +47,7 @@ const generatePasswordResetToken = ({ userId, secret }) => {
 const parsePasswordResetToken = (b64token) => {
   const buf = sodium.from_base64(b64token);
   const string = sodium.to_string(buf);
-  const obj = JSON.parse(string);
-  const b64secret = obj.secret;
-  return {
-    userId: obj.userId,
-    secret: sodium.from_base64(b64secret),
-  };
+  return JSON.parse(string);
 };
 
 module.exports = {

@@ -71,6 +71,9 @@ public class LoginActivity extends BaseActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        // TEMPORARY: hide until 2-step account recovery implemented
+        findViewById(R.id.forgot_password_button).setVisibility(View.GONE);
     }
 
     @Override

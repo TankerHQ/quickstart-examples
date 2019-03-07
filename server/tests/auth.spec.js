@@ -1,21 +1,18 @@
 const chai = require('chai');
 const sodium = require('libsodium-wrappers-sumo');
 
-const auth = require('../src/middlewares/auth');
+const auth = require('../src/auth');
 
 const { expect } = chai;
 
 describe('password reset token', () => {
-  beforeEach(async () => {
-    await sodium.ready;
-  });
-  it('serializes/deserialize token', () => {
-    const secret = auth.generateSecret();
-    const token = auth.generatePasswordResetToken({ userId: 'bob', secret });
+  beforeEach(() => sodium.ready);
 
+  it('serializes/deserialize token', () => {
+    const userId = 'bob';
+    const secret = auth.generateSecret();
+    const token = auth.generatePasswordResetToken({ userId, secret });
     const parsed = auth.parsePasswordResetToken(token);
-    expect(parsed.userId).to.eq('bob');
-    const actualSecret = parsed.secret;
-    expect(sodium.compare(actualSecret, secret)).to.eq(0);
+    expect(parsed).to.deep.equal({ userId, secret });
   });
 });

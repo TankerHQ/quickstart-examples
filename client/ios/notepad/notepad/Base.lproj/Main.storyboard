@@ -272,6 +272,7 @@
                     <connections>
                         <outlet property="emailField" destination="5Wr-OV-o8i" id="myB-fv-2FY"/>
                         <outlet property="errorLabel" destination="BJS-8B-at0" id="G52-N5-PrD"/>
+                        <outlet property="forgotPasswordButton" destination="RNb-Wf-ErK" id="KEj-0V-7zt"/>
                         <outlet property="passwordField" destination="bET-JA-lZ9" id="6wT-Wk-Cjt"/>
                     </connections>
                 </viewController>

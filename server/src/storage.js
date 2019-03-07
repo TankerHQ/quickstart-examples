@@ -1,6 +1,5 @@
 const fs = require('fs');
 const pathlib = require('path');
-const sodium = require('libsodium-wrappers-sumo');
 
 const diffArrays = (a, b) => {
   const aSet = new Set(a);
@@ -93,7 +92,7 @@ class Storage {
 
   setPasswordResetSecret(userId, secret) {
     const user = this.get(userId);
-    user.b64_password_reset_secret = sodium.to_base64(secret);
+    user.password_reset_secret = secret;
     this.save(user);
   }
 

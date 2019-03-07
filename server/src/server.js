@@ -7,24 +7,22 @@
 
 // @flow
 const bodyParser = require('body-parser');
+const debugMiddleware = require('debug-error-middleware').express;
 const express = require('express');
 const emailValidator = require('email-validator');
 const fs = require('fs');
 const morgan = require('morgan');
+const sodium = require('libsodium-wrappers-sumo');
 const uuid = require('uuid/v4');
 const userToken = require('@tanker/user-token');
-const debugMiddleware = require('debug-error-middleware').express;
-const sodium = require('libsodium-wrappers-sumo');
 
-const auth = require('./middlewares/auth');
-const corsMiddleware = require('./middlewares/cors');
-const session = require('./middlewares/session');
-
-const { FakeTrustchaindClient, TrustchaindClient } = require('./TrustchaindClient');
-
+const auth = require('./auth');
+const cors = require('./cors');
 const log = require('./log');
 const home = require('./home');
+const session = require('./session');
 const Storage = require('./storage');
+const { FakeTrustchaindClient, TrustchaindClient } = require('./TrustchaindClient');
 
 // Build express application
 const app = express();
@@ -78,10 +76,10 @@ const sanitizeUser = (user) => {
   return safeUser;
 };
 
-app.use(corsMiddleware()); // enable CORS
+app.use(cors.middleware()); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
-app.options('*', corsMiddleware()); // enable pre-flight CORS requests
+app.options('*', cors.middleware()); // enable pre-flight CORS requests
 
 // Show helpful error messages. In a production server,
 // remove this as it could leak sensitive information.
@@ -211,7 +209,7 @@ app.post('/requestResetPassword', async (req, res) => {
   try {
     const userEmail = req.body.email;
     const userId = app.storage.emailToId(userEmail);
-    if (userId === null) {
+    if (!userId) {
       res.status(404).json({ error: `no such email: ${userEmail}` });
       return;
     }
@@ -220,27 +218,104 @@ app.post('/requestResetPassword', async (req, res) => {
     const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
     app.storage.setPasswordResetSecret(userId, secret);
 
-    const emailDomain = serverConfig.domain;
-    const confirmUrl = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}:TANKER_VERIFICATION_CODE`;
+    const resetLink = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}`;
 
+    // TODO remove this DEBUG statement from server console output
+    console.log(`DEBUG Notepad password reset link: ${resetLink}`);
+
+    // TODO send this via a mailer other than Tanker's:
+    /*
     const email = {
-      subject: 'Password Reset',
-      html: `<p>Click <a href="${confirmUrl}">here</a> to reset your password</p>`,
-      from_email: `noreply@${emailDomain}`,
-      from_name: 'the friendly unlock server',
+      from_name: 'Notepad',
+      from_email: `noreply@${serverConfig.domain}`,
       to_email: userEmail,
+      subject: 'Notepad password reset',
+      html: `
+        <p>Hi,</p>
+        <p>
+          You requested a password reset. Please click
+          <a href="${resetLink}">
+            here
+          </a>
+          to set a new password.
+        </p>
+        <p>To keep your account secure, please don't forward this email to anyone.</p>
+        <p>
+          Best regards,<br />
+          Notepad Team
+        </p>
+      `,
+    };
+    */
+
+    res.status(200).json('{}');
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+const authByPasswordResetToken = (passwordResetToken) => {
+  let success = false;
+  let user = null;
+
+  try {
+    const { userId, secret } = auth.parsePasswordResetToken(passwordResetToken);
+    user = app.storage.get(userId);
+
+    if (user.password_reset_secret === secret) {
+      success = true;
+    }
+  } catch (e) {} // eslint-disable-line no-empty
+
+  return { success, user };
+};
+
+app.post('/requestVerificationCode', async (req, res) => {
+  const { passwordResetToken } = req.body;
+
+  if (!passwordResetToken) {
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  const { success, user } = authByPasswordResetToken(passwordResetToken);
+
+  if (!success) {
+    // Reset secret if bad token provided for a user (avoid guessing)
+    if (user) {
+      user.password_reset_secret = undefined;
+      app.storage.save(user);
+    }
+
+    res.status(401).json('Invalid password reset token');
+    return;
+  }
+
+  try {
+    const email = {
+      from_name: 'Notepad via Tanker',
+      from_email: `noreply@${serverConfig.domain}`,
+      to_email: user.email,
+      subject: 'Verification code',
+      html: `
+        <p>Hi,</p>
+        <p>Here is your personal verification code:&nbsp;&nbsp;<b>TANKER_VERIFICATION_CODE</b></p>
+        <p>To keep your account secure, please don't forward this email to anyone.</p>
+        <p>
+          Best regards,<br />
+          Notepad Team
+        </p>
+      `,
     };
 
-    const response = await app.trustchaindClient.sendVerification({
-      userId,
-      email,
-    });
+    const response = await app.trustchaindClient.sendVerification({ userId: user.id, email });
 
     if (!response.ok) {
       const error = await response.text();
       res.status(500).json(`sendVerification failed with status ${response.status}: ${JSON.stringify(error)}`);
       return;
     }
+
     res.status(200).json('{}');
   } catch (error) {
     console.error(error);
@@ -260,45 +335,25 @@ app.post('/resetPassword', (req, res) => {
     return;
   }
 
-  let userId;
-  let secret;
-  try {
-    ({ userId, secret } = auth.parsePasswordResetToken(passwordResetToken));
-  } catch (error) {
-    res.status(401).json('Invalid password reset token');
-    return;
-  }
+  const { success, user } = authByPasswordResetToken(passwordResetToken);
 
-  let user;
-  try {
-    user = app.storage.get(userId);
-  } catch (error) {
-    res.status(401).json('Invalid password reset token');
-    return;
-  }
-
-  const b64Secret = user.b64_password_reset_secret;
-
-  if (!b64Secret) {
-    res.status(401).json('Invalid password reset token');
-    return;
-  }
-
-  const storedSecret = sodium.from_base64(b64Secret);
-  if (sodium.compare(storedSecret, secret) !== 0) {
-    res.status(401).json('Invalid password reset token');
-    user.b64_password_reset_secret = undefined;
+  // Reset secret whether success or not (avoid guessing)
+  if (user) {
+    user.password_reset_secret = undefined;
     app.storage.save(user);
+  }
+
+  if (!success) {
+    res.status(401).json('Invalid password reset token');
     return;
   }
-  user.b64_password_reset_secret = undefined;
+
   user.hashed_password = auth.hashPassword(newPassword);
   app.storage.save(user);
 
   res.set('Content-Type', 'application/json');
-  res.status(200).json({ userId, email: user.email });
+  res.status(201).json(sanitizeUser(user));
 });
-
 
 // Add authentication middleware for all routes below
 //   - check valid session cookie
