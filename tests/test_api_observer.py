@@ -17,18 +17,26 @@ class Page:
     def wait_until_ready(self) -> None:
         self.wait_for_next_log("Initialize Tanker SDK")
 
-    def open(self, email: str) -> None:
+    def sign_up(self, email: str) -> None:
         email_input = self.browser.wait_for_element_presence(id="email")
         email_input.clear()
         email_input.send_keys(email)
         open_button = self.browser.get_element(xpath='//button[.="Open"]')
         open_button.click()
-        self.wait_for_next_log("Opened")
+        self.wait_for_next_log("Signed up")
 
-    def close(self) -> None:
+    def sign_in(self, email: str) -> None:
+        email_input = self.browser.wait_for_element_presence(id="email")
+        email_input.clear()
+        email_input.send_keys(email)
+        open_button = self.browser.get_element(xpath='//button[.="Open"]')
+        open_button.click()
+        self.wait_for_next_log("Signed in")
+
+    def sign_out(self) -> None:
         close_button = self.browser.get_element(xpath='//button[.="Close"]')
         close_button.click()
-        self.wait_for_next_log("Closed")
+        self.wait_for_next_log("Signed out")
 
     def encrypt(self, message: str, share_with: Optional[str] = None) -> str:
         clear_text_input = self.browser.get_element(id="clearText")
@@ -71,24 +79,24 @@ class Page:
         return latest_entry.text
 
 
-def test_open_close_reopen(browser: Browser) -> None:
+def test_signup_close_signin(browser: Browser) -> None:
     faker = Faker()
     email = faker.email()
     page = Page(browser)
-    page.open(email)
-    page.close()
+    page.sign_up(email)
+    page.sign_out()
     latest_entry = page.get_latest_log_entry()
-    assert f"Closed session for {email}" in latest_entry
-    page.open(email)
+    assert f"Signed out {email}" in latest_entry
+    page.sign_in(email)
     latest_entry = page.get_latest_log_entry()
-    assert f"Opened session for {email}" in latest_entry
+    assert f"Signed in {email}" in latest_entry
 
 
 def test_encrypt_decrypt(browser: Browser) -> None:
     faker = Faker()
     email = faker.email()
     page = Page(browser)
-    page.open(email)
+    page.sign_up(email)
     text = "my message"
     encrypted_text = page.encrypt(text)
     decrypted_text = page.decrypt(encrypted_text)
@@ -101,14 +109,14 @@ def test_share(browser: Browser) -> None:
     bob_email = faker.email()
 
     page = Page(browser)
-    page.open(alice_email)
-    page.close()
-    page.open(bob_email)
+    page.sign_up(alice_email)
+    page.sign_out()
+    page.sign_up(bob_email)
 
     message = "I love you"
     encrypted_text = page.encrypt(message, share_with=alice_email)
-    page.close()
+    page.sign_out()
 
-    page.open(alice_email)
+    page.sign_in(alice_email)
     decrypted_text = page.decrypt(encrypted_text)
     assert decrypted_text == message
