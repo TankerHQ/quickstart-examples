@@ -140,12 +140,12 @@ app.post('/signup', watchError(async (req, res) => {
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
   if (!email || !emailValidator.validate(email)) {
-    res.status(400).send('Invalid email address');
+    res.status(400).json({ error: 'Invalid email address' });
     return;
   }
 
   if (!password) {
-    res.status(400).send('Missing password');
+    res.status(400).json({ error: 'Missing password' });
     return;
   }
 
@@ -193,14 +193,14 @@ app.post('/login', watchError(async (req, res) => {
 
   if (!email || !password) {
     log('Missing email or password', 1);
-    res.sendStatus(400);
+    res.status(400).json({ error: 'Missing email or password' });
     return;
   }
 
   const userId = app.storage.emailToId(email);
   if (!userId) {
     log(`Authentication error: ${email} not found`, 1);
-    res.sendStatus(404);
+    res.status(404).json({ error: `Authentication error: ${email} not found` });
     return;
   }
 
@@ -208,7 +208,7 @@ app.post('/login', watchError(async (req, res) => {
   const passwordOk = auth.verifyPassword(user, password);
   if (!passwordOk) {
     log('Authentication error: invalid password', 1);
-    res.sendStatus(401);
+    res.status(401).json({ error: 'Authentication error: invalid password' });
     return;
   }
 
@@ -295,7 +295,7 @@ app.post('/requestVerificationCode', watchError(async (req, res) => {
   const { passwordResetToken } = req.body;
 
   if (!passwordResetToken) {
-    res.status(401).json('Invalid password reset token');
+    res.status(401).json({ error: 'Invalid password reset token' });
     return;
   }
 
@@ -308,7 +308,7 @@ app.post('/requestVerificationCode', watchError(async (req, res) => {
       app.storage.save(user);
     }
 
-    res.status(401).json('Invalid password reset token');
+    res.status(401).json({ error: 'Invalid password reset token' });
     return;
   }
 
@@ -333,7 +333,7 @@ app.post('/requestVerificationCode', watchError(async (req, res) => {
 
     if (!response.ok) {
       const error = await response.text();
-      res.status(500).json(`sendVerification failed with status ${response.status}: ${JSON.stringify(error)}`);
+      res.status(500).json({ error: `sendVerification failed with status ${response.status}: ${JSON.stringify(error)}` });
       return;
     }
 
@@ -347,12 +347,12 @@ app.post('/resetPassword', watchError(async (req, res) => {
   const { newPassword, passwordResetToken } = req.body;
 
   if (!newPassword) {
-    res.status(401).json('Invalid new password');
+    res.status(401).json({ error: 'Invalid new password' });
     return;
   }
 
   if (!passwordResetToken) {
-    res.status(401).json('Invalid password reset token');
+    res.status(401).json({ error: 'Invalid password reset token' });
     return;
   }
 
@@ -365,7 +365,7 @@ app.post('/resetPassword', watchError(async (req, res) => {
   }
 
   if (!success) {
-    res.status(401).json('Invalid password reset token');
+    res.status(401).json({ error: 'Invalid password reset token' });
     return;
   }
 
@@ -394,7 +394,7 @@ app.put('/me/password', (req, res) => {
 
   if (!oldPassword || !newPassword) {
     log('Invalid arguments', 1);
-    res.sendStatus(400);
+    res.status(400).json({ error: 'Invalid argmuments' });
     return;
   }
 
@@ -402,7 +402,7 @@ app.put('/me/password', (req, res) => {
   const passwordOk = auth.verifyPassword(user, oldPassword);
   if (!passwordOk) {
     log('Wrong old password', 1);
-    res.sendStatus(400, 1);
+    res.status(400).json({ error: 'Wrong old password' });
     return;
   }
 
@@ -418,7 +418,7 @@ app.put('/me/email', watchError(async (req, res) => {
 
   if (!email || !emailValidator.validate(email)) {
     log('Invalid new email address', 1);
-    res.sendStatus(400);
+    res.status(400).json({ error: 'Invalid new email address' });
     return;
   }
 
@@ -444,7 +444,7 @@ app.put('/data', (req, res) => {
     app.storage.save(user);
   } catch (e) {
     log(e, 1);
-    res.sendStatus(500);
+    res.status(500).json({ error: e.toString() });
     return;
   }
 
@@ -465,14 +465,14 @@ app.get('/data/:userId', (req, res) => {
 
   if (!app.storage.exists(userId)) {
     log(`User ${userId} does not exist`);
-    res.sendStatus(404);
+    res.status(404).json({ error: `User ${userId} does not exist` });
     return;
   }
   const user = app.storage.get(userId);
 
   if (!user.data) {
     log('User has no stored data', 1);
-    res.sendStatus(404);
+    res.status(404).json({ error: 'User has no stored data' });
     return;
   }
 
@@ -495,7 +495,7 @@ app.post('/share', (req, res) => {
   const { from, to } = req.body;
   // ensure only the current user can share their note with others
   if (from !== res.locals.user.id) {
-    res.sendStatus(401);
+    res.status(401).json({ error: 'Forbidden to share a note that does not belong to you' });
     return;
   }
 

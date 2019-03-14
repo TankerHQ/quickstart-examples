@@ -525,7 +525,7 @@ describe('server', () => {
 
       const message = await answer.json();
 
-      expect(message).to.eq(msgError);
+      expect(message.error).to.eq(msgError);
     };
 
     const retrieveResetPasswordToken = (userId) => {
