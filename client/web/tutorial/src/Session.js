@@ -1,20 +1,25 @@
 import EventEmitter from "events";
-import Tanker, { toBase64, fromBase64 } from "@tanker/client-browser";
+import { Tanker, toBase64, fromBase64 } from "@tanker/client-browser";
 import ServerApi from "./ServerApi";
 
 const STATUSES = [
   "initializing",
   "closed",
   "open",
-  "openingNewDevice"
 ];
+
+// TODO: get from "@tanker/client-browser";
+const SIGN_IN_RESULT = Object.freeze({
+  OK: 1,
+  IDENTITY_VERIFICATION_NEEDED: 2,
+  IDENTITY_NOT_REGISTERED: 3,
+});
 
 export default class Session extends EventEmitter {
   constructor() {
     super();
 
     this.resourceId = null;
-    this.verificationCode = null;
     this._user = null;
 
     this.serverApi = new ServerApi();
@@ -32,7 +37,7 @@ export default class Session extends EventEmitter {
         await this.refreshMe();
       }
       if (this.user) {
-        // FIXME: open a tanker session
+        // FIXME: sign in with tanker
         this.status = "open";
         return;
       }
@@ -46,7 +51,6 @@ export default class Session extends EventEmitter {
     if (this.tanker) return;
     const config = await this.serverApi.tankerConfig();
     // FIXME: construct this.tanker
-    // FIXME: handle the 'unlockRequired' event
   }
 
   get status() {
@@ -66,7 +70,7 @@ export default class Session extends EventEmitter {
 
   async close() {
     await this.serverApi.logout();
-    // FIXME: close tanker session
+    // FIXME: sign out from tanker
     this.status = "closed";
     this._user = null;
   }
@@ -79,7 +83,8 @@ export default class Session extends EventEmitter {
 
     this._user = await response.json();
 
-    // FIXME: open a tanker session
+    // FIXME: sign up with tanker
+    // FIXME: register the email and password to unlock additional devices
     this.status = "open";
   }
 
@@ -99,19 +104,14 @@ export default class Session extends EventEmitter {
 
     this._user = await response.json();
 
-    // FIXME: open a tanker session
+    // FIXME: sign in with tanker
     // FIXME: register the email and password to unlock additional devices
-
     this.status = "open";
-  }
-
-  async unlockCurrentDevice(password) {
-    // FIXME: unlock current device using the password
   }
 
   async saveText(text) {
     const recipients = await this.getNoteRecipients();
-    const recipientIds = recipients.map(user => user.id);
+    const recipientPublicIdentities = recipients.map(user => user.publicIdentity);
     // FIXME: encrypt text
     // FIXME: update this.resourceId
     // FIXME: push encrypted text, base64-encoded
@@ -140,6 +140,14 @@ export default class Session extends EventEmitter {
     return this.serverApi.getUsers();
   }
 
+  async getPublicIdentities(userIds) {
+    const users = await this.serverApi.getUsers();
+    const identities = users.filter(u => userIds.indexOf(u.id) !== -1).map(u => u.publicIdentity);
+    if (identities.length !== userIds.length)
+      throw new Error('At least one user not found');
+    return identities;
+  }
+
   async refreshMe() {
     this._user = await this.serverApi.getMe();
   }
@@ -148,7 +156,8 @@ export default class Session extends EventEmitter {
     // FIXME: remove the line below
     this.resourceId = this.user.id;
     if (!this.resourceId) throw new Error("No resource id.");
-    // FIXME: share [this.resourceId] with the recipients
+    // FIXME: get public identities of the recipients
+    // FIXME: share [this.resourceId] with the recipients' public identities
     await this.serverApi.share(this.user.id, recipients);
     await this.refreshMe();
   }
@@ -169,11 +178,11 @@ export default class Session extends EventEmitter {
   }
 
   async resetPassword(newPassword, passwordResetToken, verificationCode) {
-    const answer = await this.serverApi.resetPassword(newPassword, passwordResetToken);
-    const jsonResponse = await answer.json();
-    const { email } = jsonResponse;
-    this.verificationCode = verificationCode;
-    await this.logIn(email, newPassword);
+    const response = await this.serverApi.resetPassword(newPassword, passwordResetToken);
+    const { email, identity } = await response.json();
+    // FIXME: sign in with tanker using the verification code
     // FIXME: update the unlock password
+    // FIXME: sign out from tanker
+    await this.logIn(email, newPassword);
   }
 }
