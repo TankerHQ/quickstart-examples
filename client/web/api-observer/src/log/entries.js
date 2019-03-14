@@ -3,19 +3,12 @@ const quoteEllipsis = (s, max = 10) => JSON.stringify(ellipsis(s, max));
 const quote = (s) => JSON.stringify(s);
 
 const getCodeEncryptAndShare = (text, shareWithEmail) => `
-const userId = getUserId(${quoteEllipsis(shareWithEmail)});
-const opts = { shareWithUsers: [userId] };
 const clear = ${quoteEllipsis(text, 20)};
-const binary = await tanker.encrypt(clear, opts);
+const user = fetchPublicIdentity(${quoteEllipsis(shareWithEmail, 8)});
+const binary = await tanker.encrypt(clear, {
+  shareWithUsers: [user]
+});
 const base64 = toBase64(binary);
-
-// Or:
-// const userId = getUserId(${quoteEllipsis(shareWithEmail)});
-// const opts = { shareWithUsers: [userId] };
-// const clear = ${quoteEllipsis(text, 20)};
-// const binary = await tanker.encrypt(clear);
-// const resourceId = await tanker.getResourceId(binary);
-// await tanker.share([resourceId], opts);
 `;
 
 const getCodeEncryptionOnly = (text) => `
@@ -25,7 +18,7 @@ const base64 = toBase64(binary);
 `;
 
 export default {
-  initialize: (trustchainId) => ({
+  initTanker: (trustchainId) => ({
     title: 'Initialize Tanker SDK',
     code: `
 import Tanker from "@tanker/client-browser";
@@ -59,25 +52,37 @@ const clear = await tanker.decrypt(binary);
     code: `clear === ${quoteEllipsis(clear, 20)}; // true`
   }),
 
-  closingSession: (email) => ({
-    title: `Closing session for ${email}`,
-    code: 'await tanker.close();'
+  signingOut: (email) => ({
+    title: `Sign out ${email}`,
+    code: 'await tanker.signOut();'
   }),
 
-  closedSession: (email) => ({ title: `Closed session for ${email}` }),
+  signedOut: (email) => ({ title: `Signed out ${email}` }),
 
-  openingSession: (email, password) => ({
-    title: `Opening session for ${email}`,
+  signUp: (email, password) => ({
+    title: `Sign up ${email}`,
     code: `
 const email = ${quote(email)};
 const password = ${quote(password)};
-const user = await authenticate(email, password);
+const user = await signUp(email, password);
 
-await tanker.open(user.id, user.token);
+await tanker.signUp(user.identity);
 `
   }),
 
-  openedSession: (email) => ({ title: `Opened session for ${email}` }),
+  signIn: (email, password) => ({
+    title: `Sign in ${email}`,
+    code: `
+const email = ${quote(email)};
+const password = ${quote(password)};
+const user = await signIn(email, password);
+
+await tanker.signIn(user.identity);
+`
+  }),
+
+  signedIn: (email) => ({ title: `Signed in ${email}` }),
+  signedUp: (email) => ({ title: `Signed up ${email}` }),
 
   serverHint: () => ({
     title: 'Have you started the server?',
