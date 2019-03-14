@@ -10,6 +10,8 @@ pre {
   display: block;
   margin: 0 0 .5em 0;
   border-bottom: 1px solid #eee;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .log-entry:last-child {

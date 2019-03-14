@@ -4,10 +4,13 @@ const quote = (s) => JSON.stringify(s);
 
 const getCodeEncryptAndShare = (text, shareWithEmail) => `
 const clear = ${quoteEllipsis(text, 20)};
-const user = fetchPublicIdentity(${quoteEllipsis(shareWithEmail, 8)});
+const email = ${quoteEllipsis(shareWithEmail, 20)};
+const identity = api.fetchPublicIdentity(email);
+
 const binary = await tanker.encrypt(clear, {
-  shareWithUsers: [user]
+  shareWithUsers: [identity]
 });
+
 const base64 = toBase64(binary);
 `;
 
@@ -18,10 +21,20 @@ const base64 = toBase64(binary);
 `;
 
 export default {
+  initApiClient: (trustchainId) => ({
+    title: 'Initialize API Client',
+    code: `
+import { ApiClient } from "../your/app";
+
+// Example object to request your app server
+const api = new ApiClient();
+`
+  }),
+
   initTanker: (trustchainId) => ({
     title: 'Initialize Tanker SDK',
     code: `
-import Tanker from "@tanker/client-browser";
+import { Tanker } from "@tanker/client-browser";
 
 const tanker = new Tanker({
   trustchainId: ${quoteEllipsis(trustchainId, 20)}
@@ -54,7 +67,10 @@ const clear = await tanker.decrypt(binary);
 
   signingOut: (email) => ({
     title: `Sign out ${email}`,
-    code: 'await tanker.signOut();'
+    code: `
+await tanker.signOut();
+await api.signOut();
+`
   }),
 
   signedOut: (email) => ({ title: `Signed out ${email}` }),
@@ -64,7 +80,7 @@ const clear = await tanker.decrypt(binary);
     code: `
 const email = ${quote(email)};
 const password = ${quote(password)};
-const user = await signUp(email, password);
+const user = await api.signUp(email, password);
 
 await tanker.signUp(user.identity);
 `
@@ -75,7 +91,7 @@ await tanker.signUp(user.identity);
     code: `
 const email = ${quote(email)};
 const password = ${quote(password)};
-const user = await signIn(email, password);
+const user = await api.signIn(email, password);
 
 await tanker.signIn(user.identity);
 `

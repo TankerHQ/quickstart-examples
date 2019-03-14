@@ -20,7 +20,15 @@ class App extends Component {
       loading: true,
       log: []
     };
+  }
+
+  componentDidMount = () => {
+    this.initApiClient();
     this.initTanker();
+  }
+
+  initApiClient = async () => {
+    this.log('initApiClient', serverRoot);
   }
 
   initTanker = async () => {
@@ -200,17 +208,17 @@ class App extends Component {
                           onChange={this.onEmailChange}
                           onKeyPress={event => {
                             if (!sessionButtonDisabled && event.key === 'Enter' && email) {
-                              if (this.tanker.status === this.tanker.CLOSED) {
-                                this.onOpen(event);
-                              } else {
+                              if (this.tanker.isOpen) {
                                 this.onClose();
+                              } else {
+                                this.onOpen(event);
                               }
                             }
                           }}
-                          disabled={loading || this.tanker.status !== this.tanker.CLOSED}
+                          disabled={loading || this.tanker.isOpen}
                         />
                         <InputGroup.Button>
-                          {(loading || this.tanker.status === this.tanker.CLOSED) && (
+                          {(loading || !this.tanker.isOpen) && (
                             <Button
                               bsStyle="primary"
                               onClick={this.onOpen}
@@ -219,7 +227,7 @@ class App extends Component {
                               Open
                             </Button>
                           )}
-                          {!loading && this.tanker.status !== this.tanker.CLOSED && (
+                          {!loading && this.tanker.isOpen && (
                             <Button
                               bsStyle="danger"
                               onClick={this.onClose}
