@@ -18,6 +18,7 @@ const uuid = require('uuid/v4');
 
 const auth = require('./auth');
 const cors = require('./cors');
+const { watchError, middleware: errorMiddleware } = require('./error');
 const log = require('./log');
 const home = require('./home');
 const session = require('./session');
@@ -63,7 +64,17 @@ const setup = async (config) => {
 };
 
 const sanitizePublicUser = async (user) => {
-  const { hashed_password, identity, ...otherAttributes } = user; // eslint-disable-line camelcase
+  let { hashed_password, token, identity, ...otherAttributes } = user; // eslint-disable-line
+
+  if (token && !identity) {
+    log(`Upgrade user token to identity for ${user.email}`, 1);
+    identity = await upgradeUserToken(serverConfig.trustchainId, user.id, token);
+    // TODO when debugging is over:
+    //   const { token, ...userToSave } = user;
+    //   userToSave.identity = identity;
+    app.storage.save({ ...user, identity });
+  }
+
   const publicIdentity = await getPublicIdentity(identity);
   return { ...otherAttributes, publicIdentity };
 };
@@ -116,15 +127,15 @@ app.use(session.middleware());
 
 
 // Add logout route (non authenticated)
-app.get('/logout', async (req, res) => {
+app.get('/logout', watchError(async (req, res) => {
   log('Destroy the current session if any', 1);
   await session.destroy(req, res);
   res.status(200).json('{}');
-});
+}));
 
 
 // Add signup route (non authenticated)
-app.post('/signup', async (req, res) => {
+app.post('/signup', watchError(async (req, res) => {
   const { email, password } = req.body;
   const { trustchainId, trustchainPrivateKey } = serverConfig;
 
@@ -171,10 +182,10 @@ app.post('/signup', async (req, res) => {
   log('Return the user', 1);
   res.set('Content-Type', 'application/json');
   res.status(201).json(await sanitizeUser(user));
-});
+}));
 
 // Add login route (non authenticated)
-app.post('/login', async (req, res) => {
+app.post('/login', watchError(async (req, res) => {
   const { email, password } = req.body;
   const { trustchainId } = serverConfig;
 
@@ -214,59 +225,55 @@ app.post('/login', async (req, res) => {
   await session.regenerate(req);
   req.session.userId = userId;
 
-  log('Serve the token', 1);
+  log('Serve the identity', 1);
   res.set('Content-Type', 'application/json');
   res.json(await sanitizeUser(user));
-});
+}));
 
-app.post('/requestResetPassword', async (req, res) => {
-  try {
-    const userEmail = req.body.email;
-    const userId = app.storage.emailToId(userEmail);
-    if (!userId) {
-      res.status(404).json({ error: `no such email: ${userEmail}` });
-      return;
-    }
-
-    const secret = auth.generateSecret();
-    const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
-    app.storage.setPasswordResetSecret(userId, secret);
-
-    const resetLink = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}`;
-
-    // TODO remove this DEBUG statement from server console output
-    console.log(`DEBUG Notepad password reset link: ${resetLink}`);
-
-    // TODO send this via a mailer other than Tanker's:
-    /*
-    const email = {
-      from_name: 'Notepad',
-      from_email: `noreply@${serverConfig.domain}`,
-      to_email: userEmail,
-      subject: 'Notepad password reset',
-      html: `
-        <p>Hi,</p>
-        <p>
-          You requested a password reset. Please click
-          <a href="${resetLink}">
-            here
-          </a>
-          to set a new password.
-        </p>
-        <p>To keep your account secure, please don't forward this email to anyone.</p>
-        <p>
-          Best regards,<br />
-          Notepad Team
-        </p>
-      `,
-    };
-    */
-
-    res.status(200).json('{}');
-  } catch (error) {
-    console.error(error);
+app.post('/requestResetPassword', watchError(async (req, res) => {
+  const userEmail = req.body.email;
+  const userId = app.storage.emailToId(userEmail);
+  if (!userId) {
+    res.status(404).json({ error: `no such email: ${userEmail}` });
+    return;
   }
-});
+
+  const secret = auth.generateSecret();
+  const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
+  app.storage.setPasswordResetSecret(userId, secret);
+
+  const resetLink = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}`;
+
+  // TODO remove this DEBUG statement from server console output
+  console.log(`DEBUG Notepad password reset link: ${resetLink}`);
+
+  // TODO send this via a mailer other than Tanker's:
+  /*
+  const email = {
+    from_name: 'Notepad',
+    from_email: `noreply@${serverConfig.domain}`,
+    to_email: userEmail,
+    subject: 'Notepad password reset',
+    html: `
+      <p>Hi,</p>
+      <p>
+        You requested a password reset. Please click
+        <a href="${resetLink}">
+          here
+        </a>
+        to set a new password.
+      </p>
+      <p>To keep your account secure, please don't forward this email to anyone.</p>
+      <p>
+        Best regards,<br />
+        Notepad Team
+      </p>
+    `,
+  };
+  */
+
+  res.status(200).json('{}');
+}));
 
 const authByPasswordResetToken = (passwordResetToken) => {
   let success = false;
@@ -284,7 +291,7 @@ const authByPasswordResetToken = (passwordResetToken) => {
   return { success, user };
 };
 
-app.post('/requestVerificationCode', async (req, res) => {
+app.post('/requestVerificationCode', watchError(async (req, res) => {
   const { passwordResetToken } = req.body;
 
   if (!passwordResetToken) {
@@ -334,9 +341,9 @@ app.post('/requestVerificationCode', async (req, res) => {
   } catch (error) {
     console.error(error);
   }
-});
+}));
 
-app.post('/resetPassword', async (req, res) => {
+app.post('/resetPassword', watchError(async (req, res) => {
   const { newPassword, passwordResetToken } = req.body;
 
   if (!newPassword) {
@@ -367,7 +374,7 @@ app.post('/resetPassword', async (req, res) => {
 
   res.set('Content-Type', 'application/json');
   res.status(201).json(await sanitizeUser(user));
-});
+}));
 
 // Add authentication middleware for all routes below
 //   - check valid session cookie
@@ -375,11 +382,11 @@ app.post('/resetPassword', async (req, res) => {
 app.use(auth.middleware(app));
 
 // Add authenticated routes
-app.get('/me', async (req, res) => {
+app.get('/me', watchError(async (req, res) => {
   // res.locals.user is set by the auth middleware
   const safeMe = await sanitizeUser(res.locals.user);
   res.json(safeMe);
-});
+}));
 
 app.put('/me/password', (req, res) => {
   const { user } = res.locals;
@@ -405,7 +412,7 @@ app.put('/me/password', (req, res) => {
   res.sendStatus(200);
 });
 
-app.put('/me/email', async (req, res) => {
+app.put('/me/email', watchError(async (req, res) => {
   const { user } = res.locals;
   const { email } = req.body;
 
@@ -426,7 +433,7 @@ app.put('/me/email', async (req, res) => {
   user.email = email;
   app.storage.save(user);
   res.sendStatus(200);
-});
+}));
 
 app.put('/data', (req, res) => {
   const { user } = res.locals;
@@ -475,13 +482,13 @@ app.get('/data/:userId', (req, res) => {
 });
 
 
-app.get('/users', async (req, res) => {
+app.get('/users', watchError(async (req, res) => {
   const allUsers = app.storage.getAll();
   const safeUsers = await Promise.all(allUsers.map(sanitizePublicUser));
 
   res.set('Content-Type', 'application/json');
   res.json(safeUsers);
-});
+}));
 
 // Register a new share
 app.post('/share', (req, res) => {
@@ -496,15 +503,7 @@ app.post('/share', (req, res) => {
   res.sendStatus('201');
 });
 
-// Return nice 500 message when an exception is thrown
-const errorHandler = (err, req, res, next) => { // eslint-disable-line  no-unused-vars
-  console.error(err);
-  res.status(500);
-  res.json({ error: err.message });
-  // Note: we don't call next() because we don't want the request to continue
-};
-app.use(errorHandler);
-
+app.use(errorMiddleware);
 
 module.exports = {
   setup,
