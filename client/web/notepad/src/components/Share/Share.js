@@ -1,47 +1,24 @@
 import React from "react";
-import { Button, Panel, Alert } from "react-bootstrap";
-import UserList from "./UserList";
+import { Button, Panel, Alert, FormGroup, ControlLabel, FormControl, HelpBlock } from "react-bootstrap";
+import * as emailValidator from 'email-validator';
 
-const withoutMe = (myId, elements) => elements.filter(e => e.id !== myId);
+const parseEmails = (string) => {
+  const emails = string.split(/[, ]+/);
+  const emailsValid = emails.reduce((v, email) => v && emailValidator.validate(email), true);
+  return { emails, emailsValid };
+}
 
 class Share extends React.Component {
   state = {
-    users: [], //all the users
-    selectedUserIds: new Set(), // the new selection
-    isLoading: true,
-    isLoaded: false,
+    emails: [], // the new selection
+    emailsValid: true,
     isSharing: false,
     error: null,
   };
 
-  componentDidMount = async () => {
-    const { session } = this.props;
-    try {
-      const [users, recipients] = await Promise.all([
-        session.getUsers(),
-        session.getNoteRecipients(),
-      ]);
-      this.setState({
-        isLoading: false,
-        isLoaded: true,
-        users: withoutMe(session.user.id, users),
-        selectedUserIds: new Set(withoutMe(session.user.id, recipients).map(user => user.id)),
-        error: null,
-      });
-    } catch (err) {
-      console.error(err);
-      this.setState({ isLoading: false, error: err.toString(), isLoaded: true });
-    }
-  };
-
-  onToggle = (userId, checked) => {
-    const { selectedUserIds } = this.state;
-    if (checked) {
-      selectedUserIds.add(userId);
-    } else {
-      selectedUserIds.delete(userId);
-    }
-    this.setState({ selectedUserIds });
+  onEmailsChange = (e) => {
+    const { emails, emailsValid } = parseEmails(e.target.value);
+    this.setState({ emails, emailsValid });
   };
 
   onBackClicked = event => {
@@ -51,11 +28,10 @@ class Share extends React.Component {
 
   onShareClicked = async () => {
     const { session } = this.props;
-    const { selectedUserIds } = this.state;
+    const { emails } = this.state;
     this.setState({ error: null, isSharing: true });
     try {
-      const recipients = Array.from(selectedUserIds.values());
-      await session.share(recipients);
+      await session.share(emails);
       this.setState({ isSharing: false });
       this.props.history.push("/edit");
     } catch (err) {
@@ -65,7 +41,7 @@ class Share extends React.Component {
   };
 
   render() {
-    const { users, selectedUserIds, error, isLoading, isLoaded, isSharing } = this.state;
+    const { emails, emailsValid, error, isSharing } = this.state;
     return (
       <Panel>
         <Panel.Heading id="share-heading">Share</Panel.Heading>
@@ -75,18 +51,25 @@ class Share extends React.Component {
               {error}
             </Alert>
           )}
-          {isLoading && (
-            <Alert id="share-loading" bsStyle="info">
-              Loading...
-            </Alert>
-          )}
-          <UserList users={users} selectedUserIds={selectedUserIds} onToggle={this.onToggle} />
+          <FormGroup controlId="share-with-input">
+            <ControlLabel>Share with</ControlLabel>
+            <FormControl
+              type="text"
+              value={emails.join(', ')}
+              placeholder="a@email.com, b@email.com, ..."
+              onChange={this.onEmailsChange}
+              required
+              autoFocus
+            />
+            <FormControl.Feedback />
+            {!emailsValid && <HelpBlock>At least one email address is invalid</HelpBlock>}
+          </FormGroup>
           <Button
             id="share-button"
             bsStyle="primary"
             className="pull-right"
             onClick={this.onShareClicked}
-            disabled={isSharing || !isLoaded}
+            disabled={isSharing || !emailsValid}
           >
             {isSharing ? "Sharing..." : "Share"}
           </Button>

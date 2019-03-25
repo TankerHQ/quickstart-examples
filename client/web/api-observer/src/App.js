@@ -116,12 +116,11 @@ class App extends Component {
   }
 
   fetchPublicIdentity = async (email) => {
-    const response = await doRequest(`${serverRoot}/users`);
+    const response = await doRequest(`${serverRoot}/users?email[]=${email}`);
     const users = await response.json();
-    const user = users.find(user => user.email === email);
-    if (!user)
+    if (users.length !== 1)
       throw new Error(`Could not find user with email ${email} on the server`);
-    return user.publicIdentity;
+    return users[0].publicIdentity;
   }
 
   onClose = async () => {

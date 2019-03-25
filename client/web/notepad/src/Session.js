@@ -141,23 +141,15 @@ export default class Session extends EventEmitter {
     return this.serverApi.getUsers();
   }
 
-  async getPublicIdentities(userIds) {
-    const users = await this.serverApi.getUsers();
-    const identities = users.filter(u => userIds.indexOf(u.id) !== -1).map(u => u.publicIdentity);
-    if (identities.length !== userIds.length)
-      throw new Error('At least one user not found');
-    return identities;
-  }
-
   async refreshMe() {
     this._user = await this.serverApi.getMe();
   }
 
-  async share(recipients) {
+  async share(recipientEmails) {
     if (!this.resourceId) throw new Error("No resource id.");
-    const recipientPublicIdentities = await this.getPublicIdentities(recipients);
-    await this.tanker.share([this.resourceId], { shareWithUsers: recipientPublicIdentities });
-    await this.serverApi.share(this.user.id, recipients);
+    const recipients = await this.serverApi.getUsersByEmail(recipientEmails);
+    await this.tanker.share([this.resourceId], { shareWithUsers: recipients.map(r => r.publicIdentity) });
+    await this.serverApi.share(this.user.id, recipients.map(r => r.id));
     await this.refreshMe();
   }
 

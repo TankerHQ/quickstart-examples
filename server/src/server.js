@@ -466,8 +466,13 @@ app.get('/data/:userId', (req, res) => {
 
 
 app.get('/users', watchError(async (req, res) => {
-  const allUsers = app.storage.getAll();
-  const safeUsers = await Promise.all(allUsers.map(sanitizePublicUser));
+  let users = app.storage.getAll();
+
+  if (req.query && req.query.email instanceof Array) {
+    users = users.filter(u => req.query.email.includes(u.email));
+  }
+
+  const safeUsers = await Promise.all(users.map(sanitizePublicUser));
 
   res.set('Content-Type', 'application/json');
   res.json(safeUsers);

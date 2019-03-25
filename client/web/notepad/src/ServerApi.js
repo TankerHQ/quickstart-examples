@@ -91,6 +91,12 @@ export default class Api {
     return response.json();
   }
 
+  async getUsersByEmail(emails) {
+    const emailQuery = emails.map(email => `email[]=${encodeURIComponent(email)}`).join('&');
+    const response = await this.doRequest(`/users?${emailQuery}`);
+    return response.json();
+  }
+
   async share(from, recipients) {
     const data = {
       from,
