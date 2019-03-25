@@ -47,8 +47,8 @@ describe('Storage', () => {
     const user = { id: 'user_42', email: 'user_42@example.com' };
     storage.save(user);
 
-    expect(storage.emailToId(user.email)).to.equal(user.id);
-    expect(storage.emailToId('wrong@example.com')).to.be.null;
+    expect(storage.getByEmail(user.email).id).to.equal(user.id);
+    expect(storage.getByEmail('wrong@example.com')).to.be.null;
   });
 
   it('can list all users', () => {

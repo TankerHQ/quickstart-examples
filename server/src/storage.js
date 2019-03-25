@@ -28,21 +28,21 @@ class Storage {
     fs.writeFileSync(path, JSON.stringify(user, null, 2));
   }
 
-  get(userId) {
-    const path = this.dataFilePath(userId);
-    return this.parseJson(path);
-  }
-
   exists(userId) {
     const path = this.dataFilePath(userId);
     return fs.existsSync(path);
   }
 
-  emailToId(email) {
+  get(userId) {
+    const path = this.dataFilePath(userId);
+    return this.parseJson(path);
+  }
+
+  getByEmail(email) {
     const users = this.getAll();
     for (const user of users) {
       if (user.email === email) {
-        return user.id;
+        return user;
       }
     }
     return null;

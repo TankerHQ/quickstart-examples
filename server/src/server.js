@@ -142,9 +142,9 @@ app.post('/signup', watchError(async (req, res) => {
     return;
   }
 
-  const existingUserId = app.storage.emailToId(email);
+  const existingUser = app.storage.getByEmail(email);
 
-  if (existingUserId) {
+  if (existingUser) {
     log(`Email ${email} already taken`, 1);
     res.status(409).json({ error: 'Email already taken' });
     return;
@@ -189,14 +189,13 @@ app.post('/login', watchError(async (req, res) => {
     return;
   }
 
-  const userId = app.storage.emailToId(email);
-  if (!userId) {
+  const user = app.storage.getByEmail(email);
+  if (!user) {
     log(`Authentication error: ${email} not found`, 1);
     res.status(404).json({ error: `Authentication error: ${email} not found` });
     return;
   }
 
-  const user = app.storage.get(userId);
   const passwordOk = auth.verifyPassword(user, password);
   if (!passwordOk) {
     log('Authentication error: invalid password', 1);
@@ -206,7 +205,7 @@ app.post('/login', watchError(async (req, res) => {
 
   log('Save the userId in the session', 1);
   await session.regenerate(req);
-  req.session.userId = userId;
+  req.session.userId = user.id;
 
   log('Serve the identity', 1);
   res.set('Content-Type', 'application/json');
@@ -215,15 +214,15 @@ app.post('/login', watchError(async (req, res) => {
 
 app.post('/requestResetPassword', watchError(async (req, res) => {
   const userEmail = req.body.email;
-  const userId = app.storage.emailToId(userEmail);
-  if (!userId) {
+  const user = app.storage.getByEmail(userEmail);
+  if (!user) {
     res.status(404).json({ error: `no such email: ${userEmail}` });
     return;
   }
 
   const secret = auth.generateSecret();
-  const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
-  app.storage.setPasswordResetSecret(userId, secret);
+  const passwordResetToken = auth.generatePasswordResetToken({ userId: user.id, secret });
+  app.storage.setPasswordResetSecret(user.id, secret);
 
   const resetLink = `http://${getDemoIP()}:3000/confirm-password-reset#${passwordResetToken}`;
 
@@ -405,7 +404,7 @@ app.put('/me/email', watchError(async (req, res) => {
     return;
   }
 
-  const otherUser = app.storage.emailToId(email);
+  const otherUser = app.storage.getByEmail(email);
   if (otherUser) {
     log(`Email ${email} already taken`, 1);
     res.status(409).json({ error: 'Email already taken' });
