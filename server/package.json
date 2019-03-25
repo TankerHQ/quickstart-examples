@@ -9,8 +9,8 @@
     "start": "node src/main.js",
     "debug": "node --inspect-brk src/main.js",
     "watch": "node-dev src/main.js",
-    "test": "mocha --recursive tests --timeout 5000",
-    "lint": "cd .. && eslint --config=./server/.eslintrc server/src/**.js server/tests/**.js"
+    "test": "mocha --recursive --exit --full-trace tests --timeout 5000",
+    "lint": "cd .. && eslint --fix --config=./server/.eslintrc server/src/**.js server/tests/**.js"
   },
   "dependencies": {
     "@tanker/identity": "2.0.0-alpha11",
