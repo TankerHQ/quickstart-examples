@@ -227,7 +227,7 @@ describe('server', () => {
     });
 
     it('refuses to sign up existing users', async () => {
-      const existingUser = { id: 'existing', email: 'existing@example.com' };
+      const existingUser = { id: 'existing', email: 'existing@example.com', identity: 'existingIdentity' };
       app.storage.save(existingUser);
 
       const invalidBody = JSON.stringify({ email: existingUser.email, password: 'secret' });

@@ -6,7 +6,7 @@
 // backend server to the demo applications using the Tanker SDK.
 
 // @flow
-const { createIdentity, getPublicIdentity } = require('@tanker/identity');
+const { createIdentity, getPublicIdentity, createProvisionalIdentity } = require('@tanker/identity');
 const bodyParser = require('body-parser');
 const debugMiddleware = require('debug-error-middleware').express;
 const express = require('express');
@@ -66,9 +66,9 @@ const setup = async (config) => {
 };
 
 const sanitizePublicUser = async (user) => {
-  const { hashed_password, identity, ...otherAttributes } = user; // eslint-disable-line
+  const { hashed_password, identity, provisionalIdentity, ...otherAttributes } = user; // eslint-disable-line
 
-  const publicIdentity = await getPublicIdentity(identity);
+  const publicIdentity = await getPublicIdentity(identity || provisionalIdentity);
   return { ...otherAttributes, publicIdentity };
 };
 
@@ -142,35 +142,34 @@ app.post('/signup', watchError(async (req, res) => {
     return;
   }
 
-  const existingUser = app.storage.getByEmail(email);
+  let user = app.storage.getByEmail(email);
 
-  if (existingUser) {
-    log(`Email ${email} already taken`, 1);
-    res.status(409).json({ error: 'Email already taken' });
-    return;
+  if (user) {
+    if (user.identity) {
+      log(`Email ${email} already taken`, 1);
+      res.status(409).json({ error: 'Email already taken' });
+      return;
+    }
+  } else {
+    user = { id: uuid(), email };
   }
 
-  const userId = uuid();
-
   log('Hash the password', 1);
-  const hashedPassword = auth.hashPassword(password);
+  user.hashed_password = auth.hashPassword(password);
 
   log('Generate a new Tanker identity', 1);
-  const identity = await createIdentity(
+  user.identity = await createIdentity(
     trustchainId,
     trustchainPrivateKey,
-    userId,
+    user.id,
   );
 
   log('Save the user to storage', 1);
-  const user = {
-    id: userId, email, hashed_password: hashedPassword, identity,
-  };
   app.storage.save(user);
 
   log('Save the userId in the session', 1);
   await session.regenerate(req);
-  req.session.userId = userId;
+  req.session.userId = user.id;
 
   log('Return the user', 1);
   res.set('Content-Type', 'application/json');
@@ -190,7 +189,7 @@ app.post('/login', watchError(async (req, res) => {
   }
 
   const user = app.storage.getByEmail(email);
-  if (!user) {
+  if (!user || !(user.identity || user.token)) {
     log(`Authentication error: ${email} not found`, 1);
     res.status(404).json({ error: `Authentication error: ${email} not found` });
     return;
@@ -468,7 +467,23 @@ app.get('/users', watchError(async (req, res) => {
   let users = app.storage.getAll();
 
   if (req.query && req.query.email instanceof Array) {
-    users = users.filter(u => req.query.email.includes(u.email));
+    const emails = req.query.email;
+    users = users.filter(user => emails.includes(user.email));
+    const foundEmails = users.map(user => user.email);
+
+    await Promise.all(emails.map(async (email) => {
+      if (!foundEmails.includes(email)) {
+        const user = {
+          id: uuid(),
+          email,
+          provisionalIdentity: await createProvisionalIdentity(serverConfig.trustchainId, email),
+        };
+
+        app.storage.save(user);
+
+        users.push(user);
+      }
+    }));
   }
 
   const safeUsers = await Promise.all(users.map(sanitizePublicUser));
