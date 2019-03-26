@@ -6,6 +6,7 @@ const STATUSES = [
   "initializing",
   "closed",
   "open",
+  "verify",
 ];
 
 // TODO: get from "@tanker/client-browser";
@@ -40,7 +41,7 @@ export default class Session extends EventEmitter {
         const result = await this.tanker.signIn(this.user.identity);
         if (result !== SIGN_IN_RESULT.OK)
           throw new Error('AssertionError session mismatch');
-        this.status = "open";
+        this.status = this.user.provisionalIdentity ? "verify" : "open";
         return;
       }
     } catch (e) {
@@ -86,7 +87,7 @@ export default class Session extends EventEmitter {
     this._user = await response.json();
     await this.tanker.signUp(this.user.identity, { password, email });
 
-    this.status = "open";
+    this.status = this.user.provisionalIdentity ? "verify" : "open";
   }
 
   async logIn(email, password) {
@@ -106,7 +107,7 @@ export default class Session extends EventEmitter {
     this._user = await response.json();
     await this.tanker.signIn(this.user.identity, { password });
 
-    this.status = "open";
+    this.status = this.user.provisionalIdentity ? "verify" : "open";
   }
 
   async saveText(text) {
@@ -175,5 +176,12 @@ export default class Session extends EventEmitter {
     await this.tanker.registerUnlock({ password: newPassword });
     await this.tanker.signOut();
     await this.logIn(email, newPassword);
+  }
+
+  async claim(verificationCode) {
+    await this.tanker.claimProvisionalIdentity(this.user.provisionalIdentity, verificationCode);
+    await this.serverApi.claimed();
+    await this.refreshMe();
+    this.status = "open";
   }
 }

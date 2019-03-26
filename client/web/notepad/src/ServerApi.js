@@ -125,8 +125,16 @@ export default class Api {
     await this.doRequest("/requestResetPassword", { json: data, method: "POST" });
   }
 
-  async requestVerificationCode(passwordResetToken) {
+  async requestResetVerificationCode(passwordResetToken) {
     const data = { passwordResetToken };
     await this.doRequest("/requestVerificationCode", { json: data, method: "POST" });
+  }
+
+  async requestVerificationCode() {
+    await this.doRequest("/me/requestVerificationCode");
+  }
+
+  async claimed() {
+    await this.doRequest("/me/claimed", { json: {}, method: "POST" });
   }
 }

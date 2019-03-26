@@ -66,7 +66,7 @@ const setup = async (config) => {
 };
 
 const sanitizePublicUser = async (user) => {
-  const { hashed_password, identity, provisionalIdentity, ...otherAttributes } = user; // eslint-disable-line
+  const { hashed_password, identity, provisionalIdentity, _provisionalIdentity, ...otherAttributes } = user; // eslint-disable-line
 
   const publicIdentity = await getPublicIdentity(identity || provisionalIdentity);
   return { ...otherAttributes, publicIdentity };
@@ -310,7 +310,7 @@ app.post('/requestVerificationCode', watchError(async (req, res) => {
       `,
     };
 
-    const response = await app.trustchaindClient.sendVerification({ userId: user.id, email });
+    const response = await app.trustchaindClient.sendVerification({ email });
 
     if (!response.ok) {
       const error = await response.text();
@@ -415,6 +415,54 @@ app.put('/me/email', watchError(async (req, res) => {
   app.storage.save(user);
   res.sendStatus(200);
 }));
+
+app.get('/me/requestVerificationCode', watchError(async (req, res) => {
+  const { user } = res.locals;
+
+  const email = {
+    from_name: 'Notepad via Tanker',
+    from_email: `noreply@${serverConfig.domain}`,
+    to_email: user.email,
+    subject: 'Verification code',
+    html: `
+      <p>Hi,</p>
+      <p>Here is your personal verification code:&nbsp;&nbsp;<b>TANKER_VERIFICATION_CODE</b></p>
+      <p>To keep your account secure, please don't forward this email to anyone.</p>
+      <p>
+        Best regards,<br />
+        Notepad Team
+      </p>
+    `,
+  };
+
+  const response = await app.trustchaindClient.sendVerification({ email });
+
+  if (!response.ok) {
+    const error = await response.text();
+    res.status(500).json({ error: `sendVerification failed with status ${response.status}: ${JSON.stringify(error)}` });
+    return;
+  }
+
+  res.status(200).json('{}');
+}));
+
+app.post('/me/claimed', watchError(async (req, res) => {
+  const { user } = res.locals;
+
+  log('Save data on storage', 1);
+  try {
+    user._provisionalIdentity = user.provisionalIdentity; // eslint-disable-line
+    delete user.provisionalIdentity;
+    app.storage.save(user);
+  } catch (e) {
+    log(e, 1);
+    res.status(500).json({ error: e.toString() });
+    return;
+  }
+
+  res.sendStatus(200);
+}));
+
 
 app.put('/data', (req, res) => {
   const { user } = res.locals;

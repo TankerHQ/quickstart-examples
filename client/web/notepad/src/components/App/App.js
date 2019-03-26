@@ -53,7 +53,7 @@ class App extends React.Component {
 
   onVerificationCodeRequest = async (passwordResetToken) => {
     const serverApi = new ServerApi();
-    await serverApi.requestVerificationCode(passwordResetToken);
+    await serverApi.requestResetVerificationCode(passwordResetToken);
   }
 
   onPasswordResetConfirm = async ({ newPassword, passwordResetToken, verificationCode }) => {
@@ -74,7 +74,7 @@ class App extends React.Component {
         <Topbar status={status} email={session.user && session.user.email} onLogOut={this.onLogOut} />
         <div className="container">
           {status === "initializing" && null}
-          {status === "open" && <Notepad session={session} />}
+          {(status === "open" || status === "verify") && <Notepad session={session} />}
           {status === "closed" && (
             <Authentication
               onLogIn={this.onLogIn}
