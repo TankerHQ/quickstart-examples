@@ -17,6 +17,7 @@ import io.tanker.api.TankerAuthenticationMethods;
 import io.tanker.api.TankerDecryptOptions;
 import io.tanker.api.TankerException;
 import io.tanker.api.TankerFutureException;
+import io.tanker.api.TankerLogLevel;
 import io.tanker.api.TankerOptions;
 import io.tanker.api.TankerShareOptions;
 import io.tanker.api.TankerSignInOptions;
@@ -60,9 +61,6 @@ public class Session {
     public Tanker getTanker() {
         if (mTanker == null) {
             mTanker = buildTanker();
-            Tanker.setLogHandler((cat, level, message) -> {
-                Log.d("Tanker", message);
-            });
         }
 
         return mTanker;
@@ -72,6 +70,20 @@ public class Session {
         try {
             TankerOptions options = mTankerOptionsTask.get();
             Tanker tanker = new Tanker(options);
+            Tanker.setLogHandler((record) -> {
+                String tag = "Tanker";
+                String message = record.message;
+                Integer level = record.level;
+                if (level == TankerLogLevel.ERROR.getValue()) {
+                    Log.e(tag, message);
+                } else if (level == TankerLogLevel.WARNING.getValue()) {
+                    Log.w(tag, message);
+                } else if (level == TankerLogLevel.INFO.getValue()) {
+                    Log.i(tag, message);
+                } else if (level == TankerLogLevel.DEBUG.getValue()) {
+                    Log.d(tag, message);
+                }
+            });
             tanker.connectDeviceRevokedHandler(() -> {
                 Log.w("Session", "Tanker device has been revoked");
             });
