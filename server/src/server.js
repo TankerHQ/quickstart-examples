@@ -6,7 +6,7 @@
 // backend server to the demo applications using the Tanker SDK.
 
 // @flow
-const { createIdentity, getPublicIdentity, upgradeUserToken } = require('@tanker/identity');
+const { createIdentity, getPublicIdentity } = require('@tanker/identity');
 const bodyParser = require('body-parser');
 const debugMiddleware = require('debug-error-middleware').express;
 const express = require('express');
@@ -64,16 +64,7 @@ const setup = async (config) => {
 };
 
 const sanitizePublicUser = async (user) => {
-  let { hashed_password, token, identity, ...otherAttributes } = user; // eslint-disable-line
-
-  if (token && !identity) {
-    log(`Upgrade user token to identity for ${user.email}`, 1);
-    identity = await upgradeUserToken(serverConfig.trustchainId, user.id, token);
-    // TODO when debugging is over:
-    //   const { token, ...userToSave } = user;
-    //   userToSave.identity = identity;
-    app.storage.save({ ...user, identity });
-  }
+  const { hashed_password, identity, ...otherAttributes } = user; // eslint-disable-line
 
   const publicIdentity = await getPublicIdentity(identity);
   return { ...otherAttributes, publicIdentity };
@@ -187,7 +178,6 @@ app.post('/signup', watchError(async (req, res) => {
 // Add login route (non authenticated)
 app.post('/login', watchError(async (req, res) => {
   const { email, password } = req.body;
-  const { trustchainId } = serverConfig;
 
   log('Check login credentials', 1);
 
@@ -210,15 +200,6 @@ app.post('/login', watchError(async (req, res) => {
     log('Authentication error: invalid password', 1);
     res.status(401).json({ error: 'Authentication error: invalid password' });
     return;
-  }
-
-  if (user.token && !user.identity) {
-    log('Upgrade user token to identity', 1);
-    const identity = await upgradeUserToken(trustchainId, userId, user.token);
-    // TODO when debugging is over:
-    // delete user.token;
-    user.identity = identity;
-    app.storage.save(user);
   }
 
   log('Save the userId in the session', 1);
