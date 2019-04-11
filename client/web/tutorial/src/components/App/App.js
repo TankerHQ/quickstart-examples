@@ -1,7 +1,6 @@
 import React from "react";
 
 import Authentication from "../Authentication";
-import NewDevice from "../NewDevice";
 import Notepad from "./Notepad";
 import Topbar from "../Topbar";
 import ServerApi from '../../ServerApi';
@@ -76,7 +75,6 @@ class App extends React.Component {
         <div className="container">
           {status === "initializing" && null}
           {status === "open" && <Notepad session={session} />}
-          {status === "openingNewDevice" && <NewDevice onUnlockDevice={this.onUnlockDevice} />}
           {status === "closed" && (
             <Authentication
               onLogIn={this.onLogIn}

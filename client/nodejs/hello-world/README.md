@@ -14,19 +14,19 @@ yarn start:nodejs:hello-world
 
 The output should be similar to:
 
-|Server output|App output |
-|-------------|-----------|
-||Opening session bob|
-|New request: bob||
-|Creating new token||
-||Bye!|
-||Opening session alice|
-|New request: alice||
-|Creating new token||
-||Encrypting message for Bob|
-||Bye!|
-||Opening session bob|
-|New request: bob||
-|Serving existing token||
-||Got message from Alice: This is a secret message|
-||Bye!|
+|Server output                  | App output  |
+|---------------------------    | ----------- |
+|                               | Sign up bob |
+| New /signup request for bob   | |
+| Creating new identity         | |
+|                               | Signed out |
+|                               | Sign up alice |
+| New /signup request for alice | |
+| Creating new identity         | |
+|                               | Encrypting message for Bob |
+|                               | Signed out |
+|                               | Sign in bob |
+| New /signin request for bob   | |
+| Serving existing identity     | | 
+|                               | Decrypt message from Alice: This is a secret message |
+|                               | Signed out |

@@ -3,19 +3,15 @@ const quoteEllipsis = (s, max = 10) => JSON.stringify(ellipsis(s, max));
 const quote = (s) => JSON.stringify(s);
 
 const getCodeEncryptAndShare = (text, shareWithEmail) => `
-const userId = getUserId(${quoteEllipsis(shareWithEmail)});
-const opts = { shareWithUsers: [userId] };
 const clear = ${quoteEllipsis(text, 20)};
-const binary = await tanker.encrypt(clear, opts);
-const base64 = toBase64(binary);
+const email = ${quoteEllipsis(shareWithEmail, 20)};
+const identity = api.fetchPublicIdentity(email);
 
-// Or:
-// const userId = getUserId(${quoteEllipsis(shareWithEmail)});
-// const opts = { shareWithUsers: [userId] };
-// const clear = ${quoteEllipsis(text, 20)};
-// const binary = await tanker.encrypt(clear);
-// const resourceId = await tanker.getResourceId(binary);
-// await tanker.share([resourceId], opts);
+const binary = await tanker.encrypt(clear, {
+  shareWithUsers: [identity]
+});
+
+const base64 = toBase64(binary);
 `;
 
 const getCodeEncryptionOnly = (text) => `
@@ -25,10 +21,20 @@ const base64 = toBase64(binary);
 `;
 
 export default {
-  initialize: (trustchainId) => ({
+  initApiClient: (trustchainId) => ({
+    title: 'Initialize API Client',
+    code: `
+import { ApiClient } from "../your/app";
+
+// Example object to request your app server
+const api = new ApiClient();
+`
+  }),
+
+  initTanker: (trustchainId) => ({
     title: 'Initialize Tanker SDK',
     code: `
-import Tanker from "@tanker/client-browser";
+import { Tanker } from "@tanker/client-browser";
 
 const tanker = new Tanker({
   trustchainId: ${quoteEllipsis(trustchainId, 20)}
@@ -59,25 +65,40 @@ const clear = await tanker.decrypt(binary);
     code: `clear === ${quoteEllipsis(clear, 20)}; // true`
   }),
 
-  closingSession: (email) => ({
-    title: `Closing session for ${email}`,
-    code: 'await tanker.close();'
-  }),
-
-  closedSession: (email) => ({ title: `Closed session for ${email}` }),
-
-  openingSession: (email, password) => ({
-    title: `Opening session for ${email}`,
+  signingOut: (email) => ({
+    title: `Sign out ${email}`,
     code: `
-const email = ${quote(email)};
-const password = ${quote(password)};
-const user = await authenticate(email, password);
-
-await tanker.open(user.id, user.token);
+await tanker.signOut();
+await api.signOut();
 `
   }),
 
-  openedSession: (email) => ({ title: `Opened session for ${email}` }),
+  signedOut: (email) => ({ title: `Signed out ${email}` }),
+
+  signUp: (email, password) => ({
+    title: `Sign up ${email}`,
+    code: `
+const email = ${quote(email)};
+const password = ${quote(password)};
+const user = await api.signUp(email, password);
+
+await tanker.signUp(user.identity);
+`
+  }),
+
+  signIn: (email, password) => ({
+    title: `Sign in ${email}`,
+    code: `
+const email = ${quote(email)};
+const password = ${quote(password)};
+const user = await api.signIn(email, password);
+
+await tanker.signIn(user.identity);
+`
+  }),
+
+  signedIn: (email) => ({ title: `Signed in ${email}` }),
+  signedUp: (email) => ({ title: `Signed up ${email}` }),
 
   serverHint: () => ({
     title: 'Have you started the server?',

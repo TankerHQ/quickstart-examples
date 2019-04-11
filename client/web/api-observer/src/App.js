@@ -20,7 +20,15 @@ class App extends Component {
       loading: true,
       log: []
     };
+  }
+
+  componentDidMount = () => {
+    this.initApiClient();
     this.initTanker();
+  }
+
+  initApiClient = async () => {
+    this.log('initApiClient', serverRoot);
   }
 
   initTanker = async () => {
@@ -28,7 +36,7 @@ class App extends Component {
       const res = await doRequest(`${serverRoot}/config`);
       const config = await res.json();
       this.tanker = new Tanker(config);
-      this.log('initialize', config.trustchainId);
+      this.log('initTanker', config.trustchainId);
       this.setState({ loading: false });
     } catch (e) {
       this.log(e);
@@ -68,8 +76,8 @@ class App extends Component {
 
       const options = {};
       if (shareWith) {
-        const id = await this.getUserId(shareWith);
-        options.shareWithUsers = [id];
+        const publicIdentity = await this.fetchPublicIdentity(shareWith);
+        options.shareWithUsers = [publicIdentity];
       }
 
       this.log('encryption', clearText, shareWith);
@@ -107,35 +115,22 @@ class App extends Component {
     }
   }
 
-  authenticate = async (email, password) => {
-    const body = JSON.stringify({ email, password });
-    const headers = { 'Content-Type': 'application/json' };
-    const method = 'post';
-
-    // Authenticated request: always pass "Tanker" as password (mock auth)
-    let res = await doRequest(`${serverRoot}/login`, { body, headers, method });
-
-    // User not found
-    if (res.status === 404) {
-      res = await doRequest(`${serverRoot}/signup`, { body, headers, method });
-    }
-
-    return res.json();
-  }
-
-  getUserId = async (email) => {
-    const password = 'Tanker';
-    const { id } = await this.authenticate(email, password);
-    return id;
+  fetchPublicIdentity = async (email) => {
+    const response = await doRequest(`${serverRoot}/users`);
+    const users = await response.json();
+    const user = users.find(user => user.email === email);
+    if (!user)
+      throw new Error(`Could not find user with email ${email} on the server`);
+    return user.publicIdentity;
   }
 
   onClose = async () => {
-    this.log('closingSession', this.state.email);
+    this.log('signingOut', this.state.email);
 
-    await this.tanker.close();
+    await this.tanker.signOut();
     await doRequest(`${serverRoot}/logout`);
 
-    this.log('closedSession', this.state.email);
+    this.log('signedOut', this.state.email);
   }
 
   onOpen = async (event) => {
@@ -144,12 +139,44 @@ class App extends Component {
     const email = this.state.email;
     const password = 'Tanker'; // Note: this is for demo only
 
-    this.log('openingSession', email, password);
+    const body = JSON.stringify({ email, password });
+    const headers = { 'Content-Type': 'application/json' };
+    const method = 'post';
 
-    const user = await this.authenticate(email, password);
-    await this.tanker.open(user.id, user.token);
+    try {
+      let res = await doRequest(`${serverRoot}/login`, { body, headers, method });
 
-    this.log('openedSession', email);
+      // User signed in
+      if (res.status === 200) {
+        this.log('signIn', email, password);
+        const user = await res.json();
+
+        await this.tanker.signIn(user.identity);
+
+        this.log('signedIn', email);
+        return;
+      }
+
+      // User does not exist, need to sign up
+      if (res.status === 404) {
+        this.log('signUp', email, password);
+
+        res = await doRequest(`${serverRoot}/signup`, { body, headers, method });
+        if (res.status !== 201)
+          throw new Error(`Could not sign up to the server, status: ${res.status}, error: ${(await res.json()).error}`);
+
+        const user = await res.json();
+
+        await this.tanker.signUp(user.identity);
+
+        this.log('signedUp', email);
+        return;
+      }
+
+      throw new Error(`Could not authenticate to the server, status: ${res.status}, error: ${(await res.json()).error}`);
+    } catch (e) {
+      this.log(e);
+    }
   }
 
   render = () => {
@@ -180,18 +207,18 @@ class App extends Component {
                           value={email}
                           onChange={this.onEmailChange}
                           onKeyPress={event => {
-                            if (event.key === 'Enter' && email) {
-                              if (this.tanker.status === this.tanker.CLOSED) {
-                                this.onOpen(event);
-                              } else {
+                            if (!sessionButtonDisabled && event.key === 'Enter' && email) {
+                              if (this.tanker.isOpen) {
                                 this.onClose();
+                              } else {
+                                this.onOpen(event);
                               }
                             }
                           }}
-                          disabled={loading || this.tanker.status !== this.tanker.CLOSED}
+                          disabled={loading || this.tanker.isOpen}
                         />
                         <InputGroup.Button>
-                          {(loading || this.tanker.status === this.tanker.CLOSED) && (
+                          {(loading || !this.tanker.isOpen) && (
                             <Button
                               bsStyle="primary"
                               onClick={this.onOpen}
@@ -200,7 +227,7 @@ class App extends Component {
                               Open
                             </Button>
                           )}
-                          {!loading && this.tanker.status !== this.tanker.CLOSED && (
+                          {!loading && this.tanker.isOpen && (
                             <Button
                               bsStyle="danger"
                               onClick={this.onClose}

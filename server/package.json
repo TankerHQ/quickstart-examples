@@ -13,8 +13,8 @@
     "lint": "cd .. && eslint --config=./server/.eslintrc server/src/**.js server/tests/**.js"
   },
   "dependencies": {
-    "@tanker/user-token": "1.4.2",
     "@babel/polyfill": "^7.2.5",
+    "@tanker/identity": "2.0.0-alpha11",
     "body-parser": "^1.18.3",
     "commander": "^2.19.0",
     "cors": "^2.8.5",

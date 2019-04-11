@@ -1,20 +1,25 @@
 import EventEmitter from "events";
-import Tanker, { toBase64, fromBase64 } from "@tanker/client-browser";
+import { Tanker, toBase64, fromBase64 } from "@tanker/client-browser";
 import ServerApi from "./ServerApi";
 
 const STATUSES = [
   "initializing",
   "closed",
   "open",
-  "openingNewDevice"
 ];
+
+// TODO: get from "@tanker/client-browser";
+const SIGN_IN_RESULT = Object.freeze({
+  OK: 1,
+  IDENTITY_VERIFICATION_NEEDED: 2,
+  IDENTITY_NOT_REGISTERED: 3,
+});
 
 export default class Session extends EventEmitter {
   constructor() {
     super();
 
     this.resourceId = null;
-    this.verificationCode = null;
     this._user = null;
 
     this.serverApi = new ServerApi();
@@ -32,7 +37,9 @@ export default class Session extends EventEmitter {
         await this.refreshMe();
       }
       if (this.user) {
-        await this.tanker.open(this.user.id, this.user.token);
+        const result = await this.tanker.signIn(this.user.identity);
+        if (result !== SIGN_IN_RESULT.OK)
+          throw new Error('AssertionError session mismatch');
         this.status = "open";
         return;
       }
@@ -46,20 +53,6 @@ export default class Session extends EventEmitter {
     if (this.tanker) return;
     const config = await this.serverApi.tankerConfig();
     this.tanker = new Tanker(config);
-    this.tanker.on("unlockRequired", async () => {
-      if (this.verificationCode) {
-        try {
-          await this.tanker.unlockCurrentDevice({ verificationCode: this.verificationCode });
-        } catch (e) {
-          console.error(e); // most likely, the verification code is invalid
-          await this.close();
-        }
-        // prevent re-use
-        this.verificationCode = null;
-      } else {
-        this.status = "openingNewDevice";
-      }
-    });
   }
 
   get status() {
@@ -79,7 +72,7 @@ export default class Session extends EventEmitter {
 
   async close() {
     await this.serverApi.logout();
-    await this.tanker.close();
+    await this.tanker.signOut();
     this._user = null;
     this.status = "closed";
   }
@@ -91,8 +84,7 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Server error!");
 
     this._user = await response.json();
-    await this.tanker.open(this.user.id, this.user.token);
-    await this.tanker.registerUnlock({ password, email });
+    await this.tanker.signUp(this.user.identity, { password, email });
 
     this.status = "open";
   }
@@ -112,19 +104,15 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
     this._user = await response.json();
-    await this.tanker.open(this.user.id, this.user.token);
+    await this.tanker.signIn(this.user.identity, { password });
 
     this.status = "open";
   }
 
-  async unlockCurrentDevice(password) {
-    await this.tanker.unlockCurrentDevice({ password });
-  }
-
   async saveText(text) {
     const recipients = await this.getNoteRecipients();
-    const recipientIds = recipients.map(user => user.id);
-    const encryptedData = await this.tanker.encrypt(text, { shareWithUsers: recipientIds });
+    const recipientPublicIdentities = recipients.map(user => user.publicIdentity);
+    const encryptedData = await this.tanker.encrypt(text, { shareWithUsers: recipientPublicIdentities });
     const encryptedText = toBase64(encryptedData);
     this.resourceId = await this.tanker.getResourceId(encryptedData);
     await this.serverApi.push(encryptedText);
@@ -153,13 +141,22 @@ export default class Session extends EventEmitter {
     return this.serverApi.getUsers();
   }
 
+  async getPublicIdentities(userIds) {
+    const users = await this.serverApi.getUsers();
+    const identities = users.filter(u => userIds.indexOf(u.id) !== -1).map(u => u.publicIdentity);
+    if (identities.length !== userIds.length)
+      throw new Error('At least one user not found');
+    return identities;
+  }
+
   async refreshMe() {
     this._user = await this.serverApi.getMe();
   }
 
   async share(recipients) {
     if (!this.resourceId) throw new Error("No resource id.");
-    await this.tanker.share([this.resourceId], { shareWithUsers: recipients });
+    const recipientPublicIdentities = await this.getPublicIdentities(recipients);
+    await this.tanker.share([this.resourceId], { shareWithUsers: recipientPublicIdentities });
     await this.serverApi.share(this.user.id, recipients);
     await this.refreshMe();
   }
@@ -180,11 +177,11 @@ export default class Session extends EventEmitter {
   }
 
   async resetPassword(newPassword, passwordResetToken, verificationCode) {
-    const answer = await this.serverApi.resetPassword(newPassword, passwordResetToken);
-    const jsonResponse = await answer.json();
-    const { email } = jsonResponse;
-    this.verificationCode = verificationCode;
-    await this.logIn(email, newPassword);
+    const response = await this.serverApi.resetPassword(newPassword, passwordResetToken);
+    const { email, identity } = await response.json();
+    await this.tanker.signIn(identity, { verificationCode });
     await this.tanker.registerUnlock({ password: newPassword });
+    await this.tanker.signOut();
+    await this.logIn(email, newPassword);
   }
 }
