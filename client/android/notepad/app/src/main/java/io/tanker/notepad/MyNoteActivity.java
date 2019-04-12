@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import io.tanker.api.TankerFutureException;
+
 public class MyNoteActivity extends DrawerActivity {
     private EditText mNoteInput;
     private EditText mRecipientInput;
@@ -67,6 +69,10 @@ public class MyNoteActivity extends DrawerActivity {
 
             try {
                 mSession.putData(clearText, recipientEmails);
+            } catch (TankerFutureException e) {
+                showToast(e.getCause().getMessage());
+                Log.e("Notepad", "Failed to save data: " + e.getCause().getMessage());
+                return false;
             } catch (Throwable e) {
                 showToast(e.getMessage());
                 Log.e("Notepad", "Failed to save data: " + e.getMessage());
