@@ -12,14 +12,13 @@ const SIGN_IN_RESULT = Object.freeze({
   IDENTITY_NOT_REGISTERED: 3,
 });
 
-const users = new Map();
 const serverRoot = 'http://127.0.0.1:8080';
 
 const doRequest = (url, options = {}) => fetch(url, { credentials: 'include', ...options });
 
 async function getTankerConfig() {
-  const res = await doRequest(`${serverRoot}/config`);
-  const config = await res.json();
+  const response = await doRequest(`${serverRoot}/config`);
+  const config = await response.json();
 
   // Folder to store tanker client data
   const dbPath = `${__dirname}/data/${config.trustchainId.replace(/[\/\\]/g, '_')}/`;
@@ -34,12 +33,11 @@ async function getTankerConfig() {
 }
 
 async function signUp(tanker, email) {
-  let res;
+  // Always sign up with "Tanker" as password (mock auth)
   const body = JSON.stringify({ email, password: 'Tanker' });
   const headers = { 'Content-Type': 'application/json' };
   const method = 'post';
 
-  // Always sign up with "Tanker" as password (mock auth)
   console.log('\nSign up ' + email);
   console.log('  - calling /signup on the app server');
   const response = await doRequest(`${serverRoot}/signup`, { body, headers, method });
@@ -47,13 +45,11 @@ async function signUp(tanker, email) {
 
   console.log('  - calling tanker.signUp() on the client side');
   await tanker.signUp(user.identity);
-  users.set(email, user);
 
   return user;
 }
 
 async function signIn(tanker, email) {
-  let res;
   const body = JSON.stringify({ email, password: 'Tanker' });
   const headers = { 'Content-Type': 'application/json' };
   const method = 'post';
