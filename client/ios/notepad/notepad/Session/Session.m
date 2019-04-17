@@ -94,7 +94,10 @@ NSString *getWritablePath() {
     return [self.apiClient signUpWithEmail:email password:password];
   }).then(^(NSDictionary *user) {
     return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-      [self.tanker signUpWithIdentity:user[@"identity"] completionHandler:adapter];
+      TKRAuthenticationMethods* authMethods = [TKRAuthenticationMethods methods];
+      authMethods.password = password;
+      authMethods.email = email;
+      [self.tanker signUpWithIdentity:user[@"identity"] authenticationMethods:authMethods completionHandler:adapter];
     }].then(^(NSNumber* result) {
       NSLog(@"Signup result %i", [result intValue]);
     }).catch(^(NSError* error) {
