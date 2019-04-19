@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "ApiClient.h"
+#import "PMKTanker.h"
 
 @import PromiseKit;
 @import Tanker;
@@ -12,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (Session *)sharedSession;
 
-- (PMKPromise<TKRTanker *> *)tankerReady;
+- (PMKPromise<PMKTanker *> *)tankerReady;
 
 - (PMKPromise *)signUpWithEmail:(NSString *)email
                       password:(NSString *)password;
