@@ -1,5 +1,5 @@
 #import "PMKTanker.h"
-#import "TKRTanker.h"
+@import Tanker;
 
 @implementation PMKTanker
 

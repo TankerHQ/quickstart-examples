@@ -1,10 +1,6 @@
 #import <Foundation/Foundation.h>
 
-#import <TKRTanker.h>
-#import <TKRSignInResult.h>
-#import <TKRTankerOptions.h>
-#import <TKREncryptionOptions.h>
-
+@import Tanker;
 @import PromiseKit;
 
 NS_ASSUME_NONNULL_BEGIN
