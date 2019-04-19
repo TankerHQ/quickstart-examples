@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4830D7E32269BF8800631226 /* PMKTanker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4830D7E22269BF8800631226 /* PMKTanker.m */; };
 		5001EF422181FA3D004393F7 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5001EF412181FA3D004393F7 /* BaseViewController.m */; };
 		5022DFC52183151A007B3418 /* NoteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5022DFC32183151A007B3418 /* NoteTableViewCell.m */; };
 		5022DFC9218316FA007B3418 /* NoteTableViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5022DFC8218316FA007B3418 /* NoteTableViewItem.m */; };
@@ -45,6 +46,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4830D7E12269BF8800631226 /* PMKTanker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PMKTanker.h; sourceTree = "<group>"; };
+		4830D7E22269BF8800631226 /* PMKTanker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PMKTanker.m; sourceTree = "<group>"; };
 		5001EF402181FA1D004393F7 /* BaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
 		5001EF412181FA3D004393F7 /* BaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
 		5022DFC22183151A007B3418 /* NoteTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoteTableViewCell.h; sourceTree = "<group>"; };
@@ -182,6 +185,8 @@
 		504695FA21875593008BEE58 /* Session */ = {
 			isa = PBXGroup;
 			children = (
+				4830D7E12269BF8800631226 /* PMKTanker.h */,
+				4830D7E22269BF8800631226 /* PMKTanker.m */,
 				504695FB218755F8008BEE58 /* ApiClient.h */,
 				504695FC218755F8008BEE58 /* ApiClient.m */,
 				504695FE21876073008BEE58 /* HttpClient.h */,
@@ -421,6 +426,7 @@
 				508C57EF21A31305000C8937 /* RootViewController.m in Sources */,
 				50E1031F218AF12D00EA92FF /* ResetPasswordLinkViewController.m in Sources */,
 				50E10327218C8D9000EA92FF /* StringValidator.m in Sources */,
+				4830D7E32269BF8800631226 /* PMKTanker.m in Sources */,
 				50E1031C218AEC1E00EA92FF /* ResetPasswordViewController.m in Sources */,
 				506DFFF12189A886006936E4 /* Session.m in Sources */,
 				5046960021876073008BEE58 /* HttpClient.m in Sources */,

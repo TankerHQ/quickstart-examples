@@ -37,8 +37,8 @@ NSString *getWritablePath() {
 
 @interface Session ()
 
-@property (readwrite) TKRTanker *tanker;
-@property (readonly) PMKPromise<TKRTanker *> *tankerReadyPromise;
+@property (readwrite) PMKTanker *tanker;
+@property (readonly) PMKPromise<PMKTanker *> *tankerReadyPromise;
 
 @end
 
@@ -64,7 +64,7 @@ NSString *getWritablePath() {
         opts.trustchainURL = url;
       }
 
-      TKRTanker *tanker = [TKRTanker tankerWithOptions:opts];
+      PMKTanker *tanker = [PMKTanker t	ankerWithOptions:opts];
 
       NSLog(@"Tanker initialized");
       self.tanker = tanker;
@@ -84,7 +84,7 @@ NSString *getWritablePath() {
   return sharedSession;
 }
 
-- (PMKPromise<TKRTanker *> *)tankerReady {
+- (PMKPromise<PMKTanker *> *)tankerReady {
   return self.tankerReadyPromise;
 }
 
@@ -93,12 +93,10 @@ NSString *getWritablePath() {
   return [self tankerReady].then(^() {
     return [self.apiClient signUpWithEmail:email password:password];
   }).then(^(NSDictionary *user) {
-    return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-      TKRAuthenticationMethods* authMethods = [TKRAuthenticationMethods methods];
-      authMethods.password = password;
-      authMethods.email = email;
-      [self.tanker signUpWithIdentity:user[@"identity"] authenticationMethods:authMethods completionHandler:adapter];
-    }].then(^(NSNumber* result) {
+    TKRAuthenticationMethods* authMethods = [TKRAuthenticationMethods methods];
+    authMethods.password = password;
+    authMethods.email = email;
+    return [self.tanker signUpWithIdentity:user[@"identity"] authenticationMethods:authMethods].then(^(NSNumber* result) {
       NSLog(@"Signup result %i", [result intValue]);
     }).catch(^(NSError* error) {
       NSLog(@"Could not sign up: %@", [error localizedDescription]);
@@ -111,12 +109,11 @@ NSString *getWritablePath() {
   return [self tankerReady].then(^() {
     return [self.apiClient logInWithEmail:email password:password];
   }).then(^(NSDictionary *user) {
-    return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-      TKRSignInOptions* signInOptions = [TKRSignInOptions options];
-      signInOptions.password = password;
-      NSString* identity = user[@"identity"];
-      [self.tanker signInWithIdentity:identity options:signInOptions completionHandler:adapter];
-    }].then(^(NSNumber* result) {
+    TKRSignInOptions* signInOptions = [TKRSignInOptions options];
+    signInOptions.password = password;
+    NSString* identity = user[@"identity"];
+    return [self.tanker signInWithIdentity:identity options:signInOptions]
+    .then(^(NSNumber* result) {
       NSLog(@"Signin result: %i", [result intValue]);
       if (result.integerValue == TKRSignInResultOk) {
         return [PMKPromise promiseWithValue:nil];
@@ -137,13 +134,9 @@ NSString *getWritablePath() {
   return [self.apiClient changeEmail:newEmail].then(^{
     return [self tankerReady];
   }).then(^() {
-    return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
-      TKRUnlockOptions* unlockOptions = [TKRUnlockOptions options];
-      unlockOptions.email = newEmail;
-      [self.tanker registerUnlockWithOptions:unlockOptions
-                           completionHandler:resolver];
-
-    }];
+    TKRUnlockOptions* unlockOptions = [TKRUnlockOptions options];
+    unlockOptions.email = newEmail;
+    return [self.tanker registerUnlockWithOptions:unlockOptions];
   });
 }
 
@@ -152,13 +145,9 @@ NSString *getWritablePath() {
   return [self.apiClient changePasswordFrom:oldPassword to:newPassword].then(^{
     return [self tankerReady];
   }).then(^() {
-    return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
-      TKRUnlockOptions* unlockOptions = [TKRUnlockOptions options];
-      unlockOptions.password = newPassword;
-      [self.tanker registerUnlockWithOptions:unlockOptions
-                           completionHandler:resolver];
-
-    }];
+    TKRUnlockOptions* unlockOptions = [TKRUnlockOptions options];
+    unlockOptions.password = newPassword;
+    return [self.tanker registerUnlockWithOptions:unlockOptions];
   });
 }
 
@@ -172,18 +161,14 @@ NSString *getWritablePath() {
                       withToken:(NSString *)resetToken
                 verificationCode:(NSString *)verificationCode {
   return [self.apiClient resetPasswordTo:newPassword withToken:resetToken].then(^(NSDictionary *resetResult) {
-    NSString* identity = resetResult[@"indentity"];
+    NSString* identity = resetResult[@"identity"];
     TKRSignInOptions* signinOptions = [TKRSignInOptions options];
     signinOptions.verificationCode = verificationCode;
-    return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-        return [self.tanker signInWithIdentity:identity options:signinOptions completionHandler:adapter];
-    }].then(^(){
+    return [self.tanker signInWithIdentity:identity options:signinOptions]
+    .then(^(){
       TKRUnlockOptions* unlockOptions = [TKRUnlockOptions options];
       unlockOptions.password = newPassword;
-      return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
-        [self.tanker registerUnlockWithOptions:unlockOptions
-                             completionHandler:resolver];
-      }];
+      [self.tanker registerUnlockWithOptions:unlockOptions];
     });
   });
 }
@@ -192,9 +177,7 @@ NSString *getWritablePath() {
   return [self.apiClient logout].then(^{
     return [self tankerReady];
   }).then(^() {
-    return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
-      [self.tanker signOutWithCompletionHandler:resolver];
-    }];
+    [self.tanker signOut];
   });
 }
 
@@ -215,9 +198,7 @@ NSString *getWritablePath() {
     return [self.apiClient getDataFromUser:userId];
   }).then(^(NSString *b64EncryptedData) {
     NSData *encryptedData = [[NSData alloc] initWithBase64EncodedString:b64EncryptedData options:0];
-    return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-      [self.tanker decryptStringFromData:encryptedData completionHandler:adapter];
-    }];
+    return [self.tanker decryptStringFromData:encryptedData];
   });
 }
 
@@ -266,11 +247,8 @@ NSString *getWritablePath() {
       [recipientsIdentities addObject:identity];
     }];
     encryptOptions.shareWithUsers = recipientsIdentities;
-    [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-      [self.tanker encryptDataFromString:data
-                                 options: encryptOptions
-                       completionHandler:adapter];
-    }].then(^(NSData* encryptedData) {
+    [self.tanker encryptDataFromString:data options:encryptOptions]
+    .then(^(NSData* encryptedData) {
       NSString* b64EncryptedData = [encryptedData base64EncodedStringWithOptions:0];
       return [self.apiClient putData:b64EncryptedData];
     }).then(^{
