@@ -1,4 +1,4 @@
-const appServerUrl = "http://127.0.0.1:8080";
+const appServerUrl = `http://${window.location.hostname}:8080`;
 
 export default class Api {
   urlFor(path) {
