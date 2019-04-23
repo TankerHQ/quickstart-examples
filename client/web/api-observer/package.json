@@ -4,7 +4,7 @@
   "main": "src/index.js",
   "private": true,
   "scripts": {
-    "start": "HOST=127.0.0.1 react-scripts start"
+    "start": "react-scripts start"
   },
   "dependencies": {
     "@babel/core": "^7.3.4",
