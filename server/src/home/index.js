@@ -86,4 +86,8 @@ homeRouter.use('/highlight', express.static(path.join(rootPath, 'server/public/h
 // Serve images from the api-observer README
 homeRouter.use('/pics', express.static(path.join(rootPath, 'client/web/api-observer/pics')));
 
+// Serve Tanker's UMD file
+const tankerUMD = 'tanker-client-browser.min.js';
+homeRouter.use(`/${tankerUMD}`, express.static(path.join(rootPath, 'node_modules/@tanker/client-browser/umd', tankerUMD)));
+
 module.exports = homeRouter;
