@@ -4,7 +4,8 @@
 // @flow
 const cors = require('cors');
 
-const allowedOrigins = /^http:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?$/;
+// Allow all http(s) origins. In a real application, restrict to your domains / ips.
+const allowedOrigins = /^https?:\/\//;
 
 const middleware = () => cors({
   credentials: true, // adds header Access-Control-Allow-Credentials: true
