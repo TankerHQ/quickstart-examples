@@ -1,6 +1,8 @@
 const cli = require('commander');
 const path = require('path');
 
+const { getDemoIP } = require('./ip');
+
 const { getConfig } = require('./config');
 const { app, setup } = require('./server');
 const log = require('./log');
@@ -17,7 +19,7 @@ getConfig(cli.config).then(async (config) => {
 
   log('Tanker mock server:');
   log(`Configured with Trustchain: ${config.trustchainId}`, 1);
-  log(`Listening on http://127.0.0.1:${port}/`, 1);
+  log(`Listening on http://${getDemoIP()}:${port}/`, 1);
 
   app.listen(port);
 }).catch(error => console.error(error));

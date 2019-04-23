@@ -7,12 +7,17 @@ const fs = require('fs');
 const marked = require('marked');
 const path = require('path');
 
+const { getDemoIP } = require('../ip');
+
 // Build an express router
 const homeRouter = express.Router();
 const rootPath = path.join(__dirname, '../../..');
 
+// Fix demo IP (so that you can query from local network)
+const fixDemoIP = markup => markup.replace(/127\.0\.0\.1/g, getDemoIP());
+
 // Github nav and local server nav require different links
-const fixReadmeLinks = markup => markup.replace('"../../../README.md"', '"/"');
+const fixReadmeLinks = markup => markup.replace(/"(\.\.\/){3}README\.md"/g, '"/"');
 
 // Retina screenshots must be displayed at 50% of their original size
 const downsizeScreenshots = markup => markup.replace(/<img.+?>/g, (tag) => {
@@ -47,6 +52,7 @@ homeRouter.get('/', (req, res) => {
   if (readmePath) {
     readme = fs.readFileSync(readmePath, 'utf8');
     readme = marked(readme);
+    readme = fixDemoIP(readme);
     readme = fixReadmeLinks(readme);
     readme = downsizeScreenshots(readme);
     readme = nonClickableEmails(readme);
