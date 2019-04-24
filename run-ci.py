@@ -2,6 +2,7 @@ import argparse
 import json
 import os
 import time
+import sys
 
 from path import Path
 
@@ -135,10 +136,13 @@ def main():
 
     if action == "android":
         check_android()
-    if action == "ios":
+    elif action == "ios":
         check_ios()
-    if action == "web":
+    elif action == "web":
         check_web()
+    else:
+        parser.print_help()
+        sys.exit()
 
 
 if __name__ == "__main__":
