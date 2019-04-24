@@ -64,7 +64,7 @@ NSString *getWritablePath() {
         opts.trustchainURL = url;
       }
 
-      PMKTanker *tanker = [PMKTanker t	ankerWithOptions:opts];
+      PMKTanker *tanker = [PMKTanker tankerWithOptions:opts];
 
       NSLog(@"Tanker initialized");
       self.tanker = tanker;
