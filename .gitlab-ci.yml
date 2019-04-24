@@ -1,8 +1,27 @@
 stages:
-  - ci
+  - check
 
-ci:
-  stage: ci
+check/android:
+  image: tanker.local:5000/ci-android:latest
+  stage: check
   script:
     - dmenv install
-    - dmenv run -- python run-ci.py
+    - dmenv run -- python run-ci.py android
+  tags: [linux]
+
+
+check/ios:
+  stage: check
+  script:
+    - security unlock-keychain -p ${DEFAULT_KEYCHAIN_PASSWORD} ~/Library/Keychains/login.keychain-db
+    - dmenv install
+    - dmenv run -- python run-ci.py ios
+  tags: [macos]
+
+
+check/web:
+  stage: check
+  script:
+    - dmenv install
+    - dmenv run -- python run-ci.py web
+  tags: [linux]
