@@ -1,10 +1,10 @@
 #import "Session.h"
 
 NSString *getWritablePath() {
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory,
-                                                       NSUserDomainMask, YES);
-  NSString *libraryDirectory = [paths objectAtIndex:0];
-  return libraryDirectory;
+  NSFileManager* fileManager = [NSFileManager defaultManager];
+  NSArray* urls = [fileManager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask];
+  NSURL* url = [urls objectAtIndex:0];
+  return [url path];
 }
 
 // Wrapper for data returned by the Notepad server when sharing with other users
@@ -64,7 +64,7 @@ NSString *getWritablePath() {
         opts.trustchainURL = url;
       }
 
-      PMKTanker *tanker = [PMKTanker t	ankerWithOptions:opts];
+      PMKTanker *tanker = [PMKTanker tankerWithOptions:opts];
 
       NSLog(@"Tanker initialized");
       self.tanker = tanker;
