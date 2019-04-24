@@ -1,16 +1,18 @@
+import argparse
 import json
 import os
 import time
 
-import path
+from path import Path
 
 import ci
+import ci.android
 import ci.dmenv
 import ci.quickstart
 
 
 def get_src_path():
-    this_path = path.Path(__file__).abspath()
+    this_path = Path(__file__).abspath()
     return this_path.parent
 
 
@@ -35,18 +37,13 @@ def run_mypy():
     env = os.environ.copy()
     env["MYPYPATH"] = tests_path / "stubs"
     ci.dmenv.run(
-        "mypy",
-        "--strict",
-        "--ignore-missing-imports",
-        tests_path,
-        check=True,
-        env=env,
+        "mypy", "--strict", "--ignore-missing-imports", tests_path, check=True, env=env
     )
 
 
 def run_end_to_end_tests(app):
     ensure_default_browser_not_started(app)
-    config_path = path.Path("config.json")
+    config_path = Path("config.json")
     config_path.write_text(json.dumps(ci.quickstart.config))
     src_path = get_src_path()
     tests_path = src_path / "tests"
@@ -88,12 +85,60 @@ def run_server_tests():
     ci.run("yarn", "test", check=True, cwd=src_path / "server")
 
 
-def main():
+def check_web():
     run_mypy()
     run_linters()
     run_server_tests()
-    for app in ["api-observer", "notepad", "tutorial"]:
-        run_end_to_end_tests(app)
+    for web_app in ["api-observer", "notepad", "tutorial"]:
+        run_end_to_end_tests(web_app)
+
+
+def compile_notepad_ios():
+    src_path = get_src_path() / "client/ios/notepad/"
+    ci.run("pod", "deintegrate", cwd=src_path)
+    ci.run("pod", "install", "--repo-update", cwd=src_path)
+    # fmt: off
+    ci.run(
+        "xcodebuild", "build",
+        "-workspace", "notepad.xcworkspace",
+        "-allowProvisioningUpdates",
+        "-configuration", "Release",
+        "-scheme", "notepad",
+        cwd=src_path
+    )
+    # fmt: on
+
+
+def compile_notepad_android():
+    src_path = get_src_path() / "client/android/notepad/"
+    ci.android.run_gradle("assembleRelease", cwd=src_path)
+
+
+def check_ios():
+    compile_notepad_ios()
+
+
+def check_android():
+    compile_notepad_android()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(dest="action", title="actions")
+
+    subparsers.add_parser("android")
+    subparsers.add_parser("ios")
+    subparsers.add_parser("web")
+
+    args = parser.parse_args()
+    action = args.action
+
+    if action == "android":
+        check_android()
+    if action == "ios":
+        check_ios()
+    if action == "web":
+        check_web()
 
 
 if __name__ == "__main__":
