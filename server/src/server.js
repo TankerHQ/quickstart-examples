@@ -16,6 +16,8 @@ const morgan = require('morgan');
 const sodium = require('libsodium-wrappers-sumo');
 const uuid = require('uuid/v4');
 
+const { getDemoIP } = require('./ip');
+
 const auth = require('./auth');
 const cors = require('./cors');
 const { watchError, middleware: errorMiddleware } = require('./error');
@@ -223,7 +225,7 @@ app.post('/requestResetPassword', watchError(async (req, res) => {
   const passwordResetToken = auth.generatePasswordResetToken({ userId, secret });
   app.storage.setPasswordResetSecret(userId, secret);
 
-  const resetLink = `http://127.0.0.1:3000/confirm-password-reset#${passwordResetToken}`;
+  const resetLink = `http://${getDemoIP()}:3000/confirm-password-reset#${passwordResetToken}`;
 
   // TODO remove this DEBUG statement from server console output
   console.log(`DEBUG Notepad password reset link: ${resetLink}`);
