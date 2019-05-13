@@ -2,19 +2,16 @@ import EventEmitter from "events";
 import { Tanker, toBase64, fromBase64 } from "@tanker/client-browser";
 import ServerApi from "./ServerApi";
 
+const { READY, IDENTITY_REGISTRATION_NEEDED, IDENTITY_VERIFICATION_NEEDED } = Tanker.statuses;
+
 const STATUSES = [
   "initializing",
   "closed",
   "open",
+  "claim",
+  "register",
   "verify",
 ];
-
-// TODO: get from "@tanker/client-browser";
-const SIGN_IN_RESULT = Object.freeze({
-  OK: 1,
-  IDENTITY_VERIFICATION_NEEDED: 2,
-  IDENTITY_NOT_REGISTERED: 3,
-});
 
 export default class Session extends EventEmitter {
   constructor() {
@@ -30,18 +27,13 @@ export default class Session extends EventEmitter {
   }
 
   async init() {
-    await this.initTanker();
-
     // If existing session found (e.g. page reload), open Tanker now
     try {
       if (!this.user) {
         await this.refreshMe();
       }
       if (this.user) {
-        const result = await this.tanker.signIn(this.user.identity);
-        if (result !== SIGN_IN_RESULT.OK)
-          throw new Error('AssertionError session mismatch');
-        this.status = this.user.provisionalIdentity ? "verify" : "open";
+        this.initTanker();
         return;
       }
     } catch (e) {
@@ -51,9 +43,60 @@ export default class Session extends EventEmitter {
   }
 
   async initTanker() {
-    if (this.tanker) return;
+    if (!this.user)
+      throw new Error('Assertion error: cannot start Tanker without a user');
+
     const config = await this.serverApi.tankerConfig();
     this.tanker = new Tanker(config);
+
+    const result = await this.tanker.start(this.user.identity);
+
+    if (result === READY) {
+      await this.triggerClaimIfNeeded();
+    } else if (result === IDENTITY_REGISTRATION_NEEDED) {
+      this.status = "register";
+    } else if (result === IDENTITY_VERIFICATION_NEEDED) {
+      this.status = "verify";
+    } else {
+      throw new Error(`Unexpected status ${result}`);
+    }
+  }
+
+  async triggerClaimIfNeeded() {
+    if (!this.user.provisionalIdentity) {
+      this.status = "open";
+      return;
+    }
+
+    const attachResult = await this.tanker.attachProvisionalIdentity(this.user.provisionalIdentity);
+
+    if (attachResult.status === READY) {
+      this.status = "open";
+    } else if (attachResult.status === IDENTITY_VERIFICATION_NEEDED) {
+      this.status = "claim";
+    } else {
+      throw new Error(`Assertion error: invalid status of provisional identity attachement`, attachResult.status);
+    }
+  }
+
+  async claim(verificationCode) {
+    await this.tanker.verifyProvisionalIdentity({ email: this.user.email, verificationCode });
+    await this.serverApi.claimed();
+    await this.refreshMe();
+  }
+
+  async handleVerificationCode(verificationCode) {
+    if (this.status === 'register') {
+      await this.tanker.registerIdentity({ email: this.user.email, verificationCode });
+    } else if (this.status === 'verify') {
+      await this.tanker.verifyIdentity({ email: this.user.email, verificationCode });
+    } else if (this.status === 'claim') {
+      await this.claim(verificationCode);
+    } else {
+      throw new Error('Assertion error: invalid status in handleVerificationCode');
+    }
+
+    await this.triggerClaimIfNeeded();
   }
 
   get status() {
@@ -73,7 +116,7 @@ export default class Session extends EventEmitter {
 
   async close() {
     await this.serverApi.logout();
-    await this.tanker.signOut();
+    await this.tanker.stop();
     this._user = null;
     this.status = "closed";
   }
@@ -85,9 +128,8 @@ export default class Session extends EventEmitter {
     if (!response.ok) throw new Error("Server error!");
 
     this._user = await response.json();
-    await this.tanker.signUp(this.user.identity, { password, email });
 
-    this.status = this.user.provisionalIdentity ? "verify" : "open";
+    await this.initTanker();
   }
 
   async logIn(email, password) {
@@ -99,15 +141,13 @@ export default class Session extends EventEmitter {
       throw new Error("Cannot contact server");
     }
 
-
     if (response.status === 404) throw new Error("User never registered");
     if (response.status === 401) throw new Error("Bad login or password");
     if (!response.ok) throw new Error("Unexpected error status: " + response.status);
 
     this._user = await response.json();
-    await this.tanker.signIn(this.user.identity, { password });
 
-    this.status = this.user.provisionalIdentity ? "verify" : "open";
+    await this.initTanker();
   }
 
   async saveText(text) {
@@ -160,28 +200,17 @@ export default class Session extends EventEmitter {
 
   async changeEmail(newEmail) {
     await this.serverApi.changeEmail(newEmail);
-    await this.tanker.registerUnlock({ email: newEmail });
+    await this.tanker.updateVerificationMethod({ email: newEmail, verificationCode: 'temporary' });
     await this.refreshMe();
   }
 
   async changePassword(oldPassword, newPassword) {
     await this.serverApi.changePassword(oldPassword, newPassword);
-    await this.tanker.registerUnlock({ password: newPassword });
   }
 
-  async resetPassword(newPassword, passwordResetToken, verificationCode) {
+  async resetPassword(newPassword, passwordResetToken) {
     const response = await this.serverApi.resetPassword(newPassword, passwordResetToken);
-    const { email, identity } = await response.json();
-    await this.tanker.signIn(identity, { verificationCode });
-    await this.tanker.registerUnlock({ password: newPassword });
-    await this.tanker.signOut();
+    const { email } = await response.json();
     await this.logIn(email, newPassword);
-  }
-
-  async claim(verificationCode) {
-    await this.tanker.claimProvisionalIdentity(this.user.provisionalIdentity, verificationCode);
-    await this.serverApi.claimed();
-    await this.refreshMe();
-    this.status = "open";
   }
 }

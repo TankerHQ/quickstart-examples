@@ -1,24 +1,17 @@
-const tankerlib = require('@tanker/client-node');
+const { Tanker } = require('@tanker/client-node');
 const fetch = require('node-fetch');
 const fs = require('fs');
 const uuid = require('uuid/v4');
 
-const Tanker = tankerlib.default;
-
-// TODO: get from tankerlib.SIGN_IN_RESULT;
-const SIGN_IN_RESULT = Object.freeze({
-  OK: 1,
-  IDENTITY_VERIFICATION_NEEDED: 2,
-  IDENTITY_NOT_REGISTERED: 3,
-});
-
 const serverRoot = 'http://127.0.0.1:8080';
 
-const doRequest = (url, options = {}) => fetch(url, { credentials: 'include', ...options });
+const doRequest = (path, options = {}) => fetch(`${serverRoot}/${path}`, { credentials: 'include', ...options });
 
 async function getTankerConfig() {
-  const response = await doRequest(`${serverRoot}/config`);
-  const config = await response.json();
+  console.log('\nServer: /config\n');
+
+  const res = await doRequest('config');
+  const config = await res.json();
 
   // Folder to store tanker client data
   const dbPath = `${__dirname}/data/${config.trustchainId.replace(/[\/\\]/g, '_')}/`;
@@ -32,72 +25,71 @@ async function getTankerConfig() {
   return config;
 }
 
-async function signUp(tanker, email) {
-  // Always sign up with "Tanker" as password (mock auth)
+async function signUp(email) {
+  let res;
   const body = JSON.stringify({ email, password: 'Tanker' });
   const headers = { 'Content-Type': 'application/json' };
   const method = 'post';
 
-  console.log('\nSign up ' + email);
-  console.log('  - calling /signup on the app server');
-  const response = await doRequest(`${serverRoot}/signup`, { body, headers, method });
+  // Always sign up with "Tanker" as password (mock auth)
+  console.log(`\nServer: /signup ${email}\n`);
+  const response = await doRequest('signup', { body, headers, method });
   const user = await response.json();
-
-  console.log('  - calling tanker.signUp() on the client side');
-  await tanker.signUp(user.identity);
-
   return user;
 }
 
-async function signIn(tanker, email) {
+async function signIn(email) {
+  let res;
   const body = JSON.stringify({ email, password: 'Tanker' });
   const headers = { 'Content-Type': 'application/json' };
   const method = 'post';
 
-  console.log('\nSign in ' + email);
-  console.log('  - calling /login on the app server');
-  const response = await doRequest(`${serverRoot}/login`, { body, headers, method });
+  console.log(`\nServer: /login ${email}\n`);
+  const response = await doRequest('login', { body, headers, method });
   const user = await response.json();
-
-  console.log('  - calling tanker.singIn() on the client side');
-  const signInResult = await tanker.signIn(user.identity);
-
-  if (signInResult !== SIGN_IN_RESULT.OK)
-    throw new Error(`Assertion error: unexpected Tanker signIn result ${signInResult}`);
-
   return user;
 }
 
 async function main () {
-  console.log(`Using Tanker version: ${Tanker.version}`);
+  console.log(`Application: using Tanker version: ${Tanker.version}`);
   // Randomize emails so that each test runs with new users
   const aliceEmail = `alice-${uuid()}@example.com`;
   const bobEmail = `bob-${uuid()}@example.com`;
 
   // Init tanker
+  console.log('Application: init Tanker object');
   const tankerConfig = await getTankerConfig();
   const tanker = new Tanker(tankerConfig);
 
-  tanker.on('sessionClosed', () => console.log('Signed out.'));
-
   // Open Bob's session to make sure his account exists
-  const bob = await signUp(tanker, bobEmail);
-  await tanker.signOut();
+  const bob = await signUp(bobEmail);
+  console.log('Application: starting Tanker session for Bob');
+  await tanker.start(bob.identity);
+  await tanker.registerIdentity({ passphrase: 'Bob\'s secret passphrase'});
+  await tanker.stop();
+  console.log('Application: stopping Tanker session for Bob');
 
   // Open Alice's session
-  const alice = await signUp(tanker, aliceEmail);
+  const alice = await signUp(aliceEmail);
+  console.log('Application: starting Tanker session for Alice');
+  await tanker.start(alice.identity);
+  await tanker.registerIdentity({ passphrase: 'Alice\'s secret passphrase' });
 
-  console.log('Encrypting message for Bob');
+  console.log('Application: encrypting message for Bob');
   const clearData = 'This is a secret message';
   const encryptedData = await tanker.encrypt(clearData, { shareWithUsers: [bob.publicIdentity] });
-  await tanker.signOut();
+  await tanker.stop();
+  console.log('Application: stopping Tanker session for Alice');
 
   // Open Bob's session
-  await signIn(tanker, bobEmail);
+  await signIn(bobEmail);
+  console.log('Application: starting Tanker session for Bob');
+  await tanker.start(bob.identity);
   const decryptedData = await tanker.decrypt(encryptedData);
-  console.log('Decrypt message from Alice: ' + decryptedData);
+  console.log('Application: decrypt message from Alice: ' + decryptedData);
 
-  await tanker.signOut();
+  await tanker.stop();
+  console.log('Application: stopping Tanker session for Bob');
 }
 
 main().then(() => {

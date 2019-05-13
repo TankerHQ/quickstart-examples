@@ -33,14 +33,14 @@ You'll find below a sequence of actions you can try on the application. In this 
 ### Create users
 
 * Enter a user email address (it can be anything you want). Let's say: `alice_at_example.com`.
-* Click on the `Open` button to open a Tanker session.
-* Close the session and create a new user (`bob_at_example.com` for instance), by following the same process.
+* Click on the `Start` button to start a Tanker session.
+* Stop the session and create a new user (`bob_at_example.com` for instance), by following the same process.
 
 ### Encrypt and Decrypt
 
 In the `Encryption` block:
 
-* Make sure a Tanker session has been opened
+* Make sure a Tanker session has been started
 * Enter a message in the Encryption input
 * Click on the `Encrypt` button
 
@@ -55,6 +55,6 @@ The Decryption input should be filled with gibberish:
 
 Same as above, but put `alice_at_example.com` in the `share with` block before clicking on the `Encrypt` button.
 
-* Now close Bob's Tanker session, and re-open a new session for Alice, using her email address.
+* Now stop Bob's Tanker session, and re-start a new session for Alice, using her email address.
 * Get the encrypted data from the last step (for instance by copy/paste).
 * Click on the `Decrypt` button: the clear text should appear in the Encryption input.

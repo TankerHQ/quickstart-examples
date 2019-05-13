@@ -28,7 +28,7 @@ class Layout extends React.Component {
   }
 
   render() {
-    const { onLogIn, onSignUp, onPasswordResetRequest, onVerificationCodeRequest, onPasswordResetConfirm, location: { pathname } } = this.props;
+    const { onLogIn, onSignUp, onPasswordResetRequest, onPasswordResetConfirm, location: { pathname } } = this.props;
     const activeKey = isSignupPath(pathname) ? "signup" : "login";
 
     return (
@@ -47,7 +47,7 @@ class Layout extends React.Component {
                   <Route path="/signup" render={() => <Signup onSubmit={onSignUp} />} />
                   <Route path="/login" render={() => <Login onSubmit={onLogIn} />} />
                   <Route path="/request-password-reset" render={() => <PasswordResetRequest onSubmit={onPasswordResetRequest} />} />
-                  <Route path="/confirm-password-reset" render={() => <PasswordResetConfirm onSubmit={onPasswordResetConfirm} onVerificationCodeRequest={onVerificationCodeRequest} />} />
+                  <Route path="/confirm-password-reset" render={() => <PasswordResetConfirm onSubmit={onPasswordResetConfirm} />} />
                   <Redirect path="/" to="/login" />
                 </Switch>
               </Tab.Pane>

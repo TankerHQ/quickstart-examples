@@ -35,7 +35,7 @@ class Verify extends React.Component {
 
   onSubmit = async () => {
     const { code } = this.state;
-    await this.props.session.claim(code);
+    await this.props.session.handleVerificationCode(code);
   }
 
   render() {
