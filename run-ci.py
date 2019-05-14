@@ -93,7 +93,7 @@ def check_web():
     run_mypy()
     run_linters()
     run_server_tests()
-    for web_app in ["api-observer", "notepad"]:
+    for web_app in ["api-observer"]: # deactivated: "notepad"
         run_end_to_end_tests(web_app)
 
 
