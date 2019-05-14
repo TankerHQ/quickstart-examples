@@ -14,7 +14,6 @@
     "client/nodejs/hello-world",
     "client/web/api-observer",
     "client/web/notepad",
-    "client/web/tutorial",
     "server"
   ],
   "engines": {
@@ -27,8 +26,7 @@
     "watch:server": "cd server && yarn watch",
     "start:nodejs:hello-world": "cd client/nodejs/hello-world && yarn start",
     "start:web:api-observer": "cd client/web/api-observer && yarn start",
-    "start:web:notepad": "cd client/web/notepad && yarn start",
-    "start:web:tutorial": "cd client/web/tutorial && yarn start"
+    "start:web:notepad": "cd client/web/notepad && yarn start"
   },
   "bin": {
     "eslint": "./node_modules/.bin/eslint"

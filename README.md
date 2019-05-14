@@ -139,7 +139,7 @@ Go to the homepage of the example server in your browser:
 http://127.0.0.1:8080/
 ```
 
-On this page, you will find all the instructions needed to run the example applications and a link to a tutorial.
+On this page, you will find all the instructions needed to run the example applications.
 
 ## Documentation
 
