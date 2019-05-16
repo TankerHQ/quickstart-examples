@@ -25,6 +25,8 @@ public class BaseActivity extends AppCompatActivity {
     protected void hideKeyboard() {
         View view = getCurrentFocus();
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (view != null) {
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }
