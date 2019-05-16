@@ -17,6 +17,7 @@ setup(
         "faker",
         "mypy",
         "pytest",
+        "requests",
         "selenium",
         "typing-extensions",
     ]},
