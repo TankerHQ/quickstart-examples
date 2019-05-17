@@ -1,3 +1,5 @@
+image: tanker.local:5000/ci-android:latest
+
 stages:
   - check
 

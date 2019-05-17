@@ -5,6 +5,7 @@ import time
 import sys
 
 from path import Path
+import requests
 
 import ci
 import ci.android
@@ -42,10 +43,15 @@ def run_mypy():
     )
 
 
-def run_end_to_end_tests(app):
-    ensure_default_browser_not_started(app)
+def write_server_config():
     config_path = Path("config.json")
     config_path.write_text(json.dumps(ci.quickstart.config))
+    return config_path
+
+
+def run_end_to_end_tests(app):
+    ensure_default_browser_not_started(app)
+    config_path = write_server_config()
     src_path = get_src_path()
     tests_path = src_path / "tests"
     with ci.run_in_background("yarn", "start", "--config", config_path, cwd=src_path):
@@ -110,9 +116,78 @@ def compile_notepad_ios():
     # fmt: on
 
 
-def compile_notepad_android():
-    src_path = get_src_path() / "client/android/notepad/"
+def compile_notepad_android(src_path):
     ci.android.run_gradle("assembleRelease", cwd=src_path)
+
+
+def get_browserstack_username():
+    return os.environ["BROWSERSTACK_USERNAME"]
+
+
+def get_browserstack_key():
+    return os.environ["BROWSERSTACK_ACCESS_KEY"]
+
+
+def query_browserstack(segment, method, **kwargs):
+    url = "https://api-cloud.browserstack.com/app-automate"
+    auth = (get_browserstack_username(), get_browserstack_key())
+    r = getattr(requests, method)(f"{url}/{segment}", auth=auth, **kwargs)
+    return r.json()
+
+
+def send_app(apk_folder):
+    app = f"{apk_folder}/localhost/app-localhost-unsigned.apk"
+    files = {"file" : open(app, 'rb')}
+    return query_browserstack("upload", "post", files=files)["app_url"]
+
+
+def send_tests(apk_folder):
+    tests = f"{apk_folder}/androidTest/localhost/app-localhost-androidTest.apk"
+    files = {"file" : open(tests, 'rb')}
+    return query_browserstack("espresso/test-suite", "post", files=files)["test_url"]
+
+
+def start_build(config):
+    return query_browserstack("espresso/build", "post", json=config)["build_id"]
+
+
+def poll_build_status(build_id, devices):
+    for _ in range(30):
+        time.sleep(10)
+        build = query_browserstack(f"espresso/builds/{build_id}", "get")
+        if build["status"] == "done":
+            for device in devices:
+                test_result = build["devices"][device]["test_status"]
+                if test_result["TIMEDOUT"] or test_result["FAILED"]:
+                    raise Exception(f"There are failed test: {build}")
+            return True
+    return False
+
+
+def run_android_tests(src_path):
+    config_path = write_server_config()
+    ci.android.run_gradle("assembleLocalhost", cwd=src_path)
+    ci.android.run_gradle("assembleAndroidTest", cwd=src_path)
+    apk_folder = src_path / "app/build/outputs/apk"
+    app_url = send_app(apk_folder)
+    test_url = send_tests(apk_folder)
+    ci.run("yarn")
+    devices = ["Google Pixel 3-9.0", "Samsung Galaxy S9-8.0", "Samsung Galaxy S6-5.0"]
+    config = {
+        "devices": devices,
+        "app": app_url,
+        "deviceLogs": "true",
+        "testSuite": test_url,
+        "local": "true",
+    }
+    with ci.run_in_background("BrowserStackLocal", "--key", get_browserstack_key()):
+        # Wait for the tunnel to BrowserStack to be established
+        time.sleep(5)
+        with ci.run_in_background("yarn", "start", "--config", config_path):
+            build_id = start_build(config)
+            success = poll_build_status(build_id, devices)
+    if not success:
+        raise Exception("Timeout: BrowserStack tests are still running")
 
 
 def check_ios():
@@ -120,7 +195,9 @@ def check_ios():
 
 
 def check_android():
-    compile_notepad_android()
+    android_path = get_src_path() / "client/android/notepad"
+    compile_notepad_android(android_path)
+    run_android_tests(android_path)
 
 
 def main():
