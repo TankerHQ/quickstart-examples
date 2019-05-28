@@ -542,9 +542,9 @@ describe('server', () => {
       const passwordResetToken = retrieveResetPasswordToken(bobId);
       await requestBobVerificationCode(passwordResetToken);
       const actualRequest = app.trustchaindClient.sentRequest;
-      const actualEmail = actualRequest.email;
-      expect(actualEmail.to_email).to.eq(bobEmail);
-      expect(actualEmail.html).to.contains('TANKER_VERIFICATION_CODE');
+      const actualData = actualRequest.email_data;
+      expect(actualData.to_email).to.eq(bobEmail);
+      expect(actualData.html).to.contains('TANKER_VERIFICATION_CODE');
     });
 
     it('can reset password with a token', async () => {

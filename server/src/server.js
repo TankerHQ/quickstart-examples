@@ -294,9 +294,8 @@ app.post('/requestVerificationCode', watchError(async (req, res) => {
   }
 
   try {
-    const email = {
-      from_name: 'Notepad via Tanker',
-      from_email: `noreply@${serverConfig.domain}`,
+    const email_data = {
+      from_name: 'Notepad x Tanker',
       to_email: user.email,
       subject: 'Verification code',
       html: `
@@ -310,7 +309,7 @@ app.post('/requestVerificationCode', watchError(async (req, res) => {
       `,
     };
 
-    const response = await app.trustchaindClient.sendVerification({ email });
+    const response = await app.trustchaindClient.sendVerification({ email_data });
 
     if (!response.ok) {
       const error = await response.text();
@@ -419,9 +418,8 @@ app.put('/me/email', watchError(async (req, res) => {
 app.get('/me/requestVerificationCode', watchError(async (req, res) => {
   const { user } = res.locals;
 
-  const email = {
-    from_name: 'Notepad via Tanker',
-    from_email: `noreply@${serverConfig.domain}`,
+  const email_data = {
+    from_name: 'Notepad x Tanker',
     to_email: user.email,
     subject: 'Verification code',
     html: `
@@ -435,7 +433,7 @@ app.get('/me/requestVerificationCode', watchError(async (req, res) => {
     `,
   };
 
-  const response = await app.trustchaindClient.sendVerification({ email });
+  const response = await app.trustchaindClient.sendVerification({ email_data });
 
   if (!response.ok) {
     const error = await response.text();
