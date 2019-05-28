@@ -415,12 +415,13 @@ app.put('/me/email', watchError(async (req, res) => {
   res.sendStatus(200);
 }));
 
-app.get('/me/requestVerificationCode', watchError(async (req, res) => {
-  const { user } = res.locals;
+app.post('/me/requestVerificationCode', watchError(async (req, res) => {
+  let { email } = req.body;
+  email = email || res.locals.user.email;
 
   const email_data = {
     from_name: 'Notepad x Tanker',
-    to_email: user.email,
+    to_email: email,
     subject: 'Verification code',
     html: `
       <p>Hi,</p>

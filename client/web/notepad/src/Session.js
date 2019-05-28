@@ -198,9 +198,9 @@ export default class Session extends EventEmitter {
     return this.serverApi.delete();
   }
 
-  async changeEmail(newEmail) {
+  async changeEmail(newEmail, verificationCode) {
+    await this.tanker.setVerificationMethod({ email: newEmail, verificationCode });
     await this.serverApi.changeEmail(newEmail);
-    await this.tanker.updateVerificationMethod({ email: newEmail, verificationCode: 'temporary' });
     await this.refreshMe();
   }
 

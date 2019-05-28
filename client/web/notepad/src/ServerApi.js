@@ -130,8 +130,8 @@ export default class Api {
     await this.doRequest("/requestVerificationCode", { json: data, method: "POST" });
   }
 
-  async requestVerificationCode() {
-    await this.doRequest("/me/requestVerificationCode");
+  async requestVerificationCode(email = "") {
+    await this.doRequest("/me/requestVerificationCode", { json: { email }, method: "POST" });
   }
 
   async claimed() {
