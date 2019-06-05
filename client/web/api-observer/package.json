@@ -7,19 +7,19 @@
     "start": "react-scripts start"
   },
   "dependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/polyfill": "^7.2.5",
-    "@babel/register": "^7.0.0",
+    "@babel/core": "^7.4.5",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/register": "^7.4.4",
     "@tanker/client-browser": "2.0.0-alpha11",
     "email-validator": "^2.0.4",
-    "react": "^16.8.3",
-    "react-app-polyfill": "^0.2.1",
+    "react": "^16.8.6",
+    "react-app-polyfill": "^1.0.1",
     "react-bootstrap": "^0.32.4",
-    "react-dom": "^16.8.3",
+    "react-dom": "^16.8.6",
     "react-highlight": "^0.12.0"
   },
   "devDependencies": {
-    "react-scripts": "^2.1.5"
+    "react-scripts": "^3.0.1"
   },
   "browserslist": [
     ">0.2%",
