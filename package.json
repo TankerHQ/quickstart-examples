@@ -14,7 +14,6 @@
     "client/nodejs/hello-world",
     "client/web/api-observer",
     "client/web/notepad",
-    "client/web/tutorial",
     "server"
   ],
   "engines": {
@@ -27,21 +26,20 @@
     "watch:server": "cd server && yarn watch",
     "start:nodejs:hello-world": "cd client/nodejs/hello-world && yarn start",
     "start:web:api-observer": "cd client/web/api-observer && yarn start",
-    "start:web:notepad": "cd client/web/notepad && yarn start",
-    "start:web:tutorial": "cd client/web/tutorial && yarn start"
+    "start:web:notepad": "cd client/web/notepad && yarn start"
   },
   "bin": {
     "eslint": "./node_modules/.bin/eslint"
   },
   "devDependencies": {
-    "babel-eslint": "9.0.0",
-    "eslint": "5.12.0",
+    "babel-eslint": "10.0.1",
+    "eslint": "5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-chai-expect": "^2.0.1",
     "eslint-plugin-chai-friendly": "^0.4.1",
-    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-import": "^2.17.3",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-mocha-no-only": "^1.1.0",
-    "eslint-plugin-react": "^7.12.4"
+    "eslint-plugin-react": "^7.13.0"
   }
 }

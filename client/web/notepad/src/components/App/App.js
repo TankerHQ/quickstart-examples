@@ -4,6 +4,7 @@ import Authentication from "../Authentication";
 import Notepad from "./Notepad";
 import Topbar from "../Topbar";
 import ServerApi from '../../ServerApi';
+import Verify from "../Verify";
 
 import "./App.css";
 
@@ -51,11 +52,6 @@ class App extends React.Component {
     await serverApi.requestResetPassword(email);
   }
 
-  onVerificationCodeRequest = async (passwordResetToken) => {
-    const serverApi = new ServerApi();
-    await serverApi.requestVerificationCode(passwordResetToken);
-  }
-
   onPasswordResetConfirm = async ({ newPassword, passwordResetToken, verificationCode }) => {
     const { session } = this.props;
     await session.resetPassword(newPassword, passwordResetToken, verificationCode);
@@ -74,16 +70,18 @@ class App extends React.Component {
         <Topbar status={status} email={session.user && session.user.email} onLogOut={this.onLogOut} />
         <div className="container">
           {status === "initializing" && null}
-          {status === "open" && <Notepad session={session} />}
           {status === "closed" && (
             <Authentication
               onLogIn={this.onLogIn}
               onSignUp={this.onSignUp}
               onPasswordResetRequest={this.onPasswordResetRequest}
               onPasswordResetConfirm={this.onPasswordResetConfirm}
-              onVerificationCodeRequest={this.onVerificationCodeRequest}
             />
           )}
+          {(session.status === "register" || session.status === "verify" || session.status === "claim") && (
+            <Verify session={session} />
+          )}
+          {status === "open" && <Notepad session={session} />}
         </div>
       </div>
     );

@@ -9,3 +9,9 @@ body {
   max-height: calc(100vh - 200px);
   overflow: auto;
 }
+
+@media (min-width: 1330px) {
+  .container {
+    width: 1300px;
+  }
+}

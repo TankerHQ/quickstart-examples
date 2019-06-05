@@ -9,7 +9,7 @@ import {
 } from "react-bootstrap";
 import * as emailValidator from "email-validator";
 
-const cleanEmail = { newEmail: "" };
+const cleanEmail = { newEmail: "", verificationCode: "", verificationCodeSent: false };
 const cleanMessages = { errorMessage: null, successMessage: null };
 const cleanPassword = { newPassword: "", newPasswordConfirmation: "", oldPassword: "" };
 
@@ -48,19 +48,34 @@ class Settings extends React.Component {
     this.setState({ ...cleanMessages, ...emailChanges });
   };
 
+  onVerificationCodeChange = (verifCodeChanges) => {
+    this.setState({ ...cleanMessages, ...verifCodeChanges });
+  };
+
   onPasswordChange = (passwordChanges) => {
     this.setState({ ...cleanMessages, ...passwordChanges });
   };
 
-  onEmailSave = async (event) => {
+  onEmailButtonClick = async (event) => {
     event.preventDefault();
     const { session } = this.props;
-    const { newEmail } = this.state;
+    const { verificationCodeSent, newEmail } = this.state;
+    if (!verificationCodeSent) {
+      await session.serverApi.requestVerificationCode(newEmail);
+      this.setState({ verificationCodeSent: true });
+    } else {
+      await this.onEmailSave();
+    }
+  };
+
+  onEmailSave = async () => {
+    const { session } = this.props;
+    const { newEmail, verificationCode } = this.state;
     this.setState({ changeInProgress: true });
     try {
-      await session.changeEmail(newEmail);
+      await session.changeEmail(newEmail, verificationCode);
       const successMessage = `Successfully saved your new email address: ${newEmail}`;
-      this.setState({ ...defaultState, editMode: "email", successMessage });
+      this.setState({ ...defaultState, editMode: "email", successMessage, verificationCodeSent: false, verificationCode: "" });
     } catch (e) {
       console.error(e);
       this.setState({ changeInProgress: false, errorMessage: e.message });
@@ -111,7 +126,7 @@ class Settings extends React.Component {
     const {
       changeInProgress, editMode, errorMessage, newEmail,
       oldPassword, newPassword, newPasswordConfirmation,
-      successMessage
+      successMessage, verificationCodeSent, verificationCode,
     } = this.state;
 
     const passwordEmpty = !oldPassword || !newPassword || !newPasswordConfirmation;
@@ -144,11 +159,26 @@ class Settings extends React.Component {
                   <FormControl.Feedback />
                   {!!newEmail && !emailValid && <HelpBlock>{emailError}</HelpBlock>}
                 </FormGroup>
+                {verificationCodeSent && (
+                  <FormGroup validationState={!!newEmail && !emailValid ? "error" : null}>
+                    <FormControl
+                      type="text"
+                      id="new-email-verification-code"
+                      value={verificationCode}
+                      placeholder="Enter your verification code"
+                      onChange={event => this.onVerificationCodeChange({ verificationCode: event.target.value })}
+                      autoFocus
+                      required
+                    />
+                    <FormControl.Feedback />
+                    {!!newEmail && !emailValid && <HelpBlock>{emailError}</HelpBlock>}
+                  </FormGroup>
+                )}
                 <Button
                   id="save-email-button"
                   type="submit"
                   bsStyle="primary"
-                  onClick={this.onEmailSave}
+                  onClick={this.onEmailButtonClick}
                   disabled={changeInProgress || emailEmpty || !emailValid}
                 >
                   Save

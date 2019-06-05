@@ -59,11 +59,8 @@ def run_end_to_end_tests(app):
             # We let the server and the app time to fully start,
             # otherwise, browser might be stuck in a no man's land
             time.sleep(1)
-            if app == "tutorial":
-                pytest_file = "test_notepad.py"
-            else:
-                snake_case_name = app.replace("-", "_")
-                pytest_file = f"test_{snake_case_name}.py"
+            snake_case_name = app.replace("-", "_")
+            pytest_file = f"test_{snake_case_name}.py"
             env = os.environ.copy()
             # On Ubuntu chromedriver is in /usr/lib/chromium-browser because reasons,
             # so add that to PATH.
@@ -96,7 +93,7 @@ def check_web():
     run_mypy()
     run_linters()
     run_server_tests()
-    for web_app in ["api-observer", "notepad", "tutorial"]:
+    for web_app in ["api-observer"]: # deactivated: "notepad"
         run_end_to_end_tests(web_app)
 
 

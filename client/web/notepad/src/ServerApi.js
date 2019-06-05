@@ -91,6 +91,12 @@ export default class Api {
     return response.json();
   }
 
+  async getUsersByEmail(emails) {
+    const emailQuery = emails.map(email => `email[]=${encodeURIComponent(email)}`).join('&');
+    const response = await this.doRequest(`/users?${emailQuery}`);
+    return response.json();
+  }
+
   async share(from, recipients) {
     const data = {
       from,
@@ -119,8 +125,16 @@ export default class Api {
     await this.doRequest("/requestResetPassword", { json: data, method: "POST" });
   }
 
-  async requestVerificationCode(passwordResetToken) {
+  async requestResetVerificationCode(passwordResetToken) {
     const data = { passwordResetToken };
     await this.doRequest("/requestVerificationCode", { json: data, method: "POST" });
+  }
+
+  async requestVerificationCode(email = "") {
+    await this.doRequest("/me/requestVerificationCode", { json: { email }, method: "POST" });
+  }
+
+  async claimed() {
+    await this.doRequest("/me/claimed", { json: {}, method: "POST" });
   }
 }

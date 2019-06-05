@@ -7,17 +7,14 @@ class TrustchaindClient {
     this.trustchaindUrl = trustchaindUrl;
   }
 
-  async sendVerification({ userId, email }) {
+  async sendVerification({ email_data }) {
     const body = {
-      user_id: userId,
+      auth_token: this.authToken,
       trustchain_id: this.trustchainId,
-      email,
-      auth: {
-        token: this.authToken,
-      },
+      email_data,
     };
     const response = await fetch(
-      `${this.trustchaindUrl}/unlock/sendVerification`,
+      `${this.trustchaindUrl}/verification/email`,
       {
         method: 'POST',
         body: JSON.stringify(body),

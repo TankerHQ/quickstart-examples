@@ -22,7 +22,7 @@ const base64 = toBase64(binary);
 
 export default {
   initApiClient: (trustchainId) => ({
-    title: 'Initialize API Client',
+    title: '[API] Initialize Client',
     code: `
 import { ApiClient } from "../your/app";
 
@@ -32,7 +32,7 @@ const api = new ApiClient();
   }),
 
   initTanker: (trustchainId) => ({
-    title: 'Initialize Tanker SDK',
+    title: '[Tanker] Initialize SDK',
     code: `
 import { Tanker } from "@tanker/client-browser";
 
@@ -43,17 +43,17 @@ const tanker = new Tanker({
   }),
 
   encryption: (text, shareWith) => ({
-    title: 'Encryption',
+    title: '[Tanker] Encryption',
     code: (shareWith ? getCodeEncryptAndShare(text, shareWith) : getCodeEncryptionOnly(text))
   }),
 
   encryptionSuccess: (base64) => ({
-    title: 'Encryption success',
+    title: '[Tanker] Encryption success',
     code: `base64 === ${quoteEllipsis(base64, 20)}; // true`
   }),
 
   decryption: (base64) => ({
-    title: 'Decryption',
+    title: '[Tanker] Decryption',
     code: `
 const binary = fromBase64(${quoteEllipsis(base64)});
 const clear = await tanker.decrypt(binary);
@@ -61,44 +61,95 @@ const clear = await tanker.decrypt(binary);
   }),
 
   decryptionSuccess: (clear) => ({
-    title: 'Decryption success',
+    title: '[Tanker] Decryption success',
     code: `clear === ${quoteEllipsis(clear, 20)}; // true`
   }),
 
-  signingOut: (email) => ({
-    title: `Sign out ${email}`,
-    code: `
-await tanker.signOut();
-await api.signOut();
-`
+  signOut: (email) => ({
+    title: `[API] Sign out ${email}`,
+    code: 'await api.signOut();'
   }),
 
-  signedOut: (email) => ({ title: `Signed out ${email}` }),
-
   signUp: (email, password) => ({
-    title: `Sign up ${email}`,
+    title: `[API] Sign up ${email}`,
     code: `
 const email = ${quote(email)};
 const password = ${quote(password)};
 const user = await api.signUp(email, password);
-
-await tanker.signUp(user.identity);
 `
   }),
 
   signIn: (email, password) => ({
-    title: `Sign in ${email}`,
+    title: `[API] Sign in ${email}`,
     code: `
 const email = ${quote(email)};
 const password = ${quote(password)};
 const user = await api.signIn(email, password);
-
-await tanker.signIn(user.identity);
 `
   }),
 
-  signedIn: (email) => ({ title: `Signed in ${email}` }),
-  signedUp: (email) => ({ title: `Signed up ${email}` }),
+  signedIn: (email) => ({ title: `[API] Signed in ${email}` }),
+  signedUp: (email) => ({ title: `[API] Signed up ${email}` }),
+  signedOut: (email) => ({ title: `[API] Signed out ${email}` }),
+
+  start: () => ({
+    title: '[Tanker] Start',
+    code: `
+const { identity } = user;
+const status = await tanker.start(identity);
+`
+  }),
+
+  started: (status, statusName) => ({
+    title: '[Tanker] Started',
+    code: `
+const {
+  STOPPED,
+  READY,
+  IDENTITY_REGISTRATION_NEEDED,
+  IDENTITY_VERIFICATION_NEEDED
+} = Tanker.statuses;
+
+status === ${statusName}; // ${status}
+`,
+  }),
+
+  registerIdentity: (passphrase) => ({
+    title: '[Tanker] Register identity',
+    code: `
+const passphrase = ${quote(passphrase)};
+await tanker.registerIdentity({ passphrase });
+`
+  }),
+
+  registeredIdentity: () => ({
+    title: '[Tanker] Registered identity'
+  }),
+
+  verifyIdentity: (passphrase) => ({
+    title: '[Tanker] Verify identity',
+    code: `
+const passphrase = ${quote(passphrase)};
+await tanker.verifyIdentity({ passphrase });
+`
+  }),
+
+  verifiedIdentity: () => ({
+    title: '[Tanker] Verified identity'
+  }),
+
+  ready: () => ({
+    title: '[Tanker] Instance is now READY'
+  }),
+
+  stop: () => ({
+    title: `[Tanker] Stop`,
+    code: 'await tanker.stop();'
+  }),
+
+  stopped: () => ({
+    title: `[Tanker] Stopped`,
+  }),
 
   serverHint: () => ({
     title: 'Have you started the server?',

@@ -45,7 +45,6 @@ homeRouter.get('/', (req, res) => {
     api: path.join(rootPath, 'client/web/api-observer/README.md'),
     hello: path.join(rootPath, 'client/nodejs/hello-world/README.md'),
     notepad: path.join(rootPath, 'client/web/notepad/README.md'),
-    tutorial: path.join(rootPath, 'client/web/tutorial/README.md'),
   }[app];
 
   // Display app README
