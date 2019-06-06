@@ -8,7 +8,6 @@
 // @flow
 const { createIdentity, getPublicIdentity, createProvisionalIdentity } = require('@tanker/identity');
 const bodyParser = require('body-parser');
-const debugMiddleware = require('debug-error-middleware').express;
 const express = require('express');
 const emailValidator = require('email-validator');
 const fs = require('fs');
@@ -88,10 +87,6 @@ app.use(cors.middleware()); // enable CORS
 app.use(bodyParser.text());
 app.use(bodyParser.json());
 app.options('*', cors.middleware()); // enable pre-flight CORS requests
-
-// Show helpful error messages. In a production server,
-// remove this as it could leak sensitive information.
-app.use(debugMiddleware());
 
 
 // Add routes for the server's home page (readmes...)
