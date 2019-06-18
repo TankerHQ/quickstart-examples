@@ -93,50 +93,30 @@ NSString *getWritablePath() {
   return [self tankerReady].then(^() {
     return [self.apiClient signUpWithEmail:email password:password];
   }).then(^(NSDictionary *user) {
-    TKRAuthenticationMethods* authMethods = [TKRAuthenticationMethods methods];
-    authMethods.password = password;
-    authMethods.email = email;
-    return [self.tanker signUpWithIdentity:user[@"identity"] authenticationMethods:authMethods].then(^(NSNumber* result) {
-      NSLog(@"Signup result %i", [result intValue]);
-    }).catch(^(NSError* error) {
-      NSLog(@"Could not sign up: %@", [error localizedDescription]);
+    return [self.tanker startWithIdentity:user[@"identity"]].then(^(NSNumber* status){
+      assert(status.unsignedIntegerValue == TKRStatusIdentityRegistrationNeeded);
+      
+      return [self.tanker registerIdentityWithVerification:[TKRVerification verificationFromPassphrase:password]];
     });
   });
 }
 
 - (PMKPromise *)logInWithEmail:(NSString *)email
                      password:(NSString *)password {
-  return [self tankerReady].then(^() {
+  return [self tankerReady].then(^ {
     return [self.apiClient logInWithEmail:email password:password];
   }).then(^(NSDictionary *user) {
-    TKRSignInOptions* signInOptions = [TKRSignInOptions options];
-    signInOptions.password = password;
-    NSString* identity = user[@"identity"];
-    return [self.tanker signInWithIdentity:identity options:signInOptions]
-    .then(^(NSNumber* result) {
-      NSLog(@"Signin result: %i", [result intValue]);
-      if (result.integerValue == TKRSignInResultOk) {
-        return [PMKPromise promiseWithValue:nil];
-      } else {
-        NSString *errDesc = [NSString stringWithFormat:@"Got unexpected signin result: %i", result.intValue];
-        NSString *domain = @"io.tanker.notepad";
-        NSDictionary *userInfo = @{NSLocalizedDescriptionKey: errDesc};
-        NSError *err = [[NSError alloc] initWithDomain:domain code:1 userInfo:userInfo];
-        return [PMKPromise promiseWithValue:err];
+    return [self.tanker startWithIdentity:user[@"identity"]].then(^(NSNumber* status){
+      switch(status.unsignedIntegerValue)
+      {
+        case TKRStatusReady:
+          return [PMKPromise promiseWithValue:nil];
+        case TKRStatusIdentityVerificationNeeded:
+          return [self.tanker verifyIdentityWithVerification:[TKRVerification verificationFromPassphrase:password]];
+        default:
+          return [PMKPromise promiseWithValue:[NSError errorWithDomain:@"io.tanker.notepad" code:1 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"Got unexpected status: %lu", status.unsignedIntegerValue]}]];
       }
-    }).catch(^(NSError* error) {
-      NSLog(@"Could not sign in: %@", [error localizedDescription]);
     });
-  });
-}
-
-- (PMKPromise *)changeEmail:(NSString *)newEmail {
-  return [self.apiClient changeEmail:newEmail].then(^{
-    return [self tankerReady];
-  }).then(^() {
-    TKRUnlockOptions* unlockOptions = [TKRUnlockOptions options];
-    unlockOptions.email = newEmail;
-    return [self.tanker registerUnlockWithOptions:unlockOptions];
   });
 }
 
@@ -144,40 +124,16 @@ NSString *getWritablePath() {
                                 to:(NSString *)newPassword {
   return [self.apiClient changePasswordFrom:oldPassword to:newPassword].then(^{
     return [self tankerReady];
-  }).then(^() {
-    TKRUnlockOptions* unlockOptions = [TKRUnlockOptions options];
-    unlockOptions.password = newPassword;
-    return [self.tanker registerUnlockWithOptions:unlockOptions];
-  });
-}
-
-// This works in the following steps:
-// 1/ Ask the server a password reset using the reset Token -
-//    the server some JSON answer containing a Tanker identity
-// 2/ Use the Tanker identity and the verification code to
-//    sign in Tanker
-// 3/ Update the unlock password
-- (PMKPromise *)resetPasswordTo:(NSString *)newPassword
-                      withToken:(NSString *)resetToken
-                verificationCode:(NSString *)verificationCode {
-  return [self.apiClient resetPasswordTo:newPassword withToken:resetToken].then(^(NSDictionary *resetResult) {
-    NSString* identity = resetResult[@"identity"];
-    TKRSignInOptions* signinOptions = [TKRSignInOptions options];
-    signinOptions.verificationCode = verificationCode;
-    return [self.tanker signInWithIdentity:identity options:signinOptions]
-    .then(^(){
-      TKRUnlockOptions* unlockOptions = [TKRUnlockOptions options];
-      unlockOptions.password = newPassword;
-      [self.tanker registerUnlockWithOptions:unlockOptions];
-    });
+  }).then(^{
+    return [self.tanker setVerificationMethod:[TKRVerification verificationFromPassphrase:newPassword]];
   });
 }
 
 - (PMKPromise *)logout {
   return [self.apiClient logout].then(^{
     return [self tankerReady];
-  }).then(^() {
-    [self.tanker signOut];
+  }).then(^{
+    return [self.tanker stop];
   });
 }
 

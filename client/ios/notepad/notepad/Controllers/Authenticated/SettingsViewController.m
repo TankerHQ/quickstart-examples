@@ -5,9 +5,6 @@
 
 @interface SettingsViewController ()
 
-@property(weak, nonatomic) IBOutlet UITextField *emailField;
-@property(weak, nonatomic) IBOutlet UIButton *changeEmailButton;
-@property (weak, nonatomic) IBOutlet UILabel *emailErrorLabel;
 @property(weak, nonatomic) IBOutlet UITextField *currentPasswordField;
 @property(weak, nonatomic) IBOutlet UITextField *nextPasswordField;
 @property(weak, nonatomic) IBOutlet UITextField *nextPasswordConfirmationField;
@@ -63,24 +60,6 @@
     self.nextPasswordConfirmationField.text = @"";
     
     [SVProgressHUD showErrorWithStatus:@"Password change failed"];
-    [SVProgressHUD dismissWithDelay:2.0];
-  });
-}
-
-- (IBAction)changeEmailAction:(UIButton *)sender {
-  self.emailErrorLabel.text = @" ";
-
-  NSString *email = self.emailField.text;
-
-  if (![StringValidator isEmail:email]) {
-    self.emailErrorLabel.text = @"Invalid email address";
-    return;
-  }
-
-  [[self session] changeEmail:email].then(^{
-    self.emailField.text = @"";
-
-    [SVProgressHUD showSuccessWithStatus:@"Email address changed"];
     [SVProgressHUD dismissWithDelay:2.0];
   });
 }

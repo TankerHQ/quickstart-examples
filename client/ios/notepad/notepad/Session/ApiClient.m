@@ -22,8 +22,7 @@ PMKPromise<NSDictionary*>* (^jsonToDict)(NSData*) = ^(NSData *json) {
   NSDictionary *dict = [NSJSONSerialization
                         JSONObjectWithData:json
                         options:NSJSONReadingAllowFragments
-                        error:&err];
-  if (err) {
+                        error:&err]; if (err) {
     return [PMKPromise promiseWithValue:err];
   }
   return [PMKPromise promiseWithValue:dict];
