@@ -4,16 +4,17 @@
 @import PromiseKit;
 
 @interface LoginViewController ()
-@property(weak, nonatomic) IBOutlet UITextField *emailField;
-@property(weak, nonatomic) IBOutlet UITextField *passwordField;
-@property(weak, nonatomic) IBOutlet UILabel *errorLabel;
-@property (weak, nonatomic) IBOutlet UIButton *forgotPasswordButton;
+@property(weak, nonatomic) IBOutlet UITextField* emailField;
+@property(weak, nonatomic) IBOutlet UITextField* passwordField;
+@property(weak, nonatomic) IBOutlet UILabel* errorLabel;
+@property(weak, nonatomic) IBOutlet UIButton* forgotPasswordButton;
 
 @end
 
 @implementation LoginViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
   [super viewDidLoad];
   // Do any additional setup after loading the view.
 
@@ -26,46 +27,57 @@
   self.forgotPasswordButton.hidden = YES;
 }
 
-- (void)loginAction {
+- (void)loginAction
+{
   self.errorLabel.text = @" ";
 
-  NSString *email = self.emailField.text;
-  NSString *password = self.passwordField.text;
+  NSString* email = self.emailField.text;
+  NSString* password = self.passwordField.text;
 
-  if (![StringValidator isEmail:email]) {
+  if (![StringValidator isEmail:email])
+  {
     self.errorLabel.text = @"Invalid email address";
     return;
   }
-  if ([StringValidator isBlank:password]) {
+  if ([StringValidator isBlank:password])
+  {
     self.errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }
 
-  [SVProgressHUD showWithStatus: @"Connecting..."];
+  [SVProgressHUD showWithStatus:@"Connecting..."];
 
-  [[self session] logInWithEmail:email password:password].then(^{
-    [[self rootViewController] displayTabBarScreen];
-    [SVProgressHUD dismiss];
-  })
-  .catch(^(NSError *error) {
-    [SVProgressHUD dismiss];
+  [[self session] logInWithEmail:email password:password]
+      .then(^{
+        [[self rootViewController] displayTabBarScreen];
+        [SVProgressHUD dismiss];
+      })
+      .catch(^(NSError* error) {
+        [SVProgressHUD dismiss];
 
-    // TODO check error domain to show app errors
-    NSLog(@"Could not open session: %@", [error localizedDescription]);
-    self.errorLabel.text = @"Could not open session";
-  });
+        // TODO check error domain to show app errors
+        NSLog(@"Could not open session: %@", [error localizedDescription]);
+        self.errorLabel.text = @"Could not open session";
+      });
 }
 
-- (IBAction)triggerLogin:(UIButton *)sender {
+- (IBAction)triggerLogin:(UIButton*)sender
+{
   [self loginAction];
 }
 
-- (IBAction)unwindSegueToLogin:(UIStoryboardSegue *)segue {}
+- (IBAction)unwindSegueToLogin:(UIStoryboardSegue*)segue
+{
+}
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-  if (textField == self.emailField) {
+- (BOOL)textFieldShouldReturn:(UITextField*)textField
+{
+  if (textField == self.emailField)
+  {
     [self.passwordField becomeFirstResponder];
-  } else if (textField == self.passwordField) {
+  }
+  else if (textField == self.passwordField)
+  {
     [self loginAction];
   }
   return true;

@@ -1,7 +1,7 @@
 #import "PMKTanker.h"
 @import Tanker;
 
-@interface PMKTanker()
+@interface PMKTanker ()
 
 @property TKRTanker* tanker;
 
@@ -9,55 +9,68 @@
 
 @implementation PMKTanker
 
-+ (instancetype)tankerWithOptions:(nonnull TKRTankerOptions*) options {
++ (instancetype)tankerWithOptions:(nonnull TKRTankerOptions*)options
+{
   return [[PMKTanker alloc] initWithOptions:options];
 }
 
-- (instancetype)initWithOptions:(nonnull TKRTankerOptions*)options {
+- (instancetype)initWithOptions:(nonnull TKRTankerOptions*)options
+{
   self = [super init];
   self.tanker = [TKRTanker tankerWithOptions:options];
   return self;
 }
 
-+ (nonnull NSString*) versionString {
++ (nonnull NSString*)versionString
+{
   return [TKRTanker versionString];
 }
 
-- (nonnull PMKPromise<NSNumber*>*)startWithIdentity:(nonnull NSString *)identity {
+- (nonnull PMKPromise<NSNumber*>*)startWithIdentity:(nonnull NSString*)identity
+{
   return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
     [self.tanker startWithIdentity:identity completionHandler:adapter];
   }];
 }
 
-- (nonnull PMKPromise*)stop {
+- (nonnull PMKPromise*)stop
+{
   return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
     [self.tanker stopWithCompletionHandler:resolver];
   }];
 }
 
-- (nonnull PMKPromise*)verifyIdentityWithVerification:(nonnull TKRVerification *)verification
+- (nonnull PMKPromise*)verifyIdentityWithVerification:(nonnull TKRVerification*)verification
 {
-  return [PMKPromise promiseWithResolver:^(PMKResolver resolver){ [self.tanker verifyIdentityWithVerification:verification completionHandler:resolver];}];
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
+    [self.tanker verifyIdentityWithVerification:verification completionHandler:resolver];
+  }];
 }
 
-- (nonnull PMKPromise*)registerIdentityWithVerification:(nonnull TKRVerification *)verification
+- (nonnull PMKPromise*)registerIdentityWithVerification:(nonnull TKRVerification*)verification
 {
-  return [PMKPromise promiseWithResolver:^(PMKResolver resolver){ [self.tanker registerIdentityWithVerification:verification completionHandler:resolver];}];
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
+    [self.tanker registerIdentityWithVerification:verification completionHandler:resolver];
+  }];
 }
 
-- (nonnull PMKPromise*)setVerificationMethod:(nonnull TKRVerification *)verification
+- (nonnull PMKPromise*)setVerificationMethod:(nonnull TKRVerification*)verification
 {
-  return [PMKPromise promiseWithResolver:^(PMKResolver resolver){ [self.tanker setVerificationMethod:verification completionHandler:resolver];}];
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
+    [self.tanker setVerificationMethod:verification completionHandler:resolver];
+  }];
 }
 
-- (nonnull PMKPromise<NSData*> *)encryptDataFromString:(nonnull NSString*)clearText
-                                           options:(nonnull TKREncryptionOptions*)options{
+- (nonnull PMKPromise<NSData*>*)encryptDataFromString:(nonnull NSString*)clearText
+                                              options:(nonnull TKREncryptionOptions*)options
+{
   return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
     [self.tanker encryptDataFromString:clearText options:options completionHandler:adapter];
   }];
 }
 
-- (nonnull PMKPromise<NSString*> *)decryptStringFromData:(nonnull NSData*)encryptedData {
+- (nonnull PMKPromise<NSString*>*)decryptStringFromData:(nonnull NSData*)encryptedData
+{
   return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
     [self.tanker decryptStringFromData:encryptedData completionHandler:adapter];
   }];

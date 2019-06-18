@@ -30,28 +30,31 @@
   NSString* email = self.emailField.text;
   NSString* password = self.passwordField.text;
 
-  if (![StringValidator isEmail:email]) {
+  if (![StringValidator isEmail:email])
+  {
     self.errorLabel.text = @"Invalid email address";
     return;
   }
-  if ([StringValidator isBlank:password]) {
+  if ([StringValidator isBlank:password])
+  {
     self.errorLabel.text = @"Password is empty or filled with blanks";
     return;
   }
 
-  [SVProgressHUD showWithStatus: @"Signing up..."];
+  [SVProgressHUD showWithStatus:@"Signing up..."];
 
-  [[self session] signUpWithEmail:email password:password].then(^{
-    [[self rootViewController] displayTabBarScreen];
-    [SVProgressHUD dismiss];
-  })
-  .catch(^(NSError *error) {
-    [SVProgressHUD dismiss];
+  [[self session] signUpWithEmail:email password:password]
+      .then(^{
+        [[self rootViewController] displayTabBarScreen];
+        [SVProgressHUD dismiss];
+      })
+      .catch(^(NSError* error) {
+        [SVProgressHUD dismiss];
 
-    NSString *message = @"Error during signup";
-    NSLog(@"%@: %@", message, [error localizedDescription]);
-    self.errorLabel.text = message;
-  });
+        NSString* message = @"Error during signup";
+        NSLog(@"%@: %@", message, [error localizedDescription]);
+        self.errorLabel.text = message;
+      });
 }
 
 - (IBAction)signUpButton:(UIButton*)sender

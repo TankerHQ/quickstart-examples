@@ -36,9 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 // encryptDataFromString and not encryptDataFromData
 
 + (nonnull NSString*)versionString;
-+ (instancetype)tankerWithOptions:(nonnull TKRTankerOptions*) options;
++ (instancetype)tankerWithOptions:(nonnull TKRTankerOptions*)options;
 - (instancetype)initWithOptions:(nonnull TKRTankerOptions*)options;
-
 
 - (nonnull PMKPromise<NSNumber*>*)startWithIdentity:(nonnull NSString*)identity;
 - (nonnull PMKPromise*)stop;
@@ -47,10 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (nonnull PMKPromise*)verifyIdentityWithVerification:(nonnull TKRVerification*)verification;
 - (nonnull PMKPromise*)setVerificationMethod:(nonnull TKRVerification*)verification;
 
-- (nonnull PMKPromise<NSData*> *)encryptDataFromString:(nonnull NSString*)clearText
-                                       options:(nonnull TKREncryptionOptions*)options;
-- (nonnull PMKPromise<NSString*> *)decryptStringFromData:(nonnull NSData*)encryptedData;
-
+- (nonnull PMKPromise<NSData*>*)encryptDataFromString:(nonnull NSString*)clearText
+                                              options:(nonnull TKREncryptionOptions*)options;
+- (nonnull PMKPromise<NSString*>*)decryptStringFromData:(nonnull NSData*)encryptedData;
 
 @end
 

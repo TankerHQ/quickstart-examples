@@ -6,14 +6,15 @@
 
 @implementation NoteTableViewCell
 
-- (void)configureWithItem:(NoteTableViewItem*)item {
+- (void)configureWithItem:(NoteTableViewItem*)item
+{
   [self setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
   self.textLabel.text = [NSString stringWithFormat:@"Note from %@", item.authorEmail];
   self.textLabel.font = [self.textLabel.font fontWithSize:15];
-
 }
 
-+ (NSString*)identifier {
++ (NSString*)identifier
+{
   return NSStringFromClass(self);
 }
 
