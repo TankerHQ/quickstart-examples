@@ -857,15 +857,7 @@
     pirates "^4.0.0"
     source-map-support "^0.5.9"
 
-"@babel/runtime-corejs2@7.4.4":
-  version "7.4.4"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs2/-/runtime-corejs2-7.4.4.tgz#4d4519a4c85e9d98fdff59f5371758a34ae07923"
-  integrity sha512-hE7oVwVsRws84u5/nkaWWdN2J4SXEGuXKjrAsP0E4nkYImjSbpdHfGTS2nvFc82aDGIuG6OzhAQMpIzTHuZeKA==
-  dependencies:
-    core-js "^2.6.5"
-    regenerator-runtime "^0.13.2"
-
-"@babel/runtime-corejs2@^7.0.0":
+"@babel/runtime-corejs2@7.4.5", "@babel/runtime-corejs2@^7.0.0":
   version "7.4.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime-corejs2/-/runtime-corejs2-7.4.5.tgz#3d892f0560df21bafb384dd7727e33853e95d3c9"
   integrity sha512-5yLuwzvIDecKwYMzJtiarky4Fb5643H3Ao5jwX0HrMR5oM5mn2iHH9wSZonxwNK0oAjAFUQAiOd4jT7/9Y2jMQ==
@@ -1228,143 +1220,143 @@
     "@svgr/plugin-svgo" "^4.0.3"
     loader-utils "^1.1.0"
 
-"@tanker/client-browser@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-2.0.0-beta2.tgz#5af95c8e23dfc5ed81717f5afcab046f27095faa"
-  integrity sha512-ODPsUp8L0uKv9/O6YGoEflicFzoiGyGhszjz1JBSRZO+0FeTYl8WOJ64kffLRaU55Zxtm3nqIxoFwxyXT/mrpQ==
+"@tanker/client-browser@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/client-browser/-/client-browser-2.0.0-beta3.tgz#48219eee02d3477fa7980ffc808daf7876e856bf"
+  integrity sha512-m+AxmvUlwNNxiLAST+1gkBIU1T/HFwNHJfEtY3LeQkwZXMOrjBAclgmtLLkOtdbX/1oU1tU94x2d1ZyDef543w==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
-    "@tanker/core" "2.0.0-beta2"
-    "@tanker/datastore-dexie-browser" "2.0.0-beta2"
-    "@tanker/file-ponyfill" "2.0.0-beta2"
-    "@tanker/file-reader" "2.0.0-beta2"
-    "@tanker/stream-browser" "2.0.0-beta2"
+    "@babel/runtime-corejs2" "7.4.5"
+    "@tanker/core" "2.0.0-beta3"
+    "@tanker/datastore-dexie-browser" "2.0.0-beta3"
+    "@tanker/file-ponyfill" "2.0.0-beta3"
+    "@tanker/file-reader" "2.0.0-beta3"
+    "@tanker/stream-browser" "2.0.0-beta3"
 
-"@tanker/client-node@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-2.0.0-beta2.tgz#11083261fbd9df5ec08bb0ea8b66a34b94a9f359"
-  integrity sha512-45fcBipt0LJlAk+waLXeysGJMkAdC6MLwe8bKZclXEI/TSBfT2lSEm1YX6SCy02ToGxb4yEYfeIlqeraJh3CYQ==
+"@tanker/client-node@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/client-node/-/client-node-2.0.0-beta3.tgz#fa986183c2093e09e3d197e29556d997ed012328"
+  integrity sha512-yQ6VfaBL8TeyPm3Zxot0o5q1ig7EF7yy4J6l9+3RPmZyh+dn0JIh+dgsshvmxCK2IaBP8cIIzvZjEKb/MeWhLA==
   dependencies:
-    "@tanker/core" "2.0.0-beta2"
-    "@tanker/datastore-pouchdb-node" "2.0.0-beta2"
-    "@tanker/stream-node" "2.0.0-beta2"
+    "@tanker/core" "2.0.0-beta3"
+    "@tanker/datastore-pouchdb-node" "2.0.0-beta3"
+    "@tanker/stream-node" "2.0.0-beta3"
 
-"@tanker/core@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-2.0.0-beta2.tgz#7a66501e0d76802d9d0ccc33e9d4ee8b72c48ba6"
-  integrity sha512-6goTy3zmUSsjYWn7Ub1M7I0Rf3n1aAZOGiufl3TQFLGtBb1E5rGSDSCAvsYlVnE7+ofboZ9kj4IkUcdR8UHhVg==
+"@tanker/core@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/core/-/core-2.0.0-beta3.tgz#ee8b3ad5df5fa90e44cf54b428161720bec0a9bd"
+  integrity sha512-/CMQhifLpoTV166RKtAqHR/KIjKm2Jc4VPL3/uFc9wDbleNNhH//A3UCHO9BPia83wmssxAUaeYx8z/Gdek+Jg==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
-    "@tanker/crypto" "2.0.0-beta2"
-    "@tanker/datastore-base" "2.0.0-beta2"
-    "@tanker/errors" "2.0.0-beta2"
-    "@tanker/identity" "2.0.0-beta2"
-    "@tanker/stream-base" "2.0.0-beta2"
+    "@babel/runtime-corejs2" "7.4.5"
+    "@tanker/crypto" "2.0.0-beta3"
+    "@tanker/datastore-base" "2.0.0-beta3"
+    "@tanker/errors" "2.0.0-beta3"
+    "@tanker/identity" "2.0.0-beta3"
+    "@tanker/stream-base" "2.0.0-beta3"
     array-find "^1.0.0"
     engine.io-client "git+https://github.com/TankerHQ/engine.io-client.git#2996c2d746d4695742cbc3f8fb47c60d4c5757f7"
     socket.io-client "git+https://github.com/TankerHQ/socket.io-client.git#4f71b8dda24bea5e4949c37fec6b790795615c25"
     varint "^5.0.0"
 
-"@tanker/crypto@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-2.0.0-beta2.tgz#27243d5a0d7d0c72d0515dcd1b24c6a210c6c31a"
-  integrity sha512-nBbIMV0FA7QGN2GE7B/E6ETnVGffxZBAaiJMwvA+Cg1xmTRK2izPXhYvDJE41wMjmeHesryDNCT19vcawmaIGw==
+"@tanker/crypto@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-2.0.0-beta3.tgz#8f32813969ffeee0c4bc35942113a6e4a038fcda"
+  integrity sha512-s63FzM+8CIZlaA0vN9GI4NuVH9EXZ8LBgdFWEGwBUvQI8ivDPDCcEWhZ1zz2goWZGtBNKBdywu2fhL6nrSOqRw==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
+    "@babel/runtime-corejs2" "7.4.5"
     libsodium-wrappers "^0.5.1"
 
-"@tanker/datastore-base@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-2.0.0-beta2.tgz#9ad37a06daf131ab3948bd5cc1b446785b9c8fad"
-  integrity sha512-ZzD9tw3dQJO3t7Pwp18Cc6fCM0/Qa4TLe52WTRsoQP6BizuBxMN3aMnXes5KnB7ZsQ1cDX7iHrhAdZ7s2zzVsg==
+"@tanker/datastore-base@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-base/-/datastore-base-2.0.0-beta3.tgz#8072676597ddcd834639e5a464fef74c15784c34"
+  integrity sha512-YTcFwwB5GKhUss1FR2oeSc9SmJJx1NeZ9uiT+TZIAhDPdi3s13j+e5UwXEvItjjjsv8Ra2c+Ybjci3LAWURcFg==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
-    "@tanker/crypto" "2.0.0-beta2"
+    "@babel/runtime-corejs2" "7.4.5"
+    "@tanker/crypto" "2.0.0-beta3"
 
-"@tanker/datastore-dexie-browser@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-browser/-/datastore-dexie-browser-2.0.0-beta2.tgz#78f9e1a769f07099dbb9bc01ca53aa9eb84f6629"
-  integrity sha512-GZmQW7uitZjs1DnZwryzqumys/0Ek9nC26hP9aBjlvjzUAjh1V3xPnhRRAEPitrN5hpXpiF4n4CMEo0ZUh7snQ==
+"@tanker/datastore-dexie-browser@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-dexie-browser/-/datastore-dexie-browser-2.0.0-beta3.tgz#2a88d43ec22da80ff9b1fc5711fb4fbf692ff3c4"
+  integrity sha512-TepFQQTzqoOnBA3g2vCluebUk8Ko5lAf+D8gOEe+7q/EAF/BNxPR5tvdSBbDDff3ttvVTfYRpuRV+fj9YKM7Hw==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
+    "@babel/runtime-corejs2" "7.4.5"
     dexie "^2.0.4"
 
-"@tanker/datastore-pouchdb-base@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-base/-/datastore-pouchdb-base-2.0.0-beta2.tgz#7848b87f0103a7668496dd4d7a37eebc21c3f667"
-  integrity sha512-flXF5OXCKMBCowuaiwJcjqmTxzePVg06OEUmqLsyUQEmNYKxrhob1/Tzu8lT6sbuG9KzgIdAId5e7v19ZQbswA==
+"@tanker/datastore-pouchdb-base@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-base/-/datastore-pouchdb-base-2.0.0-beta3.tgz#ef1fae38c5fe26a90226b657e93ca3cda76882c6"
+  integrity sha512-p4Gd6T/xHzIo2ByvWHNhZNBKvrMWiQvThTRysZPr6f1G06wcHz5KCn6txoqKhn4L0IznVe4RT/jnN9w6rXG1jA==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
-    "@tanker/datastore-base" "2.0.0-beta2"
+    "@babel/runtime-corejs2" "7.4.5"
+    "@tanker/datastore-base" "2.0.0-beta3"
 
-"@tanker/datastore-pouchdb-node@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-node/-/datastore-pouchdb-node-2.0.0-beta2.tgz#894c8635d18288fc7134e91eb300693586419603"
-  integrity sha512-1ME0qEObvtL3gy0P7dBQ2mKSagN4rdd8JGtsYIlcAWsfnupH/CtLYZ+dZMv7E+aZCnCOxiMFJK2Rsa5+MZKMnA==
+"@tanker/datastore-pouchdb-node@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/datastore-pouchdb-node/-/datastore-pouchdb-node-2.0.0-beta3.tgz#d2c77f61533b3034b085709fe74476e8ec573f78"
+  integrity sha512-3PABCRpXwqvacnbqbzHEngUIOqC1FUZwIR5IIrlUx77CtrT3iAO8I5ELxGD79R9zWcFdSZJvargUa+b9LxIcdw==
   dependencies:
-    "@tanker/datastore-pouchdb-base" "2.0.0-beta2"
+    "@tanker/datastore-pouchdb-base" "2.0.0-beta3"
     pouchdb-adapter-leveldb "^6.4.3"
     pouchdb-core "^6.4.3"
     pouchdb-find "^6.4.3"
 
-"@tanker/errors@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/errors/-/errors-2.0.0-beta2.tgz#af505b351fd452c53d11ef16d2045d03193327c2"
-  integrity sha512-p23J2X9zSu1N5lwGM6Ny44wBIyxH8eZ3a5aqNgTNfc1N/gwjP8b6lSRkF74M0TcTbGtScU1rhATRIUfNfTm+3A==
+"@tanker/errors@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/errors/-/errors-2.0.0-beta3.tgz#4614315df36705bec0e3a106e97c6de1eb819693"
+  integrity sha512-tYMQ05elQGJ22i3+bAOf1UiVBXOAZMREb/rc4pWTuWPQ18fw/ICCNcWULRXgXkiy2dMf74IECpvF/AKtXjr3qg==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
+    "@babel/runtime-corejs2" "7.4.5"
 
-"@tanker/file-ponyfill@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/file-ponyfill/-/file-ponyfill-2.0.0-beta2.tgz#1f8ecc861ccb2e289a5eecb7554a0748798c29fe"
-  integrity sha512-kMoZDrXw9Ybf4wpWqxbYoGdXUjw7p/NEwgs4KAtmKaF704uAriE3P9CH+izMwfbD+p3aWvJLFcKA3Aq+ndf9sw==
+"@tanker/file-ponyfill@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/file-ponyfill/-/file-ponyfill-2.0.0-beta3.tgz#1fc19c48af3c1c8883ad1ce8016acdf3644d1c22"
+  integrity sha512-cCExVX90OhyQjfTGrTtMNTGPg5im1KoymQQU5k4CBNmiWXCjx1bPiVS4k066VWS89WpRMeoCJq6h6+SWGOQizg==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
+    "@babel/runtime-corejs2" "7.4.5"
 
-"@tanker/file-reader@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/file-reader/-/file-reader-2.0.0-beta2.tgz#638c94468e4e51c46ac64e899d8dd67e95423d29"
-  integrity sha512-E1o9HHmAjXCeQe/Kfmng8EGsnq97r16Ejaf8ObitiZ1scWbbwUYyqLqjB2sx8cUuf25RfHG8uH0W6we2pOCtIQ==
+"@tanker/file-reader@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/file-reader/-/file-reader-2.0.0-beta3.tgz#c1d3db0d5c8f6840f9c8ac3607181495fa93133e"
+  integrity sha512-RlswSQlJ40Keag+5jCRL3/jkhgrP0gT7Da1rvYxHdhCEfwOYGPXvyey3QCPSk7YSC4Uf4xNu1H2yCR7AorhxkQ==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
+    "@babel/runtime-corejs2" "7.4.5"
 
-"@tanker/identity@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/identity/-/identity-2.0.0-beta2.tgz#5d3defdeea92ef8c6a3cd82f96de45470014fdaf"
-  integrity sha512-mmluKEek3qBAq0sbFQCu6RGsB7d1S9U68V2IFpC6w4KSnEQ/l6ZjZnwnWQh4Bpjls2qd2B3B+uSkq/nfWcfVgA==
+"@tanker/identity@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/identity/-/identity-2.0.0-beta3.tgz#73430c31100ec3520fe54f76d69a35782611daaa"
+  integrity sha512-HCA0r/C37asPkN+IDDltOdTRaM+U33vvqoRdWugxNafJGX444jzJp4cPFIjI1hCcNa1SgDViCTtlKMfl0Qzh6g==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
-    "@tanker/crypto" "2.0.0-beta2"
-    "@tanker/errors" "2.0.0-beta2"
+    "@babel/runtime-corejs2" "7.4.5"
+    "@tanker/crypto" "2.0.0-beta3"
+    "@tanker/errors" "2.0.0-beta3"
 
-"@tanker/stream-base@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/stream-base/-/stream-base-2.0.0-beta2.tgz#74b6be1e6fbe9f4e972389cf0c05185973c45bce"
-  integrity sha512-MrQCkLWS38e8lco+7vhCURuFw9wiV3aZbYxWwohGSGVDIPAorOUBhbtVHYhlU353Mn3tGjPkahiD83gi1ilKIg==
+"@tanker/stream-base@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/stream-base/-/stream-base-2.0.0-beta3.tgz#45d2c592be4852ec813fa31f06b9468314513216"
+  integrity sha512-n/0nUO3xvObMVwZXZluTcrrPv51N1eyXiWxRE0Zy1IX75Wpa4BYRrvFDi9Fgi+YHspSXftNKng5XFNWCCFBAeA==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
-    "@tanker/errors" "2.0.0-beta2"
-    readable-stream "^3.3.0"
+    "@babel/runtime-corejs2" "7.4.5"
+    "@tanker/errors" "2.0.0-beta3"
+    readable-stream "^3.4.0"
 
-"@tanker/stream-browser@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/stream-browser/-/stream-browser-2.0.0-beta2.tgz#6d7b29efc742c655d12d35e48446f2d75753a7ad"
-  integrity sha512-CU9T/h1Cqa6zx3SSUYCzBuyl/KgROim3it0qpzG9zwtSEBpbwp+M4YxcC/4WVi3rWqC1gl9ifVlpz2pVzMkfKw==
+"@tanker/stream-browser@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/stream-browser/-/stream-browser-2.0.0-beta3.tgz#b139a5ce2c3607d837e76cf0f54d7e24c996827f"
+  integrity sha512-1Cb2znQvrhHCsrTu1PdMBgnBUG7hgcbzHPdiTIHYBjW2TLoIWPPu6f7SkCeUeSA1eaDynE0gqBUXHBXmuOsomQ==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
-    "@tanker/errors" "2.0.0-beta2"
-    "@tanker/file-ponyfill" "2.0.0-beta2"
-    "@tanker/file-reader" "2.0.0-beta2"
-    "@tanker/stream-base" "2.0.0-beta2"
+    "@babel/runtime-corejs2" "7.4.5"
+    "@tanker/errors" "2.0.0-beta3"
+    "@tanker/file-ponyfill" "2.0.0-beta3"
+    "@tanker/file-reader" "2.0.0-beta3"
+    "@tanker/stream-base" "2.0.0-beta3"
 
-"@tanker/stream-node@2.0.0-beta2":
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/@tanker/stream-node/-/stream-node-2.0.0-beta2.tgz#0fc28cd9d9a97d9d13155a5f8f3882e788f39f8e"
-  integrity sha512-aYFmwgCVC0SmYfi9Vg29PGL67iKHcKv0AEY4B+Pp2iUrCwbdpV7r4vvjSVz3/hgMNuHqq9+oY3Lgk4V9Zrd/Eg==
+"@tanker/stream-node@2.0.0-beta3":
+  version "2.0.0-beta3"
+  resolved "https://registry.yarnpkg.com/@tanker/stream-node/-/stream-node-2.0.0-beta3.tgz#b1c232172f3a277abcecee9374241fd4261c330b"
+  integrity sha512-JHPWW+33eUqhEXqV1ZP/aF7d7FeaptsJ+x23Yu+4kksVm1/+tGKXEeWitiDXDiWS86lFUycgJ6gaas5GhNP2Jg==
   dependencies:
-    "@babel/runtime-corejs2" "7.4.4"
-    "@tanker/errors" "2.0.0-beta2"
-    "@tanker/stream-base" "2.0.0-beta2"
+    "@babel/runtime-corejs2" "7.4.5"
+    "@tanker/errors" "2.0.0-beta3"
+    "@tanker/stream-base" "2.0.0-beta3"
 
 "@types/babel__core@^7.1.0":
   version "7.1.2"
@@ -7757,8 +7749,6 @@ opn@^5.1.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/opn/-/opn-5.5.0.tgz#fc7164fab56d235904c51c3b27da6758ca3b9bfc"
   integrity sha512-PqHpggC9bLV0VeWcdKhkpxY+3JTzetLSqTCWL/z/tFIbI6G8JCjondXklT1JinczLz2Xib62sSp0T/gKT4KksA==
-  dependencies:
-    is-wsl "^1.1.0"
 
 optimist@^0.6.1:
   version "0.6.1"
@@ -9590,7 +9580,7 @@ readable-stream@1.0.33:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@^3.0.6, readable-stream@^3.1.1, readable-stream@^3.3.0:
+readable-stream@^3.0.6, readable-stream@^3.1.1, readable-stream@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.4.0.tgz#a51c26754658e0a3c21dbf59163bd45ba6f447fc"
   integrity sha512-jItXPLmrSR8jmTRmRWJXCnGJsfy85mB3Wd/uINMXA65yrnFo0cPClFIUWzo2najVNSl+mx7/4W8ttlLWJe99pQ==

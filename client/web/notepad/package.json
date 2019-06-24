@@ -5,7 +5,7 @@
   "dependencies": {
     "@babel/core": "^7.4.5",
     "@babel/register": "^7.4.4",
-    "@tanker/client-browser": "2.0.0-beta2",
+    "@tanker/client-browser": "2.0.0-beta3",
     "core-js": "^3.0.0",
     "email-validator": "^2.0.4",
     "react": "^16.8.6",
