@@ -4,11 +4,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface StringValidator : NSObject
 
-+ (BOOL) isEmpty:(NSString *)string;
-+ (BOOL) isBlank:(NSString *)string;
-+ (BOOL) isEmail:(NSString *)string;
-+ (BOOL) isURL:(NSString *)string;
-+ (NSString *)trim:(NSString *)string;
++ (BOOL)isEmpty:(NSString*)string;
++ (BOOL)isBlank:(NSString*)string;
++ (BOOL)isEmail:(NSString*)string;
++ (BOOL)isURL:(NSString*)string;
++ (NSString*)trim:(NSString*)string;
 
 @end
 

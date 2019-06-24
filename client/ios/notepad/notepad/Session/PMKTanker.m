@@ -1,63 +1,76 @@
 #import "PMKTanker.h"
 @import Tanker;
 
+@interface PMKTanker ()
+
+@property TKRTanker* tanker;
+
+@end
+
 @implementation PMKTanker
 
-+ tankerWithOptions:(TKRTankerOptions*) options {
-  PMKTanker* res = [[PMKTanker alloc] initWithOptions:options];
-  return res;
++ (instancetype)tankerWithOptions:(nonnull TKRTankerOptions*)options
+{
+  return [[PMKTanker alloc] initWithOptions:options];
 }
 
-- (instancetype)initWithOptions:(TKRTankerOptions *)options {
+- (instancetype)initWithOptions:(nonnull TKRTankerOptions*)options
+{
   self = [super init];
   self.tanker = [TKRTanker tankerWithOptions:options];
   return self;
 }
 
-+(NSString*) versionString {
++ (nonnull NSString*)versionString
+{
   return [TKRTanker versionString];
 }
-- (PMKPromise*)registerUnlockWithOptions:(nonnull TKRUnlockOptions*)options {
-  return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
-    [self.tanker registerUnlockWithOptions:options completionHandler:resolver];
-  }];
-}
 
-- (PMKPromise<NSNumber*>*)signUpWithIdentity:(nonnull NSString*)identity authenticationMethods:(nonnull TKRAuthenticationMethods*)methods {
+- (nonnull PMKPromise<NSNumber*>*)startWithIdentity:(nonnull NSString*)identity
+{
   return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-    [self.tanker signUpWithIdentity:identity
-               authenticationMethods: methods
-                  completionHandler:adapter];
+    [self.tanker startWithIdentity:identity completionHandler:adapter];
   }];
 }
 
-- (PMKPromise<NSNumber*>*)signInWithIdentity:(nonnull NSString*)identity
-                                     options:(nonnull TKRSignInOptions*)options {
-  return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-    [self.tanker signInWithIdentity:identity
-                            options:options
-                  completionHandler:adapter];
-  }];
-}
-
-- (BOOL)isOpen {
-  return [self.tanker isOpen];
-}
-
-- (PMKPromise*) signOut {
+- (nonnull PMKPromise*)stop
+{
   return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
-    [self.tanker signOutWithCompletionHandler:resolver];
+    [self.tanker stopWithCompletionHandler:resolver];
   }];
 }
 
-- (PMKPromise<NSData*> *)encryptDataFromString:(NSString*)clearText
-                                       options:(TKREncryptionOptions*)options{
+- (nonnull PMKPromise*)verifyIdentityWithVerification:(nonnull TKRVerification*)verification
+{
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
+    [self.tanker verifyIdentityWithVerification:verification completionHandler:resolver];
+  }];
+}
+
+- (nonnull PMKPromise*)registerIdentityWithVerification:(nonnull TKRVerification*)verification
+{
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
+    [self.tanker registerIdentityWithVerification:verification completionHandler:resolver];
+  }];
+}
+
+- (nonnull PMKPromise*)setVerificationMethod:(nonnull TKRVerification*)verification
+{
+  return [PMKPromise promiseWithResolver:^(PMKResolver resolver) {
+    [self.tanker setVerificationMethod:verification completionHandler:resolver];
+  }];
+}
+
+- (nonnull PMKPromise<NSData*>*)encryptDataFromString:(nonnull NSString*)clearText
+                                              options:(nonnull TKREncryptionOptions*)options
+{
   return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
     [self.tanker encryptDataFromString:clearText options:options completionHandler:adapter];
   }];
 }
 
-- (PMKPromise<NSString*> *)decryptStringFromData:(nonnull NSData*)encryptedData {
+- (nonnull PMKPromise<NSString*>*)decryptStringFromData:(nonnull NSData*)encryptedData
+{
   return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
     [self.tanker decryptStringFromData:encryptedData completionHandler:adapter];
   }];

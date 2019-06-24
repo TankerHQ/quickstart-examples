@@ -5,7 +5,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SharedNoteDetailsViewController : AuthenticatedViewController
 
-@property (strong, nonatomic) NoteTableViewItem *note;
+@property(strong, nonatomic) NoteTableViewItem* note;
 
 @end
 

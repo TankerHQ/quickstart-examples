@@ -6,7 +6,8 @@
 
 @implementation BaseViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
   [super viewDidLoad];
 }
 
@@ -15,13 +16,14 @@
 //  NSLog(@"Debug navigation stack: %@", self.navigationController.viewControllers);
 //}
 
-- (RootViewController *)rootViewController {
-  return (RootViewController *)UIApplication.sharedApplication.delegate.window.rootViewController;
+- (RootViewController*)rootViewController
+{
+  return (RootViewController*)UIApplication.sharedApplication.delegate.window.rootViewController;
 }
 
-- (Session *)session {
+- (Session*)session
+{
   return [Session sharedSession];
 }
 
 @end
-

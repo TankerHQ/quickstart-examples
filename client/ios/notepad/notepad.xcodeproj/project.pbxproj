@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4830D7E32269BF8800631226 /* PMKTanker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4830D7E22269BF8800631226 /* PMKTanker.m */; };
+		4E34F5140B49644F8276EA31 /* Pods_notepad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07C5098E11B3EE43632F4195 /* Pods_notepad.framework */; };
 		5001EF422181FA3D004393F7 /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5001EF412181FA3D004393F7 /* BaseViewController.m */; };
 		5022DFC52183151A007B3418 /* NoteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5022DFC32183151A007B3418 /* NoteTableViewCell.m */; };
 		5022DFC9218316FA007B3418 /* NoteTableViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5022DFC8218316FA007B3418 /* NoteTableViewItem.m */; };
@@ -17,12 +18,7 @@
 		506DFFF12189A886006936E4 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 506DFFF02189A886006936E4 /* Session.m */; };
 		508C57EF21A31305000C8937 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 508C57EE21A31305000C8937 /* RootViewController.m */; };
 		50A99F3D2181ECAE006BBA4D /* AuthenticatedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */; };
-		50E10319218AE26000EA92FF /* RequestResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E10318218AE26000EA92FF /* RequestResetPasswordViewController.m */; };
-		50E1031C218AEC1E00EA92FF /* ResetPasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E1031B218AEC1E00EA92FF /* ResetPasswordViewController.m */; };
-		50E1031F218AF12D00EA92FF /* ResetPasswordLinkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E1031E218AF12D00EA92FF /* ResetPasswordLinkViewController.m */; };
-		50E10322218B044C00EA92FF /* ResetPasswordToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E10321218B044C00EA92FF /* ResetPasswordToken.m */; };
 		50E10327218C8D9000EA92FF /* StringValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 50E10326218C8D9000EA92FF /* StringValidator.m */; };
-		5ECC1AF85A06DA78BC25FDD5 /* Pods_notepad.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB4BBF6EEC531D426C53D31F /* Pods_notepad.framework */; };
 		EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB141893207F919800A69EDA /* MyNoteViewController.m */; };
 		EB1A5D0C207BB721007A269F /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB1A5D0B207BB721007A269F /* LoginViewController.m */; };
 		EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EB1A5D0E207BB739007A269F /* SignUpViewController.m */; };
@@ -46,7 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		25F4BB3F5AF6C6C04F459695 /* Pods-notepad.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.debug.xcconfig"; path = "Target Support Files/Pods-notepad/Pods-notepad.debug.xcconfig"; sourceTree = "<group>"; };
+		07C5098E11B3EE43632F4195 /* Pods_notepad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_notepad.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4830D7E12269BF8800631226 /* PMKTanker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PMKTanker.h; sourceTree = "<group>"; };
 		4830D7E22269BF8800631226 /* PMKTanker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PMKTanker.m; sourceTree = "<group>"; };
 		5001EF402181FA1D004393F7 /* BaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
@@ -67,16 +63,10 @@
 		508C57EE21A31305000C8937 /* RootViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		50A99F382181EC0E006BBA4D /* AuthenticatedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AuthenticatedViewController.h; sourceTree = "<group>"; };
 		50A99F3C2181ECAE006BBA4D /* AuthenticatedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AuthenticatedViewController.m; sourceTree = "<group>"; };
-		50E10317218AE26000EA92FF /* RequestResetPasswordViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RequestResetPasswordViewController.h; sourceTree = "<group>"; };
-		50E10318218AE26000EA92FF /* RequestResetPasswordViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RequestResetPasswordViewController.m; sourceTree = "<group>"; };
-		50E1031A218AEC1E00EA92FF /* ResetPasswordViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResetPasswordViewController.h; sourceTree = "<group>"; };
-		50E1031B218AEC1E00EA92FF /* ResetPasswordViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResetPasswordViewController.m; sourceTree = "<group>"; };
-		50E1031D218AF12D00EA92FF /* ResetPasswordLinkViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResetPasswordLinkViewController.h; sourceTree = "<group>"; };
-		50E1031E218AF12D00EA92FF /* ResetPasswordLinkViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResetPasswordLinkViewController.m; sourceTree = "<group>"; };
-		50E10320218B044C00EA92FF /* ResetPasswordToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResetPasswordToken.h; sourceTree = "<group>"; };
-		50E10321218B044C00EA92FF /* ResetPasswordToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResetPasswordToken.m; sourceTree = "<group>"; };
 		50E10325218C8D9000EA92FF /* StringValidator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringValidator.h; sourceTree = "<group>"; };
 		50E10326218C8D9000EA92FF /* StringValidator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StringValidator.m; sourceTree = "<group>"; };
+		5FA02FB9B84B2EE612E5DFCD /* Pods-notepad.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.release.xcconfig"; path = "Target Support Files/Pods-notepad/Pods-notepad.release.xcconfig"; sourceTree = "<group>"; };
+		603CCC4E0050289785ACAAC5 /* Pods-notepad.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.debug.xcconfig"; path = "Target Support Files/Pods-notepad/Pods-notepad.debug.xcconfig"; sourceTree = "<group>"; };
 		EB141892207F919800A69EDA /* MyNoteViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyNoteViewController.h; sourceTree = "<group>"; };
 		EB141893207F919800A69EDA /* MyNoteViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyNoteViewController.m; sourceTree = "<group>"; };
 		EB1A5D0A207BB721007A269F /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
@@ -93,12 +83,10 @@
 		EB26173A207B8D8C00FCB028 /* notepadUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = notepadUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB26173E207B8D8C00FCB028 /* notepadUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = notepadUITests.m; sourceTree = "<group>"; };
 		EB261740207B8D8C00FCB028 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EB4BBF6EEC531D426C53D31F /* Pods_notepad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_notepad.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB84AE5D20F3BA150045CA98 /* SharedNotesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedNotesViewController.m; sourceTree = "<group>"; };
 		EB84AE5F20F3BA2F0045CA98 /* SharedNotesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedNotesViewController.h; sourceTree = "<group>"; };
 		EB9215ED20F3C36400677596 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		EB9215EE20F3C36400677596 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
-		F5101F11DC49A5A5CB20765B /* Pods-notepad.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.release.xcconfig"; path = "Target Support Files/Pods-notepad/Pods-notepad.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5ECC1AF85A06DA78BC25FDD5 /* Pods_notepad.framework in Frameworks */,
+				4E34F5140B49644F8276EA31 /* Pods_notepad.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,14 +108,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		21EE6E8D14F35EF604D4AC78 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				EB4BBF6EEC531D426C53D31F /* Pods_notepad.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		5001EF3E2181F93D004393F7 /* Authenticated */ = {
 			isa = PBXGroup;
 			children = (
@@ -150,12 +130,6 @@
 				EB1A5D0B207BB721007A269F /* LoginViewController.m */,
 				EB1A5D0D207BB739007A269F /* SignUpViewController.h */,
 				EB1A5D0E207BB739007A269F /* SignUpViewController.m */,
-				50E10317218AE26000EA92FF /* RequestResetPasswordViewController.h */,
-				50E10318218AE26000EA92FF /* RequestResetPasswordViewController.m */,
-				50E1031A218AEC1E00EA92FF /* ResetPasswordViewController.h */,
-				50E1031B218AEC1E00EA92FF /* ResetPasswordViewController.m */,
-				50E1031D218AF12D00EA92FF /* ResetPasswordLinkViewController.h */,
-				50E1031E218AF12D00EA92FF /* ResetPasswordLinkViewController.m */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -174,8 +148,6 @@
 			children = (
 				5022DFC7218316FA007B3418 /* NoteTableViewItem.h */,
 				5022DFC8218316FA007B3418 /* NoteTableViewItem.m */,
-				50E10320218B044C00EA92FF /* ResetPasswordToken.h */,
-				50E10321218B044C00EA92FF /* ResetPasswordToken.m */,
 				50E10325218C8D9000EA92FF /* StringValidator.h */,
 				50E10326218C8D9000EA92FF /* StringValidator.m */,
 			);
@@ -197,14 +169,21 @@
 			path = Session;
 			sourceTree = "<group>";
 		};
-		91818CEF205012AF62B0246D /* Pods */ = {
+		963336DCA0559AE1368B9362 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				25F4BB3F5AF6C6C04F459695 /* Pods-notepad.debug.xcconfig */,
-				F5101F11DC49A5A5CB20765B /* Pods-notepad.release.xcconfig */,
+				603CCC4E0050289785ACAAC5 /* Pods-notepad.debug.xcconfig */,
+				5FA02FB9B84B2EE612E5DFCD /* Pods-notepad.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		DE6DBCFF66BB64E7CE0FBD72 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				07C5098E11B3EE43632F4195 /* Pods_notepad.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		EB261719207B8D8C00FCB028 = {
@@ -213,8 +192,8 @@
 				EB261724207B8D8C00FCB028 /* notepad */,
 				EB26173D207B8D8C00FCB028 /* notepadUITests */,
 				EB261723207B8D8C00FCB028 /* Products */,
-				91818CEF205012AF62B0246D /* Pods */,
-				21EE6E8D14F35EF604D4AC78 /* Frameworks */,
+				963336DCA0559AE1368B9362 /* Pods */,
+				DE6DBCFF66BB64E7CE0FBD72 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -275,11 +254,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EB261743207B8D8C00FCB028 /* Build configuration list for PBXNativeTarget "notepad" */;
 			buildPhases = (
-				1242BC0DD9803ECDC49B9B47 /* [CP] Check Pods Manifest.lock */,
+				D333545F92EC13F52738516F /* [CP] Check Pods Manifest.lock */,
 				EB26171E207B8D8C00FCB028 /* Sources */,
 				EB26171F207B8D8C00FCB028 /* Frameworks */,
 				EB261720207B8D8C00FCB028 /* Resources */,
-				D038CC56B093ED7B6169313E /* [CP] Embed Pods Frameworks */,
+				82350455EBFABD5D7CCCA368 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -367,29 +346,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1242BC0DD9803ECDC49B9B47 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-notepad-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D038CC56B093ED7B6169313E /* [CP] Embed Pods Frameworks */ = {
+		82350455EBFABD5D7CCCA368 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -417,6 +374,28 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-notepad/Pods-notepad-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D333545F92EC13F52738516F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-notepad-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -424,7 +403,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50E10322218B044C00EA92FF /* ResetPasswordToken.m in Sources */,
 				5001EF422181FA3D004393F7 /* BaseViewController.m in Sources */,
 				504F88F82183674C0039E9D1 /* SharedNoteDetailsViewController.m in Sources */,
 				EB9215F120F3C36400677596 /* SettingsViewController.m in Sources */,
@@ -433,17 +411,14 @@
 				EB141894207F919800A69EDA /* MyNoteViewController.m in Sources */,
 				EB1A5D0F207BB739007A269F /* SignUpViewController.m in Sources */,
 				508C57EF21A31305000C8937 /* RootViewController.m in Sources */,
-				50E1031F218AF12D00EA92FF /* ResetPasswordLinkViewController.m in Sources */,
 				50E10327218C8D9000EA92FF /* StringValidator.m in Sources */,
 				4830D7E32269BF8800631226 /* PMKTanker.m in Sources */,
-				50E1031C218AEC1E00EA92FF /* ResetPasswordViewController.m in Sources */,
 				506DFFF12189A886006936E4 /* Session.m in Sources */,
 				5046960021876073008BEE58 /* HttpClient.m in Sources */,
 				EB261735207B8D8C00FCB028 /* main.m in Sources */,
 				EB261727207B8D8C00FCB028 /* AppDelegate.m in Sources */,
 				5022DFC9218316FA007B3418 /* NoteTableViewItem.m in Sources */,
 				EB84AE5E20F3BA150045CA98 /* SharedNotesViewController.m in Sources */,
-				50E10319218AE26000EA92FF /* RequestResetPasswordViewController.m in Sources */,
 				EB1A5D0C207BB721007A269F /* LoginViewController.m in Sources */,
 				504695FD218755F8008BEE58 /* ApiClient.m in Sources */,
 			);
@@ -589,7 +564,7 @@
 		};
 		EB261744207B8D8C00FCB028 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25F4BB3F5AF6C6C04F459695 /* Pods-notepad.debug.xcconfig */;
+			baseConfigurationReference = 603CCC4E0050289785ACAAC5 /* Pods-notepad.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -606,7 +581,7 @@
 		};
 		EB261745207B8D8C00FCB028 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F5101F11DC49A5A5CB20765B /* Pods-notepad.release.xcconfig */;
+			baseConfigurationReference = 5FA02FB9B84B2EE612E5DFCD /* Pods-notepad.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

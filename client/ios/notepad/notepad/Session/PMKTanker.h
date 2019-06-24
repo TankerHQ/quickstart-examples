@@ -11,19 +11,19 @@ NS_ASSUME_NONNULL_BEGIN
  * Wraps TKRTanker with PromiseKit
  * This means you can use code like this:
  *
- *    [self.tanker signInWithOptions: options]
- *    .then(^(NSNumber*) {
+ *    [self.tanker startWithIdentity:identity]
+ *    .then(^(NSNumber* status) {
  *        // ...
  *    }).
- *    catch(NSError*) {
+ *    catch(NSError* err) {
  *        // ...
  *    });
  *
- * instead of the awkward:
+ * instead of the more-verbose:
  *
- *   [self.tanker signInWithOptions: options
- *       completionHandler:(^(NSNumber*, NSError*) {
- *         if (error != nil) {
+ *   [self.tanker startWithIdentity:identity
+ *       completionHandler:(^(NSNumber* status, NSError* err) {
+ *         if (err != nil) {
  *           // ...
  *         }
  *         // ...
@@ -31,35 +31,24 @@ NS_ASSUME_NONNULL_BEGIN
  *   ];
  */
 
-@property TKRTanker *tanker;
-
-// Note: some methods from TKRTanker are not wrapped. For instance, the
-// notepad always assume that the unlock methods by password and emails are set, and
-// so we only wrap the signUpWithIdentity overload that takes a TRKUnlockOptions
-//
-// In the same vein, since Notepad only deals with text, we only wrap
+// Note: some methods from TKRTanker are not wrapped. For instance,
+// Notepad only deals with text, so we only wrap
 // encryptDataFromString and not encryptDataFromData
 
-+ tankerWithOptions:(TKRTankerOptions*) options;
--(instancetype) initWithOptions:(TKRTankerOptions*)options;
-+(NSString*) versionString;
-- (PMKPromise*) registerUnlockWithOptions:(nonnull TKRUnlockOptions*)options;
++ (nonnull NSString*)versionString;
++ (instancetype)tankerWithOptions:(nonnull TKRTankerOptions*)options;
+- (instancetype)initWithOptions:(nonnull TKRTankerOptions*)options;
 
-- (PMKPromise<NSNumber*>*) signUpWithIdentity:(nonnull NSString*)identity
-            authenticationMethods:(nonnull TKRAuthenticationMethods*)methods;
+- (nonnull PMKPromise<NSNumber*>*)startWithIdentity:(nonnull NSString*)identity;
+- (nonnull PMKPromise*)stop;
 
-- (PMKPromise<NSNumber*>*) signInWithIdentity:(nonnull NSString*)identity
-                                     options:(nonnull TKRSignInOptions*)options;
+- (nonnull PMKPromise*)registerIdentityWithVerification:(nonnull TKRVerification*)verification;
+- (nonnull PMKPromise*)verifyIdentityWithVerification:(nonnull TKRVerification*)verification;
+- (nonnull PMKPromise*)setVerificationMethod:(nonnull TKRVerification*)verification;
 
-- (BOOL) isOpen;
-
-- (PMKPromise*) signOut;
-
-- (PMKPromise<NSData*> *)encryptDataFromString:(NSString*)clearText
-                                       options:(TKREncryptionOptions*)options;
-
-- (PMKPromise<NSString*> *)decryptStringFromData:(nonnull NSData*)encryptedData;
-
+- (nonnull PMKPromise<NSData*>*)encryptDataFromString:(nonnull NSString*)clearText
+                                              options:(nonnull TKREncryptionOptions*)options;
+- (nonnull PMKPromise<NSString*>*)decryptStringFromData:(nonnull NSData*)encryptedData;
 
 @end
 
