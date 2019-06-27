@@ -29,7 +29,9 @@
 - (nonnull PMKPromise<NSNumber*>*)startWithIdentity:(nonnull NSString*)identity
 {
   return [PMKPromise promiseWithAdapter:^(PMKAdapter adapter) {
-    [self.tanker startWithIdentity:identity completionHandler:adapter];
+    [self.tanker startWithIdentity:identity completionHandler:^(TKRStatus status, NSError* err) {
+      adapter([NSNumber numberWithUnsignedInteger:status], err);
+    }];
   }];
 }
 
