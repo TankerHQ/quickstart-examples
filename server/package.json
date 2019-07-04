@@ -13,7 +13,7 @@
     "lint": "cd .. && eslint --fix --config=./server/.eslintrc server/src/**.js server/tests/**.js"
   },
   "dependencies": {
-    "@tanker/identity": "2.0.0-beta3",
+    "@tanker/identity": "2.0.1",
     "body-parser": "^1.19.0",
     "commander": "^2.20.0",
     "cors": "^2.8.5",
