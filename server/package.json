@@ -21,7 +21,7 @@
     "express": "^4.17.1",
     "express-session": "^1.16.1",
     "libsodium-wrappers-sumo": "^0.7.4",
-    "marked": "^0.6.2",
+    "marked": "^0.7.0",
     "morgan": "^1.9.1",
     "node-fetch": "^2.6.0",
     "select-shell": "^1.1.2",
