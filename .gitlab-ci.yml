@@ -1,10 +1,7 @@
-image: tanker.local:5000/ci-android:latest
-
 stages:
   - check
 
 check/android:
-  image: tanker.local:5000/ci-android:latest
   stage: check
   script:
     - dmenv install
