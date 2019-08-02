@@ -1,5 +1,4 @@
 import argparse
-import json
 import os
 import time
 import sys
@@ -8,7 +7,6 @@ from path import Path
 import requests
 
 import ci
-import ci.android
 import ci.dmenv
 import ci.quickstart
 
@@ -44,9 +42,14 @@ def run_mypy():
 
 
 def write_server_config():
-    config_path = Path("config.json")
-    config_path.write_text(json.dumps(ci.quickstart.config))
-    return config_path
+    config_path_in = Path("config.in.json")
+    contents = config_path_in.text()
+    for key in ["TRUSTCHAIN_ID", "TRUSTCHAIN_PRIVATE_KEY", "TRUSTCHAIN_URL"]:
+        value = os.environ[key]
+        contents = contents.replace(key, value)
+    config_path_out = Path("config.json")
+    config_path_out.write_text(contents)
+    return config_path_out
 
 
 def run_end_to_end_tests(app):
@@ -93,7 +96,7 @@ def check_web():
     run_mypy()
     run_linters()
     run_server_tests()
-    for web_app in ["api-observer"]: # deactivated: "notepad"
+    for web_app in ["api-observer"]:  # deactivated: "notepad"
         run_end_to_end_tests(web_app)
 
 
@@ -114,7 +117,7 @@ def compile_notepad_ios():
 
 
 def compile_notepad_android(src_path):
-    ci.android.run_gradle("assembleRelease", cwd=src_path)
+    ci.run("./gradlew", "assembleRelease", cwd=src_path)
 
 
 def get_browserstack_username():
@@ -134,13 +137,13 @@ def query_browserstack(segment, method, **kwargs):
 
 def send_app(apk_folder):
     app = f"{apk_folder}/localhost/app-localhost-unsigned.apk"
-    files = {"file" : open(app, 'rb')}
+    files = {"file": open(app, "rb")}
     return query_browserstack("upload", "post", files=files)["app_url"]
 
 
 def send_tests(apk_folder):
     tests = f"{apk_folder}/androidTest/localhost/app-localhost-androidTest.apk"
-    files = {"file" : open(tests, 'rb')}
+    files = {"file": open(tests, "rb")}
     return query_browserstack("espresso/test-suite", "post", files=files)["test_url"]
 
 
@@ -163,8 +166,8 @@ def poll_build_status(build_id, devices):
 
 def run_android_tests(src_path):
     config_path = write_server_config()
-    ci.android.run_gradle("assembleLocalhost", cwd=src_path)
-    ci.android.run_gradle("assembleAndroidTest", cwd=src_path)
+    ci.run("./gradlew", "assembleLocalhost", cwd=src_path)
+    ci.run("./gradlew", "assembleAndroidTest", cwd=src_path)
     apk_folder = src_path / "app/build/outputs/apk"
     app_url = send_app(apk_folder)
     test_url = send_tests(apk_folder)

@@ -1,5 +1,8 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+# Generated from config.in.json
+config.json
+
 # dependencies
 /**/node_modules
 
