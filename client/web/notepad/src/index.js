@@ -1,15 +1,15 @@
 import 'react-app-polyfill/ie11';
-import "core-js/stable";
-import "regenerator-runtime/runtime";
-import "@babel/register";
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import '@babel/register';
 
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { Tanker } from '@tanker/client-browser';
 
-import Session from "./Session";
-import App from "./components/App";
+import Session from './Session';
+import App from './components/App';
 
 const session = new Session();
 
@@ -20,5 +20,5 @@ ReactDOM.render(
   <BrowserRouter>
     <App session={session} />
   </BrowserRouter>,
-  document.getElementById("root"),
+  document.getElementById('root'),
 );

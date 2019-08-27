@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import {
   Alert,
@@ -7,13 +7,13 @@ import {
   FormGroup,
   FormControl,
   HelpBlock,
-} from "react-bootstrap";
+} from 'react-bootstrap';
 
 class PasswordResetConfirm extends React.Component {
   state = {
     passwordResetToken: null,
-    newPassword: "",
-    newPasswordConfirmation: "",
+    newPassword: '',
+    newPasswordConfirmation: '',
     errorMessage: null,
     successMessage: null,
     formDisabled: false,
@@ -34,7 +34,7 @@ class PasswordResetConfirm extends React.Component {
     try {
       await this.props.onSubmit({
         newPassword,
-        passwordResetToken
+        passwordResetToken,
       });
     } catch (e) {
       this.setState({ errorMessage: e.message, formDisabled: false });
@@ -75,23 +75,23 @@ class PasswordResetConfirm extends React.Component {
           <Alert bsStyle="warning">Please fill in your new password to recover your account.</Alert>
         )}
         <ControlLabel>New password</ControlLabel>
-        <FormGroup validationState={passwordValid ? null : "error"}>
+        <FormGroup validationState={passwordValid ? null : 'error'}>
           <FormControl
             type="password"
             value={newPassword}
             placeholder="Enter your new password"
-            onChange={event => this.onPasswordChange({ newPassword: event.target.value })}
+            onChange={(event) => this.onPasswordChange({ newPassword: event.target.value })}
             disabled={formDisabled}
             required
             autoFocus
           />
         </FormGroup>
-        <FormGroup validationState={passwordValid ? null : "error"}>
+        <FormGroup validationState={passwordValid ? null : 'error'}>
           <FormControl
             type="password"
             value={newPasswordConfirmation}
             placeholder="Confirm your new password"
-            onChange={event => this.onPasswordChange({ newPasswordConfirmation: event.target.value })}
+            onChange={(event) => this.onPasswordChange({ newPasswordConfirmation: event.target.value })}
             disabled={formDisabled}
             required
           />

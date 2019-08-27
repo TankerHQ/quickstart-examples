@@ -10,7 +10,7 @@ const middleware = () => session({
   secret: 'Tanker rocks!',
 });
 
-const regenerate = req => new Promise((resolve, reject) => {
+const regenerate = (req) => new Promise((resolve, reject) => {
   if (req.session) {
     req.session.regenerate((err) => {
       if (err) {

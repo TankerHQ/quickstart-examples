@@ -1,5 +1,5 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
+import React from 'react';
+import { withRouter } from 'react-router-dom';
 
 import {
   Alert,
@@ -8,11 +8,11 @@ import {
   FormGroup,
   FormControl,
   HelpBlock,
-} from "react-bootstrap";
+} from 'react-bootstrap';
 
 class PasswordResetRequest extends React.Component {
   state = {
-    email: this.props.defaultEmail || "",
+    email: this.props.defaultEmail || '',
     errorMessage: null,
     successMessage: null,
     formDisabled: false,
@@ -45,20 +45,20 @@ class PasswordResetRequest extends React.Component {
     };
   }
 
-  validateEmail = (/*email*/) => {
-    // TODO: add email format validation
-    return true;
-  }
+  // TODO: add email format validation
+  validateEmail = (/* email */) => true
 
   render() {
-    const { email, errorMessage, formDisabled, successMessage } = this.state;
+    const {
+      email, errorMessage, formDisabled, successMessage,
+    } = this.state;
     const emailValid = this.validateEmail(email);
 
     return (
       <form>
         {errorMessage && <Alert bsStyle="danger">{errorMessage}</Alert>}
         {successMessage && <Alert bsStyle="success">{successMessage}</Alert>}
-        <FormGroup controlId="newEmailFormGroup" validationState={emailValid ? null : "error"}>
+        <FormGroup controlId="newEmailFormGroup" validationState={emailValid ? null : 'error'}>
           {!errorMessage && !successMessage && (
             <Alert>Please fill in your email address to receive a password reset link.</Alert>
           )}
@@ -67,7 +67,7 @@ class PasswordResetRequest extends React.Component {
             type="text"
             value={email}
             placeholder="Enter your email address"
-            onChange={event => this.onEmailChange({ email: event.target.value })}
+            onChange={(event) => this.onEmailChange({ email: event.target.value })}
             disabled={formDisabled}
             required
             autoFocus
@@ -87,7 +87,7 @@ class PasswordResetRequest extends React.Component {
         <Button
           id="cancel-button"
           bsStyle="link"
-          onClick={this.navigationHandler("/login")}
+          onClick={this.navigationHandler('/login')}
           disabled={formDisabled}
         >
           Cancel

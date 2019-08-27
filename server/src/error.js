@@ -8,7 +8,7 @@ const middleware = (err, req, res, next) => { // eslint-disable-line  no-unused-
   // Note: we don't call next() because we don't want the request to continue
 };
 
-const watchError = fn => (req, res, next) => { // eslint-disable-line arrow-body-style
+const watchError = (fn) => (req, res, next) => { // eslint-disable-line arrow-body-style
   return Promise
     .resolve(fn(req, res, next))
     .catch(next);

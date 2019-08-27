@@ -1,6 +1,8 @@
-import React from "react";
-import { Alert, Button, ListGroup, ListGroupItem } from "react-bootstrap";
-import { withRouter } from "react-router-dom";
+import React from 'react';
+import {
+  Alert, Button, ListGroup, ListGroupItem,
+} from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 
 class AccessibleNotes extends React.Component {
   state = {
@@ -60,7 +62,7 @@ class AccessibleNotes extends React.Component {
           <div>
             <p>The notes below have been shared with you:</p>
             <ListGroup id="accessible-notes-list">
-              {accessibleNotes.map(friend => (
+              {accessibleNotes.map((friend) => (
                 <ListGroupItem key={friend.id} onClick={() => history.push(`/view/${friend.id}/${friend.email}`)}>
                   {`From ${friend.email}`}
                 </ListGroupItem>

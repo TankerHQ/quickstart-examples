@@ -3,10 +3,10 @@ const os = require('os');
 
 const findIPv4 = (nameRegExp = /.*/) => {
   const defs = os.networkInterfaces();
-  const names = Object.keys(defs).filter(name => nameRegExp.test(name)).sort();
+  const names = Object.keys(defs).filter((name) => nameRegExp.test(name)).sort();
   const match = names
     .reduce((acc, name) => acc.concat(defs[name]), [])
-    .find(def => def.family === 'IPv4');
+    .find((def) => def.family === 'IPv4');
   return match && match.address;
 };
 

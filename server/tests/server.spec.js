@@ -459,12 +459,12 @@ describe('server', () => {
       // Alice should have Bob in her accessibleNotes
       let response = await doRequest(testServer, { verb: 'get', path: '/me', headers: { Cookie: aliceCookie } });
       let actual = await response.json();
-      expect(actual.accessibleNotes.map(user => user.id)).to.have.members(['bob']);
+      expect(actual.accessibleNotes.map((user) => user.id)).to.have.members(['bob']);
 
       // Bob should have Alice in his recipients
       response = await doRequest(testServer, { verb: 'get', path: '/me', headers: { Cookie: bobCookie } });
       actual = await response.json();
-      expect(actual.noteRecipients.map(user => user.id)).to.have.members(['alice']);
+      expect(actual.noteRecipients.map((user) => user.id)).to.have.members(['alice']);
     });
   });
 
@@ -657,7 +657,7 @@ describe('server', () => {
         { verb: 'get', path: '/me', headers: { Cookie: bobCookie } },
         { status: 200 },
       );
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       await assertRequest(
         testServer,
         { verb: 'get', path: '/me', headers: { Cookie: bobCookie } },

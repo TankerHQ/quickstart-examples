@@ -1,16 +1,16 @@
-import EventEmitter from "events";
-import { Tanker, toBase64, fromBase64 } from "@tanker/client-browser";
-import ServerApi from "./ServerApi";
+import EventEmitter from 'events';
+import { Tanker, toBase64, fromBase64 } from '@tanker/client-browser';
+import ServerApi from './ServerApi';
 
 const { READY, IDENTITY_REGISTRATION_NEEDED, IDENTITY_VERIFICATION_NEEDED } = Tanker.statuses;
 
 const STATUSES = [
-  "initializing",
-  "closed",
-  "open",
-  "claim",
-  "register",
-  "verify",
+  'initializing',
+  'closed',
+  'open',
+  'claim',
+  'register',
+  'verify',
 ];
 
 export default class Session extends EventEmitter {
@@ -22,7 +22,7 @@ export default class Session extends EventEmitter {
 
     this.serverApi = new ServerApi();
 
-    this._status = "initializing";
+    this._status = 'initializing';
     this.init();
   }
 
@@ -39,12 +39,11 @@ export default class Session extends EventEmitter {
     } catch (e) {
       console.error(e);
     }
-    this.status = "closed";
+    this.status = 'closed';
   }
 
   async initTanker() {
-    if (!this.user)
-      throw new Error('Assertion error: cannot start Tanker without a user');
+    if (!this.user) throw new Error('Assertion error: cannot start Tanker without a user');
 
     const config = await this.serverApi.tankerConfig();
     this.tanker = new Tanker(config);
@@ -54,9 +53,9 @@ export default class Session extends EventEmitter {
     if (result === READY) {
       await this.triggerClaimIfNeeded();
     } else if (result === IDENTITY_REGISTRATION_NEEDED) {
-      this.status = "register";
+      this.status = 'register';
     } else if (result === IDENTITY_VERIFICATION_NEEDED) {
-      this.status = "verify";
+      this.status = 'verify';
     } else {
       throw new Error(`Unexpected status ${result}`);
     }
@@ -64,18 +63,18 @@ export default class Session extends EventEmitter {
 
   async triggerClaimIfNeeded() {
     if (!this.user.provisionalIdentity) {
-      this.status = "open";
+      this.status = 'open';
       return;
     }
 
     const attachResult = await this.tanker.attachProvisionalIdentity(this.user.provisionalIdentity);
 
     if (attachResult.status === READY) {
-      this.status = "open";
+      this.status = 'open';
     } else if (attachResult.status === IDENTITY_VERIFICATION_NEEDED) {
-      this.status = "claim";
+      this.status = 'claim';
     } else {
-      throw new Error(`Assertion error: invalid status of provisional identity attachement`, attachResult.status);
+      throw new Error('Assertion error: invalid status of provisional identity attachement', attachResult.status);
     }
   }
 
@@ -104,10 +103,10 @@ export default class Session extends EventEmitter {
   }
 
   set status(newStatus) {
-    if (STATUSES.indexOf(newStatus) === -1) { throw new Error(`Invalid status: ${newStatus}`)}
+    if (STATUSES.indexOf(newStatus) === -1) { throw new Error(`Invalid status: ${newStatus}`); }
     const prevStatus = this._status;
     this._status = newStatus;
-    this.emit("statusChange", [prevStatus, newStatus]);
+    this.emit('statusChange', [prevStatus, newStatus]);
   }
 
   get user() {
@@ -118,14 +117,14 @@ export default class Session extends EventEmitter {
     await this.serverApi.logout();
     await this.tanker.stop();
     this._user = null;
-    this.status = "closed";
+    this.status = 'closed';
   }
 
   async signUp(email, password) {
     const response = await this.serverApi.signUp(email, password);
 
     if (response.status === 409) throw new Error(`Email '${email}' already taken`);
-    if (!response.ok) throw new Error("Server error!");
+    if (!response.ok) throw new Error('Server error!');
 
     this._user = await response.json();
 
@@ -138,12 +137,12 @@ export default class Session extends EventEmitter {
       response = await this.serverApi.login(email, password);
     } catch (e) {
       console.error(e);
-      throw new Error("Cannot contact server");
+      throw new Error('Cannot contact server');
     }
 
-    if (response.status === 404) throw new Error("User never registered");
-    if (response.status === 401) throw new Error("Bad login or password");
-    if (!response.ok) throw new Error("Unexpected error status: " + response.status);
+    if (response.status === 404) throw new Error('User never registered');
+    if (response.status === 401) throw new Error('Bad login or password');
+    if (!response.ok) throw new Error(`Unexpected error status: ${response.status}`);
 
     this._user = await response.json();
 
@@ -152,7 +151,7 @@ export default class Session extends EventEmitter {
 
   async saveText(text) {
     const recipients = await this.getNoteRecipients();
-    const recipientPublicIdentities = recipients.map(user => user.publicIdentity);
+    const recipientPublicIdentities = recipients.map((user) => user.publicIdentity);
     const encryptedData = await this.tanker.encrypt(text, { shareWithUsers: recipientPublicIdentities });
     const encryptedText = toBase64(encryptedData);
     this.resourceId = await this.tanker.getResourceId(encryptedData);
@@ -162,7 +161,7 @@ export default class Session extends EventEmitter {
   async loadTextFromUser(userId) {
     const response = await this.serverApi.getUserData(userId);
 
-    if (response.status === 404) return "";
+    if (response.status === 404) return '';
 
     const encryptedText = await response.text();
     const encryptedData = fromBase64(encryptedText);
@@ -187,10 +186,10 @@ export default class Session extends EventEmitter {
   }
 
   async share(recipientEmails) {
-    if (!this.resourceId) throw new Error("No resource id.");
+    if (!this.resourceId) throw new Error('No resource id.');
     const recipients = await this.serverApi.getUsersByEmail(recipientEmails);
-    await this.tanker.share([this.resourceId], { shareWithUsers: recipients.map(r => r.publicIdentity) });
-    await this.serverApi.share(this.user.id, recipients.map(r => r.id));
+    await this.tanker.share([this.resourceId], { shareWithUsers: recipients.map((r) => r.publicIdentity) });
+    await this.serverApi.share(this.user.id, recipients.map((r) => r.id));
     await this.refreshMe();
   }
 

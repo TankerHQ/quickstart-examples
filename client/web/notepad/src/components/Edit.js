@@ -1,5 +1,7 @@
-import React from "react";
-import { Alert, Button, ButtonGroup, FormControl, FormGroup, Panel } from "react-bootstrap";
+import React from 'react';
+import {
+  Alert, Button, ButtonGroup, FormControl, FormGroup, Panel,
+} from 'react-bootstrap';
 
 import Spinner from './Spinner';
 
@@ -7,7 +9,7 @@ const avoidFlickering = async (promise) => {
   const minDelay = 500;
   const results = await Promise.all([
     promise,
-    new Promise(resolve => setTimeout(resolve, minDelay)),
+    new Promise((resolve) => setTimeout(resolve, minDelay)),
   ]);
   return results[0];
 };
@@ -15,7 +17,7 @@ const avoidFlickering = async (promise) => {
 
 class Edit extends React.Component {
   state = {
-    text: "",
+    text: '',
     error: null,
     modified: false,
     isSaving: false,
@@ -28,7 +30,7 @@ class Edit extends React.Component {
     await this.load();
   }
 
-  onChange = e => {
+  onChange = (e) => {
     this.setState({
       text: e.currentTarget.value,
       modified: true,
@@ -48,19 +50,19 @@ class Edit extends React.Component {
     }
   };
 
-  onBackClicked = e => {
+  onBackClicked = (e) => {
     e.preventDefault();
-    this.props.history.push("/");
+    this.props.history.push('/');
   };
 
-  onDeleteClicked = async e => {
+  onDeleteClicked = async (e) => {
     this.setState({ isDeleting: true });
     const { session } = this.props;
 
     e.preventDefault();
     try {
       await avoidFlickering(session.delete());
-      this.setState({ isDeleting: false, text: "" });
+      this.setState({ isDeleting: false, text: '' });
     } catch (err) {
       console.error(err);
       this.setState({ error: err.toString(), isDeleting: false });
@@ -69,7 +71,7 @@ class Edit extends React.Component {
 
   onShareClicked = async () => {
     await this.onSave();
-    this.props.history.push("/share");
+    this.props.history.push('/share');
   };
 
   async load() {
@@ -86,7 +88,9 @@ class Edit extends React.Component {
   }
 
   render() {
-    const { error, isLoading, isLoaded, isSaving, isDeleting } = this.state;
+    const {
+      error, isLoading, isLoaded, isSaving, isDeleting,
+    } = this.state;
     const disabled = isLoading || !isLoaded || isSaving || isDeleting;
 
     return (
@@ -104,12 +108,12 @@ class Edit extends React.Component {
                 id="edit-textarea"
                 componentClass="textarea"
                 onChange={this.onChange}
-                value={isLoading ? "Loading..." : this.state.text}
+                value={isLoading ? 'Loading...' : this.state.text}
                 rows="12"
                 disabled={disabled}
               />
             </FormGroup>
-            {this.state.modified ? "*" : null}
+            {this.state.modified ? '*' : null}
             <div className="pull-right">
               {disabled && <Spinner id="edit-spinner" />}
               <ButtonGroup>

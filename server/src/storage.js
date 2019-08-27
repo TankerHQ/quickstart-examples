@@ -61,8 +61,8 @@ class Storage {
 
     const prevRecipientIds = author.noteRecipients || [];
     const { added, removed } = diffArrays(prevRecipientIds, recipientIds);
-    added.forEach(recipientId => this.addAccessibleNoteId(authorId, recipientId));
-    removed.forEach(recipientId => this.removeAccessibleNoteId(authorId, recipientId));
+    added.forEach((recipientId) => this.addAccessibleNoteId(authorId, recipientId));
+    removed.forEach((recipientId) => this.removeAccessibleNoteId(authorId, recipientId));
 
     author.noteRecipients = recipientIds;
     this.save(author);
@@ -86,7 +86,7 @@ class Storage {
     if (!user.accessibleNotes) {
       user.accessibleNotes = [];
     }
-    user.accessibleNotes = user.accessibleNotes.filter(id => id !== from);
+    user.accessibleNotes = user.accessibleNotes.filter((id) => id !== from);
     this.save(user);
   }
 
@@ -97,7 +97,7 @@ class Storage {
   }
 
   getAll() {
-    const jsonFiles = fs.readdirSync(this.dataFolder).filter(f => f.match(/\.json$/));
+    const jsonFiles = fs.readdirSync(this.dataFolder).filter((f) => f.match(/\.json$/));
     return jsonFiles.map((path) => {
       const fullPath = `${this.dataFolder}/${path}`;
       const user = this.parseJson(fullPath);
