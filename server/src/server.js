@@ -24,7 +24,8 @@ const log = require('./log');
 const home = require('./home');
 const session = require('./session');
 const Storage = require('./storage');
-const { FakeTrustchaindClient, TrustchaindClient } = require('./TrustchaindClient');
+const { TrustchaindClient } = require('./TrustchaindClient');
+const { FakeTrustchaindClient } = require('./FakeTrustchaindClient');
 
 // Build express application
 const app = express();
@@ -71,8 +72,8 @@ const sanitizePublicUser = async (user) => {
   return { ...otherAttributes, publicIdentity };
 };
 
-const reviveUsers = async ids => Promise.all(
-  ids.map(id => sanitizePublicUser(app.storage.get(id))),
+const reviveUsers = async (ids) => Promise.all(
+  ids.map((id) => sanitizePublicUser(app.storage.get(id))),
 );
 
 const sanitizeUser = async (user) => {
@@ -510,8 +511,8 @@ app.get('/users', watchError(async (req, res) => {
 
   if (req.query && req.query.email instanceof Array) {
     const emails = req.query.email;
-    users = users.filter(user => emails.includes(user.email));
-    const foundEmails = users.map(user => user.email);
+    users = users.filter((user) => emails.includes(user.email));
+    const foundEmails = users.map((user) => user.email);
 
     await Promise.all(emails.map(async (email) => {
       if (!foundEmails.includes(email)) {

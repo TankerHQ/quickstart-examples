@@ -1,8 +1,8 @@
-import React from "react";
-import { Panel } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Panel } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-import AccessibleNotes from "./AccessibleNotes";
+import AccessibleNotes from './AccessibleNotes';
 
 const Home = ({ session }) => (
   <Panel>

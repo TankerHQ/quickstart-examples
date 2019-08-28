@@ -21,7 +21,7 @@
     "lint": "cd ../../.. && eslint --config=./client/web/notepad/.eslintrc client/web/notepad/src/"
   },
   "devDependencies": {
-    "react-scripts": "^3.0.1"
+    "react-scripts": "^3.1.1"
   },
   "browserslist": [
     ">0.2%",

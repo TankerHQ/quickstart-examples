@@ -1,8 +1,8 @@
-import { Alert, Panel } from "react-bootstrap";
-import React from "react";
+import { Alert, Panel } from 'react-bootstrap';
+import React from 'react';
 
 class ViewNote extends React.Component {
-  state = { text: "", error: null, isLoading: true };
+  state = { text: '', error: null, isLoading: true };
 
   componentDidMount() {
     // FIXME: need to abort if onBackClicked is fired before
@@ -10,9 +10,9 @@ class ViewNote extends React.Component {
     this.load();
   }
 
-  onBackClicked = event => {
+  onBackClicked = (event) => {
     event.preventDefault();
-    this.props.history.push("/");
+    this.props.history.push('/');
   };
 
   async load() {
@@ -25,7 +25,7 @@ class ViewNote extends React.Component {
       this.setState({ text, error: null, isLoading: false });
     } catch (error) {
       console.error(error);
-      this.setState({ text: "", error: error.toString(), isLoading: false });
+      this.setState({ text: '', error: error.toString(), isLoading: false });
     }
   }
 
@@ -43,7 +43,7 @@ class ViewNote extends React.Component {
                 Loading...
               </Alert>
             )}
-            <p id="view-textarea" style={{ whiteSpace: "pre-line" }}>
+            <p id="view-textarea" style={{ whiteSpace: 'pre-line' }}>
               {text}
             </p>
           </Panel.Body>

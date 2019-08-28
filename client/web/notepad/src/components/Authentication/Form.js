@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Alert,
   Button,
@@ -7,20 +7,20 @@ import {
   FormGroup,
   FormControl,
   HelpBlock,
-} from "react-bootstrap";
+} from 'react-bootstrap';
 import * as emailValidator from 'email-validator';
 
 export default class Form extends React.Component {
   state = {
     isLoading: false,
-    email: "",
-    password: "",
+    email: '',
+    password: '',
     emailError: false,
     passwordError: false,
     serverError: null,
   };
 
-  onSubmit = async event => {
+  onSubmit = async (event) => {
     event.preventDefault();
 
     const { isLoading, email, password } = this.state;
@@ -29,7 +29,7 @@ export default class Form extends React.Component {
     if (isLoading) return;
 
     const emailError = !email || !emailValidator.validate(email);
-    const passwordError = password === "";
+    const passwordError = password === '';
 
     if (emailError || passwordError) {
       this.setState({ isLoading: false, emailError, passwordError });
@@ -51,22 +51,24 @@ export default class Form extends React.Component {
     }
   };
 
-  handleLoginChange = e => {
+  handleLoginChange = (e) => {
     this.setState({ email: e.target.value });
   };
 
-  handlePasswordChange = e => {
+  handlePasswordChange = (e) => {
     this.setState({ password: e.target.value });
   };
 
   render() {
     const { typeAction, formId } = this.props;
-    const { email, password, emailError, passwordError, serverError, isLoading } = this.state;
+    const {
+      email, password, emailError, passwordError, serverError, isLoading,
+    } = this.state;
 
     return (
       <form className="form-login">
         {serverError && <Alert bsStyle="danger">{serverError}</Alert>}
-        <FormGroup controlId={`${formId}-email`} validationState={emailError ? "error" : null}>
+        <FormGroup controlId={`${formId}-email`} validationState={emailError ? 'error' : null}>
           <ControlLabel>Email</ControlLabel>
           <FormControl
             type="text"
@@ -81,7 +83,7 @@ export default class Form extends React.Component {
         </FormGroup>
         <FormGroup
           controlId={`${formId}-password`}
-          validationState={passwordError ? "error" : null}
+          validationState={passwordError ? 'error' : null}
         >
           <ControlLabel>Password</ControlLabel>
           <FormControl

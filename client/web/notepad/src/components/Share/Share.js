@@ -1,12 +1,14 @@
-import React from "react";
-import { Button, Panel, Alert, FormGroup, ControlLabel, FormControl, HelpBlock } from "react-bootstrap";
+import React from 'react';
+import {
+  Button, Panel, Alert, FormGroup, ControlLabel, FormControl, HelpBlock,
+} from 'react-bootstrap';
 import * as emailValidator from 'email-validator';
 
 const parseEmails = (string) => {
   const emails = string.split(/[, ]+/);
   const emailsValid = emails.reduce((v, email) => v && emailValidator.validate(email), true);
   return { emails, emailsValid };
-}
+};
 
 class Share extends React.Component {
   state = {
@@ -21,9 +23,9 @@ class Share extends React.Component {
     this.setState({ emails, emailsValid });
   };
 
-  onBackClicked = event => {
+  onBackClicked = (event) => {
     event.preventDefault();
-    this.props.history.push("/edit");
+    this.props.history.push('/edit');
   };
 
   onShareClicked = async () => {
@@ -33,7 +35,7 @@ class Share extends React.Component {
     try {
       await session.share(emails);
       this.setState({ isSharing: false });
-      this.props.history.push("/edit");
+      this.props.history.push('/edit');
     } catch (err) {
       console.error(err);
       this.setState({ error: err.toString(), isSharing: false });
@@ -41,7 +43,9 @@ class Share extends React.Component {
   };
 
   render() {
-    const { emails, emailsValid, error, isSharing } = this.state;
+    const {
+      emails, emailsValid, error, isSharing,
+    } = this.state;
     return (
       <Panel>
         <Panel.Heading id="share-heading">Share</Panel.Heading>
@@ -71,7 +75,7 @@ class Share extends React.Component {
             onClick={this.onShareClicked}
             disabled={isSharing || !emailsValid}
           >
-            {isSharing ? "Sharing..." : "Share"}
+            {isSharing ? 'Sharing...' : 'Share'}
           </Button>
         </Panel.Body>
         <Panel.Footer>

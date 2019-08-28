@@ -1,11 +1,13 @@
-import React from "react";
-import { Alert, Button, ControlLabel, FormControl, FormGroup, HelpBlock, Panel } from "react-bootstrap";
+import React from 'react';
+import {
+  Alert, Button, ControlLabel, FormControl, FormGroup, HelpBlock, Panel,
+} from 'react-bootstrap';
 
 const validateCode = (code) => typeof code === 'string' && code.match(/^\d{8}$/);
 
 class Verify extends React.Component {
   state = {
-    code: "",
+    code: '',
     error: null,
     isLoading: true,
     isLoaded: false,
@@ -19,7 +21,7 @@ class Verify extends React.Component {
   load = async () => {
     this.setState({ isLoading: true });
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       await this.props.session.serverApi.requestVerificationCode();
       this.setState({ isLoading: false, isLoaded: true });
     } catch (e) {
@@ -39,7 +41,9 @@ class Verify extends React.Component {
   }
 
   render() {
-    const { code, error, isLoading, isLoaded, isSaving } = this.state;
+    const {
+      code, error, isLoading, isLoaded, isSaving,
+    } = this.state;
     const codeValid = validateCode(code);
     const { user } = this.props.session;
     const disabled = isLoading || !isLoaded || isSaving || !codeValid;
@@ -56,7 +60,7 @@ class Verify extends React.Component {
             </Alert>
           )}
           <form>
-            <FormGroup validationState={error ? "error" : null}>
+            <FormGroup validationState={error ? 'error' : null}>
               <ControlLabel>Verification code</ControlLabel>
               <FormControl
                 type="text"

@@ -1,6 +1,6 @@
 // Copied from: http://tobiasahlin.com/spinkit/
-import * as React from "react";
-import "./Spinner.css";
+import * as React from 'react';
+import './Spinner.css';
 
 const Spinner = (props) => {
   const { className, ...otherProps } = props;

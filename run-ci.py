@@ -8,7 +8,6 @@ import requests
 
 import ci
 import ci.dmenv
-import ci.quickstart
 
 
 def get_src_path():

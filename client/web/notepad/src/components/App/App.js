@@ -1,20 +1,20 @@
-import React from "react";
+import React from 'react';
 
-import Authentication from "../Authentication";
-import Notepad from "./Notepad";
-import Topbar from "../Topbar";
+import Authentication from '../Authentication';
+import Notepad from './Notepad';
+import Topbar from '../Topbar';
 import ServerApi from '../../ServerApi';
-import Verify from "../Verify";
+import Verify from '../Verify';
 
-import "./App.css";
+import './App.css';
 
 class App extends React.Component {
-  state = { status: "initializing" };
+  state = { status: 'initializing' };
 
   componentDidMount() {
     const { session } = this.props;
     // App's status will always be synchronized with the session status
-    session.on("statusChange", ([, status]) => this.setState({ status }));
+    session.on('statusChange', ([, status]) => this.setState({ status }));
   }
 
   onLogIn = async (email, password) => {
@@ -57,7 +57,7 @@ class App extends React.Component {
     await session.resetPassword(newPassword, passwordResetToken, verificationCode);
   }
 
-  onUnlockDevice = async password => {
+  onUnlockDevice = async (password) => {
     await this.props.session.unlockCurrentDevice(password);
   };
 
@@ -69,8 +69,8 @@ class App extends React.Component {
       <div className="app">
         <Topbar status={status} email={session.user && session.user.email} onLogOut={this.onLogOut} />
         <div className="container">
-          {status === "initializing" && null}
-          {status === "closed" && (
+          {status === 'initializing' && null}
+          {status === 'closed' && (
             <Authentication
               onLogIn={this.onLogIn}
               onSignUp={this.onSignUp}
@@ -78,10 +78,10 @@ class App extends React.Component {
               onPasswordResetConfirm={this.onPasswordResetConfirm}
             />
           )}
-          {(session.status === "register" || session.status === "verify" || session.status === "claim") && (
+          {(session.status === 'register' || session.status === 'verify' || session.status === 'claim') && (
             <Verify session={session} />
           )}
-          {status === "open" && <Notepad session={session} />}
+          {status === 'open' && <Notepad session={session} />}
         </div>
       </div>
     );

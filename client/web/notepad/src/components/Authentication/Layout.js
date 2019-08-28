@@ -1,12 +1,14 @@
-import * as React from "react";
-import { Panel, Tab, Nav, NavItem } from "react-bootstrap";
-import { withRouter } from "react-router-dom";
-import { Switch, Route, Redirect } from "react-router";
+import * as React from 'react';
+import {
+  Panel, Tab, Nav, NavItem,
+} from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router';
 
-import PasswordResetRequest from "./PasswordResetRequest";
-import PasswordResetConfirm from "./PasswordResetConfirm";
-import Login from "./Login";
-import Signup from "./Signup";
+import PasswordResetRequest from './PasswordResetRequest';
+import PasswordResetConfirm from './PasswordResetConfirm';
+import Login from './Login';
+import Signup from './Signup';
 
 const isSignupPath = (path) => path && path.match(/^\/signup/);
 
@@ -15,7 +17,7 @@ class Layout extends React.Component {
     event.preventDefault();
 
     if (isSignupPath(this.props.location.pathname)) {
-      this.props.history.replace("/login");
+      this.props.history.replace('/login');
     }
   }
 
@@ -23,13 +25,15 @@ class Layout extends React.Component {
     event.preventDefault();
 
     if (!isSignupPath(this.props.location.pathname)) {
-      this.props.history.replace("/signup");
+      this.props.history.replace('/signup');
     }
   }
 
   render() {
-    const { onLogIn, onSignUp, onPasswordResetRequest, onPasswordResetConfirm, location: { pathname } } = this.props;
-    const activeKey = isSignupPath(pathname) ? "signup" : "login";
+    const {
+      onLogIn, onSignUp, onPasswordResetRequest, onPasswordResetConfirm, location: { pathname },
+    } = this.props;
+    const activeKey = isSignupPath(pathname) ? 'signup' : 'login';
 
     return (
       <Tab.Container defaultActiveKey={activeKey} id="session_form_container">

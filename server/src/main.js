@@ -22,4 +22,4 @@ getConfig(cli.config).then(async (config) => {
   log(`Listening on http://${getDemoIP()}:${port}/`, 1);
 
   app.listen(port);
-}).catch(error => console.error(error));
+}).catch((error) => console.error(error));

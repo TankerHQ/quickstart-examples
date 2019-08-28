@@ -4,9 +4,9 @@ const selectShell = require('select-shell');
 
 const configDir = pathLib.join(__dirname, '..', '..', 'config');
 
-const listConfigFileNames = () => fs.readdirSync(configDir).filter(f => f.match(/\.json$/));
+const listConfigFileNames = () => fs.readdirSync(configDir).filter((f) => f.match(/\.json$/));
 
-const readJSONFile = filePath => JSON.parse(fs.readFileSync(filePath));
+const readJSONFile = (filePath) => JSON.parse(fs.readFileSync(filePath));
 
 const readConfigFile = (fileName) => {
   const filePath = pathLib.join(configDir, fileName);
@@ -31,7 +31,7 @@ const printMissingConfigMessage = () => {
 
 const createFilePicker = (fileNames) => {
   const picker = selectShell({ multiSelect: false });
-  fileNames.forEach(fileName => picker.option(fileName));
+  fileNames.forEach((fileName) => picker.option(fileName));
   console.log('Please select a config file:');
   picker.list();
   return picker;
