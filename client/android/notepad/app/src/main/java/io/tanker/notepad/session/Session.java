@@ -294,7 +294,7 @@ public class Session {
             try {
                 JSONObject tankerConfig = mApiClient.getConfig();
 
-                String trustchainId = tankerConfig.getString("trustchainId");
+                String trustchainId = tankerConfig.getString("appId");
                 options.setTrustchainId(trustchainId);
 
                 if (tankerConfig.has("url")) {

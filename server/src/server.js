@@ -36,8 +36,8 @@ let serverConfig;
 let clientConfig;
 
 const makeClientConfig = (fullConfig) => {
-  // WARNING: the Trustchain private key MUST never be sent to the client
-  const { dataPath, trustchainPrivateKey, ...config } = fullConfig;
+  // WARNING: the app secret MUST never be sent to the client
+  const { dataPath, appSecret, ...config } = fullConfig;
   return config;
 };
 
@@ -46,19 +46,19 @@ const setup = async (config) => {
   clientConfig = makeClientConfig(config);
 
   const {
-    dataPath, trustchainId, testMode, authToken,
+    dataPath, appId, testMode, authToken,
   } = config;
   if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath);
   }
-  app.storage = new Storage(dataPath, trustchainId);
+  app.storage = new Storage(dataPath, appId);
 
 
   if (testMode) {
     app.trustchaindClient = new FakeTrustchaindClient();
   } else {
     const trustchaindUrl = config.url || 'https://api.tanker.io';
-    app.trustchaindClient = new TrustchaindClient({ trustchaindUrl, authToken, trustchainId });
+    app.trustchaindClient = new TrustchaindClient({ trustchaindUrl, authToken, appId });
   }
 
   // Libsodium loads asynchronously (Wasm module)
@@ -126,7 +126,7 @@ app.get('/logout', watchError(async (req, res) => {
 // Add signup route (non authenticated)
 app.post('/signup', watchError(async (req, res) => {
   const { email, password } = req.body;
-  const { trustchainId, trustchainPrivateKey } = serverConfig;
+  const { appId, appSecret } = serverConfig;
 
   if (!email || !emailValidator.validate(email)) {
     res.status(400).json({ error: 'Invalid email address' });
@@ -155,8 +155,8 @@ app.post('/signup', watchError(async (req, res) => {
 
   log('Generate a new Tanker identity', 1);
   user.identity = await createIdentity(
-    trustchainId,
-    trustchainPrivateKey,
+    appId,
+    appSecret,
     user.id,
   );
 
@@ -519,7 +519,7 @@ app.get('/users', watchError(async (req, res) => {
         const user = {
           id: uuid(),
           email,
-          provisionalIdentity: await createProvisionalIdentity(serverConfig.trustchainId, email),
+          provisionalIdentity: await createProvisionalIdentity(serverConfig.appId, email),
         };
 
         app.storage.save(user);

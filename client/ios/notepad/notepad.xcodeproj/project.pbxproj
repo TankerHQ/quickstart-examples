@@ -43,8 +43,10 @@
 
 /* Begin PBXFileReference section */
 		07C5098E11B3EE43632F4195 /* Pods_notepad.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_notepad.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		170CE60E13BEB0997DFCFFB7 /* Pods-notepad.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.debug.xcconfig"; path = "Pods/Target Support Files/Pods-notepad/Pods-notepad.debug.xcconfig"; sourceTree = "<group>"; };
 		4830D7E12269BF8800631226 /* PMKTanker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PMKTanker.h; sourceTree = "<group>"; };
 		4830D7E22269BF8800631226 /* PMKTanker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PMKTanker.m; sourceTree = "<group>"; };
+		4DBD95F03E5EC598BDBC56DD /* Pods-notepad.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-notepad.release.xcconfig"; path = "Pods/Target Support Files/Pods-notepad/Pods-notepad.release.xcconfig"; sourceTree = "<group>"; };
 		5001EF402181FA1D004393F7 /* BaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
 		5001EF412181FA3D004393F7 /* BaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
 		5022DFC22183151A007B3418 /* NoteTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoteTableViewCell.h; sourceTree = "<group>"; };
@@ -174,6 +176,8 @@
 			children = (
 				603CCC4E0050289785ACAAC5 /* Pods-notepad.debug.xcconfig */,
 				5FA02FB9B84B2EE612E5DFCD /* Pods-notepad.release.xcconfig */,
+				170CE60E13BEB0997DFCFFB7 /* Pods-notepad.debug.xcconfig */,
+				4DBD95F03E5EC598BDBC56DD /* Pods-notepad.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -351,8 +355,6 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-notepad/Pods-notepad-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/OMGHTTPURLRQ/OMGHTTPURLRQ.framework",
@@ -361,8 +363,6 @@
 				"${BUILT_PRODUCTS_DIR}/Tanker/Tanker.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OMGHTTPURLRQ.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",

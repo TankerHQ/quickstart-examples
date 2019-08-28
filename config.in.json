@@ -1,5 +1,5 @@
 {
-    "trustchainId": "TRUSTCHAIN_ID",
-    "trustchainPrivateKey": "TRUSTCHAIN_PRIVATE_KEY",
+    "appId": "TRUSTCHAIN_ID",
+    "appSecret": "TRUSTCHAIN_PRIVATE_KEY",
     "url": "TRUSTCHAIN_URL"
 }

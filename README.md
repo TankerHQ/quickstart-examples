@@ -86,13 +86,11 @@ Install all dependencies at once:
 cd quickstart-examples && yarn
 ```
 
-### Create a Trustchain
+### Create a Tanker App
 
-In short, your Trustchain is the structure on which the cryptographic operations will be stored when you run the examples. It only contains data that is either public or encrypted, and is hosted by Tanker.
+To create a Tanker App, create a free account on the [dashboard](https://dashboard.tanker.io/signup) and follow the instructions. Make sure you store the configuration file safely, as you'll need it later.
 
-To create a Trustchain, create a free account on the [Tanker dashboard](https://dashboard.tanker.io/signup) and follow the instructions. Make sure you store the configuration file safely, as you'll need it later.
-
-Once you start building real private apps, you can just create other Trustchains.
+Once you start building real private applications, you can just create other Tanker Apps.
 
 ### Configure
 
@@ -101,10 +99,10 @@ Take the JSON configuration file from the previous step and copy it under the `c
 Note that the JSON configuration file can have any name ending with the `.json` extension and must have the following format:
 
 ```javascript
-// e.g. config/my-trustchain.json
+// e.g. config/app.json
 {
-    "trustchainId": "...",
-    "trustchainPrivateKey": "..."
+    "appId": "...",
+    "appSecret": "..."
 }
 ```
 

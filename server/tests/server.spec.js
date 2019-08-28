@@ -45,8 +45,8 @@ describe('server', () => {
   let tempPath;
   let testServer;
 
-  const trustchainId = '4bPbtrLr82kNDoaieRDMXIPycLrTynpL7hmIjPGXsWw=';
-  const trustchainPrivateKey = '6+Z3FlkU8n1g27/aNF2+3DFOwOXYVZXqiDhuvmF5Lpj0myDj+nNAkKZZxaPE7luhcRMQzTItDyk/zBh21rTyHw==';
+  const appId = '4bPbtrLr82kNDoaieRDMXIPycLrTynpL7hmIjPGXsWw=';
+  const appSecret = '6+Z3FlkU8n1g27/aNF2+3DFOwOXYVZXqiDhuvmF5Lpj0myDj+nNAkKZZxaPE7luhcRMQzTItDyk/zBh21rTyHw==';
 
   const bobId = 'bob';
   const bobEmail = 'bob@example.com';
@@ -139,9 +139,9 @@ describe('server', () => {
   };
 
   before(async () => {
-    aliceIdentity = await createIdentity(trustchainId, trustchainPrivateKey, aliceId);
+    aliceIdentity = await createIdentity(appId, appSecret, aliceId);
     alicePublicIdentity = await getPublicIdentity(aliceIdentity);
-    bobIdentity = await createIdentity(trustchainId, trustchainPrivateKey, bobId);
+    bobIdentity = await createIdentity(appId, appSecret, bobId);
     bobPublicIdentity = await getPublicIdentity(bobIdentity);
   });
 
@@ -149,8 +149,8 @@ describe('server', () => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
     await setup({
       dataPath: tempPath.name,
-      trustchainId,
-      trustchainPrivateKey,
+      appId,
+      appSecret,
       testMode: true,
     });
     testServer = app.listen(0);
@@ -168,7 +168,7 @@ describe('server', () => {
   it('/config', async () => {
     const response = await assertRequest(testServer, { verb: 'get', path: '/config' }, { status: 200 });
     const json = await response.json();
-    expect(json).to.deep.equal({ trustchainId, testMode: true });
+    expect(json).to.deep.equal({ appId, testMode: true });
   });
 
   describe('/signup', () => {

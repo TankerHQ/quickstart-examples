@@ -8,9 +8,15 @@ const listConfigFileNames = () => fs.readdirSync(configDir).filter((f) => f.matc
 
 const readJSONFile = (filePath) => JSON.parse(fs.readFileSync(filePath));
 
+// Migrate old configs with trustchain params into new configs with app params
+const modernizeConfig = (fullConfig) => {
+  const { trustchainId, trustchainPrivateKey, ...compatConfig } = fullConfig;
+  return { appId: trustchainId, appSecret: trustchainPrivateKey, ...compatConfig };
+};
+
 const readConfigFile = (fileName) => {
   const filePath = pathLib.join(configDir, fileName);
-  return readJSONFile(filePath);
+  return modernizeConfig(readJSONFile(filePath));
 };
 
 const expandPath = (filePath) => {
@@ -22,8 +28,8 @@ const printMissingConfigMessage = () => {
   console.log([
     'Welcome to the Tanker quickstart examples project.',
     '\nTo run the example server and applications, you need to:',
-    '  - create a Trustchain on the Tanker dashboard (https://dashboard.tanker.io)',
-    '  - download the JSON configuration file of this Trustchain',
+    '  - create an app on the Tanker dashboard (https://dashboard.tanker.io)',
+    '  - download the JSON configuration file of this app',
     '  - move this JSON configuration file under the config/ folder of this project',
     '\nThen, you\'ll be ready to re-run your command.',
   ].join('\n'));
@@ -51,7 +57,7 @@ const selectConfig = (configFileNames) => {
 
 const getConfig = async (path) => {
   if (path) {
-    return readJSONFile(expandPath(path));
+    return modernizeConfig(readJSONFile(expandPath(path)));
   }
 
   const configFileNames = listConfigFileNames();

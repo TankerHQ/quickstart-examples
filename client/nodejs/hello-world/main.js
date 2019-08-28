@@ -14,7 +14,7 @@ async function getTankerConfig() {
   const config = await res.json();
 
   // Folder to store tanker client data
-  const dbPath = `${__dirname}/data/${config.trustchainId.replace(/[\/\\]/g, '_')}/`;
+  const dbPath = `${__dirname}/data/${config.appId.replace(/[\/\\]/g, '_')}/`;
 
   if (!fs.existsSync(dbPath)) {
     fs.mkdirSync(dbPath);
