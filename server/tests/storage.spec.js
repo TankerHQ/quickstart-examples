@@ -10,7 +10,7 @@ describe('Storage', () => {
 
   beforeEach(() => {
     tempPath = tmp.dirSync({ unsafeCleanup: true });
-    storage = new Storage(tempPath.name, 'trustchainId');
+    storage = new Storage(tempPath.name, 'appId');
   });
 
   afterEach(() => {

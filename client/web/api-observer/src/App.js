@@ -43,7 +43,7 @@ class App extends Component {
       const res = await doRequest(`${serverRoot}/config`);
       const config = await res.json();
       this.tanker = new Tanker(config);
-      this.log('initTanker', config.trustchainId);
+      this.log('initTanker', config.appId);
       this.setState({ loading: false });
     } catch (e) {
       this.log(e);

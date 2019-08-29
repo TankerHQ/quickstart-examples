@@ -57,11 +57,11 @@ NSString* getWritablePath()
 
     // Start now and let run in background
     _tankerReadyPromise = [_apiClient getConfig].then(^(NSDictionary* config) {
-      NSString* trustchainId = config[@"trustchainId"];
-      NSLog(@"Using trustchain ID: %@", trustchainId);
+      NSString* appId = config[@"appId"];
+      NSLog(@"Using app ID: %@", appId);
 
       TKRTankerOptions* opts = [TKRTankerOptions options];
-      opts.trustchainID = trustchainId;
+      opts.trustchainID = appId;
       opts.writablePath = getWritablePath();
 
       NSString* url = config[@"url"];

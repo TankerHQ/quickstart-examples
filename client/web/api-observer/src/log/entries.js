@@ -21,7 +21,7 @@ const base64 = toBase64(binary);
 `;
 
 export default {
-  initApiClient: (trustchainId) => ({
+  initApiClient: (appId) => ({
     title: '[API] Initialize Client',
     code: `
 import { ApiClient } from "../your/app";
@@ -31,13 +31,13 @@ const api = new ApiClient();
 `
   }),
 
-  initTanker: (trustchainId) => ({
+  initTanker: (appId) => ({
     title: '[Tanker] Initialize SDK',
     code: `
 import { Tanker } from "@tanker/client-browser";
 
 const tanker = new Tanker({
-  trustchainId: ${quoteEllipsis(trustchainId, 20)}
+  appId: ${quoteEllipsis(appId, 20)}
 });
 `
   }),

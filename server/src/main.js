@@ -18,7 +18,7 @@ getConfig(cli.config).then(async (config) => {
   await setup({ ...config, dataPath });
 
   log('Tanker mock server:');
-  log(`Configured with Trustchain: ${config.trustchainId}`, 1);
+  log(`Configured with appId: ${config.appId}`, 1);
   log(`Listening on http://${getDemoIP()}:${port}/`, 1);
 
   app.listen(port);

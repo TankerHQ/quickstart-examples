@@ -1,8 +1,8 @@
 const fetch = require('node-fetch');
 
 class TrustchaindClient {
-  constructor({ trustchaindUrl, trustchainId, authToken }) {
-    this.trustchainId = trustchainId;
+  constructor({ trustchaindUrl, appId, authToken }) {
+    this.appId = appId;
     this.authToken = authToken;
     this.trustchaindUrl = trustchaindUrl;
   }
@@ -10,7 +10,7 @@ class TrustchaindClient {
   async sendVerification({ email_data }) {
     const body = {
       auth_token: this.authToken,
-      trustchain_id: this.trustchainId,
+      app_id: this.appId,
       email_data,
     };
     const response = await fetch(

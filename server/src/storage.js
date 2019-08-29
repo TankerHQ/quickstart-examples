@@ -15,9 +15,9 @@ const diffArrays = (a, b) => {
 };
 
 class Storage {
-  constructor(dataFolder, trustchainId) {
-    const escapedTrustchainId = trustchainId.replace(/[/\\]/g, '_');
-    this.dataFolder = `${dataFolder}/${escapedTrustchainId}`;
+  constructor(dataFolder, appId) {
+    const escapedAppId = appId.replace(/[/\\]/g, '_');
+    this.dataFolder = `${dataFolder}/${escapedAppId}`;
     if (!fs.existsSync(this.dataFolder)) {
       fs.mkdirSync(this.dataFolder);
     }
