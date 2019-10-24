@@ -7,6 +7,7 @@ config.json
 /**/node_modules
 
 .venv/
+.mypy_cache/
 quickstart.egg-info/
 
 # tmp data
