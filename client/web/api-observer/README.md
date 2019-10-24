@@ -18,7 +18,7 @@ Now you should see something looking like this in your browser:
 
 ![screenshot](./pics/application.png)
 
-Each button correspond more or less to a method of the [Tanker API](https://tanker.io/docs/latest/api/tanker/).
+Each button correspond more or less to a method of the [Tanker API](https://docs.tanker.io/core/latest/api/tanker/).
 
 On the right side of the application (or below if screen is small), there's an application log section you can check to see what's happening behind the hood and how the tanker SDK is being used. It looks like this:
 

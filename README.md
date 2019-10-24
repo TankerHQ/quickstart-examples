@@ -32,11 +32,11 @@ This repository features example applications using the **[JavaScript](https://g
 
 <br />
 
-On Windows 10 version 1607 or later, the easiest way to run the quickstart examples is by installing the [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/about).
+On Windows 10 version 1607 or later, the easiest way to run the quickstart examples is by installing the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about).
 
 Although it is possible to set up a Node.js stack on older Windows versions, the amount of work required is out of the scope of this guide.
 
-Once you have enabled [Windows Subsystem for Linux](https://msdn.microsoft.com/en-us/commandline/wsl/about), open a new Command Prompt instance and type the following:
+Once you have enabled [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about), open a new Command Prompt instance and type the following:
 
 ```bash
 bash
@@ -143,9 +143,9 @@ On this page, you will find all the instructions needed to run the example appli
 
 For more details and to go beyond the example applications, please refer to:
 
-* [SDK implementation guide](https://tanker.io/docs/latest/guide/getting-started/)
-* [API reference](https://tanker.io/docs/latest/api/tanker/)
-* [Product overview](https://tanker.io/product)
+* [SDK implementation guide](https://docs.tanker.io/core/latest/)
+* [API reference](https://docs.tanker.io/core/latest/api/tanker/)
+* [Product overview](https://tanker.io/)
 
 ## License
 
