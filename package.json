@@ -32,7 +32,7 @@
     "eslint": "./node_modules/.bin/eslint"
   },
   "devDependencies": {
-    "babel-eslint": "10.0.2",
+    "babel-eslint": "10.0.3",
     "eslint": "^6.2.2",
     "eslint-config-airbnb": "^18.0.0",
     "eslint-plugin-chai-expect": "^2.0.1",
