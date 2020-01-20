@@ -20,7 +20,7 @@ allprojects {
         google()
         jcenter()
         maven {
-            url 'https://maven.tanker.io'
+            url 'https://storage.googleapis.com/maven.tanker.io'
         }
     }
 }
