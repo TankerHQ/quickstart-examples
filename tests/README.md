@@ -6,10 +6,10 @@ This directory contains end-to-end tests for the Notepad and API Observer web ap
 
 First, install the `chromedriver` binary and make sure it is in you `PATH`.
 
-Then use `dmenv` to install `pytest`, `selenium` and other Python dependencies:
+Then use `poetry` to install `pytest`, `selenium` and other Python dependencies:
 
 ```
-dmenv install
+poetry install
 ```
 
 ## Running tests
@@ -24,7 +24,7 @@ yarn start:server
 Then run `pytest`, like this:
 
 ```
-dmenv run -- pytest test_notepad.py
+poery run pytest test_notepad.py
 ```
 
 ## Modifying test code
@@ -32,7 +32,7 @@ dmenv run -- pytest test_notepad.py
 You should use `mypy` to check any change in test code:
 
 ```
-dmenv run  -- mypy --strict --ignore-missing-imports
+poetry run mypy --strict --ignore-missing-imports
 ```
 
 ## Debugging

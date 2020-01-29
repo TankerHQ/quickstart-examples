@@ -4,8 +4,8 @@ stages:
 check/android:
   stage: check
   script:
-    - dmenv install
-    - dmenv run -- python run-ci.py android
+    - poetry install
+    - poetry run python run-ci.py android
   tags: [linux]
 
 
@@ -13,14 +13,14 @@ check/ios:
   stage: check
   script:
     - security unlock-keychain -p ${DEFAULT_KEYCHAIN_PASSWORD} ~/Library/Keychains/login.keychain-db
-    - dmenv install
-    - dmenv run -- python run-ci.py ios
+    - poetry install
+    - poetry run python run-ci.py ios
   tags: [macos]
 
 
 check/web:
   stage: check
   script:
-    - dmenv install
-    - dmenv run -- python run-ci.py web
+    - poetry install
+    - poetry run python run-ci.py web
   tags: [linux]
