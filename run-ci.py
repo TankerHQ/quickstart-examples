@@ -7,7 +7,6 @@ from path import Path
 import requests
 
 import ci
-import ci.dmenv
 
 
 def get_src_path():
@@ -35,9 +34,14 @@ def run_mypy():
     tests_path = src_path / "tests"
     env = os.environ.copy()
     env["MYPYPATH"] = tests_path / "stubs"
-    ci.dmenv.run(
-        "mypy", "--strict", "--ignore-missing-imports", tests_path, check=True, env=env
+    # fmt: off
+    ci.run(
+        "poetry", "run",
+        "mypy", "--strict", "--ignore-missing-imports", tests_path,
+        check=True,
+        env=env,
     )
+    # fmt: on
 
 
 def write_server_config():
@@ -68,8 +72,9 @@ def run_end_to_end_tests(app):
             # so add that to PATH.
             # This is required for Selenium to work.
             env["PATH"] = "/usr/lib/chromium-browser:" + env["PATH"]
-            ci.dmenv.run(
-                "pytest",
+            # fmt: off
+            ci.run(
+                "poetry", "run", "pytest",
                 "--verbose",
                 "--capture=no",
                 "--headless",
@@ -77,6 +82,7 @@ def run_end_to_end_tests(app):
                 check=True,
                 env=env,
             )
+            # fmt: on
 
 
 def run_linters():
