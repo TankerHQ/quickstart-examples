@@ -13,19 +13,19 @@
     "lint": "cd .. && eslint --config=./server/.eslintrc server/src/**.js server/tests/**.js"
   },
   "dependencies": {
-    "@tanker/identity": "2.2.4",
+    "@tanker/identity": "2.2.7",
     "body-parser": "^1.19.0",
     "commander": "^2.20.0",
     "cors": "^2.8.5",
     "email-validator": "^2.0.4",
     "express": "^4.17.1",
-    "express-session": "^1.16.1",
-    "libsodium-wrappers-sumo": "^0.7.4",
-    "marked": "^0.7.0",
+    "express-session": "^1.17.0",
+    "libsodium-wrappers-sumo": "^0.7.6",
+    "marked": "^0.8.0",
     "morgan": "^1.9.1",
     "node-fetch": "^2.6.0",
-    "select-shell": "^1.1.2",
-    "uuid": "^3.3.2"
+    "select-shell": "^1.1.3",
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
