@@ -2,6 +2,7 @@ stages:
   - check
 
 check/android:
+  when: manual
   stage: check
   script:
     - poetry install

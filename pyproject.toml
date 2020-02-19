@@ -6,8 +6,8 @@ authors = ["Tanker team <tech@tanker.io>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+ci = "2020.2.2093"
 
-ci = { git = "git+ssh://git@tanker.local/Tanker/ci", branch = "master" }
 
 [tool.poetry.dev-dependencies]
 faker = "^4.0.0"
@@ -16,6 +16,11 @@ pytest = "^5.3.4"
 requests = "^2.22.0"
 selenium = "^3.141.0"
 typing-extensions = "^3.7.4"
+
+[[tool.poetry.source]]
+name = "tanker.local"
+url = "http://tanker.local:8181"
+
 
 [build-system]
 requires = ["poetry>=0.12"]
