@@ -8,7 +8,6 @@ authors = ["Tanker team <tech@tanker.io>"]
 python = "^3.7"
 ci = "2020.2.2093"
 
-
 [tool.poetry.dev-dependencies]
 faker = "^4.0.0"
 mypy = "^0.761"
