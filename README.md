@@ -88,13 +88,14 @@ cd quickstart-examples && yarn
 
 ### Create a Tanker App
 
-To create a Tanker App, create a free account on the [dashboard](https://dashboard.tanker.io/signup) and follow the instructions. Make sure you store the configuration file safely, as you'll need it later.
+To create a Tanker App, create a free account on the [dashboard](https://dashboard.tanker.io/signup) and follow the instructions. Since you are just testing Tanker and not building a real private application, feel free to enable the test mode.
 
 Once you start building real private applications, you can just create other Tanker Apps.
 
 ### Configure
 
-Take the JSON configuration file from the previous step and copy it under the `config/` folder.
+Take the JSON configuration file from the previous step and copy it under the `config/` folder. Add an `authToken` key containing the value of the
+authorization token in the "API credentials" section of the dashboard.
 
 Note that the JSON configuration file can have any name ending with the `.json` extension and must have the following format:
 
@@ -102,7 +103,8 @@ Note that the JSON configuration file can have any name ending with the `.json` 
 // e.g. config/app.json
 {
     "appId": "...",
-    "appSecret": "..."
+    "appSecret": "...",
+    "authToken": "..."
 }
 ```
 

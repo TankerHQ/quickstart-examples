@@ -41,7 +41,21 @@ const makeClientConfig = (fullConfig) => {
   return config;
 };
 
+const checkConfig = (config) => {
+  const requiredKeys = ['appId', 'appSecret'];
+  if (!config.testMode) {
+    requiredKeys.push('authToken');
+  }
+  requiredKeys.forEach((key) => {
+    if (!config[key]) {
+      console.error(`Error: missing key "${key}" in configuration file`);
+      process.exit(1);
+    }
+  });
+};
+
 const setup = async (config) => {
+  checkConfig(config);
   serverConfig = config;
   clientConfig = makeClientConfig(config);
 
