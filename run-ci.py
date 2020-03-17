@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import time
 import sys
@@ -45,13 +46,16 @@ def run_mypy():
 
 
 def write_server_config():
-    config_path_in = Path("config.in.json")
-    contents = config_path_in.text()
-    for key in ["TRUSTCHAIN_ID", "TRUSTCHAIN_PRIVATE_KEY", "TRUSTCHAIN_URL"]:
-        value = os.environ[key]
-        contents = contents.replace(key, value)
+    server_config = {}
+    server_config["appId"] = os.environ["APP_ID"]
+    server_config["appSecret"] = os.environ["APP_SECRET"]
+    server_config["url"] = os.environ["TANKER_URL"]
+    # Note: end-to-end tests do _not_ use the email
+    # verification method, but the server will complain
+    # if the auth token is missing:
+    server_config["authToken"] = "dummy-token"
     config_path_out = Path("config.json")
-    config_path_out.write_text(contents)
+    config_path_out.write_text(json.dumps(server_config, indent=2))
     return config_path_out
 
 
