@@ -1,17 +1,39 @@
+html {
+  font-size: 14px;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
 }
 
-.panel-body {
+@media (min-width: 1330px) {
+  .container {
+    max-width: 1300px;
+  }
+}
+
+.page-header {
+  padding-bottom: 9px;
+  margin: 40px 0 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.page-header h1 {
+  font-size: 36px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.card-title {
+  margin-bottom: 0;
+}
+
+.card-body {
   min-height: 350px;
   max-height: calc(100vh - 200px);
   overflow: auto;
-}
-
-@media (min-width: 1330px) {
-  .container {
-    width: 1300px;
-  }
 }

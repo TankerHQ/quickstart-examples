@@ -1,16 +1,16 @@
 import React from 'react';
-import { Badge, Panel } from 'react-bootstrap';
+import { Badge, Card } from 'react-bootstrap';
 
 import LogEntry from './LogEntry';
 
-const LogPanel = ({ entries }) => (
-  <Panel>
-    <Panel.Heading>
-      <Panel.Title componentClass="h5">
-        Application log <Badge id="log-badge">{entries.length}</Badge>
-      </Panel.Title>
-    </Panel.Heading>
-    <Panel.Body>
+const LogCard = ({ entries }) => (
+  <Card>
+    <Card.Header>
+      <Card.Title>
+        Application log <Badge id="log-badge" variant="secondary">{entries.length}</Badge>
+      </Card.Title>
+    </Card.Header>
+    <Card.Body>
       {entries.map(entry => (
         <LogEntry
           key={entry.id}
@@ -23,8 +23,8 @@ const LogPanel = ({ entries }) => (
           {entry.body}
         </LogEntry>
       ))}
-    </Panel.Body>
-  </Panel>
+    </Card.Body>
+  </Card>
 );
 
-export default LogPanel;
+export default LogCard;

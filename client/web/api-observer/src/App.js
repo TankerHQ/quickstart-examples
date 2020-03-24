@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Button, Col, ControlLabel, FormGroup, FormControl, Grid, InputGroup, PageHeader, Panel, Row } from 'react-bootstrap';
+import { Button, Card, Col, Container, FormControl, FormGroup, FormLabel, InputGroup, Row } from 'react-bootstrap';
 import * as emailValidator from 'email-validator';
 import Tanker, { toBase64, fromBase64, errors } from '@tanker/client-browser';
 
-import { getEntry, LogPanel } from './log';
+import { getEntry, LogCard } from './log';
 
 const {
   STOPPED,
@@ -205,20 +205,33 @@ class App extends Component {
     const sessionButtonDisabled = email === '' || !emailValidator.validate(email) || [STOPPED, READY].indexOf(this.tanker.status) === -1;
     const encryptButtonDisabled = sessionButtonDisabled || clearText === '' || (!!shareWith && !emailValidator.validate(shareWith));
 
+    const sessionButtonType = (loading || this.tanker.status !== READY) ? 'Start' : 'Stop';
+    const sessionButton = (
+      <Button
+        variant="primary"
+        onClick={sessionButtonType === 'Start' ? this.onStart : this.onStop}
+        disabled={sessionButtonDisabled}
+      >
+        {sessionButtonType}
+      </Button>
+    );
+
     return (
-      <Grid>
+      <Container>
         <Row>
-          <Col lgOffset={1} md={12} lg={10}>
-
-            <PageHeader>Tanker API Observer</PageHeader>
-
+          <Col md={12}>
+            <div className="page-header">
+              <h1>Tanker API Observer</h1>
+            </div>
             <Row>
-              <Col md={6}>
-                <Panel bsStyle="primary">
-                  <Panel.Heading><Panel.Title componentClass="h5">Application</Panel.Title></Panel.Heading>
-                  <Panel.Body>
+              <Col lg={6} md={12}>
+                <Card variant="primary">
+                  <Card.Header>
+                    <Card.Title>Application</Card.Title>
+                  </Card.Header>
+                  <Card.Body>
                     <FormGroup>
-                      <ControlLabel>Session</ControlLabel>
+                      <FormLabel>Session</FormLabel>
                       <InputGroup>
                         <FormControl
                           id="email"
@@ -237,31 +250,14 @@ class App extends Component {
                           }}
                           disabled={loading || this.tanker.status !== STOPPED}
                         />
-                        <InputGroup.Button>
-                          {(loading || this.tanker.status !== READY) && (
-                            <Button
-                              bsStyle="primary"
-                              onClick={this.onStart}
-                              disabled={sessionButtonDisabled}
-                            >
-                              Start
-                            </Button>
-                          )}
-                          {!loading && this.tanker.status === READY && (
-                            <Button
-                              bsStyle="danger"
-                              onClick={this.onStop}
-                              disabled={sessionButtonDisabled}
-                            >
-                              Stop
-                            </Button>
-                          )}
-                        </InputGroup.Button>
+                        <InputGroup.Append>
+                          {sessionButton}
+                        </InputGroup.Append>
                       </InputGroup>
                     </FormGroup>
                     <hr />
                     <FormGroup>
-                      <ControlLabel>Encryption</ControlLabel>
+                      <FormLabel>Encryption</FormLabel>
                       <InputGroup>
                         <FormControl
                           id="clearText"
@@ -274,18 +270,20 @@ class App extends Component {
                             }
                           }}
                         />
-                        <InputGroup.Button>
+                        <InputGroup.Append>
                           <Button
-                            bsStyle="primary"
+                            variant="primary"
                             onClick={this.onEncrypt}
                             disabled={encryptButtonDisabled}
                           >
                             Encrypt
                           </Button>
-                        </InputGroup.Button>
+                        </InputGroup.Append>
                       </InputGroup>
                       <InputGroup style={{ marginTop: '.5em' }}>
-                        <InputGroup.Addon>Share with:</InputGroup.Addon>
+                        <InputGroup.Prepend>
+                          <InputGroup.Text>Share with:</InputGroup.Text>
+                        </InputGroup.Prepend>
                         <FormControl
                           id="shareWith"
                           name="shareWith"
@@ -297,7 +295,7 @@ class App extends Component {
                     </FormGroup>
                     <hr />
                     <FormGroup>
-                      <ControlLabel>Decryption</ControlLabel>
+                      <FormLabel>Decryption</FormLabel>
                       <InputGroup>
                         <FormControl
                           id="encryptedText"
@@ -310,27 +308,27 @@ class App extends Component {
                             }
                           }}
                         />
-                        <InputGroup.Button>
+                        <InputGroup.Append>
                           <Button
-                            bsStyle="primary"
+                            variant="primary"
                             onClick={this.onDecrypt}
                             disabled={encryptedText === ''}
                           >
                             Decrypt
                           </Button>
-                        </InputGroup.Button>
+                        </InputGroup.Append>
                       </InputGroup>
                     </FormGroup>
-                  </Panel.Body>
-                </Panel>
+                  </Card.Body>
+                </Card>
               </Col>
-              <Col md={6}>
-                <LogPanel entries={log} />
+              <Col lg={6} md={12}>
+                <LogCard entries={log} />
               </Col>
             </Row>
           </Col>
         </Row>
-      </Grid>
+      </Container>
     );
   }
 }

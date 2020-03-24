@@ -1,4 +1,4 @@
-import LogPanel from './LogPanel';
+import LogCard from './LogCard';
 import entries from './entries';
 
 let entryLastId = 0;
@@ -41,5 +41,5 @@ const getEntry = (...args) => {
 
 export {
     getEntry,
-    LogPanel
+    LogCard
 };
