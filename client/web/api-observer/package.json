@@ -9,7 +9,7 @@
   "dependencies": {
     "@babel/core": "7.8.4",
     "@babel/register": "7.8.3",
-    "@tanker/client-browser": "2.2.7",
+    "@tanker/client-browser": "2.3.0",
     "core-js": "^3.0.0",
     "email-validator": "^2.0.4",
     "react": "^16.12.0",
