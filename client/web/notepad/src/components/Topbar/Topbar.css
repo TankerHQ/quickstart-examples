@@ -1,3 +1,10 @@
+.navbar {
+  background-color: #f8f8f8;
+  border-color: #e7e7e7;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+}
+
 .navbar .navbar-brand {
   display: flex;
   align-items: center;

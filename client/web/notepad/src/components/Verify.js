@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Alert, Button, ControlLabel, FormControl, FormGroup, HelpBlock, Panel,
+  Alert, Button, Card, FormLabel, FormControl, FormGroup,
 } from 'react-bootstrap';
 
 const validateCode = (code) => typeof code === 'string' && code.match(/^\d{8}$/);
@@ -49,41 +49,41 @@ class Verify extends React.Component {
     const disabled = isLoading || !isLoaded || isSaving || !codeValid;
 
     return (
-      <Panel>
-        <Panel.Heading id="identity-heading">Identity verification needed</Panel.Heading>
-        <Panel.Body>
-          {isLoading && <Alert bsStyle="warning">Sending verification code to {user.email}...</Alert>}
-          {isLoaded && !error && <Alert bsStyle="success">Verification code sent to {user.email}. Please fill it in below:</Alert>}
+      <Card>
+        <Card.Header id="identity-heading">Identity verification needed</Card.Header>
+        <Card.Body>
+          {isLoading && <Alert variant="warning">Sending verification code to {user.email}...</Alert>}
+          {isLoaded && !error && <Alert variant="success">Verification code sent to {user.email}. Please fill it in below:</Alert>}
           {error && (
-            <Alert id="edit-error" bsStyle="danger">
+            <Alert id="edit-error" variant="danger">
               {error}
             </Alert>
           )}
           <form>
-            <FormGroup validationState={error ? 'error' : null}>
-              <ControlLabel>Verification code</ControlLabel>
+            <FormGroup>
+              <FormLabel>Verification code</FormLabel>
               <FormControl
                 type="text"
                 value={code}
                 placeholder="··· ··· ···"
                 onChange={this.onCodeChange}
+                isInvalid={!!error}
                 required
                 autoFocus
               />
-              <FormControl.Feedback />
-              {error && <HelpBlock>The code is invalid</HelpBlock>}
+              {error && <FormControl.Feedback type="invalid">The code is invalid</FormControl.Feedback>}
             </FormGroup>
             <Button
               id="submit-button"
-              bsStyle="success"
+              variant="success"
               onClick={this.onSubmit}
               disabled={disabled}
             >
               Submit
             </Button>
           </form>
-        </Panel.Body>
-      </Panel>
+        </Card.Body>
+      </Card>
     );
   }
 }

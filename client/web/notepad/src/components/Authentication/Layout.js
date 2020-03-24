@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  Panel, Tab, Nav, NavItem,
+  Card, Nav, Tab,
 } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { Switch, Route, Redirect } from 'react-router';
@@ -36,17 +36,21 @@ class Layout extends React.Component {
     const activeKey = isSignupPath(pathname) ? 'signup' : 'login';
 
     return (
-      <Tab.Container defaultActiveKey={activeKey} id="session_form_container">
-        <Panel>
-          <Panel.Heading>
-            <Nav bsStyle="tabs" role="tablist" className="nav-justified">
-              <NavItem eventKey="login" onClick={this.onLoginTab}>Login</NavItem>
-              <NavItem eventKey="signup" onClick={this.onSignupTab}>Signup</NavItem>
+      <Tab.Container defaultActiveKey={activeKey}>
+        <Card id="session_form_container">
+          <Card.Header>
+            <Nav variant="tabs" role="tablist" className="nav-justified">
+              <Nav.Item>
+                <Nav.Link eventKey="login" onClick={this.onLoginTab}>Login</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="signup" onClick={this.onSignupTab}>Signup</Nav.Link>
+              </Nav.Item>
             </Nav>
-          </Panel.Heading>
-          <Panel.Body>
-            <Tab.Content animation={false}>
-              <Tab.Pane eventKey={activeKey}>
+          </Card.Header>
+          <Card.Body>
+            <Tab.Content>
+              <Tab.Pane eventKey={activeKey} transition={false}>
                 <Switch>
                   <Route path="/signup" render={() => <Signup onSubmit={onSignUp} />} />
                   <Route path="/login" render={() => <Login onSubmit={onLogIn} />} />
@@ -56,8 +60,8 @@ class Layout extends React.Component {
                 </Switch>
               </Tab.Pane>
             </Tab.Content>
-          </Panel.Body>
-        </Panel>
+          </Card.Body>
+        </Card>
       </Tab.Container>
     );
   }

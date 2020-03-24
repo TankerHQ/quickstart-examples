@@ -4,10 +4,9 @@ import { withRouter } from 'react-router-dom';
 import {
   Alert,
   Button,
-  ControlLabel,
+  FormLabel,
   FormGroup,
   FormControl,
-  HelpBlock,
 } from 'react-bootstrap';
 
 class PasswordResetRequest extends React.Component {
@@ -56,29 +55,29 @@ class PasswordResetRequest extends React.Component {
 
     return (
       <form>
-        {errorMessage && <Alert bsStyle="danger">{errorMessage}</Alert>}
-        {successMessage && <Alert bsStyle="success">{successMessage}</Alert>}
-        <FormGroup controlId="newEmailFormGroup" validationState={emailValid ? null : 'error'}>
+        {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+        {successMessage && <Alert variant="success">{successMessage}</Alert>}
+        <FormGroup controlId="newEmailFormGroup">
           {!errorMessage && !successMessage && (
             <Alert>Please fill in your email address to receive a password reset link.</Alert>
           )}
-          <ControlLabel>Email</ControlLabel>
+          <FormLabel>Email</FormLabel>
           <FormControl
             type="text"
             value={email}
             placeholder="Enter your email address"
             onChange={(event) => this.onEmailChange({ email: event.target.value })}
+            isInvalid={!emailValid}
             disabled={formDisabled}
             required
             autoFocus
           />
-          <FormControl.Feedback />
-          {!emailValid && <HelpBlock>Please enter a valid email address</HelpBlock>}
+          {!emailValid && <FormControl.Feedback type="invalid">Please enter a valid email address</FormControl.Feedback>}
         </FormGroup>
         <Button
           id="save-email-button"
           type="submit"
-          bsStyle="primary"
+          variant="primary"
           onClick={this.onSubmit}
           disabled={formDisabled || !email || !emailValid}
         >
@@ -86,7 +85,7 @@ class PasswordResetRequest extends React.Component {
         </Button>
         <Button
           id="cancel-button"
-          bsStyle="link"
+          variant="link"
           onClick={this.navigationHandler('/login')}
           disabled={formDisabled}
         >
