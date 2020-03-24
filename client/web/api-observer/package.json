@@ -7,20 +7,21 @@
     "start": "react-scripts start"
   },
   "dependencies": {
-    "@babel/core": "7.8.4",
-    "@babel/register": "7.8.3",
+    "@babel/core": "7.9.0",
+    "@babel/helper-call-delegate": "7.8.7",
+    "@babel/register": "7.9.0",
     "@tanker/client-browser": "2.3.0",
-    "core-js": "^3.0.0",
-    "email-validator": "^2.0.4",
-    "react": "^16.12.0",
-    "react-app-polyfill": "^1.0.5",
-    "react-bootstrap": "^0.32.4",
-    "react-dom": "^16.12.0",
-    "react-highlight": "^0.12.0",
-    "regenerator-runtime": "^0.13.3"
+    "core-js": "3.6.4",
+    "email-validator": "2.0.4",
+    "react": "16.13.1",
+    "react-app-polyfill": "1.0.6",
+    "react-bootstrap": "0.32.4",
+    "react-dom": "16.13.1",
+    "react-highlight": "0.12.0",
+    "regenerator-runtime": "0.13.5"
   },
   "devDependencies": {
-    "react-scripts": "^3.3.0"
+    "react-scripts": "3.4.1"
   },
   "browserslist": [
     ">0.2%",
