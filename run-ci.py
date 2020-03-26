@@ -54,7 +54,7 @@ def write_server_config():
     # verification method, but the server will complain
     # if the auth token is missing:
     server_config["authToken"] = "dummy-token"
-    config_path_out = Path("config.json")
+    config_path_out = Path("config/ci.json")
     config_path_out.write_text(json.dumps(server_config, indent=2))
     return config_path_out
 
