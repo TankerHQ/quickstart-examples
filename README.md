@@ -68,7 +68,7 @@ Install Yarn by [following the Ubuntu instructions](https://yarnpkg.com/en/docs/
 
 Check your [Node.js](https://nodejs.org/en/) and [Yarn](https://yarnpkg.com/en/docs/install) versions, and upgrade if needed:
 ```bash
-node -v  # >= 8    (async/await support)
+node -v  # >= 10   (maintained version, not eol)
 yarn -v  # >= 1.0  (workspaces support)
 ```
 

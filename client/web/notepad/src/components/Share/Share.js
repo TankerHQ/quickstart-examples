@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Button, Panel, Alert, FormGroup, ControlLabel, FormControl, HelpBlock,
+  Alert, Button, Card, FormGroup, FormLabel, FormControl,
 } from 'react-bootstrap';
 import * as emailValidator from 'email-validator';
 
@@ -47,16 +47,16 @@ class Share extends React.Component {
       emails, emailsValid, error, isSharing,
     } = this.state;
     return (
-      <Panel>
-        <Panel.Heading id="share-heading">Share</Panel.Heading>
-        <Panel.Body>
+      <Card>
+        <Card.Header id="share-heading">Share</Card.Header>
+        <Card.Body>
           {error && (
-            <Alert id="share-error" bsStyle="danger">
+            <Alert id="share-error" variant="danger">
               {error}
             </Alert>
           )}
           <FormGroup controlId="share-with-input">
-            <ControlLabel>Share with</ControlLabel>
+            <FormLabel>Share with</FormLabel>
             <FormControl
               type="text"
               value={emails.join(', ')}
@@ -65,25 +65,24 @@ class Share extends React.Component {
               required
               autoFocus
             />
-            <FormControl.Feedback />
-            {!emailsValid && <HelpBlock>At least one email address is invalid</HelpBlock>}
+            {!emailsValid && <FormControl.Feedback type="invalid">At least one email address is invalid</FormControl.Feedback>}
           </FormGroup>
           <Button
             id="share-button"
-            bsStyle="primary"
+            variant="primary"
             className="pull-right"
             onClick={this.onShareClicked}
             disabled={isSharing || !emailsValid}
           >
             {isSharing ? 'Sharing...' : 'Share'}
           </Button>
-        </Panel.Body>
-        <Panel.Footer>
+        </Card.Body>
+        <Card.Footer>
           <a onClick={this.onBackClicked} href="/">
             &laquo; Back
           </a>
-        </Panel.Footer>
-      </Panel>
+        </Card.Footer>
+      </Card>
     );
   }
 }

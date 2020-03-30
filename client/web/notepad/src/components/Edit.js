@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Alert, Button, ButtonGroup, FormControl, FormGroup, Panel,
+  Alert, Button, ButtonGroup, Card, FormControl, FormGroup,
 } from 'react-bootstrap';
 
 import Spinner from './Spinner';
@@ -94,19 +94,19 @@ class Edit extends React.Component {
     const disabled = isLoading || !isLoaded || isSaving || isDeleting;
 
     return (
-      <Panel>
-        <Panel.Heading id="your-note-heading">My note</Panel.Heading>
-        <Panel.Body>
+      <Card>
+        <Card.Header id="your-note-heading">My note</Card.Header>
+        <Card.Body>
           <form>
             {error && (
-              <Alert id="edit-error" bsStyle="danger">
+              <Alert id="edit-error" variant="danger">
                 {error}
               </Alert>
             )}
             <FormGroup id="edit">
               <FormControl
                 id="edit-textarea"
-                componentClass="textarea"
+                as="textarea"
                 onChange={this.onChange}
                 value={isLoading ? 'Loading...' : this.state.text}
                 rows="12"
@@ -119,7 +119,7 @@ class Edit extends React.Component {
               <ButtonGroup>
                 <Button
                   id="delete-button"
-                  bsStyle="danger"
+                  variant="danger"
                   onClick={this.onDeleteClicked}
                   disabled={disabled}
                 >
@@ -127,7 +127,7 @@ class Edit extends React.Component {
                 </Button>
                 <Button
                   id="save-button"
-                  bsStyle="success"
+                  variant="success"
                   onClick={this.onSave}
                   disabled={disabled}
                 >
@@ -135,7 +135,7 @@ class Edit extends React.Component {
                 </Button>
                 <Button
                   id="go-to-share-button"
-                  bsStyle="primary"
+                  variant="primary"
                   onClick={this.onShareClicked}
                   disabled={disabled}
                 >
@@ -144,13 +144,13 @@ class Edit extends React.Component {
               </ButtonGroup>
             </div>
           </form>
-        </Panel.Body>
-        <Panel.Footer>
+        </Card.Body>
+        <Card.Footer>
           <a id="back-link" onClick={this.onBackClicked} href="/">
             &laquo; Back
           </a>
-        </Panel.Footer>
-      </Panel>
+        </Card.Footer>
+      </Card>
     );
   }
 }

@@ -1,7 +1,7 @@
 const { Tanker } = require('@tanker/client-node');
 const fetch = require('node-fetch');
 const fs = require('fs');
-const uuid = require('uuid/v4');
+const { v4: uuid } = require('uuid');
 
 const serverRoot = 'http://127.0.0.1:8080';
 

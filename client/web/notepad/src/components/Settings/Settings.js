@@ -2,10 +2,9 @@ import React from 'react';
 import {
   Alert,
   Button,
+  Card,
   FormGroup,
   FormControl,
-  HelpBlock,
-  Panel,
 } from 'react-bootstrap';
 import * as emailValidator from 'email-validator';
 
@@ -138,48 +137,48 @@ class Settings extends React.Component {
     const [passwordValid, passwordError] = this.validatePassword();
 
     return (
-      <Panel>
-        <Panel.Heading id="settings-heading">Settings</Panel.Heading>
-        <Panel.Body id="settings-body">
+      <Card>
+        <Card.Header id="settings-heading">Settings</Card.Header>
+        <Card.Body id="settings-body">
           {/* --------- EMAIL --------- */}
           <section>
             <h2>Email address</h2>
             {editMode === 'email' && (
               <form>
-                {errorMessage && <Alert bsStyle="danger">{errorMessage}</Alert>}
-                {successMessage && <Alert bsStyle="success">{successMessage}</Alert>}
-                <FormGroup validationState={!!newEmail && !emailValid ? 'error' : null}>
+                {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+                {successMessage && <Alert variant="success">{successMessage}</Alert>}
+                <FormGroup>
                   <FormControl
                     type="text"
                     id="new-email-input"
                     value={newEmail}
                     placeholder="Enter your new email address"
                     onChange={(event) => this.onEmailChange({ newEmail: event.target.value })}
+                    isInvalid={!!newEmail && !emailValid}
                     autoFocus
                     required
                   />
-                  <FormControl.Feedback />
-                  {!!newEmail && !emailValid && <HelpBlock>{emailError}</HelpBlock>}
+                  {!!newEmail && !emailValid && <FormControl.Feedback type="invalid">{emailError}</FormControl.Feedback>}
                 </FormGroup>
                 {verificationCodeSent && (
-                  <FormGroup validationState={!!newEmail && !emailValid ? 'error' : null}>
+                  <FormGroup>
                     <FormControl
                       type="text"
                       id="new-email-verification-code"
                       value={verificationCode}
                       placeholder="Enter your verification code"
                       onChange={(event) => this.onVerificationCodeChange({ verificationCode: event.target.value })}
+                      isInvalid={!!newEmail && !emailValid}
                       autoFocus
                       required
                     />
-                    <FormControl.Feedback />
-                    {!!newEmail && !emailValid && <HelpBlock>{emailError}</HelpBlock>}
+                    {!!newEmail && !emailValid && <FormControl.Feedback type="invalid">{emailError}</FormControl.Feedback>}
                   </FormGroup>
                 )}
                 <Button
                   id="save-email-button"
                   type="submit"
-                  bsStyle="primary"
+                  variant="primary"
                   onClick={this.onEmailButtonClick}
                   disabled={changeInProgress || emailEmpty || !emailValid}
                 >
@@ -187,7 +186,7 @@ class Settings extends React.Component {
                 </Button>
                 <Button
                   id="cancel-button"
-                  bsStyle="link"
+                  variant="link"
                   onClick={this.onCancel}
                   disabled={changeInProgress}
                 >
@@ -201,7 +200,7 @@ class Settings extends React.Component {
                 <Button
                   id="edit-email-button"
                   className="edit-link"
-                  bsStyle="link"
+                  variant="link"
                   onClick={this.onEmailEdit}
                   display={editMode === 'email' ? 'none' : 'initial'}
                   disabled={changeInProgress}
@@ -216,8 +215,8 @@ class Settings extends React.Component {
             <h2>Password</h2>
             {editMode === 'password' && (
               <form>
-                {errorMessage && <Alert bsStyle="danger">{errorMessage}</Alert>}
-                {successMessage && <Alert bsStyle="success">{successMessage}</Alert>}
+                {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+                {successMessage && <Alert variant="success">{successMessage}</Alert>}
                 <FormGroup>
                   <FormControl
                     type="password"
@@ -229,32 +228,33 @@ class Settings extends React.Component {
                     required
                   />
                 </FormGroup>
-                <FormGroup validationState={passwordValid ? null : 'error'}>
+                <FormGroup>
                   <FormControl
                     type="password"
                     id="new-password-input"
                     value={newPassword}
                     placeholder="Enter your new password"
                     onChange={(event) => this.onPasswordChange({ newPassword: event.target.value })}
+                    isInvalid={!passwordValid}
                     required
                   />
                 </FormGroup>
-                <FormGroup validationState={passwordValid ? null : 'error'}>
+                <FormGroup>
                   <FormControl
                     type="password"
                     id="password-confirmation-input"
                     value={newPasswordConfirmation}
                     placeholder="Confirm your new password"
                     onChange={(event) => this.onPasswordChange({ newPasswordConfirmation: event.target.value })}
+                    isInvalid={!passwordValid}
                     required
                   />
-                  <FormControl.Feedback />
-                  {!passwordValid && <HelpBlock>{passwordError}</HelpBlock>}
+                  {!passwordValid && <FormControl.Feedback type="invalid">{passwordError}</FormControl.Feedback>}
                 </FormGroup>
                 <Button
                   id="save-password-button"
                   type="submit"
-                  bsStyle="primary"
+                  variant="primary"
                   onClick={this.onPasswordSave}
                   disabled={changeInProgress || passwordEmpty || !passwordValid}
                 >
@@ -262,7 +262,7 @@ class Settings extends React.Component {
                 </Button>
                 <Button
                   id="cancel-button"
-                  bsStyle="link"
+                  variant="link"
                   onClick={this.onCancel}
                   disabled={changeInProgress}
                 >
@@ -275,7 +275,7 @@ class Settings extends React.Component {
                 <Button
                   id="edit-password-button"
                   className="edit-link"
-                  bsStyle="link"
+                  variant="link"
                   onClick={this.onPasswordEdit}
                   display={editMode === 'password' ? 'none' : 'initial'}
                   disabled={changeInProgress}
@@ -285,13 +285,13 @@ class Settings extends React.Component {
               </FormGroup>
             )}
           </section>
-        </Panel.Body>
-        <Panel.Footer>
+        </Card.Body>
+        <Card.Footer>
           <a onClick={this.onBackClicked} href="/">
             &laquo; Back
           </a>
-        </Panel.Footer>
-      </Panel>
+        </Card.Footer>
+      </Card>
     );
   }
 }

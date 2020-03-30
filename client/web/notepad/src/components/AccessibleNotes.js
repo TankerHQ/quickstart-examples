@@ -36,20 +36,20 @@ class AccessibleNotes extends React.Component {
     const noteCount = accessibleNotes.length;
 
     if (isLoading) {
-      return <Alert bsStyle="info">Loading shared notes...</Alert>;
+      return <Alert variant="info">Loading shared notes...</Alert>;
     }
 
     return (
       <div>
         {error && (
-          <Alert bsStyle="danger">
+          <Alert variant="danger">
             <h4>Error fetching friend&lsquo;s note list:</h4>
             {error}
           </Alert>
         )}
         <Button
           id="refresh-button"
-          bsStyle="link"
+          variant="link"
           className="pull-right"
           onClick={this.load}
         >

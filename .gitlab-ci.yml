@@ -11,6 +11,7 @@ check/android:
 
 
 check/ios:
+  when: manual
   stage: check
   script:
     - security unlock-keychain -p ${DEFAULT_KEYCHAIN_PASSWORD} ~/Library/Keychains/login.keychain-db

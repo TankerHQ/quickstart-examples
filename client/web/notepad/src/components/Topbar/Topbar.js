@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  MenuItem, Nav, Navbar, NavDropdown,
+  Nav, Navbar, NavDropdown,
 } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 
@@ -10,23 +10,21 @@ import './Topbar.css';
 const Topbar = ({
   status, email, onLogOut, history,
 }) => (
-  <Navbar staticTop>
-    <Navbar.Header>
-      <Navbar.Brand>
-        <Logo className="logo" /> Notepad
-      </Navbar.Brand>
-      <Navbar.Toggle />
-    </Navbar.Header>
-    <Navbar.Collapse>
+  <Navbar fixed="top" expand="md">
+    <Navbar.Brand>
+      <Logo className="logo" /> Notepad
+    </Navbar.Brand>
+    <Navbar.Toggle />
+    <Navbar.Collapse className="justify-content-end">
       {status === 'open' && (
-        <Nav pullRight>
+        <Nav>
           <NavDropdown title={email} id="topbar_dropdown">
-            <MenuItem id="settings-menu-item" onClick={() => history.push('/settings')} eventKey={1}>
+            <NavDropdown.Item id="settings-menu-item" onClick={() => history.push('/settings')} eventKey={1}>
               Settings
-            </MenuItem>
-            <MenuItem id="log-out-menu-item" onClick={onLogOut} eventKey={2}>
+            </NavDropdown.Item>
+            <NavDropdown.Item id="log-out-menu-item" onClick={onLogOut} eventKey={2}>
               Logout
-            </MenuItem>
+            </NavDropdown.Item>
           </NavDropdown>
         </Nav>
       )}

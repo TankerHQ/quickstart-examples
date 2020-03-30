@@ -1,7 +1,15 @@
+html {
+  font-size: 14px;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+}
+
+.pull-right {
+  float: right!important;
 }
 
 .app section {
@@ -22,14 +30,18 @@ body {
   padding-left: 0;
 }
 
-.app .panel {
+.app .container {
+  margin-top: 100px;
+}
+
+.app .card {
   width: 500px;
   max-width: 100%;
   margin: 6rem auto;
 }
 
-.app .panel-body {
-  padding: 3rem;
+.app .card-body {
+  padding: 2rem;
 }
 
 .app #session_form_container {
@@ -37,14 +49,23 @@ body {
   box-shadow: 0;
 }
 
-.app #session_form_container--heading {
+.app #session_form_container .card-header {
   padding: 0;
   margin: 0;
   border: 0;
   background-color: transparent;
 }
 
-.app #session_form_container .panel-body {
+.app #session_form_container .card-header-tabs {
+  margin: 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.app #session_form_container .card-header-tabs:hover {
+  background-color: #f2f2f2;
+}
+
+.app #session_form_container .card-body {
   border-width: 0 1px 1px 1px;
   border-style: solid;
   border-color: #ddd;

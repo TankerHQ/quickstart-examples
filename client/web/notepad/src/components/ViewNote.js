@@ -1,4 +1,4 @@
-import { Alert, Panel } from 'react-bootstrap';
+import { Alert, Card } from 'react-bootstrap';
 import React from 'react';
 
 class ViewNote extends React.Component {
@@ -34,25 +34,25 @@ class ViewNote extends React.Component {
     const { text, error, isLoading } = this.state;
     return (
       <div>
-        <Panel>
-          <Panel.Heading id="note-from-friend-heading">Note from {friendEmail}</Panel.Heading>
-          <Panel.Body>
-            {error && <Alert bsStyle="danger">{error}</Alert>}
+        <Card>
+          <Card.Header id="note-from-friend-heading">Note from {friendEmail}</Card.Header>
+          <Card.Body>
+            {error && <Alert variant="danger">{error}</Alert>}
             {isLoading && (
-              <Alert id="view-loading" bsStyle="info">
+              <Alert id="view-loading" variant="info">
                 Loading...
               </Alert>
             )}
             <p id="view-textarea" style={{ whiteSpace: 'pre-line' }}>
               {text}
             </p>
-          </Panel.Body>
-          <Panel.Footer>
+          </Card.Body>
+          <Card.Footer>
             <a onClick={this.onBackClicked} href="/">
               &laquo; Back
             </a>
-          </Panel.Footer>
-        </Panel>
+          </Card.Footer>
+        </Card>
       </div>
     );
   }

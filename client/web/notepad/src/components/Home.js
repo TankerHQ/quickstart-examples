@@ -1,13 +1,13 @@
 import React from 'react';
-import { Panel } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import AccessibleNotes from './AccessibleNotes';
 
 const Home = ({ session }) => (
-  <Panel>
-    <Panel.Heading id="my-note-heading">Home</Panel.Heading>
-    <Panel.Body>
+  <Card>
+    <Card.Header id="my-note-heading">Home</Card.Header>
+    <Card.Body>
       <section>
         <h2>My note</h2>
         <p>
@@ -24,8 +24,8 @@ const Home = ({ session }) => (
         <h2>Notes shared with me</h2>
         <AccessibleNotes session={session} />
       </section>
-    </Panel.Body>
-  </Panel>
+    </Card.Body>
+  </Card>
 );
 
 export default Home;
