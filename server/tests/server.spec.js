@@ -40,7 +40,6 @@ const assertRequest = async (testServer, request, expectedResponse) => {
   return actual;
 };
 
-
 describe('server', () => {
   let tempPath;
   let testServer;

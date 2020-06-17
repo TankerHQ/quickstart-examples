@@ -14,7 +14,6 @@ const avoidFlickering = async (promise) => {
   return results[0];
 };
 
-
 class Edit extends React.Component {
   state = {
     text: '',

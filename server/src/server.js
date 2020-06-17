@@ -67,7 +67,6 @@ const setup = async (config) => {
   }
   app.storage = new Storage(dataPath, appId);
 
-
   if (testMode) {
     app.trustchaindClient = new FakeTrustchaindClient();
   } else {
@@ -103,10 +102,8 @@ app.use(bodyParser.text());
 app.use(bodyParser.json());
 app.options('*', cors.middleware()); // enable pre-flight CORS requests
 
-
 // Add routes for the server's home page (readmes...)
 app.use(home);
-
 
 // Add middlewares to log requests on routes defined below
 app.use(morgan('dev'));
@@ -124,10 +121,8 @@ app.get('/config', (req, res) => {
   res.status(200).send(clientConfig);
 });
 
-
 // Add session middleware
 app.use(session.middleware());
-
 
 // Add logout route (non authenticated)
 app.get('/logout', watchError(async (req, res) => {
@@ -135,7 +130,6 @@ app.get('/logout', watchError(async (req, res) => {
   await session.destroy(req, res);
   res.status(200).json('{}');
 }));
-
 
 // Add signup route (non authenticated)
 app.post('/signup', watchError(async (req, res) => {
@@ -472,7 +466,6 @@ app.post('/me/claimed', watchError(async (req, res) => {
   res.sendStatus(200);
 }));
 
-
 app.put('/data', (req, res) => {
   const { user } = res.locals;
 
@@ -518,7 +511,6 @@ app.get('/data/:userId', (req, res) => {
   res.set('Content-Type', 'text/plain');
   res.send(user.data);
 });
-
 
 app.get('/users', watchError(async (req, res) => {
   let users = app.storage.getAll();

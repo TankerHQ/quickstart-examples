@@ -33,13 +33,13 @@
   },
   "devDependencies": {
     "babel-eslint": "10.1.0",
-    "eslint": "6.8.0",
+    "eslint": "7.2.0",
     "eslint-config-airbnb": "18.1.0",
     "eslint-plugin-chai-expect": "2.1.0",
-    "eslint-plugin-chai-friendly": "0.5.0",
-    "eslint-plugin-import": "2.20.1",
+    "eslint-plugin-chai-friendly": "0.6.0",
+    "eslint-plugin-import": "2.21.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-mocha-no-only": "1.1.0",
-    "eslint-plugin-react": "7.19.0"
+    "eslint-plugin-react": "7.20.0"
   }
 }
