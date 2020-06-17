@@ -8,7 +8,6 @@ const getPrefix = (indentLevel) => {
   return new Array((indentLevel * tabSize) - 1).join(' ');
 };
 
-
 // Pretty logger
 //  - add timestamps
 //  - allow to indent logged messages
@@ -27,6 +26,5 @@ const log = (message, indentLevel = 0) => {
     console.log(`[${date}] ${prefix}${message}`);
   }
 };
-
 
 module.exports = log;
