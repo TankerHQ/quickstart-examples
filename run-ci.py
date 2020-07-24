@@ -7,7 +7,7 @@ import sys
 from path import Path
 import requests
 
-import ci
+import tankerci
 
 
 def get_src_path():
@@ -36,7 +36,7 @@ def run_mypy():
     env = os.environ.copy()
     env["MYPYPATH"] = tests_path / "stubs"
     # fmt: off
-    ci.run(
+    tankerci.run(
         "poetry", "run",
         "mypy", "--strict", "--ignore-missing-imports", tests_path,
         check=True,
@@ -64,8 +64,10 @@ def run_end_to_end_tests(app):
     config_path = write_server_config()
     src_path = get_src_path()
     tests_path = src_path / "tests"
-    with ci.run_in_background("yarn", "start", "--config", config_path, cwd=src_path):
-        with ci.run_in_background("yarn", "start:web:%s" % app, cwd=src_path):
+    with tankerci.run_in_background(
+        "yarn", "start", "--config", config_path, cwd=src_path
+    ):
+        with tankerci.run_in_background("yarn", "start:web:%s" % app, cwd=src_path):
             # We let the server and the app time to fully start,
             # otherwise, browser might be stuck in a no man's land
             time.sleep(1)
@@ -77,7 +79,7 @@ def run_end_to_end_tests(app):
             # This is required for Selenium to work.
             env["PATH"] = "/usr/lib/chromium-browser:" + env["PATH"]
             # fmt: off
-            ci.run(
+            tankerci.run(
                 "poetry", "run", "pytest",
                 "--verbose",
                 "--capture=no",
@@ -91,14 +93,14 @@ def run_end_to_end_tests(app):
 
 def run_linters():
     src_path = get_src_path()
-    ci.run("yarn")
-    ci.run("yarn", "lint", cwd=src_path / "server")
-    ci.run("yarn", "lint", cwd=src_path / "client/web/notepad")
+    tankerci.run("yarn")
+    tankerci.run("yarn", "lint", cwd=src_path / "server")
+    tankerci.run("yarn", "lint", cwd=src_path / "client/web/notepad")
 
 
 def run_server_tests():
     src_path = get_src_path()
-    ci.run("yarn", "test", check=True, cwd=src_path / "server")
+    tankerci.run("yarn", "test", check=True, cwd=src_path / "server")
 
 
 def check_web():
@@ -111,10 +113,10 @@ def check_web():
 
 def compile_notepad_ios():
     src_path = get_src_path() / "client/ios/notepad/"
-    ci.run("pod", "deintegrate", cwd=src_path)
-    ci.run("pod", "install", "--repo-update", cwd=src_path)
+    tankerci.run("pod", "deintegrate", cwd=src_path)
+    tankerci.run("pod", "install", "--repo-update", cwd=src_path)
     # fmt: off
-    ci.run(
+    tankerci.run(
         "xcodebuild", "build",
         "-workspace", "notepad.xcworkspace",
         "-allowProvisioningUpdates",
@@ -126,7 +128,7 @@ def compile_notepad_ios():
 
 
 def compile_notepad_android(src_path):
-    ci.run("./gradlew", "assembleRelease", cwd=src_path)
+    tankerci.run("./gradlew", "assembleRelease", cwd=src_path)
 
 
 def get_browserstack_username():
@@ -175,12 +177,12 @@ def poll_build_status(build_id, devices):
 
 def run_android_tests(src_path):
     config_path = write_server_config()
-    ci.run("./gradlew", "assembleLocalhost", cwd=src_path)
-    ci.run("./gradlew", "assembleAndroidTest", cwd=src_path)
+    tankerci.run("./gradlew", "assembleLocalhost", cwd=src_path)
+    tankerci.run("./gradlew", "assembleAndroidTest", cwd=src_path)
     apk_folder = src_path / "app/build/outputs/apk"
     app_url = send_app(apk_folder)
     test_url = send_tests(apk_folder)
-    ci.run("yarn")
+    tankerci.run("yarn")
     devices = ["Google Pixel 3-9.0", "Samsung Galaxy S9-8.0", "Samsung Galaxy S6-5.0"]
     config = {
         "devices": devices,
@@ -189,10 +191,12 @@ def run_android_tests(src_path):
         "testSuite": test_url,
         "local": "true",
     }
-    with ci.run_in_background("BrowserStackLocal", "--key", get_browserstack_key()):
+    with tankerci.run_in_background(
+        "BrowserStackLocal", "--key", get_browserstack_key()
+    ):
         # Wait for the tunnel to BrowserStack to be established
         time.sleep(5)
-        with ci.run_in_background("yarn", "start", "--config", config_path):
+        with tankerci.run_in_background("yarn", "start", "--config", config_path):
             build_id = start_build(config)
             success = poll_build_status(build_id, devices)
     if not success:
