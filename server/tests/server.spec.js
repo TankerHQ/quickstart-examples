@@ -535,15 +535,14 @@ describe('server', () => {
       });
     };
 
-    it('calls trustchaind properly when requesting verification code', async () => {
+    it('calls appd properly when requesting verification code', async () => {
       signUpBob();
       await requestResetBobPassword();
       const passwordResetToken = retrieveResetPasswordToken(bobId);
       await requestBobVerificationCode(passwordResetToken);
-      const actualRequest = app.trustchaindClient.sentRequest;
-      const actualData = actualRequest.email_data;
-      expect(actualData.to_email).to.eq(bobEmail);
-      expect(actualData.html).to.contains('TANKER_VERIFICATION_CODE');
+      const { sentBody } = app.apiClient;
+      expect(sentBody.to_email).to.eq(bobEmail);
+      expect(sentBody.html).to.contains('TANKER_VERIFICATION_CODE');
     });
 
     it('can reset password with a token', async () => {

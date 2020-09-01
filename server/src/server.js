@@ -24,8 +24,8 @@ const log = require('./log');
 const home = require('./home');
 const session = require('./session');
 const Storage = require('./storage');
-const { TrustchaindClient } = require('./TrustchaindClient');
-const { FakeTrustchaindClient } = require('./FakeTrustchaindClient');
+const { ApiClient } = require('./ApiClient');
+const { FakeApiClient } = require('./FakeApiClient');
 
 // Build express application
 const app = express();
@@ -68,10 +68,10 @@ const setup = async (config) => {
   app.storage = new Storage(dataPath, appId);
 
   if (testMode) {
-    app.trustchaindClient = new FakeTrustchaindClient();
+    app.apiClient = new FakeApiClient();
   } else {
-    const trustchaindUrl = config.url || 'https://api.tanker.io';
-    app.trustchaindClient = new TrustchaindClient({ trustchaindUrl, authToken, appId });
+    const apiUrl = config.url || 'https://api.tanker.io';
+    app.apiClient = new ApiClient({ apiUrl, authToken, appId });
   }
 
   // Libsodium loads asynchronously (Wasm module)
@@ -298,7 +298,7 @@ app.post('/requestVerificationCode', watchError(async (req, res) => {
   }
 
   try {
-    const email_data = {
+    const body = {
       from_name: 'Notepad x Tanker',
       to_email: user.email,
       subject: 'Verification code',
@@ -313,7 +313,7 @@ app.post('/requestVerificationCode', watchError(async (req, res) => {
       `,
     };
 
-    const response = await app.trustchaindClient.sendVerification({ email_data });
+    const response = await app.apiClient.sendVerification(body);
 
     if (!response.ok) {
       const error = await response.text();
@@ -423,7 +423,7 @@ app.post('/me/requestVerificationCode', watchError(async (req, res) => {
   let { email } = req.body;
   email = email || res.locals.user.email;
 
-  const email_data = {
+  const body = {
     from_name: 'Notepad x Tanker',
     to_email: email,
     subject: 'Verification code',
@@ -438,7 +438,7 @@ app.post('/me/requestVerificationCode', watchError(async (req, res) => {
     `,
   };
 
-  const response = await app.trustchaindClient.sendVerification({ email_data });
+  const response = await app.apiClient.sendVerification(body);
 
   if (!response.ok) {
     const error = await response.text();
