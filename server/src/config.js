@@ -8,15 +8,9 @@ const listConfigFileNames = () => fs.readdirSync(configDir).filter((f) => f.matc
 
 const readJSONFile = (filePath) => JSON.parse(fs.readFileSync(filePath));
 
-// Migrate old configs with trustchain params into new configs with app params
-const modernizeConfig = (fullConfig) => {
-  const { trustchainId, trustchainPrivateKey, ...compatConfig } = fullConfig;
-  return { appId: trustchainId, appSecret: trustchainPrivateKey, ...compatConfig };
-};
-
 const readConfigFile = (fileName) => {
   const filePath = pathLib.join(configDir, fileName);
-  return modernizeConfig(readJSONFile(filePath));
+  return readJSONFile(filePath);
 };
 
 const expandPath = (filePath) => {
@@ -57,7 +51,7 @@ const selectConfig = (configFileNames) => {
 
 const getConfig = async (path) => {
   if (path) {
-    return modernizeConfig(readJSONFile(expandPath(path)));
+    return readJSONFile(expandPath(path));
   }
 
   const configFileNames = listConfigFileNames();
