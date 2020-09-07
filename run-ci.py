@@ -49,7 +49,7 @@ def write_server_config():
     server_config = {}
     server_config["appId"] = os.environ["APP_ID"]
     server_config["appSecret"] = os.environ["APP_SECRET"]
-    server_config["url"] = os.environ["TANKER_URL"]
+    server_config["url"] = os.environ["TANKER_APPD_URL"]
     # Note: end-to-end tests do _not_ use the email
     # verification method, but the server will complain
     # if the auth token is missing:
