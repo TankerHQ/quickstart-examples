@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "7.12.5",
-    "@tanker/client-browser": "2.6.0",
+    "@tanker/client-browser": "2.6.1",
     "email-validator": "2.0.4",
     "react": "16.13.1",
     "react-app-polyfill": "1.0.6",
