@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 
 class ApiClient {
   constructor({ apiUrl, appId, authToken }) {
-    this.appId = appId.replace(/\+/, '-').replace(/\//, '_').replace(/=+$/, '');
+    this.appId = appId.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     this.authToken = authToken;
     this.apiUrl = apiUrl;
   }
