@@ -7,7 +7,7 @@
     "lint": "cd ../../.. && eslint --config=./client/web/notepad/.eslintrc client/web/notepad/src/"
   },
   "dependencies": {
-    "@babel/runtime-corejs3": "7.11.2",
+    "@babel/runtime-corejs3": "7.12.5",
     "@tanker/client-browser": "2.6.0",
     "email-validator": "2.0.4",
     "react": "16.13.1",
@@ -18,15 +18,15 @@
     "react-router-dom": "5.2.0"
   },
   "devDependencies": {
-    "@babel/core": "7.11.5",
-    "@babel/plugin-proposal-class-properties": "7.10.4",
-    "@babel/plugin-transform-runtime": "7.11.5",
-    "@babel/preset-env": "7.11.5",
-    "@babel/preset-react": "7.10.4",
-    "babel-loader": "8.1.0",
-    "css-loader": "4.2.2",
-    "html-webpack-plugin": "4.4.1",
-    "style-loader": "1.2.1",
+    "@babel/core": "7.12.3",
+    "@babel/plugin-proposal-class-properties": "7.12.1",
+    "@babel/plugin-transform-runtime": "7.12.1",
+    "@babel/preset-env": "7.12.1",
+    "@babel/preset-react": "7.12.5",
+    "babel-loader": "8.2.1",
+    "css-loader": "4.3.0",
+    "html-webpack-plugin": "4.5.0",
+    "style-loader": "1.3.0",
     "webpack": "4.44.1",
     "webpack-cli": "3.3.12",
     "webpack-dev-server": "3.11.0"
