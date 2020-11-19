@@ -18,6 +18,7 @@ const { v4: uuid } = require('uuid');
 const { getDemoIP } = require('./ip');
 
 const auth = require('./auth');
+const cache = require('./cache');
 const cors = require('./cors');
 const { watchError, middleware: errorMiddleware } = require('./error');
 const log = require('./log');
@@ -98,6 +99,7 @@ const sanitizeUser = async (user) => {
 };
 
 app.use(cors.middleware()); // enable CORS
+app.use(cache.middleware); // disable cache
 app.use(bodyParser.text());
 app.use(bodyParser.json());
 app.options('*', cors.middleware()); // enable pre-flight CORS requests
