@@ -15,6 +15,7 @@ check/ios:
   stage: check
   script:
     - security unlock-keychain -p ${DEFAULT_KEYCHAIN_PASSWORD} ~/Library/Keychains/login.keychain-db
+    - poetry run pip install -U pip
     - poetry install
     - poetry run python run-ci.py ios
   tags: [macos]
