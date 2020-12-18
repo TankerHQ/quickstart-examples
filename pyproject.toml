@@ -14,7 +14,6 @@ mypy = "^0.790"
 pytest = "^6.2.1"
 requests = "^2.22.0"
 selenium = "^3.141.0"
-tbump = "^6.2.0"
 typing-extensions = "^3.7.4"
 
 [[tool.poetry.source]]
