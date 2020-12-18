@@ -6,12 +6,12 @@ authors = ["Tanker team <tech@tanker.io>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-tankerci = "*"
+tankerci = ">= 2020.12.3123"
 
 [tool.poetry.dev-dependencies]
 faker = "^4.0.0"
-mypy = "^0.761"
-pytest = "^5.3.4"
+mypy = "^0.790"
+pytest = "^6.2.1"
 requests = "^2.22.0"
 selenium = "^3.141.0"
 typing-extensions = "^3.7.4"

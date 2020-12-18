@@ -1,22 +1,22 @@
 import argparse
 import json
 import os
+from pathlib import Path
 import time
 import sys
 
-from path import Path
 import requests
 
 import tankerci
 
 
 def get_src_path():
-    this_path = Path(__file__).abspath()
+    this_path = Path(__file__).resolve()
     return this_path.parent
 
 
 def ensure_default_browser_not_started(app):
-    """"
+    """
     When we call `yarn start:web:{app}`
     react-scripts will automatically open the default browser.
 
