@@ -12,7 +12,7 @@ const dataPath = path.resolve(__dirname, '../data').normalize();
 
 cli.option('-c, --config <c>', 'A Tanker JSON config file').parse(process.argv);
 
-getConfig(cli.config).then(async (config) => {
+getConfig(cli.opts().config).then(async (config) => {
   if (!config) return;
 
   await setup({ ...config, dataPath });
