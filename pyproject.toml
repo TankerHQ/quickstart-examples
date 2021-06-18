@@ -6,7 +6,7 @@ authors = ["Tanker team <tech@tanker.io>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-tankerci = { version = ">= 2020.12.3123", source = "gitlab" }
+tankerci = { version = ">= 2021.6.3428", source = "gitlab" }
 
 [tool.poetry.dev-dependencies]
 faker = "^4.0.0"

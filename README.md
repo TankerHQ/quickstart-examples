@@ -87,9 +87,11 @@ cd quickstart-examples && yarn
 
 ### Create a Tanker App
 
-To create a Tanker App, create a free account on the [dashboard](https://dashboard.tanker.io/signup) and follow the instructions. Since you are just testing Tanker and not building a real private application, feel free to enable the test mode.
+Use the [dashboard](https://dashboard.tanker.io/) and follow the instructions. No account yet? Contact us to get access at https://tanker.io/contact.
 
-Once you start building real private applications, you can just create other Tanker Apps.
+Since you are just testing Tanker within demo applications, feel free to enable the test mode.
+
+Once you use Tanker in real production applications, it is imperative to create a new application without activating the test mode.
 
 ### Configure
 
@@ -144,8 +146,8 @@ On this page, you will find all the instructions needed to run the example appli
 
 For more details and to go beyond the example applications, please refer to:
 
-* [SDK implementation guide](https://docs.tanker.io/core/latest/)
-* [API reference](https://docs.tanker.io/core/latest/api/tanker/)
+* [SDK implementation guide](https://docs.tanker.io/latest/guides/)
+* [API reference](https://docs.tanker.io/latest/api/core/js/)
 * [Product overview](https://tanker.io/)
 
 ## License

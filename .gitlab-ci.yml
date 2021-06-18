@@ -1,29 +1,24 @@
+include:
+  project: TankerHQ/gitlab-ci-files
+  file: /cache.yml
+  ref: 428eae8953297125aff965e14d23b7c657d515e3
+
+default:
+  image: registry.gitlab.com/tankerhq/docker/node:latest
+  before_script:
+    - poetry -V
+    - node -v
+    - poetry install
+    - poetry run python --version
+
 stages:
   - check
 
-check/android:
-  when: manual
-  stage: check
-  script:
-    - poetry install
-    - poetry run python run-ci.py android
-  tags: [linux]
-
-
-check/ios:
-  when: manual
-  stage: check
-  script:
-    - security unlock-keychain -p ${DEFAULT_KEYCHAIN_PASSWORD} ~/Library/Keychains/login.keychain-db
-    - poetry run pip install -U pip
-    - poetry install
-    - poetry run python run-ci.py ios
-  tags: [macos]
-
-
 check/web:
+  extends: .python-yarn-cache
   stage: check
   script:
     - poetry install
     - poetry run python run-ci.py web
-  tags: [linux]
+  tags:
+    - linux

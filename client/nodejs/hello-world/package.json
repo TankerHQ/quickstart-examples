@@ -7,7 +7,7 @@
     "start": "node main.js"
   },
   "dependencies": {
-    "@tanker/client-node": "2.12.0",
+    "@tanker/client-node": "2.15.0",
     "node-fetch": "2.6.1",
     "uuid": "8.3.2"
   }
