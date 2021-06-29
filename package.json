@@ -43,6 +43,7 @@
     "eslint-plugin-react": "7.24.0"
   },
   "resolutions": {
+    "glob-parent": "^5.1.2",
     "node-fetch": "^2.6.1"
   }
 }

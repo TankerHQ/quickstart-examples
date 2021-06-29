@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
@@ -28,15 +29,24 @@ const getWebpackConfig = (rootPath) => ({
     overlay: true,
   },
 
-  target: 'web',
+  // 'es5' is necessary to support IE
+  target: ['web', 'es5'],
 
-  entry: [path.resolve(rootPath, 'src', 'index.js')],
+  entry: [
+    'core-js/features/promise',
+    'core-js/features/math/imul',
+    path.resolve(rootPath, 'src', 'index.js'),
+  ],
 
   plugins: [
     new HTMLWebpackPlugin({
       template: path.resolve(rootPath, 'public', 'index.html'),
       favicon: path.resolve(rootPath, 'public', 'favicon.ico'),
       filename: 'index.html',
+    }),
+    // Node.js Polyfills were removed in Webpack 5
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
     }),
   ],
 
@@ -57,12 +67,18 @@ const getWebpackConfig = (rootPath) => ({
     ],
   },
 
-  // libsodium hacks
-  node: {
-    // libsodium uses fs for some reason, we don't ever want that in a browser
-    fs: 'empty',
-    // libsodium never actually uses node's crypto in our case
-    crypto: 'empty',
+  resolve: {
+    fallback: {
+      // libsodium uses fs for some reason, we don't ever want that in a browser
+      fs: false,
+      // libsodium never actually uses node's crypto or path in our case
+      crypto: false,
+      path: false,
+
+      // Node.js polyfills were removed in Webpack 5
+      buffer: require.resolve('buffer/'),
+      process: require.resolve('process/browser'),
+    },
   },
 });
 
